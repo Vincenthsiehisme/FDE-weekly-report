@@ -20,7 +20,7 @@ publish   commit data/ 與 site/，push main，Vercel 自動部署              
 - **Hours**：Story point estimate（`customfield_10016`，預估值），只加葉節點。有子卡的卡自己的點數不算，epic 與 Kick off 卡不算。
 - **專案**：以 epic 分組；不在 epic 底下的卡歸「未歸屬 epic」。先前就完成的 epic 不再列。
 - **Status**：epic 已完成為 Done，其餘 On Track。
-- **Owner**：卡片自己的 assignee，沒有就用父卡的，再沒有就是「未指派」。
+- **Owner**：卡片自己的 assignee。子任務沒有 assignee 時用父卡的；一般卡沒有 assignee 就是「未指派」，不往上算給 epic 負責人。
 - **支援單位**：卡片 label 在 `config/units.json` 白名單裡才算；不在白名單的歸「未分類」並列進資料檢查。
 - **Token**：讀 `data/tokens/<week>.json`，格式 `{"CS-17": 12000}`（卡號對 token 數）。檔案不存在或卡號沒有值都顯示「—」，不顯示 0。
 

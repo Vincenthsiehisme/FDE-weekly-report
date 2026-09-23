@@ -77,7 +77,9 @@ class _Tree:
         return item
 
     def owner_of(self, item: dict) -> str:
-        """負責人：卡片自己的 assignee → 交付單位的 assignee → 未指派。子任務常常不指派人，歸給父卡的人。"""
+        """負責人：卡片自己的 assignee → 交付單位的 assignee → 未指派。
+        子任務常常不指派人，歸給父卡的人。一般卡的交付單位就是自己，不往上算給 epic 負責人：
+        epic 負責人是專案負責人，不一定是做這張卡的人，算給他等於用猜的。"""
         if item["assignee"]:
             return item["assignee"]
         root = self.root_of(item)

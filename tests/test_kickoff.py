@@ -97,6 +97,9 @@ class LockTest(unittest.TestCase):
         state = reconcile(state, "CS-1", "CS-30", ["Objective：目標"], "t2")
         self.assertEqual(state["changes"], [{"detected_at": "t2", "kickoff_key": "CS-30"}])
         self.assertEqual(state["kickoff_key"], "CS-20")
+        # 之後每週都還是 CS-30，不能每週再記一次
+        state = reconcile(state, "CS-1", "CS-30", ["Objective：目標"], "t3")
+        self.assertEqual(len(state["changes"]), 1)
 
     def test_state_for_another_epic_is_rejected(self):
         state = reconcile(None, "CS-1", "CS-20", [], "t1")

@@ -93,7 +93,7 @@ def reconcile(existing, epic: str, kickoff_key: str, lines: list, seen_at: str) 
     - 第一次讀到：當下每一段的內容就是鎖定版本（空的段落先記 None）。
     - 之後讀到：鎖定版本是 None 的段落，第一次出現內容就補進去，這是補填不是修改。
       已經鎖定有內容的段落，和上次讀到的不一樣，才記一筆修改。頁面一律顯示鎖定版本。
-    - 換了一張 Kick off 卡也記一筆。
+    - 換了一張 Kick off 卡也記一筆（跟上次讀到的卡號比，換一次只記一次）。
     """
     current, problems = parse_sections(lines)
     if existing is None:
@@ -103,6 +103,7 @@ def reconcile(existing, epic: str, kickoff_key: str, lines: list, seen_at: str) 
             "locked_at": seen_at,
             "sections": current,
             "last_seen": current,
+            "last_seen_key": kickoff_key,
             "problems": problems,
             "changes": [],
         }
@@ -114,11 +115,12 @@ def reconcile(existing, epic: str, kickoff_key: str, lines: list, seen_at: str) 
     change = {}
     if changed:
         change["sections"] = changed
-    if kickoff_key != existing["kickoff_key"]:
+    if kickoff_key != existing["last_seen_key"]:
         change["kickoff_key"] = kickoff_key
     updated = dict(existing)
     updated["sections"] = {key: locked[key] if locked[key] is not None else current[key] for key, _ in SECTIONS}
     updated["last_seen"] = current
+    updated["last_seen_key"] = kickoff_key
     updated["kickoff_key"] = existing["kickoff_key"]
     updated["problems"] = problems
     updated["changes"] = existing["changes"] + ([dict(detected_at=seen_at, **change)] if change else [])

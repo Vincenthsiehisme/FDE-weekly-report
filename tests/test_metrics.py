@@ -69,6 +69,13 @@ class GroupingTest(unittest.TestCase):
         self.assertEqual(owners["Hubert"]["hours"], 2.5)  # CS-3（歸父卡 Hubert）0.5 + CS-7 2.0
         self.assertEqual(owners["Amy"]["hours"], 2.0)
 
+    def test_unassigned_ordinary_card_is_not_given_to_epic_owner(self):
+        rows = {r["key"]: r for r in run(base_issues())["completed"]}
+        self.assertEqual(rows["CS-3"]["owner"], "Hubert")  # 子任務歸父卡
+        issues = base_issues() + [issue("CS-13", level=0, parent="CS-1", status="done", points=1.0, resolved=IN_WEEK)]
+        rows = {r["key"]: r for r in run(issues)["completed"]}
+        self.assertEqual(rows["CS-13"]["owner"], "未指派")  # epic 有負責人也不往上算
+
     def test_units_whitelist(self):
         m = run(base_issues())
         units = {u["unit"]: u["hours"] for u in m["units"]}

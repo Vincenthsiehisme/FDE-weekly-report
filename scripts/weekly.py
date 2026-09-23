@@ -73,13 +73,11 @@ def load_tokens(week: str):
     return data
 
 
-def build_metrics(week: str) -> dict:
-    snapshot = read_json(week_dir(week) / "snapshot.json")
+def compute_week(snapshot: dict) -> tuple:
+    """只算不寫：回傳 (metrics, {路徑: 要寫的內容})。任何一步失敗都不會留下檔案。"""
     period = period_from_dict(snapshot["period"])
-    if period.week_id != week:
-        raise ValueError(f"snapshot 的期間是 {period.week_id}，不是 {week}")
     found, checks = kickoff_by_epic(snapshot["issues"])
-    states = {}
+    states, writes = {}, {}
     for epic in sorted(found, key=issue_sort_key):
         card = found[epic]
         path = DATA / "kickoff" / f"{epic}.json"
@@ -87,10 +85,19 @@ def build_metrics(week: str) -> dict:
         lines = kickoff_lib.adf_to_lines(card.get("description"))
         state = kickoff_lib.reconcile(existing, epic, card["key"], lines, snapshot["fetched_at"])
         if state != existing:
-            write_json(path, state)
+            writes[path] = state
         states[epic] = state
-    metrics = compute(snapshot, period, load_units(), load_tokens(week), states, checks)
-    write_json(week_dir(week) / "metrics.json", metrics)
+    metrics = compute(snapshot, period, load_units(), load_tokens(period.week_id), states, checks)
+    writes[week_dir(period.week_id) / "metrics.json"] = metrics
+    return metrics, writes
+
+
+def publish_week(snapshot: dict) -> dict:
+    """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。"""
+    metrics, writes = compute_week(snapshot)
+    writes[week_dir(metrics["period"]["week"]) / "snapshot.json"] = snapshot
+    for path in sorted(writes):
+        write_json(path, writes[path])
     return metrics
 
 
@@ -98,8 +105,7 @@ def cmd_prepare(args) -> None:
     now = datetime.now(TZ)
     period = period_ending(date.fromisoformat(args.week_ending)) if args.week_ending else period_for(now)
     snapshot = fetch_snapshot(JiraClient(load_credentials()), period, now)
-    write_json(week_dir(period.week_id) / "snapshot.json", snapshot)
-    metrics = build_metrics(period.week_id)
+    metrics = publish_week(snapshot)
     t = metrics["totals"]
     print(f"snapshot：{sum(snapshot['counts'].values())} 張卡 {snapshot['counts']}", file=sys.stderr)
     print(f"本週完成 {t['completed']} 張、交付 {t['deliverables']} 項、{t['hours']:g}h；資料檢查 {len(metrics['checks'])} 項", file=sys.stderr)
@@ -107,7 +113,10 @@ def cmd_prepare(args) -> None:
 
 
 def cmd_metrics(args) -> None:
-    metrics = build_metrics(args.week)
+    snapshot = read_json(week_dir(args.week) / "snapshot.json")
+    if snapshot["period"]["week"] != args.week:
+        raise ValueError(f"snapshot 的期間是 {snapshot['period']['week']}，不是 {args.week}")
+    metrics = publish_week(snapshot)
     print(f"{args.week}：本週完成 {metrics['totals']['completed']} 張", file=sys.stderr)
 
 
