@@ -259,6 +259,14 @@ def _completed_by_delivery(metrics, page) -> str:
                 items.append(f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["owner"])} · 完成</span></span>'
                              f'<span class="nums">{esc(fmt_card_hours(c))} · Token {esc(fmt_tokens(c["tokens"]))}</span></li>')
         groups.append(f'<h4>{page.title(epic["key"], epic["summary"])}</h4><ul class="list">{"".join(items)}</ul>')
+    # epic 先前已結案時沒有專案列，但底下的卡本週仍可能完成，完成卡片 KPI 也有算它們
+    shown = {e["id"] for e in metrics["epics"]}
+    others = "".join(
+        f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["project"])} · {esc(c["owner"])}</span></span>'
+        f'<span class="nums">{esc(fmt_card_hours(c))} · Token {esc(fmt_tokens(c["tokens"]))}</span></li>'
+        for c in metrics["completed"] if c["group"] not in shown)
+    if others:
+        groups.append(f'<h4>其他完成的卡 <span class="muted">· 所屬 epic 已結案</span></h4><ul class="list">{others}</ul>')
     return "".join(groups) or '<p class="muted">本週沒有完成的卡。</p>'
 
 
@@ -355,7 +363,8 @@ def _team_panel(metrics, page) -> str:
       </div>
       {lists}
     </article>""")
-    return "".join(cards) or '<p class="muted">還沒有任何人有完成或進行中的卡。</p>'
+    note = f'<p class="note">Token {NO_TOKEN_SOURCE}，下面的 Token 都顯示「{DASH}」。</p>' if metrics["cumulative"]["totals"]["tokens"] is None else ""
+    return note + ("".join(cards) or '<p class="muted">還沒有任何人有完成或進行中的卡。</p>')
 
 
 def _checks(metrics, page) -> str:

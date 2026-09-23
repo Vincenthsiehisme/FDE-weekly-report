@@ -331,6 +331,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         in_progress.append({
             "key": item["key"],
             "group": group_of[item["key"]],
+            "root": tree.root_of(item)["key"],
             "leaf": not kids,
             "project": group_label(item["key"]),
             "owner": tree.owner_of(item),

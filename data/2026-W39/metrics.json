@@ -506,6 +506,7 @@
       "next": null,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
+      "root": "CS-1",
       "summary": "確認開發環境",
       "tokens": null
     },
@@ -518,6 +519,7 @@
       "next": null,
       "owner": "Vincent Hsieh",
       "project": "CS-7 開工確認",
+      "root": "CS-2",
       "summary": "提供 onboarding checklist",
       "tokens": null
     },
@@ -530,6 +532,7 @@
       "next": "CS-10 確認共用信箱 lionitcowork 開通",
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
+      "root": "CS-4",
       "summary": "IT Onboarding — 帳號與開發環境設定",
       "tokens": null
     },
@@ -542,6 +545,7 @@
       "next": null,
       "owner": "Vincent Hsieh",
       "project": "CS-7 開工確認",
+      "root": "CS-6",
       "summary": "確認共用信箱啟用狀態",
       "tokens": null
     },
@@ -554,6 +558,7 @@
       "next": null,
       "owner": "Vincent Hsieh",
       "project": "CS-7 開工確認",
+      "root": "CS-8",
       "summary": "claude code (enterprise)申請",
       "tokens": null
     },
@@ -566,6 +571,7 @@
       "next": null,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
+      "root": "CS-4",
       "summary": "確認共用信箱 lionitcowork 開通",
       "tokens": null
     },
@@ -578,6 +584,7 @@
       "next": null,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
+      "root": "CS-4",
       "summary": "註冊 GitHub 帳號並掛載 Org",
       "tokens": null
     }

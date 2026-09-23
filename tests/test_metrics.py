@@ -102,6 +102,14 @@ class DataQualityTest(unittest.TestCase):
         self.assertEqual(m["totals"]["hours"], 4.5)
         self.assertIn(("done_without_resolution", "CS-12"), [(c["kind"], c["key"]) for c in m["checks"]])
 
+    def test_rows_carry_group_root_and_leaf(self):
+        m = run(base_issues())
+        for row in m["completed"] + m["in_progress"]:
+            self.assertLessEqual({"group", "root", "leaf"}, set(row), row["key"])
+        issues = base_issues() + [issue("CS-15", level=-1, parent="CS-8", status="doing")]
+        rows = {r["key"]: r for r in run(issues)["in_progress"]}
+        self.assertEqual((rows["CS-15"]["root"], rows["CS-15"]["group"], rows["CS-15"]["leaf"]), ("CS-8", "CS-1", True))
+
     def test_in_progress_state_and_next(self):
         rows = {r["key"]: r for r in run(base_issues())["in_progress"]}
         self.assertEqual(rows["CS-8"]["current_state"], "進行中，21 天未更新")
