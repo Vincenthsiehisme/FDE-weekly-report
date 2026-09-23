@@ -14,7 +14,8 @@ from .period import TZ
 MISSING = "未填"
 DASH = "—"
 STALE_DAYS = 8
-# 排程在週二 23:59 跑，產生時間本來就比期間結束早一分鐘；早超過一小時才算期間還沒走完
+# routine 會等到期間結束後才抓（prepare --wait-for-period-end）；手動提早跑的才會早於期間結束。
+# 留一小時寬限，週二深夜手動補跑不標暫定
 PROVISIONAL_MARGIN = timedelta(hours=1)
 SECTION_LABELS = dict(SECTIONS)
 

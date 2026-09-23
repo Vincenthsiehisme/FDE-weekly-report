@@ -24,10 +24,10 @@
    python3 -m unittest discover -s tests -t tests
    ```
 
-3. **抓資料、算指標。** 最後一行 stdout 是這期的 week id。
+3. **抓資料、算指標。** 排程在 23:59 啟動，`--wait-for-period-end` 會等到期間結束（週三 00:00:30）才抓，最後幾十秒完成的卡才不會漏。這一步可能要等一分多鐘，執行時 timeout 至少設 5 分鐘。最後一行 stdout 是這期的 week id。
 
    ```bash
-   WEEK=$(python3 scripts/weekly.py prepare)
+   WEEK=$(python3 scripts/weekly.py prepare --wait-for-period-end)
    ```
 
 4. **寫 `data/$WEEK/narrative.json`。** 讀 `data/$WEEK/metrics.json`，照下面〈narrative 規則〉寫。

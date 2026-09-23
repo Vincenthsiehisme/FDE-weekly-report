@@ -7,11 +7,16 @@
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from datetime import date, datetime, time, timedelta, timezone
 
 TZ = timezone(timedelta(hours=8), "UTC+8")
 TUESDAY = 1  # date.weekday()：週一是 0
+# 排程在週二 23:59 啟動，比期間結束早不到一分鐘。抓資料要等到期間結束後，
+# 最後幾十秒完成的卡才不會漏；多等 30 秒讓 Jira 寫完。超過 10 分鐘代表排程設錯，不乾等。
+END_GRACE = timedelta(seconds=30)
+MAX_WAIT = timedelta(minutes=10)
 
 
 @dataclass(frozen=True)
@@ -64,3 +69,15 @@ def period_from_dict(data: dict) -> Period:
     if period.week_id != data["week"]:
         raise ValueError(f"期間資料不一致：week_ending {data['week_ending']} 對應 {period.week_id}，檔案寫 {data['week']}")
     return period
+
+
+def wait_for_end(period: Period, now: datetime) -> int:
+    """回傳要等幾秒才能開始抓資料（期間結束＋END_GRACE）。已經過了就回 0。"""
+    if now.tzinfo is None:
+        raise ValueError(f"時間沒有時區：{now!r}")
+    remaining = period.end_exclusive + END_GRACE - now
+    if remaining <= timedelta(0):
+        return 0
+    if remaining > MAX_WAIT + END_GRACE:
+        raise ValueError(f"離 {period.week_id} 期間結束還有 {remaining}，超過 {MAX_WAIT}：排程時間可能設錯，不等")
+    return math.ceil(remaining.total_seconds())

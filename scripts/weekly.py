@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """FDE 週報的命令列入口。流程與 routine 的呼叫方式見 ROUTINE.md。
 
-  prepare [--week-ending YYYY-MM-DD]  抓 Jira、存 snapshot、算 metrics，最後一行印出這期的 week id
+  prepare [--week-ending YYYY-MM-DD] [--wait-for-period-end]
+                                      抓 Jira、存 snapshot、算 metrics，最後一行印出這期的 week id
   metrics <week>                      只從既有 snapshot 重算 metrics（不打 Jira）
   finalize <week>                     驗證 narrative.json，通過才產出 site/ 底下的 HTML
 
@@ -13,6 +14,7 @@ import argparse
 import json
 import re
 import sys
+import time
 from datetime import date, datetime
 from pathlib import Path
 
@@ -23,7 +25,7 @@ from lib import kickoff as kickoff_lib  # noqa: E402
 from lib.jira import JiraClient, load_credentials  # noqa: E402
 from lib.metrics import compute, kickoff_by_epic  # noqa: E402
 from lib.narrative import validate  # noqa: E402
-from lib.period import TZ, period_ending, period_for, period_from_dict  # noqa: E402
+from lib.period import TZ, period_ending, period_for, period_from_dict, wait_for_end  # noqa: E402
 from lib.render import render  # noqa: E402
 from lib.snapshot import EPIC_LEVEL, fetch_snapshot, issue_sort_key  # noqa: E402
 
@@ -113,6 +115,12 @@ def publish_week(snapshot: dict) -> dict:
 def cmd_prepare(args) -> None:
     now = datetime.now(TZ)
     period = period_ending(date.fromisoformat(args.week_ending)) if args.week_ending else period_for(now)
+    if args.wait_for_period_end:
+        seconds = wait_for_end(period, now)
+        if seconds:
+            print(f"等 {seconds} 秒，到 {period.week_id} 期間結束後才抓資料", file=sys.stderr)
+            time.sleep(seconds)
+            now = datetime.now(TZ)
     snapshot = fetch_snapshot(JiraClient(load_credentials()), period, now)
     metrics = publish_week(snapshot)
     t = metrics["totals"]
@@ -155,6 +163,7 @@ def main(argv=None) -> int:
     sub = parser.add_subparsers(dest="command", required=True)
     p = sub.add_parser("prepare")
     p.add_argument("--week-ending", help="期間最後一天（週二），預設依執行當下推算")
+    p.add_argument("--wait-for-period-end", action="store_true", help="期間還沒結束就等到結束後 30 秒再抓（routine 用，最多等 10 分鐘）")
     p.set_defaults(func=cmd_prepare)
     p = sub.add_parser("metrics")
     p.add_argument("week")

@@ -22,7 +22,7 @@ publish   commit data/ 與 site/，push main，Vercel 自動部署              
 - **Status**：epic 已完成為 Done，其餘 On Track。
 - **Owner**：卡片自己的 assignee。子任務沒有 assignee 時用父卡的；一般卡沒有 assignee 就是「未指派」，不往上算給 epic 負責人。
 - **支援單位**：卡片 label 在 `config/units.json` 白名單裡才算；不在白名單的歸「未分類」並列進資料檢查。
-- **Token**：讀 `data/tokens/<week>.json`，格式 `{"CS-17": 12000}`（卡號對 token 數）。檔案不存在或卡號沒有值都顯示「—」，不顯示 0。
+- **Token**：讀 `data/tokens/<week>.json`，格式 `{"CS-17": 12000}`（卡號對 token 數）。檔案裡沒有的卡號代表這期沒有記錄到用量。單張卡沒有記錄顯示「—」；專案、交付、Owner 的彙總只加有記錄的卡，一張都沒有才顯示「—」；Total Token 是檔案裡全部值的總和。整個檔案不存在時全部顯示「—」，不顯示 0。
 
 ## Kick off 描述格式
 

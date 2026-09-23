@@ -37,6 +37,10 @@ class NarrativeTest(unittest.TestCase):
         with self.assertRaisesRegex(NarrativeError, "沒有的數字 62"):
             validate(narrative(results={"CS-1": "進度 62%"}), METRICS, KEYS)
 
+    def test_thousands_separator_is_one_number(self):
+        with self.assertRaisesRegex(NarrativeError, "沒有的數字 1,000"):
+            validate(narrative(results={"CS-1": "投入 1,000 小時"}), METRICS, KEYS)
+
     def test_chinese_numerals_with_a_measure_word_rejected(self):
         for text in ("完成兩項交付", "完成十張卡", "投入三小時", "進度五成"):
             with self.assertRaisesRegex(NarrativeError, "中文數字"):
