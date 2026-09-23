@@ -65,6 +65,28 @@ def load_tokens(week: str):
     path = DATA / "tokens" / f"{week}.json"
     if not path.is_file():
         return None
+    return _read_tokens(path)
+
+
+def load_cumulative_tokens(week: str):
+    """週次不晚於 week 的 Token 檔逐卡相加。一個檔都沒有是合法的：累計 Token 顯示「—」。"""
+    folder = DATA / "tokens"
+    found = sorted(folder.glob("*.json")) if folder.is_dir() else []
+    # 檔名打錯（例如 2026-w40.json）會安靜地少算一週，直接擋下
+    misnamed = [p.name for p in found if not WEEK_ID.fullmatch(p.stem)]
+    if misnamed:
+        raise ValueError(f"data/tokens 裡的檔名要像 2026-W39.json：{'、'.join(misnamed)}")
+    paths = [p for p in found if p.stem <= week]
+    if not paths:
+        return None
+    total = {}
+    for path in paths:
+        for key, value in _read_tokens(path).items():
+            total[key] = total.get(key, 0) + value
+    return total
+
+
+def _read_tokens(path: Path) -> dict:
     data = read_json(path)
     if not isinstance(data, dict):
         raise ValueError(f"{path.relative_to(ROOT)} 必須是 {{卡號: token 數}}")
@@ -98,7 +120,8 @@ def compute_week(snapshot: dict) -> tuple:
         if state != existing:
             writes[path] = state
         states[epic] = state
-    metrics = compute(snapshot, period, load_units(), load_tokens(period.week_id), states, checks)
+    metrics = compute(snapshot, period, load_units(), load_tokens(period.week_id), states, checks,
+                      cumulative_tokens=load_cumulative_tokens(period.week_id))
     writes[week_dir(period.week_id) / "metrics.json"] = metrics
     return metrics, writes
 

@@ -64,6 +64,16 @@ def period_for(moment: datetime) -> Period:
     return Period(local - timedelta(days=back))
 
 
+def period_containing(moment: datetime) -> Period:
+    """某個時間點落在哪一期：往後找最近的週二（當天是週二就是當天）。
+    跟 period_for 方向相反：period_for 回答「現在執行該產哪一期」，週三執行要算剛結束的那一期；
+    這裡回答「這張卡在哪一期完成」，週三完成的卡屬於下一個週二結束的那一期。"""
+    if moment.tzinfo is None:
+        raise ValueError(f"時間沒有時區，無法換算 UTC+8：{moment!r}")
+    local = moment.astimezone(TZ).date()
+    return Period(local + timedelta(days=(TUESDAY - local.weekday()) % 7))
+
+
 def period_from_dict(data: dict) -> Period:
     period = period_ending(date.fromisoformat(data["week_ending"]))
     if period.week_id != data["week"]:

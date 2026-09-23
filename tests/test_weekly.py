@@ -60,6 +60,27 @@ if __name__ == "__main__":
     unittest.main()
 
 
+class CumulativeTokensTest(AtomicWriteTest):
+    def _write(self, name, data):
+        folder = self.root / "data" / "tokens"
+        folder.mkdir(parents=True, exist_ok=True)
+        (folder / name).write_text(json.dumps(data), encoding="utf-8")
+
+    def test_no_token_files_means_none(self):
+        self.assertIsNone(weekly.load_cumulative_tokens("2026-W39"))
+
+    def test_sums_weeks_up_to_this_one(self):
+        self._write("2026-W38.json", {"CS-1": 10, "CS-2": 5})
+        self._write("2026-W39.json", {"CS-1": 7})
+        self._write("2026-W40.json", {"CS-1": 1000})
+        self.assertEqual(weekly.load_cumulative_tokens("2026-W39"), {"CS-1": 17, "CS-2": 5})
+
+    def test_misnamed_file_is_rejected(self):
+        self._write("2026-w39.json", {"CS-1": 10})
+        with self.assertRaises(ValueError):
+            weekly.load_cumulative_tokens("2026-W39")
+
+
 class KickoffStateTest(AtomicWriteTest):
     def _snap(self, fetched_at, with_kickoff=True, text="Objective：目標"):
         doc = {"type": "doc", "content": [{"type": "paragraph", "content": [{"type": "text", "text": text}]}]}
