@@ -138,6 +138,17 @@ class CumulativeTest(unittest.TestCase):
         self.assertNotIn("CS-14", [r["key"] for r in c["completed"]])
         self.assertEqual(c["since"], "2026-09-10")
 
+    def test_progress_and_status_stop_at_period_end(self):
+        # 用現在的 snapshot 補算舊的一期：期間之後才完成的卡與 epic 不能算成已完成
+        after = "2026-09-25T10:00:00.000+0800"
+        issues = [issue("CS-1", level=1, status="done", resolved=after),
+                  issue("CS-2", level=0, parent="CS-1", status="done", points=1.0, resolved=after),
+                  issue("CS-3", level=0, parent="CS-1", status="done", points=1.0, resolved=IN_WEEK)]
+        epic = next(e for e in run(issues)["cumulative"]["epics"] if e["id"] == "CS-1")
+        self.assertEqual((epic["completed"], epic["progress"]["done_cards"], epic["progress"]["total_cards"]), (1, 1, 2))
+        self.assertEqual((epic["progress"]["done_points"], epic["progress"]["percent"]), (1.0, 50))
+        self.assertEqual(epic["status"], "On Track")
+
     def test_settled_epic_is_listed(self):
         epics = {e["id"]: e for e in run(base_issues())["cumulative"]["epics"]}
         self.assertEqual(list(epics), ["CS-1", "CS-9", UNASSIGNED_EPIC])

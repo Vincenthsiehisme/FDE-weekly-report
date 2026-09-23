@@ -136,6 +136,25 @@ class PeopleTest(unittest.TestCase):
         self.assertIn("這些卡在 Jira 上沒有 assignee", team)
 
 
+class InProgressTest(unittest.TestCase):
+    def test_parent_in_progress_without_in_progress_children_stays_visible(self):
+        issues = ISSUES + [
+            issue("CS-3", level=0, parent="CS-1", status="doing", assignee="Alice", summary="父卡進行中"),
+            issue("CS-4", level=-1, parent="CS-3", status="todo"),
+        ]
+        week = panel(page(metrics=metrics_for(issues)), "week")
+        self.assertIn("父卡進行中", week)
+        self.assertIn("<summary>進行中 父卡 1 張</summary>", week)
+
+    def test_summary_counts_leaves_and_parents_separately(self):
+        issues = ISSUES + [
+            issue("CS-3", level=0, parent="CS-1", status="doing", assignee="Alice"),
+            issue("CS-4", level=-1, parent="CS-3", status="doing"),
+            issue("CS-5", level=0, parent="CS-1", status="doing", assignee="Bob"),
+        ]
+        self.assertIn("<summary>進行中 2 張，父卡 1 張</summary>", panel(page(metrics=metrics_for(issues)), "week"))
+
+
 class CumulativeTest(unittest.TestCase):
     def test_settled_epic_only_in_cumulative(self):
         issues = ISSUES + [

@@ -108,11 +108,12 @@ def _group_sort_key(group_id: str):
     return (group_id == UNASSIGNED_EPIC, issue_sort_key(group_id) if group_id != UNASSIGNED_EPIC else ("", 0))
 
 
-def _progress(group_leaves: list) -> dict:
+def _progress(group_leaves: list, is_done=_done) -> dict:
+    """is_done 預設看卡片現在的狀態；累計要改用「本期結束前完成」，補算舊的一期才不會算進之後才完成的卡。"""
     total_points = sum(i["points"] for i in group_leaves if i["points"] is not None)
-    done_points = sum(i["points"] for i in group_leaves if i["points"] is not None and _done(i))
+    done_points = sum(i["points"] for i in group_leaves if i["points"] is not None and is_done(i))
     return {
-        "done_cards": sum(1 for i in group_leaves if _done(i)),
+        "done_cards": sum(1 for i in group_leaves if is_done(i)),
         "total_cards": len(group_leaves),
         "done_points": _round(done_points),
         "total_points": _round(total_points),
@@ -336,7 +337,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
             "tokens": _token_sum([item["key"]], tokens),
         })
 
-    cumulative = _cumulative(tree, groups, group_of, leaves, cumulative_done, cumulative_tokens, completed_row)
+    cumulative = _cumulative(tree, period, groups, group_of, leaves, cumulative_done, cumulative_tokens, completed_row)
     people = _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cumulative_tokens)
 
     active_rows = [r for r in epic_rows if r["active"]]
@@ -364,9 +365,14 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     }
 
 
-def _cumulative(tree, groups, group_of, leaves, done, tokens, completed_row) -> dict:
-    """到本期結束為止的累計：專案（含已結案的 epic）、完成卡片（標上完成那一週）、總量。"""
+def _cumulative(tree, period, groups, group_of, leaves, done, tokens, completed_row) -> dict:
+    """到本期結束為止的累計：專案（含已結案的 epic）、完成卡片（標上完成那一週）、總量。
+    完成、進度與 Done 狀態都以本期結束為界，不看卡片現在的狀態。"""
     done_leaves = [i for i in leaves if i["key"] in done]
+
+    def done_by_end(item) -> bool:
+        return _done(item) and bool(item["resolved"]) and parse_jira_time(item["resolved"]) < period.end_exclusive
+
     epic_rows = []
     for group_id, epic in groups:
         members = [i for i in tree.work if group_of[i["key"]] == group_id]
@@ -380,9 +386,9 @@ def _cumulative(tree, groups, group_of, leaves, done, tokens, completed_row) -> 
             "key": epic["key"] if epic else None,
             "summary": epic["summary"] if epic else UNASSIGNED_EPIC_LABEL,
             "owner": (epic["assignee"] or UNASSIGNED_OWNER) if epic else None,
-            "status": ("Done" if _done(epic) else "On Track") if epic else None,
+            "status": ("Done" if done_by_end(epic) else "On Track") if epic else None,
             "due": epic["due"] if epic else None,
-            "progress": _progress(group_leaves),
+            "progress": _progress(group_leaves, lambda i: i["key"] in done),
             "completed": completed,
             "deliverables": len({tree.root_of(i)["key"] for i in group_done_leaves}),
             "hours": _round(sum(i["points"] or 0 for i in group_done_leaves)),

@@ -160,13 +160,17 @@ def _week_project(epic, narrative, in_progress, page) -> str:
 
     doing = [r for r in in_progress if r["group"] == epic["id"]]
     doing_leaves = [r for r in doing if r["leaf"]]
+    doing_parents = [r for r in doing if not r["leaf"]]
     doing_html = ""
-    if doing_leaves:
-        parents = "".join(f'<li class="parent">{page.issue(r["key"])} {esc(r["summary"])}：{esc(r["current_state"])}'
-                          f'{"，下一步 " + esc(r["next"]) if r["next"] else ""}</li>' for r in doing if not r["leaf"])
+    if doing:
+        # 張數跟「人」同一個口徑只算葉節點；進行中的父卡另外列，子卡都還沒動的父卡才不會消失
+        counts = "，".join(filter(None, [f"{len(doing_leaves)} 張" if doing_leaves else "",
+                                          f"父卡 {len(doing_parents)} 張" if doing_parents else ""]))
+        parents = "".join(f'<li class="parent">{page.issue(r["key"])} {esc(r["summary"])} <span class="muted">· {esc(r["owner"])}</span>：{esc(r["current_state"])}'
+                          f'{"，下一步 " + esc(r["next"]) if r["next"] else ""}</li>' for r in doing_parents)
         leaves = "".join(f'<li>{page.issue(r["key"])} {esc(r["summary"])} <span class="muted">· {esc(r["owner"])} · {esc(r["current_state"])}</span></li>'
                          for r in doing_leaves)
-        doing_html = f'<details class="doing"><summary>進行中 {len(doing_leaves)} 張</summary><ul>{parents}{leaves}</ul></details>'
+        doing_html = f'<details class="doing"><summary>進行中 {counts}</summary><ul>{parents}{leaves}</ul></details>'
 
     return f"""
     <article class="card project">
