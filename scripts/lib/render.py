@@ -129,7 +129,7 @@ def _progress(progress: dict) -> str:
     width = round(done / total * 100) if total else 0
     unestimated = f'，{progress["unestimated_cards"]} 張未估點' if progress["unestimated_cards"] else ""
     return (f'<div class="progress"><div class="bar"><span style="width:{width}%"></span></div>'
-            f'<span>{done}/{total} 張完成{unestimated}</span></div>')
+            f'<span>{done}/{total} 張完成 · {progress["done_points"]:g}/{progress["total_points"]:g}h 預估{unestimated}</span></div>')
 
 
 def _kickoff(kickoff, page) -> str:
@@ -147,6 +147,38 @@ def _kickoff(kickoff, page) -> str:
     return f'{notice}<dl class="kickoff">{items}</dl>'
 
 
+def _doing(doing: list, page, with_project: bool) -> str:
+    """進行中清單。張數跟「人」同一個口徑只算葉節點；進行中的父卡另外列，子卡都還沒動的父卡才不會消失。"""
+    if not doing:
+        return ""
+    leaves = [r for r in doing if r["leaf"]]
+    parents = [r for r in doing if not r["leaf"]]
+    counts = "，".join(filter(None, [f"{len(leaves)} 張" if leaves else "", f"父卡 {len(parents)} 張" if parents else ""]))
+
+    def where(r):
+        return f'{esc(r["project"])} · ' if with_project else ""
+
+    parent_items = "".join(f'<li class="parent">{page.issue(r["key"])} {esc(r["summary"])} <span class="muted">· {where(r)}{esc(r["owner"])}</span>：{esc(r["current_state"])}'
+                           f'{"，下一步 " + esc(r["next"]) if r["next"] else ""}</li>' for r in parents)
+    leaf_items = "".join(f'<li>{page.issue(r["key"])} {esc(r["summary"])} <span class="muted">· {where(r)}{esc(r["owner"])} · {esc(r["current_state"])}</span></li>'
+                         for r in leaves)
+    return f'<details class="doing"><summary>進行中 {counts}</summary><ul>{parent_items}{leaf_items}</ul></details>'
+
+
+def _other_doing(metrics, page) -> str:
+    """不屬於任何專案卡的進行中卡片：未歸屬 epic 本週沒有完成項目（沒有專案列），或 epic 先前已結案。"""
+    shown = {e["id"] for e in metrics["epics"]}
+    rows = [r for r in metrics["in_progress"] if r["group"] not in shown]
+    if not rows:
+        return ""
+    return f"""
+    <article class="card project">
+      <div class="card-head"><h3>其他進行中的卡</h3></div>
+      <p class="meta">不在上面任何專案裡：未歸屬 epic，或所屬 epic 已結案</p>
+      {_doing(rows, page, with_project=True)}
+    </article>"""
+
+
 def _week_project(epic, narrative, in_progress, page) -> str:
     week = epic["week"]
     if epic["active"]:
@@ -158,19 +190,7 @@ def _week_project(epic, narrative, in_progress, page) -> str:
         due = esc(fmt_date(epic["due"])) if epic["due"] else "未設定"
         meta = f'<p class="meta">負責人 {esc(epic["owner"])} · 目標日 {due}</p>'
 
-    doing = [r for r in in_progress if r["group"] == epic["id"]]
-    doing_leaves = [r for r in doing if r["leaf"]]
-    doing_parents = [r for r in doing if not r["leaf"]]
-    doing_html = ""
-    if doing:
-        # 張數跟「人」同一個口徑只算葉節點；進行中的父卡另外列，子卡都還沒動的父卡才不會消失
-        counts = "，".join(filter(None, [f"{len(doing_leaves)} 張" if doing_leaves else "",
-                                          f"父卡 {len(doing_parents)} 張" if doing_parents else ""]))
-        parents = "".join(f'<li class="parent">{page.issue(r["key"])} {esc(r["summary"])} <span class="muted">· {esc(r["owner"])}</span>：{esc(r["current_state"])}'
-                          f'{"，下一步 " + esc(r["next"]) if r["next"] else ""}</li>' for r in doing_parents)
-        leaves = "".join(f'<li>{page.issue(r["key"])} {esc(r["summary"])} <span class="muted">· {esc(r["owner"])} · {esc(r["current_state"])}</span></li>'
-                         for r in doing_leaves)
-        doing_html = f'<details class="doing"><summary>進行中 {counts}</summary><ul>{parents}{leaves}</ul></details>'
+    doing_html = _doing([r for r in in_progress if r["group"] == epic["id"]], page, with_project=False)
 
     return f"""
     <article class="card project">
@@ -217,7 +237,8 @@ def _people_rows(people: list, scope: str) -> str:
 def _completed_by_delivery(metrics, page) -> str:
     groups = []
     for epic in metrics["epics"]:
-        if not epic["active"] or not epic["week"]["deliveries"]:
+        rows = [c for c in metrics["completed"] if c["group"] == epic["id"]]
+        if not rows:
             continue
         items = []
         for d in epic["week"]["deliveries"]:
@@ -231,6 +252,12 @@ def _completed_by_delivery(metrics, page) -> str:
                 items.append(f'<li><details><summary>{head}</summary><ul>{sub}</ul></details></li>')
             else:
                 items.append(f"<li>{head}</li>")
+        # 交付單位只由本週完成的葉節點組成；父卡本週才結、子卡先前就完成（或還沒完成）時不在裡面，另外列
+        delivered = {d["key"] for d in epic["week"]["deliveries"]}
+        for c in rows:
+            if c["root"] not in delivered:
+                items.append(f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["owner"])} · 完成</span></span>'
+                             f'<span class="nums">{esc(fmt_card_hours(c))} · Token {esc(fmt_tokens(c["tokens"]))}</span></li>')
         groups.append(f'<h4>{page.title(epic["key"], epic["summary"])}</h4><ul class="list">{"".join(items)}</ul>')
     return "".join(groups) or '<p class="muted">本週沒有完成的卡。</p>'
 
@@ -246,7 +273,7 @@ def _week_panel(metrics, narrative, page) -> str:
         points = f'<ol class="highlights">{"".join(f"<li>{esc(h)}</li>" for h in highlights)}</ol>'
     else:
         points = '<p class="highlights muted">本週沒有完成的卡。</p>'
-    projects = "".join(_week_project(e, narrative, metrics["in_progress"], page) for e in metrics["epics"]) \
+    projects = "".join(_week_project(e, narrative, metrics["in_progress"], page) for e in metrics["epics"]) + _other_doing(metrics, page) \
         or '<p class="muted">沒有進行中的專案。</p>'
     return f"""
   {points}

@@ -166,6 +166,12 @@ class CumulativeTest(unittest.TestCase):
         m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-6": 40})
         self.assertEqual((m["totals"]["tokens"], m["cumulative"]["totals"]["tokens"]), (100, 140))
 
+    def test_unknown_key_only_in_earlier_token_files_is_reported(self):
+        m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-98": 5})
+        self.assertEqual(m["cumulative"]["totals"]["tokens"], 105)
+        self.assertIn(("token_unknown_key", "CS-98"), [(c["kind"], c["key"]) for c in m["checks"]])
+        self.assertNotIn(("token_unknown_key", "CS-3"), [(c["kind"], c["key"]) for c in m["checks"]])
+
     def test_week_tokens_without_cumulative_is_a_wiring_error(self):
         with self.assertRaises(ValueError):
             compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens=None)

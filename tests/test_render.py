@@ -155,6 +155,35 @@ class InProgressTest(unittest.TestCase):
         self.assertIn("<summary>進行中 2 張，父卡 1 張</summary>", panel(page(metrics=metrics_for(issues)), "week"))
 
 
+class ProgressTest(unittest.TestCase):
+    def test_progress_shows_cards_and_estimated_hours(self):
+        issues = ISSUES + [issue("CS-3", level=0, parent="CS-1", status="todo", points=0.5),
+                           issue("CS-4", level=0, parent="CS-1", status="todo")]
+        self.assertIn("<span>1/3 張完成 · 1.5/2h 預估，1 張未估點</span>", panel(page(metrics=metrics_for(issues)), "week"))
+
+
+class CompletedSectionTest(unittest.TestCase):
+    def test_parent_completed_without_leaves_this_week_is_listed(self):
+        # 父卡本週完成、子卡上週就完成：完成卡片 KPI 有算它，完成區也要列出來
+        issues = [
+            issue("CS-1", level=1, status="doing"),
+            issue("CS-2", level=0, parent="CS-1", status="done", resolved=IN_WEEK, summary="本週才結的父卡"),
+            issue("CS-3", level=-1, parent="CS-2", status="done", points=1.0, resolved=LAST_WEEK),
+        ]
+        m = metrics_for(issues)
+        self.assertEqual(m["totals"]["completed"], 1)
+        week = panel(page(metrics=m), "week")
+        self.assertIn("本週才結的父卡", week[week.index("<h3>完成</h3>"):])
+        self.assertNotIn("本週沒有完成的卡。", week[week.index("<h3>完成</h3>"):])
+
+    def test_unassigned_in_progress_card_is_shown_without_completions(self):
+        issues = ISSUES + [issue("CS-9", level=0, status="doing", assignee="Eve", summary="沒有 epic 的進行中")]
+        week = panel(page(metrics=metrics_for(issues)), "week")
+        projects = week[week.index("<h3>專案列表</h3>"):week.index("<h3>人</h3>")]
+        self.assertIn("沒有 epic 的進行中", projects)
+        self.assertIn("未歸屬 epic", projects)
+
+
 class CumulativeTest(unittest.TestCase):
     def test_settled_epic_only_in_cumulative(self):
         issues = ISSUES + [

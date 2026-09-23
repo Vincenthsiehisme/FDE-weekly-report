@@ -172,6 +172,10 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         for key in sorted(tokens, key=issue_sort_key):
             if key not in tree.by_key:
                 checks.append(_check("token_unknown_key", key, "Token 檔裡的卡號不在這期的 snapshot 裡，只計入總量"))
+    if cumulative_tokens is not None:
+        for key in sorted(cumulative_tokens, key=issue_sort_key):
+            if key not in tree.by_key and (tokens is None or key not in tokens):
+                checks.append(_check("token_unknown_key", key, "較早期的 Token 檔裡有這個卡號，但它不在這期的 snapshot 裡，只計入累計總量"))
 
     # 專案（epic）分組
     epic_rows = []
