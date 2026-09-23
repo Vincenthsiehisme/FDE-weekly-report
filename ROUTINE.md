@@ -63,6 +63,7 @@
 
 - `highlights`：本週重點 1 到 3 條，寫法照範本「[專案名] 完成 XXX，已達到 XXX」。本週沒有任何完成的卡（`totals.completed` 是 0）時必須是空陣列。
 - `epic_results`：`metrics.json` 的 `epics` 裡每個 `active` 為 true 的專案各一句，key 用它的 `id`（未歸屬 epic 的 id 是 `_unassigned`），不能多也不能少。
+- 寫的是本週：`cumulative` 與 `people` 是給頁面用的累計與人力資料，不要拿累計數字寫進本週重點。
 - 只根據 `metrics.json` 裡的卡片摘要、完成清單與數字寫。不推測影響、不補背景、不寫卡片上沒有的成果。
 - 數字只能用 `metrics.json` 裡出現的值，一律寫阿拉伯數字（「2 項」不寫「兩項」），不寫日期、不自己算百分比或差值。驗證器會擋下 metrics 裡沒有的數字，以及接量詞的中文數字。
 - 卡號只能引用 snapshot 裡存在的卡。
