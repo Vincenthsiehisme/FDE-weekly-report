@@ -23,133 +23,383 @@
     {
       "key": "CS-7",
       "kind": "kickoff_missing",
-      "message": "這個 epic 沒有 Kick off 卡，Context 與成果驗證顯示未填"
+      "message": "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"
     },
     {
       "key": "CS-25",
       "kind": "kickoff_missing",
-      "message": "這個 epic 沒有 Kick off 卡，Context 與成果驗證顯示未填"
+      "message": "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"
+    },
+    {
+      "key": null,
+      "kind": "units_unconfigured",
+      "message": "config/units.json 白名單是空的，支援單位全部歸未分類"
     }
   ],
   "completed": [
     {
+      "group": "CS-25",
       "hours": 2.0,
       "key": "CS-5",
       "leaf": true,
       "owner": "hubertwang",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "root": "CS-5",
       "summary": "地接社飯店資料格式調查（Agent Workflow 前置分析）",
       "tokens": null
     },
     {
+      "group": "CS-7",
       "hours": null,
       "key": "CS-9",
       "leaf": true,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
+      "root": "CS-4",
       "summary": "確認公司信箱開通",
       "tokens": null
     },
     {
+      "group": "CS-7",
       "hours": null,
       "key": "CS-12",
       "leaf": true,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
+      "root": "CS-4",
       "summary": "Jira 登入與 CS/202 board 確認",
       "tokens": null
     },
     {
+      "group": "CS-7",
       "hours": null,
       "key": "CS-13",
       "leaf": true,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
+      "root": "CS-4",
       "summary": "FortiClient 安裝、註冊與 VPN 連線",
       "tokens": null
     },
     {
+      "group": "CS-7",
       "hours": null,
       "key": "CS-14",
       "leaf": true,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
+      "root": "CS-4",
       "summary": "Teams 登入確認",
       "tokens": null
     },
     {
+      "group": "CS-25",
       "hours": null,
       "key": "CS-16",
       "leaf": false,
       "owner": "未指派",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "root": "CS-16",
       "summary": "地接社飯店資料解析 Pipeline 建置",
       "tokens": null
     },
     {
+      "group": "CS-25",
       "hours": 1.5,
       "key": "CS-17",
       "leaf": true,
       "owner": "未指派",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "root": "CS-16",
       "summary": "回覆信串偵測與隔離模組（reply_isolate.py）",
       "tokens": null
     },
     {
+      "group": "CS-25",
       "hours": 1.25,
       "key": "CS-18",
       "leaf": true,
       "owner": "未指派",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "root": "CS-16",
       "summary": "表格式地接社解析器（Palma／Kuoni Tumlare／Happy Tours／Vosaio）",
       "tokens": null
     },
     {
+      "group": "CS-25",
       "hours": 1.25,
       "key": "CS-19",
       "leaf": true,
       "owner": "未指派",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "root": "CS-16",
       "summary": "G2 兩種特殊格式解析器（表格式＋文字信件式）",
       "tokens": null
     },
     {
+      "group": "CS-25",
       "hours": 0.5,
       "key": "CS-20",
       "leaf": true,
       "owner": "未指派",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "root": "CS-16",
       "summary": "MIKI PDF 附件解析（pdfplumber）",
       "tokens": null
     },
     {
+      "group": "CS-25",
       "hours": 0.5,
       "key": "CS-21",
       "leaf": true,
       "owner": "未指派",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "root": "CS-16",
       "summary": "OP 端輸出文件產生器（docx）",
       "tokens": null
     },
     {
+      "group": "CS-25",
       "hours": 2.0,
       "key": "CS-22",
       "leaf": true,
       "owner": "未指派",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "root": "CS-16",
       "summary": "Pipeline 部署至 VM（20.77.26.79）",
       "tokens": null
     },
     {
+      "group": "CS-25",
       "hours": 0.5,
       "key": "CS-23",
       "leaf": true,
       "owner": "未指派",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "root": "CS-16",
       "summary": "建立 GitHub Repo 並改用 Git 部署至 VM",
       "tokens": null
     }
   ],
+  "cumulative": {
+    "completed": [
+      {
+        "group": "CS-25",
+        "hours": 2.0,
+        "key": "CS-5",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-5",
+        "summary": "地接社飯店資料格式調查（Agent Workflow 前置分析）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-7",
+        "hours": null,
+        "key": "CS-9",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-7 開工確認",
+        "root": "CS-4",
+        "summary": "確認公司信箱開通",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-7",
+        "hours": null,
+        "key": "CS-12",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-7 開工確認",
+        "root": "CS-4",
+        "summary": "Jira 登入與 CS/202 board 確認",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-7",
+        "hours": null,
+        "key": "CS-13",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-7 開工確認",
+        "root": "CS-4",
+        "summary": "FortiClient 安裝、註冊與 VPN 連線",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-7",
+        "hours": null,
+        "key": "CS-14",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-7 開工確認",
+        "root": "CS-4",
+        "summary": "Teams 登入確認",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": null,
+        "key": "CS-16",
+        "leaf": false,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "地接社飯店資料解析 Pipeline 建置",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 1.5,
+        "key": "CS-17",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "回覆信串偵測與隔離模組（reply_isolate.py）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 1.25,
+        "key": "CS-18",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "表格式地接社解析器（Palma／Kuoni Tumlare／Happy Tours／Vosaio）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 1.25,
+        "key": "CS-19",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "G2 兩種特殊格式解析器（表格式＋文字信件式）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 0.5,
+        "key": "CS-20",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "MIKI PDF 附件解析（pdfplumber）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 0.5,
+        "key": "CS-21",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "OP 端輸出文件產生器（docx）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 2.0,
+        "key": "CS-22",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "Pipeline 部署至 VM（20.77.26.79）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 0.5,
+        "key": "CS-23",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "建立 GitHub Repo 並改用 Git 部署至 VM",
+        "tokens": null,
+        "week": "2026-W39"
+      }
+    ],
+    "epics": [
+      {
+        "completed": 4,
+        "deliverables": 1,
+        "due": null,
+        "hours": 0.0,
+        "id": "CS-7",
+        "key": "CS-7",
+        "owner": "未指派",
+        "progress": {
+          "done_cards": 4,
+          "done_points": 0.0,
+          "percent": null,
+          "total_cards": 12,
+          "total_points": 0.0,
+          "unestimated_cards": 12
+        },
+        "status": "On Track",
+        "summary": "開工確認",
+        "tokens": null
+      },
+      {
+        "completed": 9,
+        "deliverables": 2,
+        "due": null,
+        "hours": 9.5,
+        "id": "CS-25",
+        "key": "CS-25",
+        "owner": "未指派",
+        "progress": {
+          "done_cards": 8,
+          "done_points": 9.5,
+          "percent": 100,
+          "total_cards": 9,
+          "total_points": 9.5,
+          "unestimated_cards": 0
+        },
+        "status": "On Track",
+        "summary": "歐洲地接社-房產品資料彙整",
+        "tokens": null
+      }
+    ],
+    "since": "2026-09-18",
+    "totals": {
+      "completed": 13,
+      "deliverables": 3,
+      "hours": 9.5,
+      "projects": 2,
+      "tokens": null,
+      "unestimated_completed": 4
+    },
+    "weeks": [
+      {
+        "completed": 13,
+        "deliverables": 3,
+        "hours": 9.5,
+        "week": "2026-W39"
+      }
+    ]
+  },
   "epics": [
     {
       "active": true,
@@ -249,8 +499,10 @@
   "in_progress": [
     {
       "current_state": "進行中",
+      "group": "CS-7",
       "hours": null,
       "key": "CS-1",
+      "leaf": true,
       "next": null,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
@@ -259,8 +511,10 @@
     },
     {
       "current_state": "進行中",
+      "group": "CS-7",
       "hours": null,
       "key": "CS-2",
+      "leaf": true,
       "next": null,
       "owner": "Vincent Hsieh",
       "project": "CS-7 開工確認",
@@ -269,8 +523,10 @@
     },
     {
       "current_state": "進行中，子任務 4/7 完成",
+      "group": "CS-7",
       "hours": null,
       "key": "CS-4",
+      "leaf": false,
       "next": "CS-10 確認共用信箱 lionitcowork 開通",
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
@@ -279,8 +535,10 @@
     },
     {
       "current_state": "進行中",
+      "group": "CS-7",
       "hours": null,
       "key": "CS-6",
+      "leaf": true,
       "next": null,
       "owner": "Vincent Hsieh",
       "project": "CS-7 開工確認",
@@ -289,8 +547,10 @@
     },
     {
       "current_state": "進行中",
+      "group": "CS-7",
       "hours": null,
       "key": "CS-8",
+      "leaf": true,
       "next": null,
       "owner": "Vincent Hsieh",
       "project": "CS-7 開工確認",
@@ -299,8 +559,10 @@
     },
     {
       "current_state": "進行中",
+      "group": "CS-7",
       "hours": null,
       "key": "CS-10",
+      "leaf": true,
       "next": null,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
@@ -309,8 +571,10 @@
     },
     {
       "current_state": "進行中",
+      "group": "CS-7",
       "hours": null,
       "key": "CS-11",
+      "leaf": true,
       "next": null,
       "owner": "hubertwang",
       "project": "CS-7 開工確認",
@@ -339,13 +603,174 @@
       "tokens": null
     }
   ],
+  "people": [
+    {
+      "cumulative": {
+        "by_project": [
+          {
+            "hours": 0.0,
+            "id": "CS-7",
+            "key": "CS-7",
+            "summary": "開工確認",
+            "unestimated": 4
+          },
+          {
+            "hours": 2.0,
+            "id": "CS-25",
+            "key": "CS-25",
+            "summary": "歐洲地接社-房產品資料彙整",
+            "unestimated": 0
+          }
+        ],
+        "completed": 5,
+        "completed_keys": [
+          "CS-5",
+          "CS-9",
+          "CS-12",
+          "CS-13",
+          "CS-14"
+        ],
+        "deliverables": 2,
+        "hours": 2.0,
+        "tokens": null
+      },
+      "in_progress": {
+        "count": 3,
+        "hours": 0.0,
+        "keys": [
+          "CS-1",
+          "CS-10",
+          "CS-11"
+        ],
+        "unestimated": 3
+      },
+      "name": "hubertwang",
+      "week": {
+        "by_project": [
+          {
+            "hours": 0.0,
+            "id": "CS-7",
+            "key": "CS-7",
+            "summary": "開工確認",
+            "unestimated": 4
+          },
+          {
+            "hours": 2.0,
+            "id": "CS-25",
+            "key": "CS-25",
+            "summary": "歐洲地接社-房產品資料彙整",
+            "unestimated": 0
+          }
+        ],
+        "completed": 5,
+        "completed_keys": [
+          "CS-5",
+          "CS-9",
+          "CS-12",
+          "CS-13",
+          "CS-14"
+        ],
+        "deliverables": 2,
+        "hours": 2.0,
+        "tokens": null
+      }
+    },
+    {
+      "cumulative": {
+        "by_project": [],
+        "completed": 0,
+        "completed_keys": [],
+        "deliverables": 0,
+        "hours": 0.0,
+        "tokens": null
+      },
+      "in_progress": {
+        "count": 3,
+        "hours": 0.0,
+        "keys": [
+          "CS-2",
+          "CS-6",
+          "CS-8"
+        ],
+        "unestimated": 3
+      },
+      "name": "Vincent Hsieh",
+      "week": {
+        "by_project": [],
+        "completed": 0,
+        "completed_keys": [],
+        "deliverables": 0,
+        "hours": 0.0,
+        "tokens": null
+      }
+    },
+    {
+      "cumulative": {
+        "by_project": [
+          {
+            "hours": 7.5,
+            "id": "CS-25",
+            "key": "CS-25",
+            "summary": "歐洲地接社-房產品資料彙整",
+            "unestimated": 0
+          }
+        ],
+        "completed": 8,
+        "completed_keys": [
+          "CS-16",
+          "CS-17",
+          "CS-18",
+          "CS-19",
+          "CS-20",
+          "CS-21",
+          "CS-22",
+          "CS-23"
+        ],
+        "deliverables": 1,
+        "hours": 7.5,
+        "tokens": null
+      },
+      "in_progress": {
+        "count": 0,
+        "hours": 0.0,
+        "keys": [],
+        "unestimated": 0
+      },
+      "name": "未指派",
+      "week": {
+        "by_project": [
+          {
+            "hours": 7.5,
+            "id": "CS-25",
+            "key": "CS-25",
+            "summary": "歐洲地接社-房產品資料彙整",
+            "unestimated": 0
+          }
+        ],
+        "completed": 8,
+        "completed_keys": [
+          "CS-16",
+          "CS-17",
+          "CS-18",
+          "CS-19",
+          "CS-20",
+          "CS-21",
+          "CS-22",
+          "CS-23"
+        ],
+        "deliverables": 1,
+        "hours": 7.5,
+        "tokens": null
+      }
+    }
+  ],
   "period": {
     "end_exclusive": "2026-09-23T00:00:00+08:00",
     "start": "2026-09-16T00:00:00+08:00",
     "week": "2026-W39",
     "week_ending": "2026-09-22"
   },
-  "schema": 1,
+  "schema": 2,
   "site": "liontech-tw.atlassian.net",
   "totals": {
     "completed": 13,
