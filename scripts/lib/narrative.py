@@ -1,0 +1,89 @@
+"""AI 寫的文字段（narrative.json）的驗證。驗不過就不發布。
+
+AI 只寫兩種東西：
+  highlights：本週重點，1 到 3 條（本週沒有任何完成的卡時必須是空陣列）
+  epic_results：每個本週有交付的專案一句「結果」，key 是 metrics 裡 epic 的 id
+
+擋兩種編造：
+  1. 引用了 snapshot 裡不存在的卡號
+  2. 出現 metrics 裡沒有的數字（卡號裡的數字不算）
+數字比對是刻意的嚴格：AI 想寫「完成 62%」，62 就必須是 metrics 算出來的值。
+"""
+from __future__ import annotations
+
+import re
+
+# 不用 \b：中文字在 Python 的 unicode 規則裡也算 \w，「完成CS-16」之間沒有 word boundary
+ISSUE_KEY = re.compile(r"(?<![A-Za-z0-9_])[A-Z][A-Z0-9_]*-\d+(?![0-9])")
+# 千分位（1,000）要當成一個數字，拆開比對會變成 1 與 000，兩個都幾乎一定在 metrics 裡
+NUMBER = re.compile(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?")
+# 中文數字接量詞就是數量，驗證器比對不到，所以數量一律要寫阿拉伯數字。
+# 只擋「數字＋量詞」：「第一階段」「進一步」「一句話」這類一般詞彙不受影響。
+CHINESE_QUANTITY = re.compile(r"[零〇一二兩三四五六七八九十百千萬]+\s*(?:項|張|個|條|次|週|天|日|位|件|支|筆|成|倍|小時|%|％)")
+MAX_LEN = 200
+MAX_HIGHLIGHTS = 3
+
+
+class NarrativeError(ValueError):
+    pass
+
+
+def _numbers_in(value, out: set):
+    if isinstance(value, bool):
+        return
+    if isinstance(value, (int, float)):
+        out.add(round(float(value), 2))
+    elif isinstance(value, dict):
+        for k, v in value.items():
+            if k not in ("period", "generated_at", "site"):
+                _numbers_in(v, out)
+    elif isinstance(value, list):
+        for v in value:
+            _numbers_in(v, out)
+
+
+def allowed_numbers(metrics: dict) -> set:
+    out = set()
+    _numbers_in(metrics, out)
+    return out
+
+
+def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
+    errors = []
+    if set(narrative) != {"highlights", "epic_results"}:
+        raise NarrativeError(f"narrative.json 的欄位必須剛好是 highlights、epic_results，實際是 {sorted(narrative)}")
+    highlights, results = narrative["highlights"], narrative["epic_results"]
+    if not isinstance(highlights, list) or not all(isinstance(h, str) for h in highlights):
+        raise NarrativeError("highlights 必須是字串陣列")
+    if not isinstance(results, dict) or not all(isinstance(v, str) for v in results.values()):
+        raise NarrativeError("epic_results 必須是 {epic id: 字串}")
+
+    if metrics["totals"]["completed"] == 0:
+        if highlights:
+            errors.append("本週沒有完成的卡，highlights 必須是空陣列")
+    elif not 1 <= len(highlights) <= MAX_HIGHLIGHTS:
+        errors.append(f"highlights 要 1 到 {MAX_HIGHLIGHTS} 條，實際 {len(highlights)} 條")
+
+    expected = {e["id"] for e in metrics["epics"] if e["active"]}
+    if set(results) != expected:
+        missing, extra = sorted(expected - set(results)), sorted(set(results) - expected)
+        errors.append(f"epic_results 要剛好涵蓋本週有交付的專案：缺 {missing}，多 {extra}")
+
+    allowed = allowed_numbers(metrics)
+    texts = [(f"highlights[{i}]", h) for i, h in enumerate(highlights)] + [(f"epic_results[{k}]", v) for k, v in sorted(results.items())]
+    for where, text in texts:
+        if not text.strip():
+            errors.append(f"{where} 是空字串")
+            continue
+        if len(text) > MAX_LEN:
+            errors.append(f"{where} 超過 {MAX_LEN} 字（{len(text)}）")
+        for key in ISSUE_KEY.findall(text):
+            if key not in snapshot_keys:
+                errors.append(f"{where} 引用了不存在的卡號 {key}")
+        for quantity in CHINESE_QUANTITY.finditer(text):
+            errors.append(f"{where} 用了中文數字「{quantity.group(0)}」，數量一律寫阿拉伯數字")
+        for number in NUMBER.findall(ISSUE_KEY.sub(" ", text)):
+            if round(float(number.replace(",", "")), 2) not in allowed:
+                errors.append(f"{where} 出現 metrics 裡沒有的數字 {number}")
+    if errors:
+        raise NarrativeError("narrative.json 驗證失敗：\n- " + "\n- ".join(errors))

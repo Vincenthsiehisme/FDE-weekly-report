@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FDE Weekly Delivery Report 2026-W39</title>
+<style>
+:root{--bg:#f7f7f5;--surface:#fff;--text:#1d1d1f;--muted:#6e6e73;--line:#e3e3e0;--accent:#2f5bea;
+--done-bg:#e3f4ea;--done-fg:#1b7a45;--track-bg:#e8eefc;--track-fg:#2f5bea;--warn-bg:#fff4e0;--warn-fg:#8a5300;}
+@media (prefers-color-scheme: dark){:root{--bg:#141416;--surface:#1c1c1f;--text:#ececef;--muted:#9a9aa1;--line:#2e2e33;
+--accent:#7c9cff;--done-bg:#15321f;--done-fg:#6fd39a;--track-bg:#1b2544;--track-fg:#9fb6ff;--warn-bg:#3a2a0e;--warn-fg:#ffcf7a;}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px/1.65 -apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Segoe UI",sans-serif}
+main{max-width:1080px;margin:0 auto;padding:40px 16px 80px}
+header{margin-bottom:32px}
+h1{font-size:30px;line-height:1.2;margin:4px 0 8px}
+h2{font-size:21px;margin:48px 0 16px;padding-bottom:8px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+h3{font-size:17px;margin:28px 0 10px}
+h4{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:20px 0 6px}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+.eyebrow{margin:0;color:var(--muted);font-size:13px;display:flex;gap:12px}
+.period{margin:0;font-weight:600}
+.generated{margin:2px 0 0;color:var(--muted);font-size:13px}
+.num-label{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:7px;background:var(--text);color:var(--bg);font-size:14px}
+.muted{color:var(--muted)}
+.note{color:var(--muted);font-size:13px}
+.warn{background:var(--warn-bg);color:var(--warn-fg);padding:8px 12px;border-radius:8px;font-size:14px}
+.highlights{padding-left:22px}.highlights li{margin:6px 0}
+.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:680px;font-size:14px}
+th,td{padding:9px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line)}
+th{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+.num{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pill{display:inline-block;padding:1px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap}
+.pill-done{background:var(--done-bg);color:var(--done-fg)}.pill-track{background:var(--track-bg);color:var(--track-fg)}
+.stats{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.stats li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column}
+.stats span{color:var(--muted);font-size:12px}.stats strong{font-size:22px;font-variant-numeric:tabular-nums}
+.delivery{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px 20px 18px;margin:16px 0}
+.result{margin:4px 0}
+.fields{list-style:none;padding:0;margin:0}.fields li{display:grid;grid-template-columns:150px 1fr;gap:12px;padding:4px 0}
+.field{color:var(--muted);font-size:13px}
+.checks{font-size:14px}
+details summary{cursor:pointer;font-weight:600}
+.archive{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:8px 16px}
+@media (max-width:640px){.fields li{grid-template-columns:1fr;gap:0}h1{font-size:25px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <p class="eyebrow">FDE · 2026-W39 </p>
+  <h1>Weekly Delivery Report</h1>
+  <p class="period">Period：2026/09/16 – 2026/09/22</p>
+  <p class="generated" id="generated" data-generated="2026-09-23T09:32:12.801144+08:00">資料截至 2026/09/23 09:32（UTC+8）</p>
+  <p class="warn" id="stale" hidden>這份報告超過 8 天沒有更新，排程可能沒有成功執行。</p>
+  
+</header>
+
+<section id="overview">
+  <h2><span class="num-label">0</span>Weekly Overview</h2>
+  <h3>本週重點</h3>
+  <ol class="highlights"><li><strong>[歐洲地接社-房產品資料彙整] 完成地接社飯店資料格式調查與解析 Pipeline 建置（CS-5、CS-16），本週投入 9.5h</strong></li><li><strong>[開工確認] IT Onboarding 本週完成 4 項子任務（CS-9、CS-12、CS-13、CS-14），帳號與開發環境設定其餘項目仍在進行</strong></li></ol>
+  <h3>Delivery Overview</h3>
+  <div class="table-wrap"><table><thead><tr><th class="">Project</th><th class="">本週成果</th><th class="">Owner</th><th class="num">Hours</th><th class="num">Token</th><th class="">Status</th><th class="">Next</th></tr></thead><tbody><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-7">CS-7</a> 開工確認</td><td class="">IT Onboarding 本週完成 4 項子任務，帳號與開發環境設定仍在進行中</td><td class="">未指派</td><td class="num">0h</td><td class="num">—</td><td class=""><span class="pill pill-track">On Track</span></td><td class=""><span class="muted">未填</span></td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-25">CS-25</a> 歐洲地接社-房產品資料彙整</td><td class="">完成資料格式調查與解析 Pipeline 建置，專案 9 張卡已完成 8 張</td><td class="">未指派</td><td class="num">9.5h</td><td class="num">—</td><td class=""><span class="pill pill-track">On Track</span></td><td class=""><span class="muted">未填</span></td></tr></tbody></table></div>
+  <h3>本週投入</h3>
+  <ul class="stats">
+    <li><span>Projects</span><strong>2</strong></li>
+    <li><span>Deliverables</span><strong>3</strong></li>
+    <li><span>Completed Jira</span><strong>13</strong></li>
+    <li><span>Total Hours</span><strong>9.5h</strong></li>
+    <li><span>Total Token</span><strong>—</strong></li>
+  </ul>
+  <p class="note">Hours 為 Story point estimate（預估），只計葉節點卡片（其中 4 張未估點）。</p>
+</section>
+<section id="deliveries">
+  <h2><span class="num-label">1</span>Key Deliveries</h2>
+  
+  <article class="delivery">
+    <h3><a href="https://liontech-tw.atlassian.net/browse/CS-7">CS-7</a>｜開工確認</h3>
+    <p class="warn">這個 epic 沒有 Kick off 卡，Context 與成果驗證未填。</p>
+    <h4>結果</h4>
+    <p class="result"><strong>IT Onboarding 本週完成 4 項子任務，帳號與開發環境設定仍在進行中</strong></p>
+    <h4>Context</h4>
+    <ul class="fields">
+      <li><span class="field">Objective</span><div><span class="muted">未填</span></div></li>
+      <li><span class="field">Current Stage</span><div>完成 4/12 張卡、0/0 點，12 張未估點</div></li>
+      <li><span class="field">Why It Matters</span><div><span class="muted">未填</span></div></li>
+    </ul>
+    <h4>本週交付</h4>
+    <div class="table-wrap"><table><thead><tr><th class="">Delivery</th><th class="">Owner</th><th class="num">Hours</th><th class="num">Token</th><th class="">Result</th></tr></thead><tbody><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-4">CS-4</a> IT Onboarding — 帳號與開發環境設定</td><td class="">hubertwang</td><td class="num">0h</td><td class="num">—</td><td class="">進行中（子任務 4/7 完成）</td></tr></tbody></table></div>
+    <h4>成果驗證</h4>
+    <ul class="fields"><li><span class="field">Before</span><div><span class="muted">未填</span></div></li><li><span class="field">After</span><div><span class="muted">未填</span></div></li><li><span class="field">Validated</span><div><a href="https://liontech-tw.atlassian.net/browse/CS-9">CS-9</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-12">CS-12</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-13">CS-13</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-14">CS-14</a></div></li><li><span class="field">Evidence</span><div><span class="muted">未填</span></div></li></ul>
+    <h4>Next</h4>
+    <ul class="fields">
+      <li><span class="field">Next Milestone</span><div><span class="muted">未填</span></div></li>
+      <li><span class="field">Owner</span><div>未指派</div></li>
+      <li><span class="field">Target</span><div><span class="muted">未設定</span></div></li>
+    </ul>
+  </article>
+  <article class="delivery">
+    <h3><a href="https://liontech-tw.atlassian.net/browse/CS-25">CS-25</a>｜歐洲地接社-房產品資料彙整</h3>
+    <p class="warn">這個 epic 沒有 Kick off 卡，Context 與成果驗證未填。</p>
+    <h4>結果</h4>
+    <p class="result"><strong>完成資料格式調查與解析 Pipeline 建置，專案 9 張卡已完成 8 張</strong></p>
+    <h4>Context</h4>
+    <ul class="fields">
+      <li><span class="field">Objective</span><div><span class="muted">未填</span></div></li>
+      <li><span class="field">Current Stage</span><div>完成 8/9 張卡、9.5/9.5 點（100%）</div></li>
+      <li><span class="field">Why It Matters</span><div><span class="muted">未填</span></div></li>
+    </ul>
+    <h4>本週交付</h4>
+    <div class="table-wrap"><table><thead><tr><th class="">Delivery</th><th class="">Owner</th><th class="num">Hours</th><th class="num">Token</th><th class="">Result</th></tr></thead><tbody><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-5">CS-5</a> 地接社飯店資料格式調查（Agent Workflow 前置分析）</td><td class="">hubertwang</td><td class="num">2h</td><td class="num">—</td><td class="">完成</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-16">CS-16</a> 地接社飯店資料解析 Pipeline 建置</td><td class="">未指派</td><td class="num">7.5h</td><td class="num">—</td><td class="">完成</td></tr></tbody></table></div>
+    <h4>成果驗證</h4>
+    <ul class="fields"><li><span class="field">Before</span><div><span class="muted">未填</span></div></li><li><span class="field">After</span><div><span class="muted">未填</span></div></li><li><span class="field">Validated</span><div><a href="https://liontech-tw.atlassian.net/browse/CS-5">CS-5</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-16">CS-16</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-17">CS-17</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-18">CS-18</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-19">CS-19</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-20">CS-20</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-21">CS-21</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-22">CS-22</a>、<a href="https://liontech-tw.atlassian.net/browse/CS-23">CS-23</a></div></li><li><span class="field">Evidence</span><div><span class="muted">未填</span></div></li></ul>
+    <h4>Next</h4>
+    <ul class="fields">
+      <li><span class="field">Next Milestone</span><div><span class="muted">未填</span></div></li>
+      <li><span class="field">Owner</span><div>未指派</div></li>
+      <li><span class="field">Target</span><div><span class="muted">未設定</span></div></li>
+    </ul>
+  </article>
+</section>
+
+<section id="resources">
+  <h2><span class="num-label">2</span>Delivery &amp; Resource View</h2>
+  <div class="table-wrap"><table><thead><tr><th class="">Owner</th><th class="">主要交付</th><th class="num">Deliverables</th><th class="num">Hours</th><th class="num">Token</th></tr></thead><tbody><tr><td class="">未指派</td><td class="">地接社飯店資料解析 Pipeline 建置</td><td class="num">1</td><td class="num">7.5h</td><td class="num">—</td></tr><tr><td class="">hubertwang</td><td class="">IT Onboarding — 帳號與開發環境設定、地接社飯店資料格式調查（Agent Workflow 前置分析）</td><td class="num">2</td><td class="num">2h</td><td class="num">—</td></tr><tr><td class=""><strong>Total</strong></td><td class=""></td><td class="num"><strong>3</strong></td><td class="num"><strong>9.5h</strong></td><td class="num"><strong>—</strong></td></tr></tbody></table></div>
+  <h3>依支援單位</h3>
+  <div class="table-wrap"><table><thead><tr><th class="">支援單位</th><th class="num">Deliverables</th><th class="num">Hours</th></tr></thead><tbody><tr><td class="">未分類</td><td class="num">3</td><td class="num">9.5h</td></tr></tbody></table></div>
+</section>
+
+<section id="tracking">
+  <h2><span class="num-label">3</span>Jira Tracking</h2>
+  <h3>Completed</h3>
+  <div class="table-wrap"><table><thead><tr><th class="">Jira</th><th class="">Project</th><th class="">Owner</th><th class="">Item</th><th class="num">Hours</th><th class="num">Token</th></tr></thead><tbody><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-5">CS-5</a></td><td class="">CS-25 歐洲地接社-房產品資料彙整</td><td class="">hubertwang</td><td class="">地接社飯店資料格式調查（Agent Workflow 前置分析）</td><td class="num">2h</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-9">CS-9</a></td><td class="">CS-7 開工確認</td><td class="">hubertwang</td><td class="">確認公司信箱開通</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-12">CS-12</a></td><td class="">CS-7 開工確認</td><td class="">hubertwang</td><td class="">Jira 登入與 CS/202 board 確認</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-13">CS-13</a></td><td class="">CS-7 開工確認</td><td class="">hubertwang</td><td class="">FortiClient 安裝、註冊與 VPN 連線</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-14">CS-14</a></td><td class="">CS-7 開工確認</td><td class="">hubertwang</td><td class="">Teams 登入確認</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-16">CS-16</a></td><td class="">CS-25 歐洲地接社-房產品資料彙整</td><td class="">未指派</td><td class="">地接社飯店資料解析 Pipeline 建置</td><td class="num"><span class="muted">子卡計</span></td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-17">CS-17</a></td><td class="">CS-25 歐洲地接社-房產品資料彙整</td><td class="">未指派</td><td class="">回覆信串偵測與隔離模組（reply_isolate.py）</td><td class="num">1.5h</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-18">CS-18</a></td><td class="">CS-25 歐洲地接社-房產品資料彙整</td><td class="">未指派</td><td class="">表格式地接社解析器（Palma／Kuoni Tumlare／Happy Tours／Vosaio）</td><td class="num">1.25h</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-19">CS-19</a></td><td class="">CS-25 歐洲地接社-房產品資料彙整</td><td class="">未指派</td><td class="">G2 兩種特殊格式解析器（表格式＋文字信件式）</td><td class="num">1.25h</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-20">CS-20</a></td><td class="">CS-25 歐洲地接社-房產品資料彙整</td><td class="">未指派</td><td class="">MIKI PDF 附件解析（pdfplumber）</td><td class="num">0.5h</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-21">CS-21</a></td><td class="">CS-25 歐洲地接社-房產品資料彙整</td><td class="">未指派</td><td class="">OP 端輸出文件產生器（docx）</td><td class="num">0.5h</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-22">CS-22</a></td><td class="">CS-25 歐洲地接社-房產品資料彙整</td><td class="">未指派</td><td class="">Pipeline 部署至 VM（20.77.26.79）</td><td class="num">2h</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-23">CS-23</a></td><td class="">CS-25 歐洲地接社-房產品資料彙整</td><td class="">未指派</td><td class="">建立 GitHub Repo 並改用 Git 部署至 VM</td><td class="num">0.5h</td><td class="num">—</td></tr></tbody></table></div>
+  <h3>In Progress</h3>
+  <div class="table-wrap"><table><thead><tr><th class="">Jira</th><th class="">Project</th><th class="">Owner</th><th class="">Item</th><th class="">Current State</th><th class="">Next</th><th class="num">Hours</th><th class="num">Token</th></tr></thead><tbody><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-1">CS-1</a></td><td class="">CS-7 開工確認</td><td class="">hubertwang</td><td class="">確認開發環境</td><td class="">進行中</td><td class="">—</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-2">CS-2</a></td><td class="">CS-7 開工確認</td><td class="">Vincent Hsieh</td><td class="">提供 onboarding checklist</td><td class="">進行中</td><td class="">—</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-4">CS-4</a></td><td class="">CS-7 開工確認</td><td class="">hubertwang</td><td class="">IT Onboarding — 帳號與開發環境設定</td><td class="">進行中，子任務 4/7 完成</td><td class="">CS-10 確認共用信箱 lionitcowork 開通</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-6">CS-6</a></td><td class="">CS-7 開工確認</td><td class="">Vincent Hsieh</td><td class="">確認共用信箱啟用狀態</td><td class="">進行中</td><td class="">—</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-8">CS-8</a></td><td class="">CS-7 開工確認</td><td class="">Vincent Hsieh</td><td class="">claude code (enterprise)申請</td><td class="">進行中</td><td class="">—</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-10">CS-10</a></td><td class="">CS-7 開工確認</td><td class="">hubertwang</td><td class="">確認共用信箱 lionitcowork 開通</td><td class="">進行中</td><td class="">—</td><td class="num">—</td><td class="num">—</td></tr><tr><td class=""><a href="https://liontech-tw.atlassian.net/browse/CS-11">CS-11</a></td><td class="">CS-7 開工確認</td><td class="">hubertwang</td><td class="">註冊 GitHub 帳號並掛載 Org</td><td class="">進行中</td><td class="">—</td><td class="num">—</td><td class="num">—</td></tr></tbody></table></div>
+</section>
+
+<section id="checks">
+  <details>
+    <summary>資料檢查（6 項）</summary>
+    <ul class="checks"><li><a href="https://liontech-tw.atlassian.net/browse/CS-9">CS-9</a>：本週完成但沒有估點，Hours 以 0 計</li><li><a href="https://liontech-tw.atlassian.net/browse/CS-12">CS-12</a>：本週完成但沒有估點，Hours 以 0 計</li><li><a href="https://liontech-tw.atlassian.net/browse/CS-13">CS-13</a>：本週完成但沒有估點，Hours 以 0 計</li><li><a href="https://liontech-tw.atlassian.net/browse/CS-14">CS-14</a>：本週完成但沒有估點，Hours 以 0 計</li><li><a href="https://liontech-tw.atlassian.net/browse/CS-7">CS-7</a>：這個 epic 沒有 Kick off 卡，Context 與成果驗證顯示未填</li><li><a href="https://liontech-tw.atlassian.net/browse/CS-25">CS-25</a>：這個 epic 沒有 Kick off 卡，Context 與成果驗證顯示未填</li></ul>
+  </details>
+</section>
+<section id="archive"><h2>歷史各期</h2><ul class="archive"><li><strong>2026-W39</strong></li></ul></section>
+</main>
+<script>
+(function () {
+  var el = document.getElementById("generated");
+  var t = Date.parse(el.getAttribute("data-generated"));
+  if (!isNaN(t) && Date.now() - t > 8 * 86400000) document.getElementById("stale").hidden = false;
+})();
+</script>
+</body>
+</html>

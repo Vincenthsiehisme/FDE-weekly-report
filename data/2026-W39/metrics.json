@@ -1,0 +1,365 @@
+{
+  "checks": [
+    {
+      "key": "CS-9",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "CS-12",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "CS-13",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "CS-14",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "CS-7",
+      "kind": "kickoff_missing",
+      "message": "這個 epic 沒有 Kick off 卡，Context 與成果驗證顯示未填"
+    },
+    {
+      "key": "CS-25",
+      "kind": "kickoff_missing",
+      "message": "這個 epic 沒有 Kick off 卡，Context 與成果驗證顯示未填"
+    }
+  ],
+  "completed": [
+    {
+      "hours": 2.0,
+      "key": "CS-5",
+      "leaf": true,
+      "owner": "hubertwang",
+      "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "summary": "地接社飯店資料格式調查（Agent Workflow 前置分析）",
+      "tokens": null
+    },
+    {
+      "hours": null,
+      "key": "CS-9",
+      "leaf": true,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "summary": "確認公司信箱開通",
+      "tokens": null
+    },
+    {
+      "hours": null,
+      "key": "CS-12",
+      "leaf": true,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "summary": "Jira 登入與 CS/202 board 確認",
+      "tokens": null
+    },
+    {
+      "hours": null,
+      "key": "CS-13",
+      "leaf": true,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "summary": "FortiClient 安裝、註冊與 VPN 連線",
+      "tokens": null
+    },
+    {
+      "hours": null,
+      "key": "CS-14",
+      "leaf": true,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "summary": "Teams 登入確認",
+      "tokens": null
+    },
+    {
+      "hours": null,
+      "key": "CS-16",
+      "leaf": false,
+      "owner": "未指派",
+      "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "summary": "地接社飯店資料解析 Pipeline 建置",
+      "tokens": null
+    },
+    {
+      "hours": 1.5,
+      "key": "CS-17",
+      "leaf": true,
+      "owner": "未指派",
+      "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "summary": "回覆信串偵測與隔離模組（reply_isolate.py）",
+      "tokens": null
+    },
+    {
+      "hours": 1.25,
+      "key": "CS-18",
+      "leaf": true,
+      "owner": "未指派",
+      "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "summary": "表格式地接社解析器（Palma／Kuoni Tumlare／Happy Tours／Vosaio）",
+      "tokens": null
+    },
+    {
+      "hours": 1.25,
+      "key": "CS-19",
+      "leaf": true,
+      "owner": "未指派",
+      "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "summary": "G2 兩種特殊格式解析器（表格式＋文字信件式）",
+      "tokens": null
+    },
+    {
+      "hours": 0.5,
+      "key": "CS-20",
+      "leaf": true,
+      "owner": "未指派",
+      "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "summary": "MIKI PDF 附件解析（pdfplumber）",
+      "tokens": null
+    },
+    {
+      "hours": 0.5,
+      "key": "CS-21",
+      "leaf": true,
+      "owner": "未指派",
+      "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "summary": "OP 端輸出文件產生器（docx）",
+      "tokens": null
+    },
+    {
+      "hours": 2.0,
+      "key": "CS-22",
+      "leaf": true,
+      "owner": "未指派",
+      "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "summary": "Pipeline 部署至 VM（20.77.26.79）",
+      "tokens": null
+    },
+    {
+      "hours": 0.5,
+      "key": "CS-23",
+      "leaf": true,
+      "owner": "未指派",
+      "project": "CS-25 歐洲地接社-房產品資料彙整",
+      "summary": "建立 GitHub Repo 並改用 Git 部署至 VM",
+      "tokens": null
+    }
+  ],
+  "epics": [
+    {
+      "active": true,
+      "due": null,
+      "id": "CS-7",
+      "key": "CS-7",
+      "kickoff": null,
+      "owner": "未指派",
+      "progress": {
+        "done_cards": 4,
+        "done_points": 0.0,
+        "percent": null,
+        "total_cards": 12,
+        "total_points": 0.0,
+        "unestimated_cards": 12
+      },
+      "project": "CS",
+      "status": "On Track",
+      "summary": "開工確認",
+      "week": {
+        "completed_count": 4,
+        "completed_keys": [
+          "CS-9",
+          "CS-12",
+          "CS-13",
+          "CS-14"
+        ],
+        "deliveries": [
+          {
+            "hours": 0.0,
+            "key": "CS-4",
+            "owner": "hubertwang",
+            "result": "進行中（子任務 4/7 完成）",
+            "summary": "IT Onboarding — 帳號與開發環境設定",
+            "tokens": null
+          }
+        ],
+        "hours": 0.0,
+        "tokens": null
+      }
+    },
+    {
+      "active": true,
+      "due": null,
+      "id": "CS-25",
+      "key": "CS-25",
+      "kickoff": null,
+      "owner": "未指派",
+      "progress": {
+        "done_cards": 8,
+        "done_points": 9.5,
+        "percent": 100,
+        "total_cards": 9,
+        "total_points": 9.5,
+        "unestimated_cards": 0
+      },
+      "project": "CS",
+      "status": "On Track",
+      "summary": "歐洲地接社-房產品資料彙整",
+      "week": {
+        "completed_count": 9,
+        "completed_keys": [
+          "CS-5",
+          "CS-16",
+          "CS-17",
+          "CS-18",
+          "CS-19",
+          "CS-20",
+          "CS-21",
+          "CS-22",
+          "CS-23"
+        ],
+        "deliveries": [
+          {
+            "hours": 2.0,
+            "key": "CS-5",
+            "owner": "hubertwang",
+            "result": "完成",
+            "summary": "地接社飯店資料格式調查（Agent Workflow 前置分析）",
+            "tokens": null
+          },
+          {
+            "hours": 7.5,
+            "key": "CS-16",
+            "owner": "未指派",
+            "result": "完成",
+            "summary": "地接社飯店資料解析 Pipeline 建置",
+            "tokens": null
+          }
+        ],
+        "hours": 9.5,
+        "tokens": null
+      }
+    }
+  ],
+  "generated_at": "2026-09-23T09:32:12.801144+08:00",
+  "in_progress": [
+    {
+      "current_state": "進行中",
+      "hours": null,
+      "key": "CS-1",
+      "next": null,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "summary": "確認開發環境",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "hours": null,
+      "key": "CS-2",
+      "next": null,
+      "owner": "Vincent Hsieh",
+      "project": "CS-7 開工確認",
+      "summary": "提供 onboarding checklist",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中，子任務 4/7 完成",
+      "hours": null,
+      "key": "CS-4",
+      "next": "CS-10 確認共用信箱 lionitcowork 開通",
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "summary": "IT Onboarding — 帳號與開發環境設定",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "hours": null,
+      "key": "CS-6",
+      "next": null,
+      "owner": "Vincent Hsieh",
+      "project": "CS-7 開工確認",
+      "summary": "確認共用信箱啟用狀態",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "hours": null,
+      "key": "CS-8",
+      "next": null,
+      "owner": "Vincent Hsieh",
+      "project": "CS-7 開工確認",
+      "summary": "claude code (enterprise)申請",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "hours": null,
+      "key": "CS-10",
+      "next": null,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "summary": "確認共用信箱 lionitcowork 開通",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "hours": null,
+      "key": "CS-11",
+      "next": null,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "summary": "註冊 GitHub 帳號並掛載 Org",
+      "tokens": null
+    }
+  ],
+  "owners": [
+    {
+      "deliverables": 1,
+      "deliveries": [
+        "地接社飯店資料解析 Pipeline 建置"
+      ],
+      "hours": 7.5,
+      "owner": "未指派",
+      "tokens": null
+    },
+    {
+      "deliverables": 2,
+      "deliveries": [
+        "IT Onboarding — 帳號與開發環境設定",
+        "地接社飯店資料格式調查（Agent Workflow 前置分析）"
+      ],
+      "hours": 2.0,
+      "owner": "hubertwang",
+      "tokens": null
+    }
+  ],
+  "period": {
+    "end_exclusive": "2026-09-23T00:00:00+08:00",
+    "start": "2026-09-16T00:00:00+08:00",
+    "week": "2026-W39",
+    "week_ending": "2026-09-22"
+  },
+  "schema": 1,
+  "site": "liontech-tw.atlassian.net",
+  "totals": {
+    "completed": 13,
+    "deliverables": 3,
+    "hours": 9.5,
+    "projects": 2,
+    "tokens": null,
+    "unestimated_completed": 4
+  },
+  "units": [
+    {
+      "deliverables": 3,
+      "hours": 9.5,
+      "unit": "未分類"
+    }
+  ]
+}
