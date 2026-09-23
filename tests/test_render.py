@@ -48,6 +48,19 @@ class RenderTest(unittest.TestCase):
         self.assertIn('<a href="2026-W38.html">2026-W38</a>', page(in_reports_dir=True))
         self.assertIn('<a href="../index.html">最新一期</a>', page(in_reports_dir=True))
 
+    def test_owner_total_uses_unique_deliverables_and_week_tokens(self):
+        issues = [
+            issue("CS-1", level=1, status="doing"),
+            issue("CS-2", level=0, parent="CS-1", status="doing"),
+            issue("CS-3", level=-1, parent="CS-2", status="done", points=1.0, resolved=IN_WEEK, assignee="Alice"),
+            issue("CS-4", level=-1, parent="CS-2", status="done", points=1.0, resolved=IN_WEEK, assignee="Bob"),
+        ]
+        metrics = compute(snapshot(issues), PERIOD, [], {"CS-1": 500, "CS-3": 100}, {}, [])
+        html = render(metrics, {"highlights": ["完成"], "epic_results": {"CS-1": "完成"}}, ["2026-W39"], in_reports_dir=False)
+        total = html[html.index("<strong>Total</strong>"):].split("</tr>")[0]
+        self.assertIn("<strong>1</strong>", total)     # 同一張父卡只算一項
+        self.assertIn("<strong>600</strong>", total)   # 全週 token，含記在 epic 上的 500
+
     def test_missing_kickoff_shows_unfilled(self):
         html = page()
         self.assertIn("這個 epic 沒有 Kick off 卡", html)

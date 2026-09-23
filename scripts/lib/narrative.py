@@ -16,6 +16,9 @@ import re
 # 不用 \b：中文字在 Python 的 unicode 規則裡也算 \w，「完成CS-16」之間沒有 word boundary
 ISSUE_KEY = re.compile(r"(?<![A-Za-z0-9_])[A-Z][A-Z0-9_]*-\d+(?![0-9])")
 NUMBER = re.compile(r"\d+(?:\.\d+)?")
+# 中文數字接量詞就是數量，驗證器比對不到，所以數量一律要寫阿拉伯數字。
+# 只擋「數字＋量詞」：「第一階段」「進一步」「一句話」這類一般詞彙不受影響。
+CHINESE_QUANTITY = re.compile(r"[零〇一二兩三四五六七八九十百千萬]+\s*(?:項|張|個|條|次|週|天|日|位|件|支|筆|成|倍|小時|%|％)")
 MAX_LEN = 200
 MAX_HIGHLIGHTS = 3
 
@@ -76,6 +79,8 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
         for key in ISSUE_KEY.findall(text):
             if key not in snapshot_keys:
                 errors.append(f"{where} 引用了不存在的卡號 {key}")
+        for quantity in CHINESE_QUANTITY.finditer(text):
+            errors.append(f"{where} 用了中文數字「{quantity.group(0)}」，數量一律寫阿拉伯數字")
         for number in NUMBER.findall(ISSUE_KEY.sub(" ", text)):
             if round(float(number), 2) not in allowed:
                 errors.append(f"{where} 出現 metrics 裡沒有的數字 {number}")

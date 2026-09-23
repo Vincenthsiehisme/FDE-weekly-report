@@ -186,11 +186,13 @@ def _resources(metrics) -> str:
     owners = metrics["owners"]
     rows = [[esc(o["owner"]), esc("、".join(o["deliveries"])), str(o["deliverables"]), fmt_hours(o["hours"]), fmt_tokens(o["tokens"])] for o in owners]
     if owners:
-        token_values = [o["tokens"] for o in owners if o["tokens"] is not None]
+        # Total 用全週的值，不加總各列：同一張父卡的子任務分給兩個人時各列都會算一項，
+        # Token 也可能記在 epic 或進行中的卡上，不屬於任何人的已完成卡片
+        t = metrics["totals"]
         rows.append(["<strong>Total</strong>", "",
-                     f'<strong>{sum(o["deliverables"] for o in owners)}</strong>',
-                     f'<strong>{fmt_hours(round(sum(o["hours"] for o in owners), 2))}</strong>',
-                     f'<strong>{fmt_tokens(sum(token_values) if token_values else None)}</strong>'])
+                     f'<strong>{t["deliverables"]}</strong>',
+                     f'<strong>{fmt_hours(t["hours"])}</strong>',
+                     f'<strong>{fmt_tokens(t["tokens"])}</strong>'])
     units = [[esc(u["unit"]), str(u["deliverables"]), fmt_hours(u["hours"])] for u in metrics["units"]]
     return f"""
 <section id="resources">

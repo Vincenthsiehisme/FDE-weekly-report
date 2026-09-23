@@ -213,6 +213,8 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
                     what = "、".join(SECTION_LABELS[s] for s in change.get("sections", []))
                     if "kickoff_key" in change:
                         what = "、".join(filter(None, [what, f"改用另一張 Kick off {change['kickoff_key']}"]))
+                    if change.get("kickoff_missing"):
+                        what = "、".join(filter(None, [what, "Kick off 卡不見了（刪除、移出 epic 或改了類型）"]))
                     checks.append(_check("kickoff_modified", state["kickoff_key"], f"鎖定後被修改：{what}（偵測於 {change['detected_at']}），頁面仍顯示鎖定版本"))
 
         epic_rows.append({

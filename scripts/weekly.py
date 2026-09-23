@@ -25,7 +25,7 @@ from lib.metrics import compute, kickoff_by_epic  # noqa: E402
 from lib.narrative import validate  # noqa: E402
 from lib.period import TZ, period_ending, period_for, period_from_dict  # noqa: E402
 from lib.render import render  # noqa: E402
-from lib.snapshot import fetch_snapshot, issue_sort_key  # noqa: E402
+from lib.snapshot import EPIC_LEVEL, fetch_snapshot, issue_sort_key  # noqa: E402
 
 DATA = ROOT / "data"
 SITE = ROOT / "site"
@@ -77,13 +77,22 @@ def compute_week(snapshot: dict) -> tuple:
     """只算不寫：回傳 (metrics, {路徑: 要寫的內容})。任何一步失敗都不會留下檔案。"""
     period = period_from_dict(snapshot["period"])
     found, checks = kickoff_by_epic(snapshot["issues"])
+    seen_at = snapshot["fetched_at"]
+    epics = {i["key"] for i in snapshot["issues"] if i["level"] == EPIC_LEVEL}
+    lock_dir = DATA / "kickoff"
+    locked = {p.stem for p in lock_dir.glob("*.json")} if lock_dir.is_dir() else set()
     states, writes = {}, {}
-    for epic in sorted(found, key=issue_sort_key):
-        card = found[epic]
-        path = DATA / "kickoff" / f"{epic}.json"
+    # 已經鎖定過的 epic 就算這期找不到 Kick off 卡，也要載入鎖定內容並記下卡片消失
+    for epic in sorted(set(found) | (locked & epics), key=issue_sort_key):
+        path = lock_dir / f"{epic}.json"
         existing = read_json(path) if path.is_file() else None
-        lines = kickoff_lib.adf_to_lines(card.get("description"))
-        state = kickoff_lib.reconcile(existing, epic, card["key"], lines, snapshot["fetched_at"])
+        if existing is not None and datetime.fromisoformat(seen_at) < datetime.fromisoformat(existing["last_seen_at"]):
+            # 重算舊的一期：鎖定檔代表最新的觀察，只讀不寫
+            states[epic] = existing
+            continue
+        card = found.get(epic)
+        lines = kickoff_lib.adf_to_lines(card.get("description")) if card else None
+        state = kickoff_lib.reconcile(existing, epic, card["key"] if card else None, lines, seen_at)
         if state != existing:
             writes[path] = state
         states[epic] = state
@@ -132,11 +141,13 @@ def cmd_finalize(args) -> None:
     weeks = sorted({p.stem for p in reports.glob("*.html") if WEEK_ID.fullmatch(p.stem)} | {week}, reverse=True)
     reports.mkdir(parents=True, exist_ok=True)
     (reports / f"{week}.html").write_text(render(metrics, narrative, weeks, in_reports_dir=True), encoding="utf-8")
-    if week == weeks[0]:
-        (SITE / "index.html").write_text(render(metrics, narrative, weeks, in_reports_dir=False), encoding="utf-8")
-        print(f"已更新 site/index.html 與 site/reports/{week}.html", file=sys.stderr)
-    else:
-        print(f"{week} 不是最新一期，只更新 site/reports/{week}.html", file=sys.stderr)
+    # 首頁永遠是最新一期；補建舊的一期時也重繪，歷史清單才會多出那一期
+    latest = weeks[0]
+    if latest != week:
+        metrics = read_json(week_dir(latest) / "metrics.json")
+        narrative = read_json(week_dir(latest) / "narrative.json")
+    (SITE / "index.html").write_text(render(metrics, narrative, weeks, in_reports_dir=False), encoding="utf-8")
+    print(f"已更新 site/reports/{week}.html，site/index.html 為最新一期 {latest}", file=sys.stderr)
 
 
 def main(argv=None) -> int:

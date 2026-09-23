@@ -58,3 +58,47 @@ class AtomicWriteTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class KickoffStateTest(AtomicWriteTest):
+    def _snap(self, fetched_at, with_kickoff=True, text="Objective：目標"):
+        doc = {"type": "doc", "content": [{"type": "paragraph", "content": [{"type": "text", "text": text}]}]}
+        issues = [issue("CS-1", level=1, status="doing"),
+                  issue("CS-3", level=0, parent="CS-1", status="done", points=1.0, resolved=IN_WEEK)]
+        if with_kickoff:
+            issues.append(dict(issue("CS-2", level=0, parent="CS-1", type_="Kick off", status="todo"), description=doc))
+        snap = snapshot(issues, fetched_at=fetched_at)
+        snap["period"] = {"week": "2026-W39", "week_ending": "2026-09-22", "start": "", "end_exclusive": ""}
+        return snap
+
+    def _lock(self):
+        return json.loads((self.root / "data" / "kickoff" / "CS-1.json").read_text())
+
+    def test_missing_card_still_shows_locked_version(self):
+        weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00"))
+        metrics = weekly.publish_week(self._snap("2026-09-29T23:59:00+08:00", with_kickoff=False))
+        epic = metrics["epics"][0]
+        self.assertEqual(epic["kickoff"]["sections"]["objective"], "目標")
+        self.assertIn("kickoff_modified", [c["kind"] for c in metrics["checks"]])
+
+    def test_recomputing_an_older_week_does_not_touch_the_lock(self):
+        weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00", text="Objective：舊目標"))
+        weekly.publish_week(self._snap("2026-09-29T23:59:00+08:00", text="Objective：新目標"))
+        before = self._lock()
+        weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00", text="Objective：舊目標"))
+        self.assertEqual(self._lock(), before)
+
+
+class FinalizeArchiveTest(AtomicWriteTest):
+    def test_backfilling_an_older_week_updates_the_index_archive(self):
+        site = self.root / "site"
+        with mock.patch.object(weekly, "SITE", site):
+            for week, ending in (("2026-W40", "2026-09-29"), ("2026-W39", "2026-09-22")):
+                snap = snapshot([issue("CS-1", level=1, status="doing")], fetched_at=f"{ending}T23:59:00+08:00")
+                snap["period"] = {"week": week, "week_ending": ending, "start": "", "end_exclusive": ""}
+                weekly.publish_week(snap)
+                (self.root / "data" / week / "narrative.json").write_text('{"highlights": [], "epic_results": {}}', encoding="utf-8")
+                weekly.main(["finalize", week])
+            index = (site / "index.html").read_text(encoding="utf-8")
+        self.assertIn("2026-W40</title>", index)
+        self.assertIn('<a href="reports/2026-W39.html">2026-W39</a>', index)

@@ -18,7 +18,7 @@ KEYS = {i["key"] for i in ISSUES}
 def narrative(highlights=None, results=None):
     return {
         "highlights": ["[地接社資料彙整] 完成 CS-2 與 CS-3，本週 3.5h"] if highlights is None else highlights,
-        "epic_results": {"CS-1": "完成兩項交付"} if results is None else results,
+        "epic_results": {"CS-1": "完成 2 項交付"} if results is None else results,
     }
 
 
@@ -36,6 +36,13 @@ class NarrativeTest(unittest.TestCase):
     def test_invented_number_rejected(self):
         with self.assertRaisesRegex(NarrativeError, "沒有的數字 62"):
             validate(narrative(results={"CS-1": "進度 62%"}), METRICS, KEYS)
+
+    def test_chinese_numerals_with_a_measure_word_rejected(self):
+        for text in ("完成兩項交付", "完成十張卡", "投入三小時", "進度五成"):
+            with self.assertRaisesRegex(NarrativeError, "中文數字"):
+                validate(narrative(results={"CS-1": text}), METRICS, KEYS)
+        # 不是數量的一般詞彙不擋
+        validate(narrative(results={"CS-1": "第一階段完成，進一步整合中，一句話說完"}), METRICS, KEYS)
 
     def test_numbers_inside_issue_keys_are_ignored(self):
         validate(narrative(highlights=["CS-3 已完成"]), METRICS, KEYS)

@@ -101,6 +101,13 @@ class LockTest(unittest.TestCase):
         state = reconcile(state, "CS-1", "CS-30", ["Objective：目標"], "t3")
         self.assertEqual(len(state["changes"]), 1)
 
+    def test_kickoff_card_disappearing_keeps_lock_and_is_recorded_once(self):
+        state = reconcile(None, "CS-1", "CS-20", ["Objective：目標"], "t1")
+        state = reconcile(state, "CS-1", None, None, "t2")
+        state = reconcile(state, "CS-1", None, None, "t3")
+        self.assertEqual(state["sections"]["objective"], "目標")
+        self.assertEqual(state["changes"], [{"detected_at": "t2", "kickoff_missing": True}])
+
     def test_state_for_another_epic_is_rejected(self):
         state = reconcile(None, "CS-1", "CS-20", [], "t1")
         with self.assertRaises(ValueError):
