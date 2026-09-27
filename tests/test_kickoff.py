@@ -1,7 +1,7 @@
 import unittest
 
 from helpers import *  # noqa: F401,F403
-from lib.kickoff import adf_to_lines, parse_sections, reconcile
+from lib.kickoff import adf_to_lines, as_of, parse_sections, reconcile
 
 
 def para(*texts):
@@ -107,6 +107,54 @@ class LockTest(unittest.TestCase):
         state = reconcile(state, "CS-1", None, None, "t3")
         self.assertEqual(state["sections"]["objective"], "目標")
         self.assertEqual(state["changes"], [{"detected_at": "t2", "kickoff_missing": True}])
+
+    def test_every_goal_section_records_changes(self):
+        # 目標五段逐段改值都要記修改；少鎖一段，那一段改了就沒人知道
+        for key, label in (("objective", "Objective"), ("why", "Why It Matters"), ("before", "Before"),
+                           ("after", "After"), ("evidence", "Evidence")):
+            with self.subTest(section=key):
+                state = reconcile(None, "CS-1", "CS-20", [f"{label}：甲"], "t1")
+                state = reconcile(state, "CS-1", "CS-20", [f"{label}：乙"], "t2")
+                self.assertEqual(state["sections"][key], "甲")
+                self.assertEqual(state["changes"], [{"detected_at": "t2", "sections": [key]}])
+
+    def test_status_sections_follow_the_card_and_are_not_changes(self):
+        # Decision Needed 與 Next Milestone 是狀態不是目標：決定做完、里程碑到了就該換，鎖住會顯示過期內容
+        state = reconcile(None, "CS-1", "CS-20", ["Objective：目標", "Decision Needed：買不買授權", "Next Milestone：M1"], "t1")
+        state = reconcile(state, "CS-1", "CS-20", ["Objective：目標", "Decision Needed：擴不擴到亞洲", "Next Milestone：M2"], "t2")
+        self.assertEqual(state["sections"]["decision"], "擴不擴到亞洲")
+        self.assertEqual(state["sections"]["next_milestone"], "M2")
+        self.assertEqual(state["changes"], [])
+
+    def test_clearing_a_status_section_clears_it_on_the_page(self):
+        state = reconcile(None, "CS-1", "CS-20", ["Objective：目標", "Decision Needed：買不買授權"], "t1")
+        state = reconcile(state, "CS-1", "CS-20", ["Objective：目標"], "t2")
+        self.assertIsNone(state["sections"]["decision"])
+        self.assertEqual(state["changes"], [])
+
+    def test_kickoff_card_disappearing_clears_status_but_keeps_goals(self):
+        state = reconcile(None, "CS-1", "CS-20", ["Objective：目標", "Decision Needed：買不買授權", "Next Milestone：M1"], "t1")
+        state = reconcile(state, "CS-1", None, None, "t2")
+        self.assertEqual(state["sections"]["objective"], "目標")
+        self.assertIsNone(state["sections"]["decision"])
+        self.assertIsNone(state["sections"]["next_milestone"])
+
+    def test_as_of_takes_status_from_that_weeks_description(self):
+        state = reconcile(None, "CS-1", "CS-20", ["Objective：目標", "Next Milestone：M1"], "t1")
+        state = reconcile(state, "CS-1", "CS-20", ["Objective：目標", "Next Milestone：M2"], "t2")
+        old = as_of(state, ["Objective：目標", "Next Milestone：M1"])
+        self.assertEqual(old["sections"]["next_milestone"], "M1")
+        self.assertEqual(old["sections"]["objective"], "目標")
+        self.assertIsNone(as_of(state, None)["sections"]["next_milestone"])
+        self.assertEqual(state["sections"]["next_milestone"], "M2")  # 不改到傳進來的鎖定狀態
+
+    def test_as_of_does_not_fill_blank_goals_from_an_older_description(self):
+        # 最新鎖定檔的目標是空的，舊一期的描述有目標：重算舊期仍照鎖定檔，只有狀態段落取那一期的
+        state = reconcile(None, "CS-1", "CS-20", ["Next Milestone：M2"], "t2")
+        old = as_of(state, ["Objective：舊目標", "Evidence：舊證據", "Next Milestone：M1"])
+        self.assertIsNone(old["sections"]["objective"])
+        self.assertIsNone(old["sections"]["evidence"])
+        self.assertEqual(old["sections"]["next_milestone"], "M1")
 
     def test_state_for_another_epic_is_rejected(self):
         state = reconcile(None, "CS-1", "CS-20", [], "t1")

@@ -138,7 +138,7 @@ def _kickoff(kickoff, page) -> str:
     notice = ""
     if kickoff["modified_at"]:
         notice = (f'<p class="warn">Kick off {page.issue(kickoff["key"])} 鎖定後被修改'
-                  f'（最近一次偵測 {esc(fmt_moment(kickoff["modified_at"][-1]))}），以下是 {esc(fmt_moment(kickoff["locked_at"]))} 的鎖定版本。</p>')
+                  f'（最近一次偵測 {esc(fmt_moment(kickoff["modified_at"][-1]))}），目標到 Evidence 五段顯示鎖定版本，下個里程碑取這一期卡片上的內容。</p>')
     sections = kickoff["sections"]
     filled = [(label, sections[key]) for key, label in KICKOFF_FIELDS if sections.get(key)]
     if not filled:
