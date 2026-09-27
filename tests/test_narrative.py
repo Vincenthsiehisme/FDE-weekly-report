@@ -48,6 +48,18 @@ class NarrativeTest(unittest.TestCase):
         # 不是數量的一般詞彙不擋
         validate(narrative(results={"CS-1": "第一階段完成，進一步整合中，一句話說完"}), METRICS, KEYS)
 
+    def test_first_ordinal_and_one_off_are_not_quantities(self):
+        # 「第一次」只說是第一個、「一次性」是形容詞，都沒有宣稱數量；2026-09-27 W40 預覽時「第一次發版」被誤擋
+        for text in ("首次之後第一次發版", "第一週上線", "第一張卡完成", "一次性匯入"):
+            with self.subTest(text=text):
+                validate(narrative(results={"CS-1": text}), METRICS, KEYS)
+        # 其他序數等於宣稱了數量（第九次 = 試了 9 次），照擋，要寫就寫阿拉伯數字讓 metrics 比對
+        for text in ("完成一次", "試了十一次", "再跑兩次", "每一次都失敗",
+                     "第九次嘗試才成功", "第十二天完成", "第十一次試跑", "第一百次"):
+            with self.subTest(text=text):
+                with self.assertRaisesRegex(NarrativeError, "中文數字"):
+                    validate(narrative(results={"CS-1": text}), METRICS, KEYS)
+
     def test_numbers_inside_issue_keys_are_ignored(self):
         validate(narrative(highlights=["CS-3 已完成"]), METRICS, KEYS)
 

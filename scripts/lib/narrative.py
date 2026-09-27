@@ -19,13 +19,28 @@ ISSUE_KEY = re.compile(r"(?<![A-Za-z0-9_])[A-Z][A-Z0-9_]*-\d+(?![0-9])")
 NUMBER = re.compile(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?")
 # 中文數字接量詞就是數量，驗證器比對不到，所以數量一律要寫阿拉伯數字。
 # 只擋「數字＋量詞」：「第一階段」「進一步」「一句話」這類一般詞彙不受影響。
-CHINESE_QUANTITY = re.compile(r"[零〇一二兩三四五六七八九十百千萬]+\s*(?:項|張|個|條|次|週|天|日|位|件|支|筆|成|倍|小時|%|％)")
+CHINESE_QUANTITY = re.compile(
+    r"(?P<digits>[零〇一二兩三四五六七八九十百千萬]+)\s*(?:項|張|個|條|次|週|天|日|位|件|支|筆|成|倍|小時|%|％)")
 MAX_LEN = 200
 MAX_HIGHLIGHTS = 3
 
 
 class NarrativeError(ValueError):
     pass
+
+
+def chinese_quantities(text: str) -> list:
+    """接量詞的中文數字。只放行兩種沒有宣稱數量的寫法（2026-09-27 使用者裁）：
+    「第一」（第一次、第一週），以及「一次性」。其他序數照擋：「第九次嘗試」等於說試了 9 次，
+    要寫就寫阿拉伯數字，讓它跟 metrics 比對。"""
+    found = []
+    for match in CHINESE_QUANTITY.finditer(text):
+        start = match.start()
+        first_ordinal = match.group("digits") == "一" and text[start - 1:start] == "第"
+        one_off = text.startswith("一次性", start)
+        if not (first_ordinal or one_off):
+            found.append(match.group(0))
+    return found
 
 
 def _numbers_in(value, out: set):
@@ -80,8 +95,8 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
         for key in ISSUE_KEY.findall(text):
             if key not in snapshot_keys:
                 errors.append(f"{where} 引用了不存在的卡號 {key}")
-        for quantity in CHINESE_QUANTITY.finditer(text):
-            errors.append(f"{where} 用了中文數字「{quantity.group(0)}」，數量一律寫阿拉伯數字")
+        for quantity in chinese_quantities(text):
+            errors.append(f"{where} 用了中文數字「{quantity}」，數量一律寫阿拉伯數字")
         for number in NUMBER.findall(ISSUE_KEY.sub(" ", text)):
             if round(float(number.replace(",", "")), 2) not in allowed:
                 errors.append(f"{where} 出現 metrics 裡沒有的數字 {number}")
