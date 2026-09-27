@@ -32,6 +32,8 @@ from lib.snapshot import EPIC_LEVEL, fetch_snapshot, issue_sort_key  # noqa: E40
 DATA = ROOT / "data"
 SITE = ROOT / "site"
 UNITS_FILE = ROOT / "config" / "units.json"
+EXCLUDED_FILE = ROOT / "config" / "excluded.json"
+CARD_KEY = re.compile(r"[A-Z][A-Z0-9_]*-[1-9][0-9]*")
 WEEK_ID = re.compile(r"\d{4}-W\d{2}")
 
 
@@ -58,6 +60,22 @@ def load_units() -> list:
     if not isinstance(units, list) or not all(isinstance(u, str) and u.strip() for u in units):
         raise ValueError(f"{UNITS_FILE.relative_to(ROOT)} 的 units 必須是非空字串陣列（可以是空陣列）")
     return units
+
+
+def load_excluded() -> dict:
+    """不算完成的卡：{卡號: 理由}。檔案必須存在，沒有要排除的就寫 {"cards": {}}。
+    卡號格式錯了直接失敗：打錯的卡號不會排除任何東西，而且看起來跟沒排除一樣。"""
+    data = read_json(EXCLUDED_FILE)
+    cards = data.get("cards")
+    where = EXCLUDED_FILE.relative_to(ROOT)
+    if not isinstance(cards, dict):
+        raise ValueError(f"{where} 的 cards 必須是 {{卡號: 理由}}（沒有要排除的卡就寫 {{}}）")
+    for key, reason in cards.items():
+        if not CARD_KEY.fullmatch(key):
+            raise ValueError(f"{where} 的卡號格式不對：{key!r}")
+        if not isinstance(reason, str) or not reason.strip():
+            raise ValueError(f"{where} 的 {key} 沒有寫排除理由")
+    return cards
 
 
 def load_tokens(week: str):
@@ -120,7 +138,7 @@ def compute_week(snapshot: dict) -> tuple:
         if state != existing:
             writes[path] = state
         states[epic] = state
-    metrics = compute(snapshot, period, load_units(), load_tokens(period.week_id), states, checks,
+    metrics = compute(snapshot, period, load_units(), load_tokens(period.week_id), states, checks, excluded=load_excluded(),
                       cumulative_tokens=load_cumulative_tokens(period.week_id))
     writes[week_dir(period.week_id) / "metrics.json"] = metrics
     return metrics, writes

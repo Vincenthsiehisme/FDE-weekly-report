@@ -27,8 +27,8 @@ def base_issues():
     ]
 
 
-def run(issues, units=("資料組", "產品組"), tokens=None, states=None):
-    return compute(snapshot(issues), PERIOD, list(units), tokens, states or {}, [], cumulative_tokens=tokens)
+def run(issues, units=("資料組", "產品組"), tokens=None, states=None, excluded=None):
+    return compute(snapshot(issues), PERIOD, list(units), tokens, states or {}, [], cumulative_tokens=tokens, excluded=excluded or {})
 
 
 class HoursTest(unittest.TestCase):
@@ -171,18 +171,18 @@ class CumulativeTest(unittest.TestCase):
                          [("2026-W39", 4, 4.5, 2), ("2026-W38", 2, 4.0, 2)])
 
     def test_cumulative_tokens_are_separate_from_this_week(self):
-        m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-6": 40})
+        m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-6": 40}, excluded={})
         self.assertEqual((m["totals"]["tokens"], m["cumulative"]["totals"]["tokens"]), (100, 140))
 
     def test_unknown_key_only_in_earlier_token_files_is_reported(self):
-        m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-98": 5})
+        m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-98": 5}, excluded={})
         self.assertEqual(m["cumulative"]["totals"]["tokens"], 105)
         self.assertIn(("token_unknown_key", "CS-98"), [(c["kind"], c["key"]) for c in m["checks"]])
         self.assertNotIn(("token_unknown_key", "CS-3"), [(c["kind"], c["key"]) for c in m["checks"]])
 
     def test_week_tokens_without_cumulative_is_a_wiring_error(self):
         with self.assertRaises(ValueError):
-            compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens=None)
+            compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens=None, excluded={})
 
 
 class PeopleTest(unittest.TestCase):
@@ -214,6 +214,59 @@ class PeopleTest(unittest.TestCase):
         p = self.people(tokens={"CS-2": 10, "CS-3": 100})
         self.assertEqual(p["Hubert"]["week"]["tokens"], 110)
         self.assertIsNone(p["Amy"]["week"]["tokens"])
+
+
+class ExclusionTest(unittest.TestCase):
+    """config/excluded.json 列的卡不算完成：本週、累計的張數、工時、交付、人、支援單位都不算，
+    epic 進度照 Jira 狀態算完成。2026-09-27 使用者裁：Squad 8 移轉時補建的 8 張不算當週。"""
+    EXCLUDED = {"CS-7": "移轉補登", "CS-6": "移轉補登"}
+
+    def test_excluded_cards_do_not_count_this_week(self):
+        m = run(base_issues(), excluded=self.EXCLUDED)
+        self.assertEqual(m["totals"]["completed"], 3)       # CS-2、CS-3、CS-4；CS-7 排除
+        self.assertEqual(m["totals"]["hours"], 2.5)         # 少了 CS-7 的 2.0
+        self.assertEqual(m["totals"]["deliverables"], 1)    # 只剩 CS-2
+        self.assertNotIn("CS-7", [c["key"] for c in m["completed"]])
+        self.assertNotIn(UNASSIGNED_EPIC, [e["id"] for e in m["epics"]])  # 未歸屬 epic 只有 CS-7，整組不列
+        self.assertNotIn(UNIT_MULTIPLE, [u["unit"] for u in m["units"]])  # CS-7 的兩個 label 不再算
+        hubert = next(p for p in m["people"] if p["name"] == "Hubert")
+        before = next(p for p in run(base_issues())["people"] if p["name"] == "Hubert")
+        self.assertEqual(before["week"]["completed_keys"], ["CS-2", "CS-3", "CS-7"])  # CS-3 無指派，歸父卡的 Hubert
+        self.assertEqual(hubert["week"]["completed_keys"], ["CS-2", "CS-3"])
+        self.assertNotIn("CS-7", [k for o in m["owners"] for k in o["deliveries"]])
+
+    def test_excluded_cards_do_not_count_cumulatively_but_progress_follows_jira(self):
+        m = run(base_issues(), excluded=self.EXCLUDED)
+        self.assertEqual(sorted(r["key"] for r in m["cumulative"]["completed"]), ["CS-10", "CS-2", "CS-3", "CS-4"])
+        self.assertEqual(m["cumulative"]["totals"]["completed"], 4)
+        week_epic = next(e for e in m["epics"] if e["id"] == "CS-1")
+        cum_epic = next(e for e in m["cumulative"]["epics"] if e["id"] == "CS-1")
+        # CS-6 在 Jira 上已完成：進度照算，本週頁與累計頁一致
+        self.assertEqual(week_epic["progress"]["done_cards"], 3)
+        self.assertEqual(cum_epic["progress"], week_epic["progress"])
+        self.assertEqual(cum_epic["completed"], 3)           # 張數不算 CS-6
+
+    def test_exclusion_that_touches_this_week_is_listed_with_its_reason(self):
+        m = run(base_issues(), excluded=self.EXCLUDED)
+        listed = [(c["key"], c["message"]) for c in m["checks"] if c["kind"] == "excluded"]
+        # CS-6 是上週完成的，不影響本週，不列
+        self.assertEqual(listed, [("CS-7", "依 config/excluded.json 不算本週與累計完成：移轉補登")])
+
+    def test_epic_or_kickoff_in_the_list_is_an_error_not_a_silent_no_op(self):
+        # 完成集合只從一般工作卡算，epic 與 Kick off 列進來不會有任何作用，卻看起來像排除了
+        issues = base_issues() + [issue("CS-12", level=0, parent="CS-1", type_="Kick off", status="done", resolved=IN_WEEK)]
+        for key in ("CS-1", "CS-12"):
+            with self.subTest(key=key):
+                with self.assertRaisesRegex(ValueError, key):
+                    run(issues, excluded={key: "誤列"})
+
+    def test_key_not_in_snapshot_is_allowed(self):
+        # 重算舊期時卡還不存在是正常的，不擋也不列
+        m = run(base_issues(), excluded={"FDEPROJECT-3": "移轉補登"})
+        self.assertEqual(m, run(base_issues()))
+
+    def test_no_exclusions_changes_nothing(self):
+        self.assertEqual(run(base_issues(), excluded={}), run(base_issues()))
 
 
 class KickoffByEpicTest(unittest.TestCase):

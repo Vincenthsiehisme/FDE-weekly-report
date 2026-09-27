@@ -17,10 +17,12 @@ class AtomicWriteTest(unittest.TestCase):
         root = Path(self.tmp.name)
         (root / "config").mkdir()
         (root / "config" / "units.json").write_text('{"units": []}', encoding="utf-8")
+        (root / "config" / "excluded.json").write_text('{"cards": {}}', encoding="utf-8")
         self.patches = [
             mock.patch.object(weekly, "ROOT", root),
             mock.patch.object(weekly, "DATA", root / "data"),
             mock.patch.object(weekly, "UNITS_FILE", root / "config" / "units.json"),
+            mock.patch.object(weekly, "EXCLUDED_FILE", root / "config" / "excluded.json"),
         ]
         for p in self.patches:
             p.start()
@@ -120,6 +122,30 @@ class KickoffStateTest(AtomicWriteTest):
         older = weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00", text="Next Milestone：M1"))
         self.assertEqual(older["epics"][0]["kickoff"]["sections"]["next_milestone"], "M1")
         self.assertEqual(self._lock(), before)
+
+
+class ExcludedConfigTest(AtomicWriteTest):
+    def _snap(self):
+        snap = snapshot([issue("CS-1", level=1, status="doing"),
+                         issue("CS-3", level=0, parent="CS-1", status="done", points=1.0, resolved=IN_WEEK)])
+        snap["period"] = {"week": "2026-W39", "week_ending": "2026-09-22", "start": "", "end_exclusive": ""}
+        return snap
+
+    def _write(self, text):
+        (self.root / "config" / "excluded.json").write_text(text, encoding="utf-8")
+
+    def test_excluded_file_is_applied(self):
+        self._write('{"cards": {"CS-3": "移轉補登"}}')
+        metrics = weekly.publish_week(self._snap())
+        self.assertEqual(metrics["totals"]["completed"], 0)
+        self.assertIn(("excluded", "CS-3"), [(c["kind"], c["key"]) for c in metrics["checks"]])
+
+    def test_malformed_file_is_rejected(self):
+        for text in ('{"cards": ["CS-3"]}', '{"cards": {"CS-3": ""}}', '{"cards": {"cs-3": "小寫"}}', '{}'):
+            with self.subTest(text=text):
+                self._write(text)
+                with self.assertRaises(ValueError):
+                    weekly.load_excluded()
 
 
 class FinalizeArchiveTest(AtomicWriteTest):
