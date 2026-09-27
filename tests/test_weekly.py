@@ -100,13 +100,25 @@ class KickoffStateTest(AtomicWriteTest):
         metrics = weekly.publish_week(self._snap("2026-09-29T23:59:00+08:00", with_kickoff=False))
         epic = metrics["epics"][0]
         self.assertEqual(epic["kickoff"]["sections"]["objective"], "目標")
-        self.assertIn("kickoff_modified", [c["kind"] for c in metrics["checks"]])
+        [message] = [c["message"] for c in metrics["checks"] if c["kind"] == "kickoff_modified"]
+        # 狀態段落不鎖，訊息只能說目標五段是鎖定版本
+        self.assertTrue(message.endswith("頁面的目標五段仍顯示鎖定版本"), message)
 
     def test_recomputing_an_older_week_does_not_touch_the_lock(self):
         weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00", text="Objective：舊目標"))
         weekly.publish_week(self._snap("2026-09-29T23:59:00+08:00", text="Objective：新目標"))
         before = self._lock()
         weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00", text="Objective：舊目標"))
+        self.assertEqual(self._lock(), before)
+
+    def test_status_sections_show_each_weeks_own_value(self):
+        weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00", text="Next Milestone：M1"))
+        latest = weekly.publish_week(self._snap("2026-09-29T23:59:00+08:00", text="Next Milestone：M2"))
+        self.assertEqual(latest["epics"][0]["kickoff"]["sections"]["next_milestone"], "M2")
+        self.assertNotIn("kickoff_modified", [c["kind"] for c in latest["checks"]])
+        before = self._lock()
+        older = weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00", text="Next Milestone：M1"))
+        self.assertEqual(older["epics"][0]["kickoff"]["sections"]["next_milestone"], "M1")
         self.assertEqual(self._lock(), before)
 
 

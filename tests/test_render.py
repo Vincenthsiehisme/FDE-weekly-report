@@ -109,6 +109,14 @@ class KickoffTest(unittest.TestCase):
         self.assertNotIn("<dt>Before</dt>", week)
         self.assertNotIn("要不要買授權", week)
 
+    def test_modified_notice_does_not_pin_all_goals_to_one_lock_time(self):
+        # 空的段落之後補上也算鎖定，各段鎖定時間不同；通知不能把五段都歸給第一次讀到的時間
+        states = self.state(objective="讓 OP 少打字", next_milestone="M2")
+        states["CS-1"]["changes"] = [{"detected_at": "2026-09-21T10:00:00+08:00", "sections": ["objective"]}]
+        week = panel(page(metrics=metrics_for(states=states)), "week")
+        self.assertIn("目標到 Evidence 五段顯示鎖定版本，下個里程碑取這一期卡片上的內容", week)
+        self.assertNotIn("2026/09/20 10:00", week)
+
 
 class PeopleTest(unittest.TestCase):
     ISSUES = ISSUES + [

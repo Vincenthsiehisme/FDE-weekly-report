@@ -110,12 +110,12 @@ def compute_week(snapshot: dict) -> tuple:
     for epic in sorted(set(found) | (locked & epics), key=issue_sort_key):
         path = lock_dir / f"{epic}.json"
         existing = read_json(path) if path.is_file() else None
-        if existing is not None and datetime.fromisoformat(seen_at) < datetime.fromisoformat(existing["last_seen_at"]):
-            # 重算舊的一期：鎖定檔代表最新的觀察，只讀不寫
-            states[epic] = existing
-            continue
         card = found.get(epic)
         lines = kickoff_lib.adf_to_lines(card.get("description")) if card else None
+        if existing is not None and datetime.fromisoformat(seen_at) < datetime.fromisoformat(existing["last_seen_at"]):
+            # 重算舊的一期：鎖定檔代表最新的觀察，只讀不寫；不鎖的段落取那一期自己的描述
+            states[epic] = kickoff_lib.as_of(existing, lines)
+            continue
         state = kickoff_lib.reconcile(existing, epic, card["key"] if card else None, lines, seen_at)
         if state != existing:
             writes[path] = state

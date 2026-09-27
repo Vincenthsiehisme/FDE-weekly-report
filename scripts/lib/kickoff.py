@@ -7,8 +7,10 @@ Kick off 開案寫一次後鎖定目標。描述裡的段落以固定標籤起�
 「Before/After」是容器標題，底下拆成「Before：」「After：」兩行。
 缺哪一段就回 None，由頁面顯示「未填」，不讓 AI 補。
 
-鎖定：第一次讀到某個 epic 的 Kick off 時存一份到 data/kickoff/<epic>.json，
-之後頁面一律顯示那份鎖定內容；已填的段落再被改，記下偵測到的時間，頁面標示「被修改」。
+鎖定：第一次讀到某個 epic 的 Kick off 時存一份到 data/kickoff/<epic>.json。只鎖目標五段
+（LOCKED_SECTIONS）：之後頁面一律顯示那份鎖定內容，已填的段落再被改，記下偵測到的時間，頁面標示「被修改」。
+Decision Needed 與 Next Milestone 是狀態不是目標，決定做完、里程碑到了就該換，所以每次都取當次描述的值，
+改了不算修改（2026-09-27 使用者裁，取代 09-23 的整份鎖定）。
 """
 from __future__ import annotations
 
@@ -23,6 +25,8 @@ SECTIONS = (
     ("decision", "Decision Needed"),
     ("next_milestone", "Next Milestone"),
 )
+# 鎖定只防目標漂移；其餘段落（Decision Needed、Next Milestone）每次取卡片當下的內容
+LOCKED_SECTIONS = ("objective", "why", "before", "after", "evidence")
 CONTAINER = "Before/After"
 _LABELS = {label.lower(): key for key, label in SECTIONS}
 _LINE = re.compile(
@@ -87,19 +91,45 @@ def parse_sections(lines: list) -> tuple:
     return sections, problems
 
 
+def _shown(locked: dict, current) -> dict:
+    """頁面要顯示的段落：目標五段取鎖定版本（還沒填過就取當下的），其餘段落取當下的。
+    current 是 None 代表這次沒有卡片可讀，其餘段落就是空的，不沿用上次讀到的。"""
+    shown = {}
+    for key, _ in SECTIONS:
+        now = current[key] if current is not None else None
+        if key in LOCKED_SECTIONS:
+            shown[key] = locked[key] if locked[key] is not None else now
+        else:
+            shown[key] = now
+    return shown
+
+
+def as_of(state: dict, lines) -> dict:
+    """重算舊的一期時用：目標五段照鎖定檔原樣（空的就是空的，不拿舊描述補），其餘段落換成那一期
+    snapshot 的描述。lines 是 None 代表那一期沒有 Kick off 卡。回傳新的 dict，不改傳進來的 state。"""
+    current = parse_sections(lines)[0] if lines is not None else None
+    view = dict(state)
+    view["sections"] = {key: state["sections"][key] if key in LOCKED_SECTIONS
+                        else (current[key] if current is not None else None)
+                        for key, _ in SECTIONS}
+    return view
+
+
 def reconcile(existing, epic: str, kickoff_key: str, lines: list, seen_at: str) -> dict:
-    """回傳新的鎖定狀態。鎖定以段落為單位：
+    """回傳新的鎖定狀態。鎖定以段落為單位，只鎖 LOCKED_SECTIONS：
 
     - 第一次讀到：當下每一段的內容就是鎖定版本（空的段落先記 None）。
     - 之後讀到：鎖定版本是 None 的段落，第一次出現內容就補進去，這是補填不是修改。
       已經鎖定有內容的段落，和上次讀到的不一樣，才記一筆修改。頁面一律顯示鎖定版本。
+    - 不在 LOCKED_SECTIONS 的段落每次取當下的內容，改了不記修改。
     - 換了一張 Kick off 卡也記一筆（跟上次讀到的卡號比，換一次只記一次）。
-    - 卡片不見了（kickoff_key 為 None）：鎖定內容照舊顯示，記一筆 kickoff_missing，只記一次。
+    - 卡片不見了（kickoff_key 為 None）：目標段落照舊顯示，其餘段落清空，記一筆 kickoff_missing，只記一次。
     """
     if kickoff_key is None:
         if existing is None:
             raise ValueError(f"{epic} 沒有 Kick off 卡也沒有鎖定檔，不需要 reconcile")
         updated = dict(existing)
+        updated["sections"] = _shown(existing["sections"], None)
         updated["last_seen_at"] = seen_at
         updated["last_seen_key"] = None
         if existing["last_seen_key"] is not None:
@@ -121,7 +151,7 @@ def reconcile(existing, epic: str, kickoff_key: str, lines: list, seen_at: str) 
     if existing["epic"] != epic:
         raise ValueError(f"鎖定檔屬於 {existing['epic']}，不是 {epic}")
     locked = existing["sections"]
-    changed = [key for key, _ in SECTIONS
+    changed = [key for key in LOCKED_SECTIONS
                if locked[key] is not None and current[key] != existing["last_seen"][key]]
     change = {}
     if changed:
@@ -129,7 +159,7 @@ def reconcile(existing, epic: str, kickoff_key: str, lines: list, seen_at: str) 
     if kickoff_key != existing["last_seen_key"]:
         change["kickoff_key"] = kickoff_key
     updated = dict(existing)
-    updated["sections"] = {key: locked[key] if locked[key] is not None else current[key] for key, _ in SECTIONS}
+    updated["sections"] = _shown(locked, current)
     updated["last_seen"] = current
     updated["last_seen_key"] = kickoff_key
     updated["last_seen_at"] = seen_at

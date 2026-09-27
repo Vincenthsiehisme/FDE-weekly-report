@@ -51,7 +51,9 @@ Decision Needed：需要誰決定什麼
 Next Milestone：下一個里程碑
 ```
 
-第一次讀到時鎖定：之後頁面一律顯示鎖定版本。空的段落之後補上算正常填寫；已經填過的段落再被改，頁面會標示「鎖定後被修改」。
+第一次讀到時鎖定目標五段（Objective、Why It Matters、Before、After、Evidence）：之後頁面一律顯示鎖定版本。空的段落之後補上算正常填寫；已經填過的段落再被改，頁面會標示「鎖定後被修改」。
+
+Decision Needed 與 Next Milestone 不鎖：決定做完、里程碑到了就直接改，頁面每週顯示當次的內容，不算修改。決定做完就把 Decision Needed 清空。Kick off 卡不見時這兩段是空的；重算舊的一期時，這兩段取那一期的描述。
 
 ## 本機執行
 
