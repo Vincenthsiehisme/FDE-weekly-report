@@ -9,6 +9,8 @@
 - Status 只有 Done（epic 已完成）與 On Track。
 - 累計：snapshot 抓的是兩個專案的全部卡片，不限期間，所以累計直接從同一份 snapshot 重算到本期結束，
   不讀舊期的 metrics。
+- 排除：config/excluded.json 列的卡不算完成，本週與累計的張數、工時、交付、人、支援單位都不算；
+  epic 進度照 Jira 狀態算完成（2026-09-27 使用者裁：Squad 8 移轉時補建的 8 張不算當週）。
 """
 from __future__ import annotations
 
@@ -139,9 +141,11 @@ def kickoff_by_epic(issues: list) -> tuple:
     return found, checks
 
 
-def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, extra_checks: list, *, cumulative_tokens) -> dict:
+def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, extra_checks: list, *,
+            cumulative_tokens, excluded: dict) -> dict:
     """tokens 是這一期的 Token 檔；cumulative_tokens 是週次不晚於這一期的 Token 檔逐卡相加。
-    兩個都是 None 代表沒有任何 Token 資料。這一期有 Token 但累計沒有，代表呼叫端沒把累計接上。"""
+    兩個都是 None 代表沒有任何 Token 資料。這一期有 Token 但累計沒有，代表呼叫端沒把累計接上。
+    excluded 是 {卡號: 理由}，列的卡不算完成；沒有要排除的就傳 {}。"""
     if tokens is not None and cumulative_tokens is None:
         raise ValueError("這一期有 Token 資料，累計 Token 卻是 None：累計應包含這一期")
     checks = list(extra_checks)
@@ -156,10 +160,20 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
             return False
         return period.contains(parse_jira_time(item["resolved"]))
 
-    week_done = {i["key"] for i in tree.work if completed_this_week(i)}
+    # 完成集合只從一般工作卡算：epic、Kick off 列進排除清單不會有任何作用，看起來卻像排除了，所以直接失敗。
+    # 卡號不在 snapshot 放行：重算舊期時那張卡可能還不存在。
+    not_work = sorted((k for k in excluded if k in tree.by_key and k not in tree.work_keys), key=issue_sort_key)
+    if not_work:
+        raise ValueError(f"config/excluded.json 只能列一般工作卡，這些是 epic 或 Kick off 卡：{'、'.join(not_work)}")
+    raw_week_done = {i["key"] for i in tree.work if completed_this_week(i)}
+    # 排除只在這裡接一次：本週與累計的完成集合都扣掉，下游的張數、工時、交付、人、支援單位都從這兩個集合算
+    for key in sorted(raw_week_done & set(excluded), key=issue_sort_key):
+        checks.append(_check("excluded", key, f"依 config/excluded.json 不算本週與累計完成：{excluded[key]}"))
+    week_done = raw_week_done - set(excluded)
     # 完成時間早於本期結束的都算累計；沒有 resolutiondate 的上面已經列進資料檢查
-    cumulative_done = {i["key"] for i in tree.work
-                       if _done(i) and i["resolved"] and parse_jira_time(i["resolved"]) < period.end_exclusive}
+    done_by_end = {i["key"] for i in tree.work
+                   if _done(i) and i["resolved"] and parse_jira_time(i["resolved"]) < period.end_exclusive}
+    cumulative_done = done_by_end - set(excluded)
     group_of = {i["key"]: (tree.epic_of(i) or UNASSIGNED_EPIC) for i in tree.work}
     leaves = [i for i in tree.work if tree.is_leaf(i)]
     week_leaves = [i for i in leaves if i["key"] in week_done]
@@ -342,7 +356,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
             "tokens": _token_sum([item["key"]], tokens),
         })
 
-    cumulative = _cumulative(tree, period, groups, group_of, leaves, cumulative_done, cumulative_tokens, completed_row)
+    cumulative = _cumulative(tree, period, groups, group_of, leaves, cumulative_done, done_by_end, cumulative_tokens, completed_row)
     people = _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cumulative_tokens)
 
     active_rows = [r for r in epic_rows if r["active"]]
@@ -370,9 +384,10 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     }
 
 
-def _cumulative(tree, period, groups, group_of, leaves, done, tokens, completed_row) -> dict:
+def _cumulative(tree, period, groups, group_of, leaves, done, done_in_jira, tokens, completed_row) -> dict:
     """到本期結束為止的累計：專案（含已結案的 epic）、完成卡片（標上完成那一週）、總量。
-    完成、進度與 Done 狀態都以本期結束為界，不看卡片現在的狀態。"""
+    完成、進度與 Done 狀態都以本期結束為界，不看卡片現在的狀態。
+    done 已扣掉排除清單，用來算張數、工時、交付；進度用 done_in_jira，跟本週頁一樣照 Jira 狀態算。"""
     done_leaves = [i for i in leaves if i["key"] in done]
 
     def done_by_end(item) -> bool:
@@ -393,7 +408,7 @@ def _cumulative(tree, period, groups, group_of, leaves, done, tokens, completed_
             "owner": (epic["assignee"] or UNASSIGNED_OWNER) if epic else None,
             "status": ("Done" if done_by_end(epic) else "On Track") if epic else None,
             "due": epic["due"] if epic else None,
-            "progress": _progress(group_leaves, lambda i: i["key"] in done),
+            "progress": _progress(group_leaves, lambda i: i["key"] in done_in_jira),
             "completed": completed,
             "deliverables": len({tree.root_of(i)["key"] for i in group_done_leaves}),
             "hours": _round(sum(i["points"] or 0 for i in group_done_leaves)),

@@ -15,7 +15,7 @@ NARRATIVE = {"highlights": ["完成 CS-2"], "epic_results": {"CS-1": "完成"}}
 
 
 def metrics_for(issues=ISSUES, fetched_at="2026-09-22T23:59:30+08:00", tokens=None, cumulative_tokens=None, states=None):
-    return compute(snapshot(issues, fetched_at=fetched_at), PERIOD, [], tokens, states or {}, [], cumulative_tokens=cumulative_tokens)
+    return compute(snapshot(issues, fetched_at=fetched_at), PERIOD, [], tokens, states or {}, [], cumulative_tokens=cumulative_tokens, excluded={})
 
 
 def page(fetched_at="2026-09-22T23:59:30+08:00", in_reports_dir=False, metrics=None, narrative=NARRATIVE):
