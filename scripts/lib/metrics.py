@@ -418,7 +418,9 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         "generated_at": snapshot["fetched_at"],
         "totals": {
             "projects": len(active_rows),
-            "deliverables": sum(len(r["week"]["deliveries"]) for r in active_rows),
+            # 跟人、支援單位、累計同一個口徑：本週完成葉節點的交付單位。只加專案列的話，
+            # 所屬 epic 先前已結案的卡不算，同一頁的「交付」就有兩種數字（2026-09-30 Fable 審 PR #8）
+            "deliverables": len({tree.root_of(l)["key"] for l in week_leaves}),
             "completed": len(completed),
             "hours": _round(sum(l["points"] or 0 for l in week_leaves)),
             "tokens": sum(tokens.values()) if tokens is not None else None,
