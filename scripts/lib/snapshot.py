@@ -6,7 +6,7 @@ snapshot 是這一期所有計算的唯一輸入，也是歷史紀錄：Jira API
 from __future__ import annotations
 
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 
 PROJECTS = ("FDEPROJECT", "CS")
 KICKOFF_TYPE = "Kick off"
@@ -16,7 +16,8 @@ FIELDS = [
     "resolutiondate", POINTS_FIELD, "duedate", "updated", "project",
 ]
 EPIC_LEVEL = 1  # issuetype.hierarchyLevel：epic 1、一般卡 0、子任務 -1
-SCHEMA = 1
+# 2：完成的工作卡多了 moved_in（從其他專案搬進 FDEPROJECT／CS 的時間），metrics 用它判斷搬入前已完成（斷點）
+SCHEMA = 2
 
 
 def _required(fields: dict, name: str, key: str):
@@ -47,6 +48,7 @@ def normalize(issue: dict) -> dict:
         "points": f.get(POINTS_FIELD),
         "due": f.get("duedate"),
         "updated": _required(f, "updated", key),
+        "moved_in": None,
     }
 
 
@@ -66,10 +68,28 @@ def parse_jira_time(value: str) -> datetime:
     raise ValueError(f"無法解析 Jira 時間：{value!r}")
 
 
+def moved_in_at(histories: list, project_ids: set):
+    """最後一次從其他專案搬進 project_ids 的時間；沒有就是 None。
+    FDEPROJECT 與 CS 之間互搬不算：工作一直在我們的範圍裡，不是從外面帶進來的歷史。"""
+    moves = [h["created"] for h in histories for item in h["items"]
+             if item.get("fieldId") == "project" and item.get("to") in project_ids and item.get("from") not in project_ids]
+    if not moves:
+        return None
+    return datetime.fromtimestamp(max(moves) / 1000, timezone.utc).isoformat()
+
+
 def fetch_snapshot(client, period, fetched_at: datetime) -> dict:
     scope = f"project in ({', '.join(PROJECTS)})"
     client.verify()
-    issues = [normalize(i) for i in client.search(f"{scope} ORDER BY key", FIELDS)]
+    raw_issues = client.search(f"{scope} ORDER BY key", FIELDS)
+    issues = [normalize(i) for i in raw_issues]
+    # 搬入時間只查完成的工作卡：斷點只管「搬進來時已經完成」的卡，沒完成的搬進來之後才會結案，照常算
+    # 我們的專案 id 直接問 Jira，不從查到的卡反推：某個專案剛好沒有卡時，從它搬過來的卡會被當成外部搬入
+    project_ids = set(client.project_ids(PROJECTS).values())
+    done_work = {i["id"]: n for i, n in zip(raw_issues, issues) if n["status_category"] == "done" and n["level"] < EPIC_LEVEL}
+    histories = client.changelogs(sorted(done_work), ["project"]) if done_work else {}
+    for issue_id, item in done_work.items():
+        item["moved_in"] = moved_in_at(histories.get(issue_id, []), project_ids)
     kickoffs = client.search(f'{scope} AND issuetype = "{KICKOFF_TYPE}" ORDER BY key', FIELDS + ["description"])
     by_key = {i["key"]: i for i in issues}
     for raw in kickoffs:
