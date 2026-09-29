@@ -153,9 +153,15 @@ def drop_excluded_epics(issues: list, excluded_epics: dict, period, *, allow_mis
             if current["key"] in seen:
                 raise ValueError(f"父系關係有循環：{issue['key']}")
             seen.add(current["key"])
-            if current["parent"] and current["parent"] not in by_key:
-                # 父鏈斷在 snapshot 外，無法判斷這張卡是不是被排除的 epic 底下的；放行就可能把排除的卡算回去
-                raise ValueError(f"{issue['key']} 的父系 {current['parent']} 不在 snapshot 裡，無法判斷它是否屬於"
+            parent = current["parent"]
+            if parent and parent not in by_key:
+                if parent in excluded_epics:
+                    return parent  # 重算舊期時 epic 不在那一期的 snapshot，卡已經掛在它底下
+                if current["level"] >= 0:
+                    # 一般卡以上的父系是 epic 以上；不在 snapshot 的 epic 不是被排除的那個，交回 parent_missing 資料檢查
+                    return None
+                # 子任務的父卡一定同專案，找不到是抓取不一致，判斷不出它屬不屬於被排除的 epic；放行就可能算回去
+                raise ValueError(f"{issue['key']} 的父系 {parent} 不在 snapshot 裡，無法判斷它是否屬於"
                                  f" config/excluded.json 排除的 epic（{'、'.join(sorted(excluded_epics, key=issue_sort_key))}）")
             current = by_key.get(current["parent"]) if current["parent"] else None
         return None

@@ -343,6 +343,22 @@ class ExcludedEpicTest(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, "CS-32.*CS-31"):
                     drop_excluded_epics(issues, self.EXCLUDED, PERIOD, allow_missing=allow_missing)
 
+    def test_card_under_an_epic_outside_the_snapshot_is_left_to_the_usual_check(self):
+        # 一般卡的父系一定是 epic；不在 snapshot 的 epic 不會是被排除的那個，整份週報不必為它停
+        # 子任務 → 一般卡 → snapshot 外的 epic：斷的是一般卡的父系，看的是斷在哪一層，不是起點是子任務
+        issues = self.admin_issues() + [issue("CS-40", level=0, parent="OTHER-1", status="done", points=1.0, resolved=IN_WEEK),
+                                        issue("CS-43", level=-1, parent="CS-40", status="done", points=0.5, resolved=IN_WEEK)]
+        kept, _ = drop_excluded_epics(issues, self.EXCLUDED, PERIOD, allow_missing=False)
+        self.assertEqual([i["key"] for i in kept][-2:], ["CS-40", "CS-43"])
+
+    def test_card_whose_missing_parent_is_the_excluded_epic_is_dropped(self):
+        # 重算舊期時 epic 不在那一期的 snapshot，但卡已經掛在它底下
+        issues = base_issues() + [issue("CS-41", level=0, parent="CS-50", status="done", points=1.0, resolved=IN_WEEK),
+                                  issue("CS-42", level=-1, parent="CS-41", status="done", points=0.5, resolved=IN_WEEK)]
+        kept, checks = drop_excluded_epics(issues, {"CS-50": "行政作業"}, PERIOD, allow_missing=True)
+        self.assertEqual([i["key"] for i in kept], [i["key"] for i in base_issues()])
+        self.assertEqual([c["key"] for c in checks], ["CS-50"])
+
     def test_broken_parent_chain_is_left_to_the_usual_check_when_nothing_is_excluded(self):
         issues = [i for i in self.admin_issues() if i["key"] != "CS-31"]
         self.assertEqual(drop_excluded_epics(issues, {}, PERIOD, allow_missing=False), (issues, []))
