@@ -17,7 +17,7 @@ class AtomicWriteTest(unittest.TestCase):
         root = Path(self.tmp.name)
         (root / "config").mkdir()
         (root / "config" / "units.json").write_text('{"units": []}', encoding="utf-8")
-        (root / "config" / "excluded.json").write_text('{"cards": {}}', encoding="utf-8")
+        (root / "config" / "excluded.json").write_text('{"cards": {}, "epics": {}}', encoding="utf-8")
         self.patches = [
             mock.patch.object(weekly, "ROOT", root),
             mock.patch.object(weekly, "DATA", root / "data"),
@@ -135,18 +135,46 @@ class ExcludedConfigTest(AtomicWriteTest):
         (self.root / "config" / "excluded.json").write_text(text, encoding="utf-8")
 
     def test_excluded_file_is_applied(self):
-        self._write('{"cards": {"CS-3": "移轉補登"}}')
+        self._write('{"cards": {"CS-3": "移轉補登"}, "epics": {}}')
         metrics = weekly.publish_week(self._snap())
         self.assertEqual(metrics["totals"]["completed"], 0)
         self.assertIn(("excluded", "CS-3"), [(c["kind"], c["key"]) for c in metrics["checks"]])
 
     def test_malformed_file_is_rejected(self):
-        for text in ('{"cards": ["CS-3"]}', '{"cards": {"CS-3": ""}}', '{"cards": {"cs-3": "小寫"}}', '{}'):
+        for text in ('{"cards": ["CS-3"], "epics": {}}', '{"cards": {"CS-3": ""}, "epics": {}}',
+                     '{"cards": {"cs-3": "小寫"}, "epics": {}}', '{}', '{"cards": {}}', '{"cards": {}, "epics": ["CS-1"]}',
+                     '{"cards": {}, "epics": {"CS-1": " "}}', '{"cards": {}, "epics": {"cs-1": "小寫"}}'):
             with self.subTest(text=text):
                 self._write(text)
                 with self.assertRaises(ValueError):
                     weekly.load_excluded()
 
+
+    def test_excluded_epic_is_dropped_before_kickoff_lock_and_metrics(self):
+        # 接線：整棵移出要發生在 Kick off 鎖定之前，否則行政作業的 Kick off 也會被鎖定、列進資料檢查
+        self._write('{"cards": {}, "epics": {"CS-1": "行政作業"}}')
+        snap = self._snap()
+        snap["issues"].append(dict(issue("CS-2", level=0, parent="CS-1", type_="Kick off", status="done"), description=None))
+        metrics = weekly.publish_week(snap)
+        self.assertEqual(metrics["totals"]["completed"], 0)
+        self.assertEqual([e["id"] for e in metrics["epics"]], [])
+        self.assertEqual([(c["kind"], c["key"]) for c in metrics["checks"]], [("excluded_epic", "CS-1"), ("units_unconfigured", None)])
+        self.assertFalse((self.root / "data" / "kickoff").exists())
+        saved = json.loads((self.root / "data" / "2026-W39" / "snapshot.json").read_text(encoding="utf-8"))
+        self.assertEqual([i["key"] for i in saved["issues"]], ["CS-1", "CS-3", "CS-2"])  # 原始快照照存，不刪卡
+
+    def test_tokens_of_an_excluded_epic_do_not_count(self):
+        # Token 檔是另一個來源，只過濾 issues 的話，被排除的卡的 Token 會算進總量、還會被當成不明卡號列進資料檢查
+        self._write('{"cards": {}, "epics": {"CS-1": "行政作業"}}')
+        (self.root / "data" / "tokens").mkdir(parents=True)
+        (self.root / "data" / "tokens" / "2026-W38.json").write_text('{"CS-3": 40}', encoding="utf-8")
+        (self.root / "data" / "tokens" / "2026-W39.json").write_text('{"CS-1": 7, "CS-3": 100, "CS-9": 5}', encoding="utf-8")
+        snap = self._snap()
+        snap["issues"].append(issue("CS-9", level=0, status="done", points=1.0, resolved=IN_WEEK))
+        metrics = weekly.publish_week(snap)
+        self.assertEqual(metrics["totals"]["tokens"], 5)
+        self.assertEqual(metrics["cumulative"]["totals"]["tokens"], 5)
+        self.assertEqual([c["kind"] for c in metrics["checks"] if c["kind"] == "token_unknown_key"], [])
 
 class FinalizeArchiveTest(AtomicWriteTest):
     def test_backfilling_an_older_week_updates_the_index_archive(self):

@@ -11,6 +11,8 @@
   不讀舊期的 metrics。
 - 排除：config/excluded.json 列的卡不算完成，本週與累計的張數、工時、交付、人、支援單位都不算；
   epic 進度照 Jira 狀態算完成（2026-09-27 使用者裁：Squad 8 移轉時補建的 8 張不算當週）。
+- 整棵排除：config/excluded.json 的 epics 列的 epic 連同底下所有卡在算之前就移出，不列專案、不算數字、
+  不做 Kick off 鎖定與資料檢查（2026-09-29 使用者裁：行政作業 epic 不放入成效統計）。
 """
 from __future__ import annotations
 
@@ -123,6 +125,44 @@ def _progress(group_leaves: list, is_done=_done) -> dict:
         "unestimated_cards": sum(1 for i in group_leaves if i["points"] is None),
     }
 
+
+def drop_excluded_epics(issues: list, excluded_epics: dict, period) -> tuple:
+    """回傳 (留下的卡, checks)。excluded_epics 是 {epic 卡號: 理由}，epic 本身與底下所有卡（一般卡、子任務、Kick off）都移出。
+    要在 Kick off 鎖定與 compute 之前呼叫：只在 compute 裡扣掉的話，Kick off 照樣會被鎖定、epic 照樣列進資料檢查。
+    本期有一般卡完成的 epic 在資料待補列一行帶理由，讓人知道有完成卡被拿掉；沒有就不列，不每週重複。"""
+    by_key = {i["key"]: i for i in issues}
+    # 列了非 epic 的卡號，整棵移出等於只移出那張卡跟它的子卡，看起來卻像排除了一個專案，所以直接失敗。
+    # 卡號不在 snapshot 放行：重算舊期時那個 epic 可能還不存在。
+    not_epic = sorted((k for k in excluded_epics if k in by_key and by_key[k]["level"] != EPIC_LEVEL), key=issue_sort_key)
+    if not_epic:
+        raise ValueError(f"config/excluded.json 的 epics 只能列 epic，這些不是：{'、'.join(not_epic)}")
+
+    def excluded_root(issue: dict):
+        seen = set()
+        current = issue
+        while current is not None:
+            if current["key"] in excluded_epics:
+                return current["key"]
+            if current["key"] in seen:
+                raise ValueError(f"父系關係有循環：{issue['key']}")
+            seen.add(current["key"])
+            current = by_key.get(current["parent"]) if current["parent"] else None
+        return None
+
+    kept, dropped = [], {}
+    for item in issues:
+        root = excluded_root(item)
+        if root is None:
+            kept.append(item)
+        else:
+            dropped.setdefault(root, []).append(item)
+    checks = []
+    for epic in sorted(dropped, key=issue_sort_key):
+        done = [i for i in dropped[epic] if i["level"] < EPIC_LEVEL and i["type"] != KICKOFF_TYPE and _done(i)
+                and i["resolved"] and period.contains(parse_jira_time(i["resolved"]))]
+        if done:
+            checks.append(_check("excluded_epic", epic, f"依 config/excluded.json 整個 epic 不列入週報，本週完成的 {len(done)} 張不算：{excluded_epics[epic]}"))
+    return kept, checks
 
 def kickoff_by_epic(issues: list) -> tuple:
     """回傳 ({epic: kickoff issue}, checks)。一個 epic 多張 Kick off 取卡號最小的一張並列進資料檢查。"""

@@ -23,7 +23,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib import kickoff as kickoff_lib  # noqa: E402
 from lib.jira import JiraClient, load_credentials  # noqa: E402
-from lib.metrics import compute, kickoff_by_epic  # noqa: E402
+from lib.metrics import compute, drop_excluded_epics, kickoff_by_epic  # noqa: E402
 from lib.narrative import validate  # noqa: E402
 from lib.period import TZ, period_ending, period_for, period_from_dict, wait_for_end  # noqa: E402
 from lib.render import render  # noqa: E402
@@ -62,20 +62,24 @@ def load_units() -> list:
     return units
 
 
-def load_excluded() -> dict:
-    """不算完成的卡：{卡號: 理由}。檔案必須存在，沒有要排除的就寫 {"cards": {}}。
+def load_excluded() -> tuple:
+    """回傳 (cards, epics)，兩個都是 {卡號: 理由}。cards 列的卡不算完成；epics 列的 epic 連同底下所有卡不列入週報。
+    檔案必須存在，兩個欄位都要有，沒有要排除的就寫 {}。
     卡號格式錯了直接失敗：打錯的卡號不會排除任何東西，而且看起來跟沒排除一樣。"""
     data = read_json(EXCLUDED_FILE)
-    cards = data.get("cards")
     where = EXCLUDED_FILE.relative_to(ROOT)
-    if not isinstance(cards, dict):
-        raise ValueError(f"{where} 的 cards 必須是 {{卡號: 理由}}（沒有要排除的卡就寫 {{}}）")
-    for key, reason in cards.items():
-        if not CARD_KEY.fullmatch(key):
-            raise ValueError(f"{where} 的卡號格式不對：{key!r}")
-        if not isinstance(reason, str) or not reason.strip():
-            raise ValueError(f"{where} 的 {key} 沒有寫排除理由")
-    return cards
+    found = []
+    for field in ("cards", "epics"):
+        entries = data.get(field)
+        if not isinstance(entries, dict):
+            raise ValueError(f"{where} 的 {field} 必須是 {{卡號: 理由}}（沒有要排除的就寫 {{}}）")
+        for key, reason in entries.items():
+            if not CARD_KEY.fullmatch(key):
+                raise ValueError(f"{where} 的 {field} 卡號格式不對：{key!r}")
+            if not isinstance(reason, str) or not reason.strip():
+                raise ValueError(f"{where} 的 {field} {key} 沒有寫排除理由")
+        found.append(entries)
+    return tuple(found)
 
 
 def load_tokens(week: str):
@@ -118,9 +122,13 @@ def _read_tokens(path: Path) -> dict:
 def compute_week(snapshot: dict) -> tuple:
     """只算不寫：回傳 (metrics, {路徑: 要寫的內容})。任何一步失敗都不會留下檔案。"""
     period = period_from_dict(snapshot["period"])
-    found, checks = kickoff_by_epic(snapshot["issues"])
+    excluded_cards, excluded_epics = load_excluded()
+    # 整棵排除要在 Kick off 鎖定之前：被排除的 epic 不鎖定、不列資料檢查。存檔的 snapshot 仍是原始的全部卡片。
+    issues, checks = drop_excluded_epics(snapshot["issues"], excluded_epics, period)
+    found, kickoff_checks = kickoff_by_epic(issues)
+    checks += kickoff_checks
     seen_at = snapshot["fetched_at"]
-    epics = {i["key"] for i in snapshot["issues"] if i["level"] == EPIC_LEVEL}
+    epics = {i["key"] for i in issues if i["level"] == EPIC_LEVEL}
     lock_dir = DATA / "kickoff"
     locked = {p.stem for p in lock_dir.glob("*.json")} if lock_dir.is_dir() else set()
     states, writes = {}, {}
@@ -138,11 +146,19 @@ def compute_week(snapshot: dict) -> tuple:
         if state != existing:
             writes[path] = state
         states[epic] = state
-    metrics = compute(snapshot, period, load_units(), load_tokens(period.week_id), states, checks, excluded=load_excluded(),
-                      cumulative_tokens=load_cumulative_tokens(period.week_id))
+    # Token 檔是另一個來源：被整棵排除的卡的 Token 也要拿掉，否則會算進總量、還被當成不明卡號列進資料檢查
+    dropped = {i["key"] for i in snapshot["issues"]} - {i["key"] for i in issues}
+    metrics = compute(dict(snapshot, issues=issues), period, load_units(), _without(load_tokens(period.week_id), dropped),
+                      states, checks, excluded=excluded_cards,
+                      cumulative_tokens=_without(load_cumulative_tokens(period.week_id), dropped))
     writes[week_dir(period.week_id) / "metrics.json"] = metrics
     return metrics, writes
 
+
+
+def _without(tokens, keys: set):
+    """None 代表沒有 Token 資料，照傳；有資料就拿掉 keys。"""
+    return None if tokens is None else {k: v for k, v in tokens.items() if k not in keys}
 
 def publish_week(snapshot: dict) -> dict:
     """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。"""
