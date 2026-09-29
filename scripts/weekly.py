@@ -123,11 +123,19 @@ def _read_tokens(path: Path) -> dict:
 def excluded_view(snapshot: dict, *, fresh_fetch: bool) -> tuple:
     """回傳 (cards, epics, 留下的卡, checks)：cards、epics 是 config/excluded.json 的兩欄，留下的卡已扣掉整棵排除的 epic。
     compute_week 與 finalize 共用，metrics 與 narrative 驗證才會是同一個範圍。
-    fresh_fetch 只在 prepare 剛抓完 Jira 時為 True：這時找不到設定的 epic 就是卡號打錯或 epic 不見了，直接失敗。
-    重算與 finalize 放行：epic 可能比那一期的 snapshot 晚建，下一次 prepare 會再驗。"""
+    fresh_fetch 只在 prepare 剛抓完 Jira 時為 True：這時找不到設定的卡或 epic 就是卡號打錯或卡不見了，直接失敗。
+    重算與 finalize 放行但印警告：卡可能比那一期的 snapshot 晚建，下一次 prepare 會再驗。"""
     period = period_from_dict(snapshot["period"])
     cards, epics = load_excluded()
+    present = {i["key"] for i in snapshot["issues"]}
+    missing_cards = sorted((k for k in cards if k not in present), key=issue_sort_key)
+    if missing_cards and fresh_fetch:
+        raise ValueError(f"config/excluded.json 的 cards 在這一期的 snapshot 裡找不到：{'、'.join(missing_cards)}（卡號打錯，或卡被刪除、搬到別的專案）")
     issues, checks = drop_excluded_epics(snapshot["issues"], epics, period, allow_missing=not fresh_fetch)
+    missing = sorted((k for k in [*cards, *epics] if k not in present), key=issue_sort_key)
+    if missing:
+        print(f"注意：config/excluded.json 列的 {'、'.join(missing)} 不在 {period.week_id} 的 snapshot 裡；"
+              "這一期放行（可能是之後才建的卡），卡號打錯的話下一次 prepare 會失敗", file=sys.stderr)
     return cards, epics, issues, checks
 
 
@@ -171,7 +179,7 @@ def _without(tokens, keys: set):
     """None 代表沒有 Token 資料，照傳；有資料就拿掉 keys。"""
     return None if tokens is None else {k: v for k, v in tokens.items() if k not in keys}
 
-def publish_week(snapshot: dict, *, fresh_fetch: bool = False) -> dict:
+def publish_week(snapshot: dict, *, fresh_fetch: bool) -> dict:
     """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。只有 prepare 剛抓完 Jira 時傳 fresh_fetch=True。"""
     metrics, writes = compute_week(snapshot, fresh_fetch=fresh_fetch)
     writes[week_dir(metrics["period"]["week"]) / "snapshot.json"] = snapshot
@@ -201,17 +209,19 @@ def cmd_metrics(args) -> None:
     snapshot = read_json(week_dir(args.week) / "snapshot.json")
     if snapshot["period"]["week"] != args.week:
         raise ValueError(f"snapshot 的期間是 {snapshot['period']['week']}，不是 {args.week}")
-    metrics = publish_week(snapshot)
+    metrics = publish_week(snapshot, fresh_fetch=False)
     print(f"{args.week}：本週完成 {metrics['totals']['completed']} 張", file=sys.stderr)
 
 
 
-def refuse_stale_metrics(week: str, metrics: dict, excluded_epics: dict) -> None:
-    """metrics.json 是之後才把 epic 加進排除前算的，頁面會照樣列出那個專案，直接失敗。"""
-    shown = {e["key"] for e in metrics["epics"] + metrics["cumulative"]["epics"] if e["key"]}
-    stale = sorted(set(excluded_epics) & shown, key=issue_sort_key)
+def refuse_stale_metrics(week: str, metrics: dict, excluded_cards: dict, excluded_epics: dict) -> None:
+    """metrics.json 是之後才把卡或 epic 加進排除前算的：頁面會照樣把排除的卡列成完成、照樣列出排除的專案，直接失敗。"""
+    shown_epics = {e["key"] for e in metrics["epics"] + metrics["cumulative"]["epics"] if e["key"]}
+    shown_cards = {c["key"] for c in metrics["completed"] + metrics["cumulative"]["completed"]}
+    stale = sorted((set(excluded_epics) & shown_epics) | (set(excluded_cards) & shown_cards), key=issue_sort_key)
     if stale:
-        raise ValueError(f"{week} 的 metrics.json 還列著 config/excluded.json 排除的 epic：{'、'.join(stale)}，先跑 metrics {week} 重算")
+        raise ValueError(f"{week} 的 metrics.json 還算著 config/excluded.json 排除的卡或 epic：{'、'.join(stale)}，先跑 metrics {week} 重算")
+
 
 def cmd_finalize(args) -> None:
     week = args.week
@@ -220,8 +230,8 @@ def cmd_finalize(args) -> None:
     metrics = read_json(folder / "metrics.json")
     narrative = read_json(folder / "narrative.json")
     # 可引用的卡號跟 metrics 同一個範圍：被整棵排除的卡不能經由文字回到公開頁面
-    _, epics, issues, _ = excluded_view(snapshot, fresh_fetch=False)
-    refuse_stale_metrics(week, metrics, epics)
+    cards, epics, issues, _ = excluded_view(snapshot, fresh_fetch=False)
+    refuse_stale_metrics(week, metrics, cards, epics)
     validate(narrative, metrics, {i["key"] for i in issues})
 
     reports = SITE / "reports"
@@ -232,10 +242,13 @@ def cmd_finalize(args) -> None:
     if latest != week:
         index_metrics = read_json(week_dir(latest) / "metrics.json")
         index_narrative = read_json(week_dir(latest) / "narrative.json")
-        refuse_stale_metrics(latest, index_metrics, epics)
+        refuse_stale_metrics(latest, index_metrics, cards, epics)
+    # 兩頁都畫完才寫：首頁畫失敗時不能留下已更新的週報頁
+    report_html = render(metrics, narrative, weeks, in_reports_dir=True)
+    index_html = render(index_metrics, index_narrative, weeks, in_reports_dir=False)
     reports.mkdir(parents=True, exist_ok=True)
-    (reports / f"{week}.html").write_text(render(metrics, narrative, weeks, in_reports_dir=True), encoding="utf-8")
-    (SITE / "index.html").write_text(render(index_metrics, index_narrative, weeks, in_reports_dir=False), encoding="utf-8")
+    (reports / f"{week}.html").write_text(report_html, encoding="utf-8")
+    (SITE / "index.html").write_text(index_html, encoding="utf-8")
     print(f"已更新 site/reports/{week}.html，site/index.html 為最新一期 {latest}", file=sys.stderr)
 
 
