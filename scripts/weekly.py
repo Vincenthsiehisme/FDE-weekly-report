@@ -23,7 +23,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib import kickoff as kickoff_lib  # noqa: E402
 from lib.jira import JiraClient, load_credentials  # noqa: E402
-from lib.metrics import compute, kickoff_by_epic  # noqa: E402
+from lib.metrics import compute, drop_excluded_epics, kickoff_by_epic  # noqa: E402
 from lib.narrative import validate  # noqa: E402
 from lib.period import TZ, period_ending, period_for, period_from_dict, wait_for_end  # noqa: E402
 from lib.render import render  # noqa: E402
@@ -62,20 +62,24 @@ def load_units() -> list:
     return units
 
 
-def load_excluded() -> dict:
-    """不算完成的卡：{卡號: 理由}。檔案必須存在，沒有要排除的就寫 {"cards": {}}。
+def load_excluded() -> tuple:
+    """回傳 (cards, epics)，兩個都是 {卡號: 理由}。cards 列的卡不算完成；epics 列的 epic 連同底下所有卡不列入週報。
+    檔案必須存在，兩個欄位都要有，沒有要排除的就寫 {}。
     卡號格式錯了直接失敗：打錯的卡號不會排除任何東西，而且看起來跟沒排除一樣。"""
     data = read_json(EXCLUDED_FILE)
-    cards = data.get("cards")
     where = EXCLUDED_FILE.relative_to(ROOT)
-    if not isinstance(cards, dict):
-        raise ValueError(f"{where} 的 cards 必須是 {{卡號: 理由}}（沒有要排除的卡就寫 {{}}）")
-    for key, reason in cards.items():
-        if not CARD_KEY.fullmatch(key):
-            raise ValueError(f"{where} 的卡號格式不對：{key!r}")
-        if not isinstance(reason, str) or not reason.strip():
-            raise ValueError(f"{where} 的 {key} 沒有寫排除理由")
-    return cards
+    found = []
+    for field in ("cards", "epics"):
+        entries = data.get(field)
+        if not isinstance(entries, dict):
+            raise ValueError(f"{where} 的 {field} 必須是 {{卡號: 理由}}（沒有要排除的就寫 {{}}）")
+        for key, reason in entries.items():
+            if not CARD_KEY.fullmatch(key):
+                raise ValueError(f"{where} 的 {field} 卡號格式不對：{key!r}")
+            if not isinstance(reason, str) or not reason.strip():
+                raise ValueError(f"{where} 的 {field} {key} 沒有寫排除理由")
+        found.append(entries)
+    return tuple(found)
 
 
 def load_tokens(week: str):
@@ -115,12 +119,27 @@ def _read_tokens(path: Path) -> dict:
     return data
 
 
-def compute_week(snapshot: dict) -> tuple:
-    """只算不寫：回傳 (metrics, {路徑: 要寫的內容})。任何一步失敗都不會留下檔案。"""
+
+def excluded_view(snapshot: dict, *, fresh_fetch: bool) -> tuple:
+    """回傳 (cards, epics, 留下的卡, checks)：cards、epics 是 config/excluded.json 的兩欄，留下的卡已扣掉整棵排除的 epic。
+    compute_week 與 finalize 共用，metrics 與 narrative 驗證才會是同一個範圍。
+    fresh_fetch 只在 prepare 剛抓完 Jira 時為 True：這時找不到設定的 epic 就是卡號打錯或 epic 不見了，直接失敗。
+    重算與 finalize 放行：epic 可能比那一期的 snapshot 晚建，下一次 prepare 會再驗。"""
     period = period_from_dict(snapshot["period"])
-    found, checks = kickoff_by_epic(snapshot["issues"])
+    cards, epics = load_excluded()
+    issues, checks = drop_excluded_epics(snapshot["issues"], epics, period, allow_missing=not fresh_fetch)
+    return cards, epics, issues, checks
+
+
+def compute_week(snapshot: dict, *, fresh_fetch: bool) -> tuple:
+    """只算不寫：回傳 (metrics, {路徑: 要寫的內容})。任何一步失敗都不會留下檔案。fresh_fetch 見 excluded_view。"""
+    period = period_from_dict(snapshot["period"])
+    # 整棵排除要在 Kick off 鎖定之前：被排除的 epic 不鎖定、不列資料檢查。存檔的 snapshot 仍是原始的全部卡片。
+    excluded_cards, _, issues, checks = excluded_view(snapshot, fresh_fetch=fresh_fetch)
+    found, kickoff_checks = kickoff_by_epic(issues)
+    checks += kickoff_checks
     seen_at = snapshot["fetched_at"]
-    epics = {i["key"] for i in snapshot["issues"] if i["level"] == EPIC_LEVEL}
+    epics = {i["key"] for i in issues if i["level"] == EPIC_LEVEL}
     lock_dir = DATA / "kickoff"
     locked = {p.stem for p in lock_dir.glob("*.json")} if lock_dir.is_dir() else set()
     states, writes = {}, {}
@@ -138,15 +157,23 @@ def compute_week(snapshot: dict) -> tuple:
         if state != existing:
             writes[path] = state
         states[epic] = state
-    metrics = compute(snapshot, period, load_units(), load_tokens(period.week_id), states, checks, excluded=load_excluded(),
-                      cumulative_tokens=load_cumulative_tokens(period.week_id))
+    # Token 檔是另一個來源：被整棵排除的卡的 Token 也要拿掉，否則會算進總量、還被當成不明卡號列進資料檢查
+    dropped = {i["key"] for i in snapshot["issues"]} - {i["key"] for i in issues}
+    metrics = compute(dict(snapshot, issues=issues), period, load_units(), _without(load_tokens(period.week_id), dropped),
+                      states, checks, excluded=excluded_cards,
+                      cumulative_tokens=_without(load_cumulative_tokens(period.week_id), dropped))
     writes[week_dir(period.week_id) / "metrics.json"] = metrics
     return metrics, writes
 
 
-def publish_week(snapshot: dict) -> dict:
-    """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。"""
-    metrics, writes = compute_week(snapshot)
+
+def _without(tokens, keys: set):
+    """None 代表沒有 Token 資料，照傳；有資料就拿掉 keys。"""
+    return None if tokens is None else {k: v for k, v in tokens.items() if k not in keys}
+
+def publish_week(snapshot: dict, *, fresh_fetch: bool = False) -> dict:
+    """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。只有 prepare 剛抓完 Jira 時傳 fresh_fetch=True。"""
+    metrics, writes = compute_week(snapshot, fresh_fetch=fresh_fetch)
     writes[week_dir(metrics["period"]["week"]) / "snapshot.json"] = snapshot
     for path in sorted(writes):
         write_json(path, writes[path])
@@ -163,7 +190,7 @@ def cmd_prepare(args) -> None:
             time.sleep(seconds)
             now = datetime.now(TZ)
     snapshot = fetch_snapshot(JiraClient(load_credentials()), period, now)
-    metrics = publish_week(snapshot)
+    metrics = publish_week(snapshot, fresh_fetch=True)
     t = metrics["totals"]
     print(f"snapshot：{sum(snapshot['counts'].values())} 張卡 {snapshot['counts']}", file=sys.stderr)
     print(f"本週完成 {t['completed']} 張、交付 {t['deliverables']} 項、{t['hours']:g}h；資料檢查 {len(metrics['checks'])} 項", file=sys.stderr)
@@ -178,24 +205,37 @@ def cmd_metrics(args) -> None:
     print(f"{args.week}：本週完成 {metrics['totals']['completed']} 張", file=sys.stderr)
 
 
+
+def refuse_stale_metrics(week: str, metrics: dict, excluded_epics: dict) -> None:
+    """metrics.json 是之後才把 epic 加進排除前算的，頁面會照樣列出那個專案，直接失敗。"""
+    shown = {e["key"] for e in metrics["epics"] + metrics["cumulative"]["epics"] if e["key"]}
+    stale = sorted(set(excluded_epics) & shown, key=issue_sort_key)
+    if stale:
+        raise ValueError(f"{week} 的 metrics.json 還列著 config/excluded.json 排除的 epic：{'、'.join(stale)}，先跑 metrics {week} 重算")
+
 def cmd_finalize(args) -> None:
     week = args.week
     folder = week_dir(week)
     snapshot = read_json(folder / "snapshot.json")
     metrics = read_json(folder / "metrics.json")
     narrative = read_json(folder / "narrative.json")
-    validate(narrative, metrics, {i["key"] for i in snapshot["issues"]})
+    # 可引用的卡號跟 metrics 同一個範圍：被整棵排除的卡不能經由文字回到公開頁面
+    _, epics, issues, _ = excluded_view(snapshot, fresh_fetch=False)
+    refuse_stale_metrics(week, metrics, epics)
+    validate(narrative, metrics, {i["key"] for i in issues})
 
     reports = SITE / "reports"
     weeks = sorted({p.stem for p in reports.glob("*.html") if WEEK_ID.fullmatch(p.stem)} | {week}, reverse=True)
+    # 首頁永遠是最新一期；補建舊的一期時也重繪，歷史清單才會多出那一期。重繪用的那份 metrics 也要檢查，寫檔前一起擋
+    latest = weeks[0]
+    index_metrics, index_narrative = metrics, narrative
+    if latest != week:
+        index_metrics = read_json(week_dir(latest) / "metrics.json")
+        index_narrative = read_json(week_dir(latest) / "narrative.json")
+        refuse_stale_metrics(latest, index_metrics, epics)
     reports.mkdir(parents=True, exist_ok=True)
     (reports / f"{week}.html").write_text(render(metrics, narrative, weeks, in_reports_dir=True), encoding="utf-8")
-    # 首頁永遠是最新一期；補建舊的一期時也重繪，歷史清單才會多出那一期
-    latest = weeks[0]
-    if latest != week:
-        metrics = read_json(week_dir(latest) / "metrics.json")
-        narrative = read_json(week_dir(latest) / "narrative.json")
-    (SITE / "index.html").write_text(render(metrics, narrative, weeks, in_reports_dir=False), encoding="utf-8")
+    (SITE / "index.html").write_text(render(index_metrics, index_narrative, weeks, in_reports_dir=False), encoding="utf-8")
     print(f"已更新 site/reports/{week}.html，site/index.html 為最新一期 {latest}", file=sys.stderr)
 
 

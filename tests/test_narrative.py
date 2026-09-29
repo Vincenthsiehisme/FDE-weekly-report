@@ -30,7 +30,7 @@ class NarrativeTest(unittest.TestCase):
         validate(narrative(highlights=["完成CS-2，本週3.5h"]), METRICS, KEYS)
 
     def test_unknown_issue_key_rejected(self):
-        with self.assertRaisesRegex(NarrativeError, "不存在的卡號 CS-99"):
+        with self.assertRaisesRegex(NarrativeError, "不存在或已排除的卡號 CS-99"):
             validate(narrative(highlights=["完成 CS-99"]), METRICS, KEYS)
 
     def test_invented_number_rejected(self):
