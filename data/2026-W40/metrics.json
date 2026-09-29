@@ -1,0 +1,3219 @@
+{
+  "checks": [
+    {
+      "key": "FDEPROJECT-119",
+      "kind": "excluded_epic",
+      "message": "依 config/excluded.json 整個 epic 不列入週報，本週完成的 1 張不算：行政作業不是專案成效；2026-09-29 使用者裁不放入成效統計"
+    },
+    {
+      "key": "FDEPROJECT-131",
+      "kind": "kickoff_without_epic",
+      "message": "Kick off 卡的父系不是 epic，無法對應專案"
+    },
+    {
+      "key": "FDEPROJECT-3",
+      "kind": "excluded",
+      "message": "依 config/excluded.json 不算本週與累計完成：Squad 8 移轉補登：09-23 14:55 在 S8 建立即結案、15:10 搬入；2026-09-27 使用者裁不算當週"
+    },
+    {
+      "key": "FDEPROJECT-13",
+      "kind": "excluded",
+      "message": "依 config/excluded.json 不算本週與累計完成：Squad 8 移轉補登：09-23 14:55 在 S8 建立即結案、15:10 搬入；2026-09-27 使用者裁不算當週"
+    },
+    {
+      "key": "FDEPROJECT-15",
+      "kind": "excluded",
+      "message": "依 config/excluded.json 不算本週與累計完成：Squad 8 移轉補登：09-23 14:55 在 S8 建立即結案、15:10 搬入；2026-09-27 使用者裁不算當週"
+    },
+    {
+      "key": "FDEPROJECT-17",
+      "kind": "excluded",
+      "message": "依 config/excluded.json 不算本週與累計完成：Squad 8 移轉補登：09-23 14:55 在 S8 建立即結案、15:10 搬入；2026-09-27 使用者裁不算當週"
+    },
+    {
+      "key": "FDEPROJECT-21",
+      "kind": "excluded",
+      "message": "依 config/excluded.json 不算本週與累計完成：Squad 8 移轉補登：09-23 14:55 在 S8 建立即結案、15:10 搬入；2026-09-27 使用者裁不算當週"
+    },
+    {
+      "key": "FDEPROJECT-64",
+      "kind": "excluded",
+      "message": "依 config/excluded.json 不算本週與累計完成：Squad 8 移轉補登：09-23 14:55 在 S8 建立即結案、15:10 搬入；2026-09-27 使用者裁不算當週"
+    },
+    {
+      "key": "FDEPROJECT-65",
+      "kind": "excluded",
+      "message": "依 config/excluded.json 不算本週與累計完成：Squad 8 移轉補登：09-23 14:55 在 S8 建立即結案、15:10 搬入；2026-09-27 使用者裁不算當週"
+    },
+    {
+      "key": "FDEPROJECT-75",
+      "kind": "excluded",
+      "message": "依 config/excluded.json 不算本週與累計完成：移轉補建：09-24 11:14 與 epic FDEPROJECT-71 同時建立、11:15 結案；2026-09-27 使用者裁不算當週"
+    },
+    {
+      "key": "FDEPROJECT-4",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-74",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-100",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-101",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-102",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-103",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-104",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-105",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-106",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-107",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-123",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-124",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-125",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-126",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-127",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "FDEPROJECT-128",
+      "kind": "unestimated",
+      "message": "本週完成但沒有估點，Hours 以 0 計"
+    },
+    {
+      "key": "CS-7",
+      "kind": "kickoff_missing",
+      "message": "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"
+    },
+    {
+      "key": "FDEPROJECT-72",
+      "kind": "kickoff_missing",
+      "message": "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"
+    },
+    {
+      "key": null,
+      "kind": "units_unconfigured",
+      "message": "config/units.json 白名單是空的，支援單位全部歸未分類"
+    },
+    {
+      "key": null,
+      "kind": "unit_unknown_label",
+      "message": "label「notion_user」不在 config/units.json 白名單，歸為未分類"
+    },
+    {
+      "key": null,
+      "kind": "unit_unknown_label",
+      "message": "label「門市」不在 config/units.json 白名單，歸為未分類"
+    }
+  ],
+  "completed": [
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-4",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-4",
+      "summary": "商品詳情改接官網資料 API，取代爬網頁：規格交 MCP 團隊",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-74",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-74",
+      "summary": "MCP 兩支現有工具參數有誤：查名額沒帶日期查不到梯次、單程機票一律查不到",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-78",
+      "hours": 0.5,
+      "key": "FDEPROJECT-80",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-78 培訓課程網站",
+      "root": "FDEPROJECT-80",
+      "summary": "內容解析：十節教材與十場工作坊轉成結構化內容",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-78",
+      "hours": 0.5,
+      "key": "FDEPROJECT-81",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-78 培訓課程網站",
+      "root": "FDEPROJECT-81",
+      "summary": "第二節工作坊：圖片轉文字並校對數字",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-78",
+      "hours": 0.5,
+      "key": "FDEPROJECT-82",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-78 培訓課程網站",
+      "root": "FDEPROJECT-82",
+      "summary": "每節頁面：教材／工作坊／課後講義三頁籤",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-78",
+      "hours": 0.5,
+      "key": "FDEPROJECT-83",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-78 培訓課程網站",
+      "root": "FDEPROJECT-83",
+      "summary": "首頁導覽、十節時間軸與名詞索引",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-78",
+      "hours": 0.5,
+      "key": "FDEPROJECT-84",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-78 培訓課程網站",
+      "root": "FDEPROJECT-84",
+      "summary": "投影模式：一題一畫面、鍵盤翻頁、工作坊倒數",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-78",
+      "hours": 0.5,
+      "key": "FDEPROJECT-85",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-78 培訓課程網站",
+      "root": "FDEPROJECT-85",
+      "summary": "手機與深淺色走查",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-78",
+      "hours": 0.5,
+      "key": "FDEPROJECT-86",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-78 培訓課程網站",
+      "root": "FDEPROJECT-86",
+      "summary": "向祥董取得 20 張圖的原始高解析檔",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-78",
+      "hours": 0.5,
+      "key": "FDEPROJECT-87",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-78 培訓課程網站",
+      "root": "FDEPROJECT-87",
+      "summary": "與祥董確認網站內容",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-78",
+      "hours": 0.5,
+      "key": "FDEPROJECT-88",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-78 培訓課程網站",
+      "root": "FDEPROJECT-88",
+      "summary": "部署上線",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-89",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-89",
+      "summary": "跨平台前置：Windows 能跑、CI 兩平台三條 gate",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-90",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-90",
+      "summary": "Gateway：邀請碼換 Gemini key 與名單，加名單發布",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-91",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-91",
+      "summary": "共享資料夾：OneDrive「MeetPilot 記錄」與記錄人子資料夾",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-92",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-92",
+      "summary": "E1 桌面 app 外殼：Electron .dmg／.exe",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-93",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-93",
+      "summary": "E2 隨附 ffmpeg（LGPL 自編）",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-94",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-94",
+      "summary": "E3 首次設定畫面：邀請碼與投影資料夾",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-95",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-95",
+      "summary": "E4 app 內錄音",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-96",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-96",
+      "summary": "E5 更新通道：從共享資料夾更新",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-97",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-97",
+      "summary": "E6 Windows 實機端到端",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-100",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-100",
+      "summary": "MCP 共用請求層補防護：每個上游請求都有逾時與錯誤紀錄、log 不再灌爆 Loki、UA 統一",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-101",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-101",
+      "summary": "單程機票查空的第二個原因：MCP 把 www 的防火牆 cookie 送到機票網域，改照瀏覽器規則分域",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-102",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-102",
+      "summary": "新增 MCP 工具 tour-detail：團體行程的逐日行程、費用、航班、集合地點一次查齊",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-103",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-103",
+      "summary": "新增 MCP 工具 hotel-rooms：指定日期與人數查房型方案、價格、餐食與取消規定",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-104",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-104",
+      "summary": "新增 MCP 工具 ticket-detail：票券規格、可售日期與票價、場次、取消規定",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-105",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-105",
+      "summary": "機票搜尋每段帶出行李、餐食、選位與改退摘要；廉航行李改顯示實際額度",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-106",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-106",
+      "summary": "新增 MCP 工具 hotel-info：飯店介紹、設施、入住時間與住客評論（不需日期）",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-107",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-107",
+      "summary": "MCP 上游連線失敗自動重試一次：官網偶發斷線或 502/503 不再直接回錯",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-110",
+      "hours": 0.5,
+      "key": "FDEPROJECT-112",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-110 Notion 會議記錄轉拋",
+      "root": "FDEPROJECT-112",
+      "summary": "一期：擴充功能連結 Notion 並讀取當前頁",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-110",
+      "hours": 0.25,
+      "key": "FDEPROJECT-113",
+      "leaf": true,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-110 Notion 會議記錄轉拋",
+      "root": "FDEPROJECT-113",
+      "summary": "一期：記錄格式對齊 MeetPilot 外殼",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-123",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-123",
+      "summary": "團體搜尋 9/28 夜間起全部失敗：上游小圖欄位改回空值，MCP 格式檢查擋掉整筆",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-124",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-124",
+      "summary": "MCP 工具呼叫失敗一律寫入錯誤紀錄，含整支被格式檢查擋下的情況",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-125",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-125",
+      "summary": "機票票價明細移除重複的行李欄位，飯店評論說明不再寫死日期",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-126",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-126",
+      "summary": "團體搜尋不再把同業價交給 AI",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-127",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-127",
+      "summary": "LINE AI 接上 MCP 詳情工具：dify dev 與正式站、LIFF 查詢進度",
+      "tokens": null
+    },
+    {
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-128",
+      "leaf": true,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-128",
+      "summary": "業務規範 skill v4：郵輪、飯店、票券的講法規則",
+      "tokens": null
+    }
+  ],
+  "cumulative": {
+    "completed": [
+      {
+        "group": "CS-25",
+        "hours": 2.0,
+        "key": "CS-5",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-5",
+        "summary": "地接社飯店資料格式調查（Agent Workflow 前置分析）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-7",
+        "hours": null,
+        "key": "CS-9",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-7 開工確認",
+        "root": "CS-4",
+        "summary": "確認公司信箱開通",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-7",
+        "hours": null,
+        "key": "CS-12",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-7 開工確認",
+        "root": "CS-4",
+        "summary": "Jira 登入與 CS/202 board 確認",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-7",
+        "hours": null,
+        "key": "CS-13",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-7 開工確認",
+        "root": "CS-4",
+        "summary": "FortiClient 安裝、註冊與 VPN 連線",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-7",
+        "hours": null,
+        "key": "CS-14",
+        "leaf": true,
+        "owner": "hubertwang",
+        "project": "CS-7 開工確認",
+        "root": "CS-4",
+        "summary": "Teams 登入確認",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": null,
+        "key": "CS-16",
+        "leaf": false,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "地接社飯店資料解析 Pipeline 建置",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 1.5,
+        "key": "CS-17",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "回覆信串偵測與隔離模組（reply_isolate.py）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 1.25,
+        "key": "CS-18",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "表格式地接社解析器（Palma／Kuoni Tumlare／Happy Tours／Vosaio）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 1.25,
+        "key": "CS-19",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "G2 兩種特殊格式解析器（表格式＋文字信件式）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 0.5,
+        "key": "CS-20",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "MIKI PDF 附件解析（pdfplumber）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 0.5,
+        "key": "CS-21",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "OP 端輸出文件產生器（docx）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 2.0,
+        "key": "CS-22",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "Pipeline 部署至 VM（20.77.26.79）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "CS-25",
+        "hours": 0.5,
+        "key": "CS-23",
+        "leaf": true,
+        "owner": "未指派",
+        "project": "CS-25 歐洲地接社-房產品資料彙整",
+        "root": "CS-16",
+        "summary": "建立 GitHub Repo 並改用 Git 部署至 VM",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 3.0,
+        "key": "FDEPROJECT-2",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-2",
+        "summary": "lineOA production search -fallback",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-4",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-4",
+        "summary": "商品詳情改接官網資料 API，取代爬網頁：規格交 MCP 團隊",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 1.0,
+        "key": "FDEPROJECT-6",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-6",
+        "summary": "LINE bot 轉真人客服（三層觸發＋後台人工接手）",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 1.0,
+        "key": "FDEPROJECT-7",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-7",
+        "summary": "客服 FAQ 1863 則導入 Dify 知識庫",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 1.0,
+        "key": "FDEPROJECT-8",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-8",
+        "summary": "LINE 官方帳號 AI 搜尋機器人上線（雙 bot 同版）",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-9",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-9",
+        "summary": "新版 LIFF 前端接上真實後端：五塊模擬全部換成真服務，舊版保留在 /old",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 3.0,
+        "key": "FDEPROJECT-11",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-11",
+        "summary": "LIFF 對話式商品搜尋前端：把搜尋搬到網頁，只在需要真人時回到 LINE 對話",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 1.0,
+        "key": "FDEPROJECT-14",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-14",
+        "summary": "LINE 圖片問答可行性評估（暫不做，待 Dify 新版支援）",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": 1.0,
+        "key": "FDEPROJECT-16",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-16",
+        "summary": "Dify AGENTS app 結構化輸出落地（卡片改為不經 LLM）",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-18",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-18",
+        "summary": "行銷活動頁改用預跑入知識庫：即時爬蟲讀不到內容，模型會無依據硬答",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-19",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-19",
+        "summary": "bot 提示詞注入防禦盤點：dify 內建能力、市集外掛與自架 guard 模型的取捨",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": 0.25,
+        "key": "FDEPROJECT-20",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-20",
+        "summary": "業務話術手冊改放「檔案」欄位之可行性實測（結論：走不通，需另找突破口）",
+        "tokens": null,
+        "week": "2026-W35"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": 1.0,
+        "key": "FDEPROJECT-22",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-22",
+        "summary": "Dify 自建 image 上線並修好 console 設定存不住的根本問題",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": 1.0,
+        "key": "FDEPROJECT-23",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-23",
+        "summary": "擺脫 Dify console 限制：fork 自建 image 與雄獅專屬後台（並行評估）",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": 1.0,
+        "key": "FDEPROJECT-24",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-24",
+        "summary": "LINE bot token 成本優化：caching 查帳與 MCP 回傳裁剪",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-25",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-25",
+        "summary": "商品連結帶門市追蹤碼：bot 帶來的瀏覽與成交要追溯得回門市",
+        "tokens": null,
+        "week": "2026-W37"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 1.0,
+        "key": "FDEPROJECT-26",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-26",
+        "summary": "轉真人時附上 AI 摘要：目前只帶客人最後一句，脈絡全丟了",
+        "tokens": null,
+        "week": "2026-W38"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-28",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-28",
+        "summary": "行銷 Flex 訊息的按鈕帶問題進 AI 搜尋（LIFF 讀網址參數）",
+        "tokens": null,
+        "week": "2026-W37"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 1.0,
+        "key": "FDEPROJECT-29",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-29",
+        "summary": "MCP 追蹤 header 改名 X-Line 並改為 console 自助設定",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-30",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-30",
+        "summary": "從 bot 進官網不要顯示 LiLi 客服（需官網那條線，先比對板橋門市的頁面）",
+        "tokens": null,
+        "week": "2026-W37"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 0.25,
+        "key": "FDEPROJECT-31",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-31",
+        "summary": "MCP 日誌留存：Loki 改為只對我們的 stream 保留兩週",
+        "tokens": null,
+        "week": "2026-W34"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-32",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-32",
+        "summary": "LINE OA 即時客服台：走官方帳號後台內部 API，繞開 reply token 一分鐘限制且不吃訊息額度",
+        "tokens": null,
+        "week": "2026-W35"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 2.0,
+        "key": "FDEPROJECT-34",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-34",
+        "summary": "LIFF 網頁前端第 4 階段：驗收、成本對照與發佈給測試同仁",
+        "tokens": null,
+        "week": "2026-W37"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": 2.0,
+        "key": "FDEPROJECT-35",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-35",
+        "summary": "dify fork：結構化輸出的啟用條件改成看設定，不要寫死 app id",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": 1.0,
+        "key": "FDEPROJECT-36",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-36",
+        "summary": "Dify 1.16.0 升級至 1.16.1（含補丁重套與端到端驗證）",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": 0.25,
+        "key": "FDEPROJECT-37",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-37",
+        "summary": "LINE bot 對話接 Langfuse：dify 端已設好，卡在 v4 寫入模式，決定改 fork",
+        "tokens": null,
+        "week": "2026-W35"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": null,
+        "key": "FDEPROJECT-38",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-38",
+        "summary": "dify 1.17.0 關掉了 console 的知識庫欄位 —— 新增第三顆 fork image lion/dify-web",
+        "tokens": null,
+        "week": "2026-W37"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-39",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-39",
+        "summary": "修改轉真人的文案呈現",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-40",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-40",
+        "summary": "門市 LIFF 前端修正八項：規則類表格、行程清單、回答分段、讀取進度、鍵盤位移、問 AI、建議問題、留白漸層",
+        "tokens": null,
+        "week": "2026-W38"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-41",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-41",
+        "summary": "LINE bot 發佈驗收清單與自動化測試",
+        "tokens": null,
+        "week": "2026-W35"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-42",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-42",
+        "summary": "把 line-oa-web 的容器 IP 釘死：讀商品頁的工具現在靠一個隨機配發的位址",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-43",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-43",
+        "summary": "門市回饋:對話流程三項調整(不問床型、一次問完、查不到就轉真人)",
+        "tokens": null,
+        "week": "2026-W38"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": null,
+        "key": "FDEPROJECT-44",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-44",
+        "summary": "解除隱藏 dify console 的內容審查開關：重烤 lion/dify-web:1.17.0-2",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 0.25,
+        "key": "FDEPROJECT-45",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-45",
+        "summary": "MCP 搜尋命中率看板（Grafana，含 LINE 與 ChatGPT 兩來源）",
+        "tokens": null,
+        "week": "2026-W34"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-46",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-46",
+        "summary": "商品內容問答：bot 目前只查得到有哪些商品，查不到商品裡面是什麼",
+        "tokens": null,
+        "week": "2026-W38"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 1.0,
+        "key": "FDEPROJECT-47",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-47",
+        "summary": "MCP 呼叫可歸因：對話 id 帶進 MCP header",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-48",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-48",
+        "summary": "回答後給「你可能想問」建議：dify 內建的就能用，只差開關",
+        "tokens": null,
+        "week": "2026-W37"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-49",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-49",
+        "summary": "開發與部署機制整理：推上 Azure、分支收斂、部署改 git、帳號與路由清理",
+        "tokens": null,
+        "week": "2026-W37"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-50",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-50",
+        "summary": "兩隻 LINE bot 頻道移轉至公司帳號、併入同一個 provider（統一 userId）",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-51",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-51",
+        "summary": "LINE bot 轉真人客服改為提示模式（功能保留、以環境變數開關）",
+        "tokens": null,
+        "week": "2026-W35"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-52",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-52",
+        "summary": "請 MCP 開放 search-tours 已寫死的搜尋條件(航司/只找成行/星期)並評估加名額查詢",
+        "tokens": null,
+        "week": "2026-W38"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": null,
+        "key": "FDEPROJECT-53",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-53",
+        "summary": "dify 升級 1.16.1 → 1.17.0：重建兩顆 fork image、十個 migration、退休一顆 patch",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-55",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-55",
+        "summary": "jincoco.site 網域過期導致正式 LIFF 全球中斷：已搬到 jincoco.space 並改名",
+        "tokens": null,
+        "week": "2026-W38"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-56",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-56",
+        "summary": "商品卡報的是同業價，客人點進官網看到的是直客價",
+        "tokens": null,
+        "week": "2026-W38"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-57",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-57",
+        "summary": "AI 搜尋頁的歷史對話看得到別人的紀錄（身分驗證整段沒生效）",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-58",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-58",
+        "summary": "搜尋過程露出工具代碼（dataset_9e3083ac…），要改成客人看得懂的字",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-59",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-59",
+        "summary": "正式站 search-tours 因上游移除 LevelID/FeatureSrc 而 100% 失效（已修復）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-60",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-60",
+        "summary": "讀商品頁的過濾器砍掉了費用與注意事項：改 raw 並自己切頭尾",
+        "tokens": null,
+        "week": "2026-W38"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-61",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-61",
+        "summary": "AI 會幫客人翻譯、代寫、算投資：業務範圍從來沒鎖過（28 題量測後修正並上正式站）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": 1.0,
+        "key": "FDEPROJECT-62",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-62",
+        "summary": "知識庫 embedding 撞 GCP 區域配額之排除",
+        "tokens": null,
+        "week": "2026-W33"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": 0.25,
+        "key": "FDEPROJECT-63",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-63",
+        "summary": "機票搜尋間歇性查不到票：上游 flight.liontravel.com 回 HTTP 200 空 body（需該 API／F5 維護者協助）",
+        "tokens": null,
+        "week": "2026-W36"
+      },
+      {
+        "group": "FDEPROJECT-72",
+        "hours": null,
+        "key": "FDEPROJECT-66",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-72 Dify 平台與維運",
+        "root": "FDEPROJECT-66",
+        "summary": "回應約一半機率卡 140 秒:Google 的一個 IP 從公司網路不通(已定位,待網路組)",
+        "tokens": null,
+        "week": "2026-W38"
+      },
+      {
+        "group": "FDEPROJECT-73",
+        "hours": 2.0,
+        "key": "FDEPROJECT-67",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-73 AI Lab H3 影音",
+        "root": "FDEPROJECT-67",
+        "summary": "H3 開源模型沙盒：短影音腳本實作與效益數據",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-73",
+        "hours": null,
+        "key": "FDEPROJECT-68",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-73 AI Lab H3 影音",
+        "root": "FDEPROJECT-68",
+        "summary": "H3 開源影音生成：第二輪實驗與流程改善（品質、效率、可追溯性）",
+        "tokens": null,
+        "week": "2026-W39"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-74",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-74",
+        "summary": "MCP 兩支現有工具參數有誤：查名額沒帶日期查不到梯次、單程機票一律查不到",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-78",
+        "hours": 0.5,
+        "key": "FDEPROJECT-80",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-78 培訓課程網站",
+        "root": "FDEPROJECT-80",
+        "summary": "內容解析：十節教材與十場工作坊轉成結構化內容",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-78",
+        "hours": 0.5,
+        "key": "FDEPROJECT-81",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-78 培訓課程網站",
+        "root": "FDEPROJECT-81",
+        "summary": "第二節工作坊：圖片轉文字並校對數字",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-78",
+        "hours": 0.5,
+        "key": "FDEPROJECT-82",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-78 培訓課程網站",
+        "root": "FDEPROJECT-82",
+        "summary": "每節頁面：教材／工作坊／課後講義三頁籤",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-78",
+        "hours": 0.5,
+        "key": "FDEPROJECT-83",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-78 培訓課程網站",
+        "root": "FDEPROJECT-83",
+        "summary": "首頁導覽、十節時間軸與名詞索引",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-78",
+        "hours": 0.5,
+        "key": "FDEPROJECT-84",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-78 培訓課程網站",
+        "root": "FDEPROJECT-84",
+        "summary": "投影模式：一題一畫面、鍵盤翻頁、工作坊倒數",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-78",
+        "hours": 0.5,
+        "key": "FDEPROJECT-85",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-78 培訓課程網站",
+        "root": "FDEPROJECT-85",
+        "summary": "手機與深淺色走查",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-78",
+        "hours": 0.5,
+        "key": "FDEPROJECT-86",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-78 培訓課程網站",
+        "root": "FDEPROJECT-86",
+        "summary": "向祥董取得 20 張圖的原始高解析檔",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-78",
+        "hours": 0.5,
+        "key": "FDEPROJECT-87",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-78 培訓課程網站",
+        "root": "FDEPROJECT-87",
+        "summary": "與祥董確認網站內容",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-78",
+        "hours": 0.5,
+        "key": "FDEPROJECT-88",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-78 培訓課程網站",
+        "root": "FDEPROJECT-88",
+        "summary": "部署上線",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-79",
+        "hours": 0.5,
+        "key": "FDEPROJECT-89",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+        "root": "FDEPROJECT-89",
+        "summary": "跨平台前置：Windows 能跑、CI 兩平台三條 gate",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-79",
+        "hours": 0.5,
+        "key": "FDEPROJECT-90",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+        "root": "FDEPROJECT-90",
+        "summary": "Gateway：邀請碼換 Gemini key 與名單，加名單發布",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-79",
+        "hours": 0.5,
+        "key": "FDEPROJECT-91",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+        "root": "FDEPROJECT-91",
+        "summary": "共享資料夾：OneDrive「MeetPilot 記錄」與記錄人子資料夾",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-79",
+        "hours": 0.5,
+        "key": "FDEPROJECT-92",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+        "root": "FDEPROJECT-92",
+        "summary": "E1 桌面 app 外殼：Electron .dmg／.exe",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-79",
+        "hours": 0.5,
+        "key": "FDEPROJECT-93",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+        "root": "FDEPROJECT-93",
+        "summary": "E2 隨附 ffmpeg（LGPL 自編）",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-79",
+        "hours": 0.5,
+        "key": "FDEPROJECT-94",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+        "root": "FDEPROJECT-94",
+        "summary": "E3 首次設定畫面：邀請碼與投影資料夾",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-79",
+        "hours": 0.5,
+        "key": "FDEPROJECT-95",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+        "root": "FDEPROJECT-95",
+        "summary": "E4 app 內錄音",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-79",
+        "hours": 0.5,
+        "key": "FDEPROJECT-96",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+        "root": "FDEPROJECT-96",
+        "summary": "E5 更新通道：從共享資料夾更新",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-79",
+        "hours": 0.5,
+        "key": "FDEPROJECT-97",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+        "root": "FDEPROJECT-97",
+        "summary": "E6 Windows 實機端到端",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-100",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-100",
+        "summary": "MCP 共用請求層補防護：每個上游請求都有逾時與錯誤紀錄、log 不再灌爆 Loki、UA 統一",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-101",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-101",
+        "summary": "單程機票查空的第二個原因：MCP 把 www 的防火牆 cookie 送到機票網域，改照瀏覽器規則分域",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-102",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-102",
+        "summary": "新增 MCP 工具 tour-detail：團體行程的逐日行程、費用、航班、集合地點一次查齊",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-103",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-103",
+        "summary": "新增 MCP 工具 hotel-rooms：指定日期與人數查房型方案、價格、餐食與取消規定",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-104",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-104",
+        "summary": "新增 MCP 工具 ticket-detail：票券規格、可售日期與票價、場次、取消規定",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-105",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-105",
+        "summary": "機票搜尋每段帶出行李、餐食、選位與改退摘要；廉航行李改顯示實際額度",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-106",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-106",
+        "summary": "新增 MCP 工具 hotel-info：飯店介紹、設施、入住時間與住客評論（不需日期）",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-107",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-107",
+        "summary": "MCP 上游連線失敗自動重試一次：官網偶發斷線或 502/503 不再直接回錯",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-110",
+        "hours": 0.5,
+        "key": "FDEPROJECT-112",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-110 Notion 會議記錄轉拋",
+        "root": "FDEPROJECT-112",
+        "summary": "一期：擴充功能連結 Notion 並讀取當前頁",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-110",
+        "hours": 0.25,
+        "key": "FDEPROJECT-113",
+        "leaf": true,
+        "owner": "Vincent Hsieh",
+        "project": "FDEPROJECT-110 Notion 會議記錄轉拋",
+        "root": "FDEPROJECT-113",
+        "summary": "一期：記錄格式對齊 MeetPilot 外殼",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-123",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-123",
+        "summary": "團體搜尋 9/28 夜間起全部失敗：上游小圖欄位改回空值，MCP 格式檢查擋掉整筆",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-124",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-124",
+        "summary": "MCP 工具呼叫失敗一律寫入錯誤紀錄，含整支被格式檢查擋下的情況",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-125",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-125",
+        "summary": "機票票價明細移除重複的行李欄位，飯店評論說明不再寫死日期",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-126",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-126",
+        "summary": "團體搜尋不再把同業價交給 AI",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-127",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-127",
+        "summary": "LINE AI 接上 MCP 詳情工具：dify dev 與正式站、LIFF 查詢進度",
+        "tokens": null,
+        "week": "2026-W40"
+      },
+      {
+        "group": "FDEPROJECT-71",
+        "hours": null,
+        "key": "FDEPROJECT-128",
+        "leaf": true,
+        "owner": "陳勁佑 Jincoco",
+        "project": "FDEPROJECT-71 門市 AI 客服",
+        "root": "FDEPROJECT-128",
+        "summary": "業務規範 skill v4：郵輪、飯店、票券的講法規則",
+        "tokens": null,
+        "week": "2026-W40"
+      }
+    ],
+    "epics": [
+      {
+        "completed": 4,
+        "deliverables": 1,
+        "due": null,
+        "hours": 0.0,
+        "id": "CS-7",
+        "key": "CS-7",
+        "owner": "未指派",
+        "progress": {
+          "done_cards": 4,
+          "done_points": 0.0,
+          "percent": null,
+          "total_cards": 12,
+          "total_points": 0.0,
+          "unestimated_cards": 12
+        },
+        "status": "On Track",
+        "summary": "開工確認",
+        "tokens": null
+      },
+      {
+        "completed": 9,
+        "deliverables": 2,
+        "due": null,
+        "hours": 9.5,
+        "id": "CS-25",
+        "key": "CS-25",
+        "owner": "未指派",
+        "progress": {
+          "done_cards": 8,
+          "done_points": 9.5,
+          "percent": 100,
+          "total_cards": 9,
+          "total_points": 9.5,
+          "unestimated_cards": 0
+        },
+        "status": "On Track",
+        "summary": "歐洲地接社-房產品資料彙整",
+        "tokens": null
+      },
+      {
+        "completed": 54,
+        "deliverables": 54,
+        "due": null,
+        "hours": 15.75,
+        "id": "FDEPROJECT-71",
+        "key": "FDEPROJECT-71",
+        "owner": "陳勁佑 Jincoco",
+        "progress": {
+          "done_cards": 61,
+          "done_points": 15.75,
+          "percent": 72,
+          "total_cards": 69,
+          "total_points": 21.75,
+          "unestimated_cards": 52
+        },
+        "status": "On Track",
+        "summary": "門市 AI 客服",
+        "tokens": null
+      },
+      {
+        "completed": 13,
+        "deliverables": 13,
+        "due": null,
+        "hours": 8.5,
+        "id": "FDEPROJECT-72",
+        "key": "FDEPROJECT-72",
+        "owner": "陳勁佑 Jincoco",
+        "progress": {
+          "done_cards": 14,
+          "done_points": 8.5,
+          "percent": 100,
+          "total_cards": 14,
+          "total_points": 8.5,
+          "unestimated_cards": 5
+        },
+        "status": "Done",
+        "summary": "Dify 平台與維運",
+        "tokens": null
+      },
+      {
+        "completed": 2,
+        "deliverables": 2,
+        "due": null,
+        "hours": 2.0,
+        "id": "FDEPROJECT-73",
+        "key": "FDEPROJECT-73",
+        "owner": "陳勁佑 Jincoco",
+        "progress": {
+          "done_cards": 2,
+          "done_points": 2.0,
+          "percent": 100,
+          "total_cards": 3,
+          "total_points": 2.0,
+          "unestimated_cards": 2
+        },
+        "status": "On Track",
+        "summary": "AI Lab H3 影音",
+        "tokens": null
+      },
+      {
+        "completed": 9,
+        "deliverables": 9,
+        "due": null,
+        "hours": 4.5,
+        "id": "FDEPROJECT-78",
+        "key": "FDEPROJECT-78",
+        "owner": "Vincent Hsieh",
+        "progress": {
+          "done_cards": 9,
+          "done_points": 4.5,
+          "percent": 100,
+          "total_cards": 9,
+          "total_points": 4.5,
+          "unestimated_cards": 0
+        },
+        "status": "Done",
+        "summary": "培訓課程網站",
+        "tokens": null
+      },
+      {
+        "completed": 9,
+        "deliverables": 9,
+        "due": null,
+        "hours": 4.5,
+        "id": "FDEPROJECT-79",
+        "key": "FDEPROJECT-79",
+        "owner": "Vincent Hsieh",
+        "progress": {
+          "done_cards": 9,
+          "done_points": 4.5,
+          "percent": 82,
+          "total_cards": 11,
+          "total_points": 5.5,
+          "unestimated_cards": 0
+        },
+        "status": "On Track",
+        "summary": "MeetPilot 團隊會議記錄",
+        "tokens": null
+      },
+      {
+        "completed": 2,
+        "deliverables": 2,
+        "due": null,
+        "hours": 0.75,
+        "id": "FDEPROJECT-110",
+        "key": "FDEPROJECT-110",
+        "owner": "Vincent Hsieh",
+        "progress": {
+          "done_cards": 2,
+          "done_points": 0.75,
+          "percent": 17,
+          "total_cards": 7,
+          "total_points": 4.5,
+          "unestimated_cards": 0
+        },
+        "status": "On Track",
+        "summary": "Notion 會議記錄轉拋",
+        "tokens": null
+      }
+    ],
+    "since": "2026-08-05",
+    "totals": {
+      "completed": 102,
+      "deliverables": 92,
+      "hours": 45.5,
+      "projects": 8,
+      "tokens": null,
+      "unestimated_completed": 50
+    },
+    "weeks": [
+      {
+        "completed": 36,
+        "deliverables": 36,
+        "hours": 9.75,
+        "week": "2026-W40"
+      },
+      {
+        "completed": 22,
+        "deliverables": 12,
+        "hours": 11.5,
+        "week": "2026-W39"
+      },
+      {
+        "completed": 9,
+        "deliverables": 9,
+        "hours": 1.0,
+        "week": "2026-W38"
+      },
+      {
+        "completed": 7,
+        "deliverables": 7,
+        "hours": 2.0,
+        "week": "2026-W37"
+      },
+      {
+        "completed": 10,
+        "deliverables": 10,
+        "hours": 9.25,
+        "week": "2026-W36"
+      },
+      {
+        "completed": 5,
+        "deliverables": 5,
+        "hours": 0.5,
+        "week": "2026-W35"
+      },
+      {
+        "completed": 2,
+        "deliverables": 2,
+        "hours": 0.5,
+        "week": "2026-W34"
+      },
+      {
+        "completed": 11,
+        "deliverables": 11,
+        "hours": 11.0,
+        "week": "2026-W33"
+      }
+    ]
+  },
+  "epics": [
+    {
+      "active": false,
+      "due": null,
+      "id": "CS-7",
+      "key": "CS-7",
+      "kickoff": null,
+      "owner": "未指派",
+      "progress": {
+        "done_cards": 4,
+        "done_points": 0.0,
+        "percent": null,
+        "total_cards": 12,
+        "total_points": 0.0,
+        "unestimated_cards": 12
+      },
+      "project": "CS",
+      "status": "On Track",
+      "summary": "開工確認",
+      "week": {
+        "completed_count": 0,
+        "completed_keys": [],
+        "deliveries": [],
+        "hours": 0.0,
+        "tokens": null
+      }
+    },
+    {
+      "active": false,
+      "due": null,
+      "id": "CS-25",
+      "key": "CS-25",
+      "kickoff": {
+        "key": "CS-26",
+        "locked_at": "2026-09-30T04:06:18.003769+08:00",
+        "modified_at": [],
+        "sections": {
+          "after": "解析 Pipeline 部署在 VM、改用 Git 部署；能隔離回覆信串，解析 Palma、Kuoni Tumlare、Happy Tours、Vosaio 四家表格式、G2 兩種格式與 MIKI 的 PDF 附件，輸出 OP 端 docx；解析結果存進資料庫並與 OTA／Expedia 資料整合",
+          "before": "地接社各自用不同格式寄飯店資料：表格、文字信件、PDF 附件，信裡還夾著回覆信串",
+          "decision": "CS-24 標「非本人待辦」，資料庫儲存與 OTA／Expedia 資料整合要由誰接手",
+          "evidence": "Pipeline 在 VM 上產出 OP 端 docx；資料庫儲存與 OTA／Expedia 資料整合完成（CS-24）",
+          "next_milestone": "資料庫儲存與 OTA／Expedia 資料整合（CS-24）",
+          "objective": "把歐洲地接社寄來的飯店資料信件自動解析，整理成 OP 可以直接用的文件，並存進資料庫",
+          "why": "地接社各自用不同格式寄資料，要先解析、標準化，後續的 Agent Workflow 才有乾淨的資料可用"
+        }
+      },
+      "owner": "未指派",
+      "progress": {
+        "done_cards": 8,
+        "done_points": 9.5,
+        "percent": 100,
+        "total_cards": 9,
+        "total_points": 9.5,
+        "unestimated_cards": 0
+      },
+      "project": "CS",
+      "status": "On Track",
+      "summary": "歐洲地接社-房產品資料彙整",
+      "week": {
+        "completed_count": 0,
+        "completed_keys": [],
+        "deliveries": [],
+        "hours": 0.0,
+        "tokens": null
+      }
+    },
+    {
+      "active": true,
+      "due": null,
+      "id": "FDEPROJECT-71",
+      "key": "FDEPROJECT-71",
+      "kickoff": {
+        "key": "FDEPROJECT-108",
+        "locked_at": "2026-09-30T04:06:18.003769+08:00",
+        "modified_at": [],
+        "sections": {
+          "after": "正式版 bot 在公司頻道交到門市同仁手上；客人在 LINE 或 LIFF 網頁用對話查商品、拿到商品卡，答不了就轉真人並附 AI 摘要；商品連結帶門市追蹤碼",
+          "before": "門市官方帳號沒有 AI 搜尋，客服 FAQ 只在客服正式機裡，客人的商品問題要靠真人回覆",
+          "decision": null,
+          "evidence": "正式版重跑發佈驗收清單通過；LINE 版與網頁版同一批問題的成本與延遲對照；MCP 搜尋命中率看板；FAQ 1863 則已進知識庫",
+          "next_milestone": "正式版 LINE bot 發佈給門市同仁（FDEPROJECT-10）",
+          "objective": "讓客人在門市的 LINE 官方帳號用對話查雄獅的機票、飯店、團體行程與票券，AI 直接回商品卡，需要時轉真人，bot 帶來的瀏覽與成交追溯得回門市",
+          "why": "門市要一個能自己回答商品問題、轉得回門市的客服入口；bot 帶來的業績追溯不回門市，就證明不了這條線值不值得繼續投資"
+        }
+      },
+      "owner": "陳勁佑 Jincoco",
+      "progress": {
+        "done_cards": 61,
+        "done_points": 15.75,
+        "percent": 72,
+        "total_cards": 69,
+        "total_points": 21.75,
+        "unestimated_cards": 52
+      },
+      "project": "FDEPROJECT",
+      "status": "On Track",
+      "summary": "門市 AI 客服",
+      "week": {
+        "completed_count": 16,
+        "completed_keys": [
+          "FDEPROJECT-4",
+          "FDEPROJECT-74",
+          "FDEPROJECT-100",
+          "FDEPROJECT-101",
+          "FDEPROJECT-102",
+          "FDEPROJECT-103",
+          "FDEPROJECT-104",
+          "FDEPROJECT-105",
+          "FDEPROJECT-106",
+          "FDEPROJECT-107",
+          "FDEPROJECT-123",
+          "FDEPROJECT-124",
+          "FDEPROJECT-125",
+          "FDEPROJECT-126",
+          "FDEPROJECT-127",
+          "FDEPROJECT-128"
+        ],
+        "deliveries": [
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-4",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "商品詳情改接官網資料 API，取代爬網頁：規格交 MCP 團隊",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-74",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "MCP 兩支現有工具參數有誤：查名額沒帶日期查不到梯次、單程機票一律查不到",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-100",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "MCP 共用請求層補防護：每個上游請求都有逾時與錯誤紀錄、log 不再灌爆 Loki、UA 統一",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-101",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "單程機票查空的第二個原因：MCP 把 www 的防火牆 cookie 送到機票網域，改照瀏覽器規則分域",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-102",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "新增 MCP 工具 tour-detail：團體行程的逐日行程、費用、航班、集合地點一次查齊",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-103",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "新增 MCP 工具 hotel-rooms：指定日期與人數查房型方案、價格、餐食與取消規定",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-104",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "新增 MCP 工具 ticket-detail：票券規格、可售日期與票價、場次、取消規定",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-105",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "機票搜尋每段帶出行李、餐食、選位與改退摘要；廉航行李改顯示實際額度",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-106",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "新增 MCP 工具 hotel-info：飯店介紹、設施、入住時間與住客評論（不需日期）",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-107",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "MCP 上游連線失敗自動重試一次：官網偶發斷線或 502/503 不再直接回錯",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-123",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "團體搜尋 9/28 夜間起全部失敗：上游小圖欄位改回空值，MCP 格式檢查擋掉整筆",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-124",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "MCP 工具呼叫失敗一律寫入錯誤紀錄，含整支被格式檢查擋下的情況",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-125",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "機票票價明細移除重複的行李欄位，飯店評論說明不再寫死日期",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-126",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "團體搜尋不再把同業價交給 AI",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-127",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "LINE AI 接上 MCP 詳情工具：dify dev 與正式站、LIFF 查詢進度",
+            "tokens": null
+          },
+          {
+            "hours": 0.0,
+            "key": "FDEPROJECT-128",
+            "owner": "陳勁佑 Jincoco",
+            "result": "完成",
+            "summary": "業務規範 skill v4：郵輪、飯店、票券的講法規則",
+            "tokens": null
+          }
+        ],
+        "hours": 0.0,
+        "tokens": null
+      }
+    },
+    {
+      "active": true,
+      "due": null,
+      "id": "FDEPROJECT-72",
+      "key": "FDEPROJECT-72",
+      "kickoff": null,
+      "owner": "陳勁佑 Jincoco",
+      "progress": {
+        "done_cards": 14,
+        "done_points": 8.5,
+        "percent": 100,
+        "total_cards": 14,
+        "total_points": 8.5,
+        "unestimated_cards": 5
+      },
+      "project": "FDEPROJECT",
+      "status": "Done",
+      "summary": "Dify 平台與維運",
+      "week": {
+        "completed_count": 0,
+        "completed_keys": [],
+        "deliveries": [],
+        "hours": 0.0,
+        "tokens": null
+      }
+    },
+    {
+      "active": false,
+      "due": null,
+      "id": "FDEPROJECT-73",
+      "key": "FDEPROJECT-73",
+      "kickoff": {
+        "key": "FDEPROJECT-109",
+        "locked_at": "2026-09-30T04:06:18.003769+08:00",
+        "modified_at": [],
+        "sections": {
+          "after": "五支腳本全部產出，9 段影片 9 段成功；導入 8 步加速 LoRA 後一支 30 秒影片機器時間從約 3.9 小時降到約 1.1 小時；提示詞改用官方六欄格式後畫面文字可讀；確定要維持人物與場景一致就餵參考圖片、不餵參考影片",
+          "before": "沒有自產短影音的實測數據，只有外部公開、前後矛盾的平台單價",
+          "decision": "需要其他平台 Ovideo、Lumina 的實際帳單，才能做成本比較（FDEPROJECT-69）",
+          "evidence": "沙盒成品五支與兩輪實驗紀錄（FDEPROJECT-67、68）；補齊後製工時、平均嘗試次數與其他平台實際單價之後的成本比較（FDEPROJECT-69）",
+          "next_milestone": "補齊三項成本數據後做跨平台成本比較（FDEPROJECT-69）",
+          "objective": "用開源影音模型 MiniMax H3 在自己的 GPU 沙盒產出短影音，拿出時間、費用、品質的實測數據，作為跟外部影音平台比較的依據",
+          "why": "要決定短影音自己用開源模型產、還是用外部平台，得有自己的實測成本；外部公開的單價前後矛盾，拿二手數字比會誤導決策"
+        }
+      },
+      "owner": "陳勁佑 Jincoco",
+      "progress": {
+        "done_cards": 2,
+        "done_points": 2.0,
+        "percent": 100,
+        "total_cards": 3,
+        "total_points": 2.0,
+        "unestimated_cards": 2
+      },
+      "project": "FDEPROJECT",
+      "status": "On Track",
+      "summary": "AI Lab H3 影音",
+      "week": {
+        "completed_count": 0,
+        "completed_keys": [],
+        "deliveries": [],
+        "hours": 0.0,
+        "tokens": null
+      }
+    },
+    {
+      "active": true,
+      "due": null,
+      "id": "FDEPROJECT-78",
+      "key": "FDEPROJECT-78",
+      "kickoff": {
+        "key": "FDEPROJECT-76",
+        "locked_at": "2026-09-30T04:06:18.003769+08:00",
+        "modified_at": [],
+        "sections": {
+          "after": "公開網站收齊十節教材、十場工作坊、20 張圖與每節課後講義；閱讀模式給學員預習複習，投影模式一題一畫面、依時間表倒數",
+          "before": "教材只有 LINE 對話匯出的文字檔 13,851 行、20 張運作圖與工作坊圖，以及只涵蓋第一節的講義 PDF，沒有整理過、能閱讀或投影的版本",
+          "decision": "講師確認第一節工作坊採 LINE 文字版、第二節採圖片版（FDEPROJECT-87）",
+          "evidence": "網站 https://lion-academy-course.vercel.app/index.html 已上線，首頁、十節、名詞索引、講義 PDF、圖片都能開，內容與 repo 建置逐檔一致",
+          "next_milestone": "講師確認網站內容後結案（FDEPROJECT-87）",
+          "objective": "把雄獅學院 EMBA「旅遊產業」十節培訓課程收攏成一個課程網站，學員閱讀與講師投影帶課共用同一份內容",
+          "why": "對象是新進協理級以上主管，每節 6 小時，前 3 小時講課、後 3 小時分組工作坊；學員要有地方課前預習、課後複習，講師要有能直接投影帶課的版本"
+        }
+      },
+      "owner": "Vincent Hsieh",
+      "progress": {
+        "done_cards": 9,
+        "done_points": 4.5,
+        "percent": 100,
+        "total_cards": 9,
+        "total_points": 4.5,
+        "unestimated_cards": 0
+      },
+      "project": "FDEPROJECT",
+      "status": "Done",
+      "summary": "培訓課程網站",
+      "week": {
+        "completed_count": 9,
+        "completed_keys": [
+          "FDEPROJECT-80",
+          "FDEPROJECT-81",
+          "FDEPROJECT-82",
+          "FDEPROJECT-83",
+          "FDEPROJECT-84",
+          "FDEPROJECT-85",
+          "FDEPROJECT-86",
+          "FDEPROJECT-87",
+          "FDEPROJECT-88"
+        ],
+        "deliveries": [
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-80",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "內容解析：十節教材與十場工作坊轉成結構化內容",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-81",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "第二節工作坊：圖片轉文字並校對數字",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-82",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "每節頁面：教材／工作坊／課後講義三頁籤",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-83",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "首頁導覽、十節時間軸與名詞索引",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-84",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "投影模式：一題一畫面、鍵盤翻頁、工作坊倒數",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-85",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "手機與深淺色走查",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-86",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "向祥董取得 20 張圖的原始高解析檔",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-87",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "與祥董確認網站內容",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-88",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "部署上線",
+            "tokens": null
+          }
+        ],
+        "hours": 4.5,
+        "tokens": null
+      }
+    },
+    {
+      "active": true,
+      "due": null,
+      "id": "FDEPROJECT-79",
+      "key": "FDEPROJECT-79",
+      "kickoff": {
+        "key": "FDEPROJECT-77",
+        "locked_at": "2026-09-30T04:06:18.003769+08:00",
+        "modified_at": [],
+        "sections": {
+          "after": "記錄人裝 .dmg 或 .exe、輸入邀請碼就能錄音與轉錄；Gemini key 與名單由 gateway 發放，不落在設定檔；記錄以 markdown 投影到共享資料夾，讀的人零安裝；新版放進共享資料夾的更新區就能更新",
+          "before": "MeetPilot 只在一台 Mac 上本地架設，要自己裝 Node 與 ffmpeg、編設定檔、放 Gemini key 與名單 CSV，其他人無法使用",
+          "decision": null,
+          "evidence": "乾淨的 Mac 與 Windows 各裝一次、啟動到主畫面；Windows 上一場真實錄音跑到轉錄完成，記錄出現在共享資料夾；CI 的 macOS 與 Windows 矩陣全綠；語音備忘錄與 app 內錄音的逐字稿對照",
+          "next_milestone": "第一次發版給 5 位記錄人（FDEPROJECT-99），前置是 Windows 實機端到端（FDEPROJECT-97）與共享資料夾上傳驗證",
+          "objective": "讓每位會議記錄人在自己的 Mac 或 Windows 電腦上安裝就能用 MeetPilot 錄音與轉錄，會議記錄自動放進共享資料夾，其他人不用安裝就能讀",
+          "why": "一場會議只有一位記錄人，記錄人各自用 Mac 或 Windows，Windows 是多數；工具只在一台電腦上能跑，其他記錄人就無法自己產出會議記錄"
+        }
+      },
+      "owner": "Vincent Hsieh",
+      "progress": {
+        "done_cards": 9,
+        "done_points": 4.5,
+        "percent": 82,
+        "total_cards": 11,
+        "total_points": 5.5,
+        "unestimated_cards": 0
+      },
+      "project": "FDEPROJECT",
+      "status": "On Track",
+      "summary": "MeetPilot 團隊會議記錄",
+      "week": {
+        "completed_count": 9,
+        "completed_keys": [
+          "FDEPROJECT-89",
+          "FDEPROJECT-90",
+          "FDEPROJECT-91",
+          "FDEPROJECT-92",
+          "FDEPROJECT-93",
+          "FDEPROJECT-94",
+          "FDEPROJECT-95",
+          "FDEPROJECT-96",
+          "FDEPROJECT-97"
+        ],
+        "deliveries": [
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-89",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "跨平台前置：Windows 能跑、CI 兩平台三條 gate",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-90",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "Gateway：邀請碼換 Gemini key 與名單，加名單發布",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-91",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "共享資料夾：OneDrive「MeetPilot 記錄」與記錄人子資料夾",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-92",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "E1 桌面 app 外殼：Electron .dmg／.exe",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-93",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "E2 隨附 ffmpeg（LGPL 自編）",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-94",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "E3 首次設定畫面：邀請碼與投影資料夾",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-95",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "E4 app 內錄音",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-96",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "E5 更新通道：從共享資料夾更新",
+            "tokens": null
+          },
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-97",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "E6 Windows 實機端到端",
+            "tokens": null
+          }
+        ],
+        "hours": 4.5,
+        "tokens": null
+      }
+    },
+    {
+      "active": true,
+      "due": null,
+      "id": "FDEPROJECT-110",
+      "key": "FDEPROJECT-110",
+      "kickoff": {
+        "key": "FDEPROJECT-111",
+        "locked_at": "2026-09-30T04:06:18.003769+08:00",
+        "modified_at": [],
+        "sections": {
+          "after": "裝 Chrome 擴充功能、連結 Notion 一次，之後每場會後按「轉拋這一頁」，記錄以 `YYYY-MM-DD HHmm <標題>.md` 進公司共用資料夾的記錄人子資料夾；二期 AI Meeting Notes 完成後自動轉拋",
+          "before": "會議記錄留在各人的 Notion，要看得去問本人；格式各異，無法跟 MeetPilot 記錄放在一起讀",
+          "decision": "公司共用資料夾放在哪個 SharePoint site 或 Teams 文件庫；IT 是否核發 Entra app（SPA／PKCE、只限該 site 的 delegated 權限）",
+          "evidence": "個人 workspace 實機走通 OAuth、一般頁面與資料庫列（含屬性）轉出 MeetPilot 外殼格式（本機 commit 9c78b33，測試 25 條綠）；待驗：有 AI Meeting Notes 方案的 workspace 讀出摘要、筆記、逐字稿；寫進 SharePoint",
+          "next_milestone": "找一個有 AI Meeting Notes 方案的 workspace 完成實測，同時送出 IT 的 Entra app 申請",
+          "objective": "同事在 Notion 打開會議記錄頁按一下，記錄就以 MeetPilot 的外殼格式進公司共用資料夾，Notion AI Meeting Notes 與貼文字的一般頁面都適用",
+          "why": "很多人用 Notion 自行錄音與記會議，記錄散在各人頁面（不少是個人帳號、個人方案），別人找不到也用不到；MeetPilot 的記錄已集中，Notion 這一半還沒有"
+        }
+      },
+      "owner": "Vincent Hsieh",
+      "progress": {
+        "done_cards": 2,
+        "done_points": 0.75,
+        "percent": 17,
+        "total_cards": 7,
+        "total_points": 4.5,
+        "unestimated_cards": 0
+      },
+      "project": "FDEPROJECT",
+      "status": "On Track",
+      "summary": "Notion 會議記錄轉拋",
+      "week": {
+        "completed_count": 2,
+        "completed_keys": [
+          "FDEPROJECT-112",
+          "FDEPROJECT-113"
+        ],
+        "deliveries": [
+          {
+            "hours": 0.5,
+            "key": "FDEPROJECT-112",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "一期：擴充功能連結 Notion 並讀取當前頁",
+            "tokens": null
+          },
+          {
+            "hours": 0.25,
+            "key": "FDEPROJECT-113",
+            "owner": "Vincent Hsieh",
+            "result": "完成",
+            "summary": "一期：記錄格式對齊 MeetPilot 外殼",
+            "tokens": null
+          }
+        ],
+        "hours": 0.75,
+        "tokens": null
+      }
+    }
+  ],
+  "generated_at": "2026-09-30T04:06:18.003769+08:00",
+  "in_progress": [
+    {
+      "current_state": "進行中",
+      "group": "CS-7",
+      "hours": null,
+      "key": "CS-1",
+      "leaf": true,
+      "next": null,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "root": "CS-1",
+      "summary": "確認開發環境",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中，12 天未更新",
+      "group": "CS-7",
+      "hours": null,
+      "key": "CS-2",
+      "leaf": true,
+      "next": null,
+      "owner": "Vincent Hsieh",
+      "project": "CS-7 開工確認",
+      "root": "CS-2",
+      "summary": "提供 onboarding checklist",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中，子任務 4/7 完成",
+      "group": "CS-7",
+      "hours": null,
+      "key": "CS-4",
+      "leaf": false,
+      "next": "CS-10 確認共用信箱 lionitcowork 開通",
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "root": "CS-4",
+      "summary": "IT Onboarding — 帳號與開發環境設定",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中，8 天未更新",
+      "group": "CS-7",
+      "hours": null,
+      "key": "CS-6",
+      "leaf": true,
+      "next": null,
+      "owner": "Vincent Hsieh",
+      "project": "CS-7 開工確認",
+      "root": "CS-6",
+      "summary": "確認共用信箱啟用狀態",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "group": "CS-7",
+      "hours": null,
+      "key": "CS-8",
+      "leaf": true,
+      "next": null,
+      "owner": "Vincent Hsieh",
+      "project": "CS-7 開工確認",
+      "root": "CS-8",
+      "summary": "claude code (enterprise)申請",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中，7 天未更新",
+      "group": "CS-7",
+      "hours": null,
+      "key": "CS-10",
+      "leaf": true,
+      "next": null,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "root": "CS-4",
+      "summary": "確認共用信箱 lionitcowork 開通",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中，11 天未更新",
+      "group": "CS-7",
+      "hours": null,
+      "key": "CS-11",
+      "leaf": true,
+      "next": null,
+      "owner": "hubertwang",
+      "project": "CS-7 開工確認",
+      "root": "CS-4",
+      "summary": "註冊 GitHub 帳號並掛載 Org",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "group": "FDEPROJECT-71",
+      "hours": 0.5,
+      "key": "FDEPROJECT-12",
+      "leaf": true,
+      "next": null,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-12",
+      "summary": "Chatwoot 接 LINE:把 dev LIFF 的 OA(@125oxfwt)串進去試做",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "group": "FDEPROJECT-71",
+      "hours": 2.0,
+      "key": "FDEPROJECT-27",
+      "leaf": true,
+      "next": null,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-27",
+      "summary": "新增LIFF 六宮格 rich menu：目前LIFF沒有任何入口",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "group": "FDEPROJECT-71",
+      "hours": 0.5,
+      "key": "FDEPROJECT-33",
+      "leaf": true,
+      "next": null,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-33",
+      "summary": "門市號碼機廠商 API 對接:取得文件與憑證、界定要存哪些資料",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "group": "FDEPROJECT-79",
+      "hours": 0.5,
+      "key": "FDEPROJECT-99",
+      "leaf": true,
+      "next": null,
+      "owner": "Vincent Hsieh",
+      "project": "FDEPROJECT-79 MeetPilot 團隊會議記錄",
+      "root": "FDEPROJECT-99",
+      "summary": "第一次發版給 5 位記錄人",
+      "tokens": null
+    },
+    {
+      "current_state": "進行中",
+      "group": "FDEPROJECT-71",
+      "hours": null,
+      "key": "FDEPROJECT-129",
+      "leaf": true,
+      "next": null,
+      "owner": "陳勁佑 Jincoco",
+      "project": "FDEPROJECT-71 門市 AI 客服",
+      "root": "FDEPROJECT-129",
+      "summary": "LIFF 在查細節的回合，於回答下方顯示「這次查的商品」小卡",
+      "tokens": null
+    }
+  ],
+  "owners": [
+    {
+      "deliverables": 20,
+      "deliveries": [
+        "內容解析：十節教材與十場工作坊轉成結構化內容",
+        "第二節工作坊：圖片轉文字並校對數字",
+        "每節頁面：教材／工作坊／課後講義三頁籤",
+        "首頁導覽、十節時間軸與名詞索引",
+        "投影模式：一題一畫面、鍵盤翻頁、工作坊倒數",
+        "手機與深淺色走查",
+        "向祥董取得 20 張圖的原始高解析檔",
+        "與祥董確認網站內容",
+        "部署上線",
+        "跨平台前置：Windows 能跑、CI 兩平台三條 gate",
+        "Gateway：邀請碼換 Gemini key 與名單，加名單發布",
+        "共享資料夾：OneDrive「MeetPilot 記錄」與記錄人子資料夾",
+        "E1 桌面 app 外殼：Electron .dmg／.exe",
+        "E2 隨附 ffmpeg（LGPL 自編）",
+        "E3 首次設定畫面：邀請碼與投影資料夾",
+        "E4 app 內錄音",
+        "E5 更新通道：從共享資料夾更新",
+        "E6 Windows 實機端到端",
+        "一期：擴充功能連結 Notion 並讀取當前頁",
+        "一期：記錄格式對齊 MeetPilot 外殼"
+      ],
+      "hours": 9.75,
+      "owner": "Vincent Hsieh",
+      "tokens": null
+    },
+    {
+      "deliverables": 16,
+      "deliveries": [
+        "商品詳情改接官網資料 API，取代爬網頁：規格交 MCP 團隊",
+        "MCP 兩支現有工具參數有誤：查名額沒帶日期查不到梯次、單程機票一律查不到",
+        "MCP 共用請求層補防護：每個上游請求都有逾時與錯誤紀錄、log 不再灌爆 Loki、UA 統一",
+        "單程機票查空的第二個原因：MCP 把 www 的防火牆 cookie 送到機票網域，改照瀏覽器規則分域",
+        "新增 MCP 工具 tour-detail：團體行程的逐日行程、費用、航班、集合地點一次查齊",
+        "新增 MCP 工具 hotel-rooms：指定日期與人數查房型方案、價格、餐食與取消規定",
+        "新增 MCP 工具 ticket-detail：票券規格、可售日期與票價、場次、取消規定",
+        "機票搜尋每段帶出行李、餐食、選位與改退摘要；廉航行李改顯示實際額度",
+        "新增 MCP 工具 hotel-info：飯店介紹、設施、入住時間與住客評論（不需日期）",
+        "MCP 上游連線失敗自動重試一次：官網偶發斷線或 502/503 不再直接回錯",
+        "團體搜尋 9/28 夜間起全部失敗：上游小圖欄位改回空值，MCP 格式檢查擋掉整筆",
+        "MCP 工具呼叫失敗一律寫入錯誤紀錄，含整支被格式檢查擋下的情況",
+        "機票票價明細移除重複的行李欄位，飯店評論說明不再寫死日期",
+        "團體搜尋不再把同業價交給 AI",
+        "LINE AI 接上 MCP 詳情工具：dify dev 與正式站、LIFF 查詢進度",
+        "業務規範 skill v4：郵輪、飯店、票券的講法規則"
+      ],
+      "hours": 0.0,
+      "owner": "陳勁佑 Jincoco",
+      "tokens": null
+    }
+  ],
+  "people": [
+    {
+      "cumulative": {
+        "by_project": [
+          {
+            "hours": 15.75,
+            "id": "FDEPROJECT-71",
+            "key": "FDEPROJECT-71",
+            "summary": "門市 AI 客服",
+            "unestimated": 41
+          },
+          {
+            "hours": 8.5,
+            "id": "FDEPROJECT-72",
+            "key": "FDEPROJECT-72",
+            "summary": "Dify 平台與維運",
+            "unestimated": 4
+          },
+          {
+            "hours": 2.0,
+            "id": "FDEPROJECT-73",
+            "key": "FDEPROJECT-73",
+            "summary": "AI Lab H3 影音",
+            "unestimated": 1
+          }
+        ],
+        "completed": 69,
+        "completed_keys": [
+          "FDEPROJECT-2",
+          "FDEPROJECT-4",
+          "FDEPROJECT-6",
+          "FDEPROJECT-7",
+          "FDEPROJECT-8",
+          "FDEPROJECT-9",
+          "FDEPROJECT-11",
+          "FDEPROJECT-14",
+          "FDEPROJECT-16",
+          "FDEPROJECT-18",
+          "FDEPROJECT-19",
+          "FDEPROJECT-20",
+          "FDEPROJECT-22",
+          "FDEPROJECT-23",
+          "FDEPROJECT-24",
+          "FDEPROJECT-25",
+          "FDEPROJECT-26",
+          "FDEPROJECT-28",
+          "FDEPROJECT-29",
+          "FDEPROJECT-30",
+          "FDEPROJECT-31",
+          "FDEPROJECT-32",
+          "FDEPROJECT-34",
+          "FDEPROJECT-35",
+          "FDEPROJECT-36",
+          "FDEPROJECT-37",
+          "FDEPROJECT-38",
+          "FDEPROJECT-39",
+          "FDEPROJECT-40",
+          "FDEPROJECT-41",
+          "FDEPROJECT-42",
+          "FDEPROJECT-43",
+          "FDEPROJECT-44",
+          "FDEPROJECT-45",
+          "FDEPROJECT-46",
+          "FDEPROJECT-47",
+          "FDEPROJECT-48",
+          "FDEPROJECT-49",
+          "FDEPROJECT-50",
+          "FDEPROJECT-51",
+          "FDEPROJECT-52",
+          "FDEPROJECT-53",
+          "FDEPROJECT-55",
+          "FDEPROJECT-56",
+          "FDEPROJECT-57",
+          "FDEPROJECT-58",
+          "FDEPROJECT-59",
+          "FDEPROJECT-60",
+          "FDEPROJECT-61",
+          "FDEPROJECT-62",
+          "FDEPROJECT-63",
+          "FDEPROJECT-66",
+          "FDEPROJECT-67",
+          "FDEPROJECT-68",
+          "FDEPROJECT-74",
+          "FDEPROJECT-100",
+          "FDEPROJECT-101",
+          "FDEPROJECT-102",
+          "FDEPROJECT-103",
+          "FDEPROJECT-104",
+          "FDEPROJECT-105",
+          "FDEPROJECT-106",
+          "FDEPROJECT-107",
+          "FDEPROJECT-123",
+          "FDEPROJECT-124",
+          "FDEPROJECT-125",
+          "FDEPROJECT-126",
+          "FDEPROJECT-127",
+          "FDEPROJECT-128"
+        ],
+        "deliverables": 69,
+        "hours": 26.25,
+        "tokens": null
+      },
+      "in_progress": {
+        "count": 4,
+        "hours": 3.0,
+        "keys": [
+          "FDEPROJECT-12",
+          "FDEPROJECT-27",
+          "FDEPROJECT-33",
+          "FDEPROJECT-129"
+        ],
+        "unestimated": 1
+      },
+      "name": "陳勁佑 Jincoco",
+      "week": {
+        "by_project": [
+          {
+            "hours": 0.0,
+            "id": "FDEPROJECT-71",
+            "key": "FDEPROJECT-71",
+            "summary": "門市 AI 客服",
+            "unestimated": 16
+          }
+        ],
+        "completed": 16,
+        "completed_keys": [
+          "FDEPROJECT-4",
+          "FDEPROJECT-74",
+          "FDEPROJECT-100",
+          "FDEPROJECT-101",
+          "FDEPROJECT-102",
+          "FDEPROJECT-103",
+          "FDEPROJECT-104",
+          "FDEPROJECT-105",
+          "FDEPROJECT-106",
+          "FDEPROJECT-107",
+          "FDEPROJECT-123",
+          "FDEPROJECT-124",
+          "FDEPROJECT-125",
+          "FDEPROJECT-126",
+          "FDEPROJECT-127",
+          "FDEPROJECT-128"
+        ],
+        "deliverables": 16,
+        "hours": 0.0,
+        "tokens": null
+      }
+    },
+    {
+      "cumulative": {
+        "by_project": [
+          {
+            "hours": 4.5,
+            "id": "FDEPROJECT-78",
+            "key": "FDEPROJECT-78",
+            "summary": "培訓課程網站",
+            "unestimated": 0
+          },
+          {
+            "hours": 4.5,
+            "id": "FDEPROJECT-79",
+            "key": "FDEPROJECT-79",
+            "summary": "MeetPilot 團隊會議記錄",
+            "unestimated": 0
+          },
+          {
+            "hours": 0.75,
+            "id": "FDEPROJECT-110",
+            "key": "FDEPROJECT-110",
+            "summary": "Notion 會議記錄轉拋",
+            "unestimated": 0
+          }
+        ],
+        "completed": 20,
+        "completed_keys": [
+          "FDEPROJECT-80",
+          "FDEPROJECT-81",
+          "FDEPROJECT-82",
+          "FDEPROJECT-83",
+          "FDEPROJECT-84",
+          "FDEPROJECT-85",
+          "FDEPROJECT-86",
+          "FDEPROJECT-87",
+          "FDEPROJECT-88",
+          "FDEPROJECT-89",
+          "FDEPROJECT-90",
+          "FDEPROJECT-91",
+          "FDEPROJECT-92",
+          "FDEPROJECT-93",
+          "FDEPROJECT-94",
+          "FDEPROJECT-95",
+          "FDEPROJECT-96",
+          "FDEPROJECT-97",
+          "FDEPROJECT-112",
+          "FDEPROJECT-113"
+        ],
+        "deliverables": 20,
+        "hours": 9.75,
+        "tokens": null
+      },
+      "in_progress": {
+        "count": 4,
+        "hours": 0.5,
+        "keys": [
+          "CS-2",
+          "CS-6",
+          "CS-8",
+          "FDEPROJECT-99"
+        ],
+        "unestimated": 3
+      },
+      "name": "Vincent Hsieh",
+      "week": {
+        "by_project": [
+          {
+            "hours": 4.5,
+            "id": "FDEPROJECT-78",
+            "key": "FDEPROJECT-78",
+            "summary": "培訓課程網站",
+            "unestimated": 0
+          },
+          {
+            "hours": 4.5,
+            "id": "FDEPROJECT-79",
+            "key": "FDEPROJECT-79",
+            "summary": "MeetPilot 團隊會議記錄",
+            "unestimated": 0
+          },
+          {
+            "hours": 0.75,
+            "id": "FDEPROJECT-110",
+            "key": "FDEPROJECT-110",
+            "summary": "Notion 會議記錄轉拋",
+            "unestimated": 0
+          }
+        ],
+        "completed": 20,
+        "completed_keys": [
+          "FDEPROJECT-80",
+          "FDEPROJECT-81",
+          "FDEPROJECT-82",
+          "FDEPROJECT-83",
+          "FDEPROJECT-84",
+          "FDEPROJECT-85",
+          "FDEPROJECT-86",
+          "FDEPROJECT-87",
+          "FDEPROJECT-88",
+          "FDEPROJECT-89",
+          "FDEPROJECT-90",
+          "FDEPROJECT-91",
+          "FDEPROJECT-92",
+          "FDEPROJECT-93",
+          "FDEPROJECT-94",
+          "FDEPROJECT-95",
+          "FDEPROJECT-96",
+          "FDEPROJECT-97",
+          "FDEPROJECT-112",
+          "FDEPROJECT-113"
+        ],
+        "deliverables": 20,
+        "hours": 9.75,
+        "tokens": null
+      }
+    },
+    {
+      "cumulative": {
+        "by_project": [
+          {
+            "hours": 0.0,
+            "id": "CS-7",
+            "key": "CS-7",
+            "summary": "開工確認",
+            "unestimated": 4
+          },
+          {
+            "hours": 2.0,
+            "id": "CS-25",
+            "key": "CS-25",
+            "summary": "歐洲地接社-房產品資料彙整",
+            "unestimated": 0
+          }
+        ],
+        "completed": 5,
+        "completed_keys": [
+          "CS-5",
+          "CS-9",
+          "CS-12",
+          "CS-13",
+          "CS-14"
+        ],
+        "deliverables": 2,
+        "hours": 2.0,
+        "tokens": null
+      },
+      "in_progress": {
+        "count": 3,
+        "hours": 0.0,
+        "keys": [
+          "CS-1",
+          "CS-10",
+          "CS-11"
+        ],
+        "unestimated": 3
+      },
+      "name": "hubertwang",
+      "week": {
+        "by_project": [],
+        "completed": 0,
+        "completed_keys": [],
+        "deliverables": 0,
+        "hours": 0.0,
+        "tokens": null
+      }
+    },
+    {
+      "cumulative": {
+        "by_project": [
+          {
+            "hours": 7.5,
+            "id": "CS-25",
+            "key": "CS-25",
+            "summary": "歐洲地接社-房產品資料彙整",
+            "unestimated": 0
+          }
+        ],
+        "completed": 8,
+        "completed_keys": [
+          "CS-16",
+          "CS-17",
+          "CS-18",
+          "CS-19",
+          "CS-20",
+          "CS-21",
+          "CS-22",
+          "CS-23"
+        ],
+        "deliverables": 1,
+        "hours": 7.5,
+        "tokens": null
+      },
+      "in_progress": {
+        "count": 0,
+        "hours": 0.0,
+        "keys": [],
+        "unestimated": 0
+      },
+      "name": "未指派",
+      "week": {
+        "by_project": [],
+        "completed": 0,
+        "completed_keys": [],
+        "deliverables": 0,
+        "hours": 0.0,
+        "tokens": null
+      }
+    }
+  ],
+  "period": {
+    "end_exclusive": "2026-09-30T00:00:00+08:00",
+    "start": "2026-09-23T00:00:00+08:00",
+    "week": "2026-W40",
+    "week_ending": "2026-09-29"
+  },
+  "schema": 2,
+  "site": "liontech-tw.atlassian.net",
+  "totals": {
+    "completed": 36,
+    "deliverables": 36,
+    "hours": 9.75,
+    "projects": 5,
+    "tokens": null,
+    "unestimated_completed": 16
+  },
+  "units": [
+    {
+      "deliverables": 36,
+      "hours": 9.75,
+      "unit": "未分類"
+    }
+  ]
+}

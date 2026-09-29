@@ -1,0 +1,4027 @@
+{
+  "counts": {
+    "CS": 26,
+    "FDEPROJECT": 136
+  },
+  "fetched_at": "2026-09-30T04:06:18.003769+08:00",
+  "issues": [
+    {
+      "assignee": "hubertwang",
+      "due": null,
+      "key": "CS-1",
+      "labels": [],
+      "level": 0,
+      "parent": "CS-7",
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "確認開發環境",
+      "type": "任務",
+      "updated": "2026-09-23T07:04:42.143+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "CS-2",
+      "labels": [],
+      "level": 0,
+      "parent": "CS-7",
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "提供 onboarding checklist",
+      "type": "任務",
+      "updated": "2026-09-17T07:47:12.476+0800"
+    },
+    {
+      "assignee": "hubertwang",
+      "due": null,
+      "key": "CS-3",
+      "labels": [],
+      "level": 0,
+      "parent": "CS-7",
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "Test card - write access check",
+      "type": "任務",
+      "updated": "2026-09-17T07:47:36.386+0800"
+    },
+    {
+      "assignee": "hubertwang",
+      "due": null,
+      "key": "CS-4",
+      "labels": [],
+      "level": 0,
+      "parent": "CS-7",
+      "points": 2.5,
+      "project": "CS",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "IT Onboarding — 帳號與開發環境設定",
+      "type": "任務",
+      "updated": "2026-09-23T07:02:54.143+0800"
+    },
+    {
+      "assignee": "hubertwang",
+      "due": null,
+      "key": "CS-5",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": 0,
+      "parent": "CS-25",
+      "points": 2.0,
+      "project": "CS",
+      "resolved": "2026-09-18T02:53:57.583+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "地接社飯店資料格式調查（Agent Workflow 前置分析）",
+      "type": "任務",
+      "updated": "2026-09-23T13:38:17.622+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "CS-6",
+      "labels": [],
+      "level": 0,
+      "parent": "CS-7",
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "確認共用信箱啟用狀態",
+      "type": "任務",
+      "updated": "2026-09-21T09:44:45.639+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-7",
+      "labels": [],
+      "level": 1,
+      "parent": null,
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "開工確認",
+      "type": "大型工作",
+      "updated": "2026-09-17T07:46:52.862+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "CS-8",
+      "labels": [],
+      "level": 0,
+      "parent": "CS-7",
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "claude code (enterprise)申請",
+      "type": "任務",
+      "updated": "2026-09-23T11:33:17.962+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-9",
+      "labels": [],
+      "level": -1,
+      "parent": "CS-4",
+      "points": null,
+      "project": "CS",
+      "resolved": "2026-09-18T02:45:28.958+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "確認公司信箱開通",
+      "type": "子任務",
+      "updated": "2026-09-18T02:45:51.583+0800"
+    },
+    {
+      "assignee": "hubertwang",
+      "due": null,
+      "key": "CS-10",
+      "labels": [],
+      "level": -1,
+      "parent": "CS-4",
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "確認共用信箱 lionitcowork 開通",
+      "type": "子任務",
+      "updated": "2026-09-22T16:03:59.329+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-11",
+      "labels": [],
+      "level": -1,
+      "parent": "CS-4",
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "註冊 GitHub 帳號並掛載 Org",
+      "type": "子任務",
+      "updated": "2026-09-18T02:47:52.934+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-12",
+      "labels": [],
+      "level": -1,
+      "parent": "CS-4",
+      "points": null,
+      "project": "CS",
+      "resolved": "2026-09-18T02:48:20.241+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "Jira 登入與 CS/202 board 確認",
+      "type": "子任務",
+      "updated": "2026-09-18T02:48:45.718+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-13",
+      "labels": [],
+      "level": -1,
+      "parent": "CS-4",
+      "points": null,
+      "project": "CS",
+      "resolved": "2026-09-18T02:49:18.874+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "FortiClient 安裝、註冊與 VPN 連線",
+      "type": "子任務",
+      "updated": "2026-09-18T02:49:42.429+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-14",
+      "labels": [],
+      "level": -1,
+      "parent": "CS-4",
+      "points": null,
+      "project": "CS",
+      "resolved": "2026-09-18T02:50:17.248+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "Teams 登入確認",
+      "type": "子任務",
+      "updated": "2026-09-18T02:50:36.567+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-15",
+      "labels": [],
+      "level": -1,
+      "parent": "CS-4",
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "VM／DB／API 存取確認",
+      "type": "子任務",
+      "updated": "2026-09-18T02:51:16.444+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-16",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": 0,
+      "parent": "CS-25",
+      "points": 5.0,
+      "project": "CS",
+      "resolved": "2026-09-18T03:39:02.449+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "地接社飯店資料解析 Pipeline 建置",
+      "type": "任務",
+      "updated": "2026-09-23T13:38:16.892+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-17",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": -1,
+      "parent": "CS-16",
+      "points": 1.5,
+      "project": "CS",
+      "resolved": "2026-09-18T03:41:57.307+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "回覆信串偵測與隔離模組（reply_isolate.py）",
+      "type": "子任務",
+      "updated": "2026-09-23T13:38:18.252+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-18",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": -1,
+      "parent": "CS-16",
+      "points": 1.25,
+      "project": "CS",
+      "resolved": "2026-09-18T03:48:11.298+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "表格式地接社解析器（Palma／Kuoni Tumlare／Happy Tours／Vosaio）",
+      "type": "子任務",
+      "updated": "2026-09-23T13:38:18.912+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-19",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": -1,
+      "parent": "CS-16",
+      "points": 1.25,
+      "project": "CS",
+      "resolved": "2026-09-18T04:15:26.934+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "G2 兩種特殊格式解析器（表格式＋文字信件式）",
+      "type": "子任務",
+      "updated": "2026-09-23T13:38:19.567+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-20",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": -1,
+      "parent": "CS-16",
+      "points": 0.5,
+      "project": "CS",
+      "resolved": "2026-09-18T04:17:44.030+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MIKI PDF 附件解析（pdfplumber）",
+      "type": "子任務",
+      "updated": "2026-09-23T13:38:20.168+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-21",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": -1,
+      "parent": "CS-16",
+      "points": 0.5,
+      "project": "CS",
+      "resolved": "2026-09-18T04:19:39.939+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "OP 端輸出文件產生器（docx）",
+      "type": "子任務",
+      "updated": "2026-09-23T13:38:20.722+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-22",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": -1,
+      "parent": "CS-16",
+      "points": 2.0,
+      "project": "CS",
+      "resolved": "2026-09-22T16:05:53.705+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "Pipeline 部署至 VM（20.77.26.79）",
+      "type": "子任務",
+      "updated": "2026-09-23T13:38:21.338+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-23",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": -1,
+      "parent": "CS-16",
+      "points": 0.5,
+      "project": "CS",
+      "resolved": "2026-09-22T16:31:21.057+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "建立 GitHub Repo 並改用 Git 部署至 VM",
+      "type": "子任務",
+      "updated": "2026-09-23T13:38:21.904+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-24",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": -1,
+      "parent": "CS-16",
+      "points": 0.0,
+      "project": "CS",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "待處理（非本人待辦）— DB 儲存與 OTA/Expedia 資料整合",
+      "type": "子任務",
+      "updated": "2026-09-23T13:38:22.422+0800"
+    },
+    {
+      "assignee": null,
+      "due": null,
+      "key": "CS-25",
+      "labels": [
+        "歐洲團產TP"
+      ],
+      "level": 1,
+      "parent": null,
+      "points": null,
+      "project": "CS",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "歐洲地接社-房產品資料彙整",
+      "type": "大型工作",
+      "updated": "2026-09-23T13:39:27.240+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Objective：把歐洲地接社寄來的飯店資料信件自動解析，整理成 OP 可以直接用的文件，並存進資料庫",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Why It Matters：地接社各自用不同格式寄資料，要先解析、標準化，後續的 Agent Workflow 才有乾淨的資料可用",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before/After",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before：地接社各自用不同格式寄飯店資料：表格、文字信件、PDF 附件，信裡還夾著回覆信串",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "After：解析 Pipeline 部署在 VM、改用 Git 部署；能隔離回覆信串，解析 Palma、Kuoni Tumlare、Happy Tours、Vosaio 四家表格式、G2 兩種格式與 MIKI 的 PDF 附件，輸出 OP 端 docx；解析結果存進資料庫並與 OTA／Expedia 資料整合",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Evidence：Pipeline 在 VM 上產出 OP 端 docx；資料庫儲存與 OTA／Expedia 資料整合完成（CS-24）",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Decision Needed：CS-24 標「非本人待辦」，資料庫儲存與 OTA／Expedia 資料整合要由誰接手",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Next Milestone：資料庫儲存與 OTA／Expedia 資料整合（CS-24）",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "due": null,
+      "key": "CS-26",
+      "labels": [],
+      "level": 0,
+      "parent": "CS-25",
+      "points": null,
+      "project": "CS",
+      "resolved": "2026-09-27T11:24:32.360+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "歐洲地接社-房產品資料彙整",
+      "type": "Kick off",
+      "updated": "2026-09-27T11:24:32.378+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-2",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 3.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-28T17:17:20.790+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "lineOA production search -fallback",
+      "type": "故事",
+      "updated": "2026-09-24T11:15:09.572+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-3",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-23T14:55:35.284+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "行銷卡片點進 LIFF 直接問本期活動，而且整段對話都記得是哪一檔",
+      "type": "故事",
+      "updated": "2026-09-24T11:26:15.765+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-4",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:19.490+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "商品詳情改接官網資料 API，取代爬網頁：規格交 MCP 團隊",
+      "type": "Spike",
+      "updated": "2026-09-29T12:18:19.513+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-5",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "國旅自由行：MCP 搜尋工具與初始化 API（另案）",
+      "type": "任務",
+      "updated": "2026-09-24T11:26:16.329+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-6",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-06T15:39:47.036+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LINE bot 轉真人客服（三層觸發＋後台人工接手）",
+      "type": "故事",
+      "updated": "2026-09-24T11:15:13.759+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-7",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-05T15:39:38.813+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "客服 FAQ 1863 則導入 Dify 知識庫",
+      "type": "故事",
+      "updated": "2026-09-24T11:15:14.777+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-8",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-05T15:39:37.655+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LINE 官方帳號 AI 搜尋機器人上線（雙 bot 同版）",
+      "type": "故事",
+      "updated": "2026-09-24T11:15:15.742+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-9",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-21T15:50:58.721+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "新版 LIFF 前端接上真實後端：五塊模擬全部換成真服務，舊版保留在 /old",
+      "type": "故事",
+      "updated": "2026-09-24T11:26:15.764+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-10",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 3.0,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "正式版 LINE bot 發佈給門市同仁前的收尾：切換公司頻道、轉真人文案定稿、門市回饋補完（合併 S8-65、S8-69、S8-5）",
+      "type": "故事",
+      "updated": "2026-09-24T11:26:16.767+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-11",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 3.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-31T14:52:03.095+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LIFF 對話式商品搜尋前端：把搜尋搬到網頁，只在需要真人時回到 LINE 對話",
+      "type": "故事",
+      "updated": "2026-09-24T11:15:18.478+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-12",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "Chatwoot 接 LINE:把 dev LIFF 的 OA(@125oxfwt)串進去試做",
+      "type": "Spike",
+      "updated": "2026-09-24T11:32:15.822+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-13",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-23T14:55:40.050+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "國旅自由行套裝總價能否純 API：7 支 API 與網頁一致，缺初始化 API",
+      "type": "Spike",
+      "updated": "2026-09-24T11:26:16.623+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-14",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-05T15:39:42.095+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LINE 圖片問答可行性評估（暫不做，待 Dify 新版支援）",
+      "type": "Spike",
+      "updated": "2026-09-24T11:15:21.439+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-15",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-23T14:55:42.085+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "相似應用怎麼讓 AI 知道商品細節與促銷活動：對照我們的做法",
+      "type": "Spike",
+      "updated": "2026-09-24T11:26:16.043+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-16",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-05T15:39:40.177+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "Dify AGENTS app 結構化輸出落地（卡片改為不經 LLM）",
+      "type": "Spike",
+      "updated": "2026-09-24T11:16:01.151+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-17",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-23T14:55:43.740+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "dify 1.17.1 升級評估：暫不升，要升先演練向量資料庫分段升級",
+      "type": "Spike",
+      "updated": "2026-09-24T11:26:16.207+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-18",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-16T20:46:27.936+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "行銷活動頁改用預跑入知識庫：即時爬蟲讀不到內容，模型會無依據硬答",
+      "type": "Spike",
+      "updated": "2026-09-24T11:26:15.940+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-19",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-17T16:15:09.539+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "bot 提示詞注入防禦盤點：dify 內建能力、市集外掛與自架 guard 模型的取捨",
+      "type": "Spike",
+      "updated": "2026-09-24T11:26:16.072+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-20",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": 0.25,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-24T14:28:00.092+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "業務話術手冊改放「檔案」欄位之可行性實測（結論：走不通，需另找突破口）",
+      "type": "Spike",
+      "updated": "2026-09-24T11:16:03.433+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-21",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-23T14:55:45.795+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "本期 15 張行銷卡片洗進檔期知識庫，並做成每期可重複使用的洗資料流程",
+      "type": "任務",
+      "updated": "2026-09-24T11:26:15.780+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-22",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-06T14:03:25.004+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "Dify 自建 image 上線並修好 console 設定存不住的根本問題",
+      "type": "任務",
+      "updated": "2026-09-24T11:16:04.377+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-23",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-28T17:17:52.341+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "擺脫 Dify console 限制：fork 自建 image 與雄獅專屬後台（並行評估）",
+      "type": "任務",
+      "updated": "2026-09-24T11:16:05.300+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-24",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-07T14:43:22.983+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LINE bot token 成本優化：caching 查帳與 MCP 回傳裁剪",
+      "type": "任務",
+      "updated": "2026-09-24T11:16:06.250+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-25",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-04T16:02:12.244+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "商品連結帶門市追蹤碼：bot 帶來的瀏覽與成交要追溯得回門市",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:26.188+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-26",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-15T23:27:15.108+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "轉真人時附上 AI 摘要：目前只帶客人最後一句，脈絡全丟了",
+      "type": "任務",
+      "updated": "2026-09-24T11:26:16.762+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-27",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 2.0,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "新增LIFF 六宮格 rich menu：目前LIFF沒有任何入口",
+      "type": "任務",
+      "updated": "2026-09-24T11:32:14.061+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-28",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-03T14:41:21.301+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "行銷 Flex 訊息的按鈕帶問題進 AI 搜尋（LIFF 讀網址參數）",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:28.983+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-29",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-06T16:48:45.772+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MCP 追蹤 header 改名 X-Line 並改為 console 自助設定",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:29.963+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-30",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-03T13:56:57.522+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "從 bot 進官網不要顯示 LiLi 客服（需官網那條線，先比對板橋門市的頁面）",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:30.946+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-31",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 0.25,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-13T16:33:51.897+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MCP 日誌留存：Loki 改為只對我們的 stream 保留兩週",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:31.885+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-32",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-25T11:03:33.162+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LINE OA 即時客服台：走官方帳號後台內部 API，繞開 reply token 一分鐘限制且不吃訊息額度",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:32.845+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-33",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "門市號碼機廠商 API 對接:取得文件與憑證、界定要存哪些資料",
+      "type": "任務",
+      "updated": "2026-09-24T11:32:17.875+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-34",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 2.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-02T11:51:29.791+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LIFF 網頁前端第 4 階段：驗收、成本對照與發佈給測試同仁",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:34.719+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-35",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": 2.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-31T15:29:59.746+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "dify fork：結構化輸出的啟用條件改成看設定，不要寫死 app id",
+      "type": "任務",
+      "updated": "2026-09-24T11:16:07.133+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-36",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-06T10:38:27.472+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "Dify 1.16.0 升級至 1.16.1（含補丁重套與端到端驗證）",
+      "type": "任務",
+      "updated": "2026-09-24T11:16:08.043+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-37",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": 0.25,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-20T11:05:24.257+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LINE bot 對話接 Langfuse：dify 端已設好，卡在 v4 寫入模式，決定改 fork",
+      "type": "任務",
+      "updated": "2026-09-24T11:16:09.039+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-38",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-02T12:20:36.747+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "dify 1.17.0 關掉了 console 的知識庫欄位 —— 新增第三顆 fork image lion/dify-web",
+      "type": "任務",
+      "updated": "2026-09-24T11:16:10.028+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-39",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-28T17:17:19.452+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "修改轉真人的文案呈現",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:35.935+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-40",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-09T08:58:59.219+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "門市 LIFF 前端修正八項：規則類表格、行程清單、回答分段、讀取進度、鍵盤位移、問 AI、建議問題、留白漸層",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:36.853+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-41",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-24T09:56:28.862+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LINE bot 發佈驗收清單與自動化測試",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:37.763+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-42",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-21T11:32:57.154+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "把 line-oa-web 的容器 IP 釘死：讀商品頁的工具現在靠一個隨機配發的位址",
+      "type": "任務",
+      "updated": "2026-09-24T11:26:16.209+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-43",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-10T15:17:55.883+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "門市回饋:對話流程三項調整(不問床型、一次問完、查不到就轉真人)",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:39.624+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-44",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-17T16:15:13.158+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "解除隱藏 dify console 的內容審查開關：重烤 lion/dify-web:1.17.0-2",
+      "type": "任務",
+      "updated": "2026-09-24T11:26:16.074+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-45",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 0.25,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-13T14:15:42.040+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MCP 搜尋命中率看板（Grafana，含 LINE 與 ChatGPT 兩來源）",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:40.624+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-46",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-09T09:35:51.182+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "商品內容問答：bot 目前只查得到有哪些商品，查不到商品裡面是什麼",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:41.559+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-47",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-06T10:36:43.453+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MCP 呼叫可歸因：對話 id 帶進 MCP header",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:42.442+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-48",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-08T14:24:01.339+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "回答後給「你可能想問」建議：dify 內建的就能用，只差開關",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:43.400+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-49",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-03T11:12:36.721+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "開發與部署機制整理：推上 Azure、分支收斂、部署改 git、帳號與路由清理",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:44.393+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-50",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-28T17:17:18.066+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "兩隻 LINE bot 頻道移轉至公司帳號、併入同一個 provider（統一 userId）",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:45.333+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-51",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-19T09:57:22.770+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LINE bot 轉真人客服改為提示模式（功能保留、以環境變數開關）",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:46.265+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-52",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-10T10:05:32.704+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "請 MCP 開放 search-tours 已寫死的搜尋條件(航司/只找成行/星期)並評估加名額查詢",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:47.230+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-53",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-01T11:18:01.466+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "dify 升級 1.16.1 → 1.17.0：重建兩顆 fork image、十個 migration、退休一顆 patch",
+      "type": "任務",
+      "updated": "2026-09-24T11:16:12.013+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-54",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "lineOA 對話記憶壓縮規劃（待情境更複雜時調整）",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:48.117+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-55",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-15T09:22:42.126+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "jincoco.site 網域過期導致正式 LIFF 全球中斷：已搬到 jincoco.space 並改名",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:26:15.584+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-56",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-09T08:58:57.118+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "商品卡報的是同業價，客人點進官網看到的是直客價",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:15:49.994+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-57",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-01T15:53:51.340+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "AI 搜尋頁的歷史對話看得到別人的紀錄（身分驗證整段沒生效）",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:15:50.905+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-58",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-01T15:53:54.456+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "搜尋過程露出工具代碼（dataset_9e3083ac…），要改成客人看得懂的字",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:15:51.782+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-59",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-22T16:30:14.287+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "正式站 search-tours 因上游移除 LevelID/FeatureSrc 而 100% 失效（已修復）",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:26:16.181+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-60",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-15T23:19:34.645+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "讀商品頁的過濾器砍掉了費用與注意事項：改 raw 並自己切頭尾",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:26:16.480+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-61",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-17T16:15:11.392+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "AI 會幫客人翻譯、代寫、算投資：業務範圍從來沒鎖過（28 題量測後修正並上正式站）",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:26:16.339+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-62",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-05T15:39:41.162+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "知識庫 embedding 撞 GCP 區域配額之排除",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:16:12.933+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-63",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": 0.25,
+      "project": "FDEPROJECT",
+      "resolved": "2026-08-28T17:17:54.063+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "機票搜尋間歇性查不到票：上游 flight.liontravel.com 回 HTTP 200 空 body（需該 API／F5 維護者協助）",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:15:55.461+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-64",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-23T14:55:36.878+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "行銷入口能被自組連結塞話、舊卡永遠點得到：加上本期活動白名單",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:26:16.339+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-65",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-23T14:55:38.474+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "讀商品頁常讀不到每日行程（頁面沒載完就回傳），國旅自由行網站也被擋",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:26:15.939+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-66",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-72",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-10T14:24:28.660+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "回應約一半機率卡 140 秒:Google 的一個 IP 從公司網路不通(已定位,待網路組)",
+      "type": "漏洞",
+      "updated": "2026-09-24T11:16:13.896+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-67",
+      "labels": [
+        "AILab"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-73",
+      "points": 2.0,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-17T16:36:18.810+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "H3 開源模型沙盒：短影音腳本實作與效益數據",
+      "type": "Spike",
+      "updated": "2026-09-24T11:26:16.906+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-68",
+      "labels": [
+        "AILab"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-73",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-17T16:36:19.736+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "H3 開源影音生成：第二輪實驗與流程改善（品質、效率、可追溯性）",
+      "type": "任務",
+      "updated": "2026-09-24T11:26:15.583+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-69",
+      "labels": [
+        "AILab"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-73",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "H3 成本數據補齊：後製工時、平均嘗試次數、其他平台實際單價（補齊前不做跨平台比較）",
+      "type": "故事",
+      "updated": "2026-09-24T11:26:16.623+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-70",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "Line OA 聊天 Log API開發",
+      "type": "任務",
+      "updated": "2026-09-24T11:15:58.327+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-71",
+      "labels": [],
+      "level": 1,
+      "parent": null,
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "門市 AI 客服",
+      "type": "大型工作",
+      "updated": "2026-09-29T12:18:53.392+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-72",
+      "labels": [],
+      "level": 1,
+      "parent": null,
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T11:35:17.937+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "Dify 平台與維運",
+      "type": "大型工作",
+      "updated": "2026-09-24T11:35:17.956+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-73",
+      "labels": [],
+      "level": 1,
+      "parent": null,
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "AI Lab H3 影音",
+      "type": "大型工作",
+      "updated": "2026-09-24T11:34:59.224+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-74",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:20.897+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MCP 兩支現有工具參數有誤：查名額沒帶日期查不到梯次、單程機票一律查不到",
+      "type": "漏洞",
+      "updated": "2026-09-29T12:18:20.913+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-75",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T11:15:01.951+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "商品詳情 API 擴大樣本驗證：五類商品加大樣本，修正規格多條前提",
+      "type": "Spike",
+      "updated": "2026-09-24T11:16:00.191+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Objective：把雄獅學院 EMBA「旅遊產業」十節培訓課程收攏成一個課程網站，學員閱讀與講師投影帶課共用同一份內容",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Why It Matters：對象是新進協理級以上主管，每節 6 小時，前 3 小時講課、後 3 小時分組工作坊；學員要有地方課前預習、課後複習，講師要有能直接投影帶課的版本",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before/After",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before：教材只有 LINE 對話匯出的文字檔 13,851 行、20 張運作圖與工作坊圖，以及只涵蓋第一節的講義 PDF，沒有整理過、能閱讀或投影的版本",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "After：公開網站收齊十節教材、十場工作坊、20 張圖與每節課後講義；閱讀模式給學員預習複習，投影模式一題一畫面、依時間表倒數",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Evidence：網站 https://lion-academy-course.vercel.app/index.html 已上線，首頁、十節、名詞索引、講義 PDF、圖片都能開，內容與 repo 建置逐檔一致",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Decision Needed：講師確認第一節工作坊採 LINE 文字版、第二節採圖片版（FDEPROJECT-87）",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Next Milestone：講師確認網站內容後結案（FDEPROJECT-87）",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "due": null,
+      "key": "FDEPROJECT-76",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T13:23:06.443+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "培訓課程網站",
+      "type": "Kick off",
+      "updated": "2026-09-27T11:17:54.806+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Objective：讓每位會議記錄人在自己的 Mac 或 Windows 電腦上安裝就能用 MeetPilot 錄音與轉錄，會議記錄自動放進共享資料夾，其他人不用安裝就能讀",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Why It Matters：一場會議只有一位記錄人，記錄人各自用 Mac 或 Windows，Windows 是多數；工具只在一台電腦上能跑，其他記錄人就無法自己產出會議記錄",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before/After",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before：MeetPilot 只在一台 Mac 上本地架設，要自己裝 Node 與 ffmpeg、編設定檔、放 Gemini key 與名單 CSV，其他人無法使用",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "After：記錄人裝 .dmg 或 .exe、輸入邀請碼就能錄音與轉錄；Gemini key 與名單由 gateway 發放，不落在設定檔；記錄以 markdown 投影到共享資料夾，讀的人零安裝；新版放進共享資料夾的更新區就能更新",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Evidence：乾淨的 Mac 與 Windows 各裝一次、啟動到主畫面；Windows 上一場真實錄音跑到轉錄完成，記錄出現在共享資料夾；CI 的 macOS 與 Windows 矩陣全綠；語音備忘錄與 app 內錄音的逐字稿對照",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Decision Needed：",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Next Milestone：第一次發版給 5 位記錄人（FDEPROJECT-99），前置是 Windows 實機端到端（FDEPROJECT-97）與共享資料夾上傳驗證",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "due": null,
+      "key": "FDEPROJECT-77",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T16:19:44.102+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MeetPilot 團隊會議記錄",
+      "type": "Kick off",
+      "updated": "2026-09-27T11:17:56.310+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-78",
+      "labels": [
+        "IT_team"
+      ],
+      "level": 1,
+      "parent": null,
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T07:02:22.820+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "培訓課程網站",
+      "type": "大型工作",
+      "updated": "2026-09-29T07:03:22.441+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-79",
+      "labels": [
+        "FDE_team"
+      ],
+      "level": 1,
+      "parent": null,
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "MeetPilot 團隊會議記錄",
+      "type": "大型工作",
+      "updated": "2026-09-24T16:19:45.037+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-80",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T14:12:13.041+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "內容解析：十節教材與十場工作坊轉成結構化內容",
+      "type": "任務",
+      "updated": "2026-09-24T14:12:13.059+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-81",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T14:12:13.577+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "第二節工作坊：圖片轉文字並校對數字",
+      "type": "任務",
+      "updated": "2026-09-24T14:12:13.594+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-82",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T14:12:14.412+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "每節頁面：教材／工作坊／課後講義三頁籤",
+      "type": "任務",
+      "updated": "2026-09-24T14:12:14.420+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-83",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T14:12:14.997+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "首頁導覽、十節時間軸與名詞索引",
+      "type": "任務",
+      "updated": "2026-09-24T14:12:15.016+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-84",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T14:12:15.674+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "投影模式：一題一畫面、鍵盤翻頁、工作坊倒數",
+      "type": "任務",
+      "updated": "2026-09-24T14:12:15.691+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-85",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T14:12:16.212+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "手機與深淺色走查",
+      "type": "任務",
+      "updated": "2026-09-24T14:12:16.231+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-86",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T15:07:25.623+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "向祥董取得 20 張圖的原始高解析檔",
+      "type": "任務",
+      "updated": "2026-09-24T18:24:25.211+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-87",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T07:02:15.891+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "與祥董確認網站內容",
+      "type": "任務",
+      "updated": "2026-09-29T07:02:15.907+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-88",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-78",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T14:12:16.876+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "部署上線",
+      "type": "任務",
+      "updated": "2026-09-24T14:12:16.893+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-89",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T16:19:07.368+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "跨平台前置：Windows 能跑、CI 兩平台三條 gate",
+      "type": "任務",
+      "updated": "2026-09-24T16:19:07.374+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-90",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T16:19:10.093+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "Gateway：邀請碼換 Gemini key 與名單，加名單發布",
+      "type": "任務",
+      "updated": "2026-09-24T16:19:10.100+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-91",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T16:19:13.588+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "共享資料夾：OneDrive「MeetPilot 記錄」與記錄人子資料夾",
+      "type": "任務",
+      "updated": "2026-09-24T16:19:13.595+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-92",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T16:19:16.386+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "E1 桌面 app 外殼：Electron .dmg／.exe",
+      "type": "任務",
+      "updated": "2026-09-24T16:19:16.394+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-93",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T16:19:19.153+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "E2 隨附 ffmpeg（LGPL 自編）",
+      "type": "任務",
+      "updated": "2026-09-24T16:19:19.161+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-94",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T16:19:21.906+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "E3 首次設定畫面：邀請碼與投影資料夾",
+      "type": "任務",
+      "updated": "2026-09-24T16:19:21.912+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-95",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T16:19:24.511+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "E4 app 內錄音",
+      "type": "任務",
+      "updated": "2026-09-24T16:19:24.527+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-96",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-24T16:19:27.156+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "E5 更新通道：從共享資料夾更新",
+      "type": "任務",
+      "updated": "2026-09-24T16:19:27.163+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-97",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T18:09:32.994+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "E6 Windows 實機端到端",
+      "type": "任務",
+      "updated": "2026-09-29T18:09:33.001+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-98",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "錄音品質對照：語音備忘錄 vs app 內錄音",
+      "type": "任務",
+      "updated": "2026-09-24T16:19:31.336+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-99",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-79",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "第一次發版給 5 位記錄人",
+      "type": "任務",
+      "updated": "2026-09-29T09:26:12.126+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-100",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:22.488+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MCP 共用請求層補防護：每個上游請求都有逾時與錯誤紀錄、log 不再灌爆 Loki、UA 統一",
+      "type": "任務",
+      "updated": "2026-09-29T12:18:22.508+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-101",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:23.861+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "單程機票查空的第二個原因：MCP 把 www 的防火牆 cookie 送到機票網域，改照瀏覽器規則分域",
+      "type": "漏洞",
+      "updated": "2026-09-29T12:18:23.868+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-102",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:25.203+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "新增 MCP 工具 tour-detail：團體行程的逐日行程、費用、航班、集合地點一次查齊",
+      "type": "故事",
+      "updated": "2026-09-29T12:18:25.211+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-103",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:26.541+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "新增 MCP 工具 hotel-rooms：指定日期與人數查房型方案、價格、餐食與取消規定",
+      "type": "故事",
+      "updated": "2026-09-29T12:18:26.549+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-104",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:27.968+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "新增 MCP 工具 ticket-detail：票券規格、可售日期與票價、場次、取消規定",
+      "type": "故事",
+      "updated": "2026-09-29T12:18:27.983+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-105",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:29.228+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "機票搜尋每段帶出行李、餐食、選位與改退摘要；廉航行李改顯示實際額度",
+      "type": "故事",
+      "updated": "2026-09-29T12:18:29.248+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-106",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:30.582+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "新增 MCP 工具 hotel-info：飯店介紹、設施、入住時間與住客評論（不需日期）",
+      "type": "故事",
+      "updated": "2026-09-29T12:18:30.602+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-107",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:18:31.948+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MCP 上游連線失敗自動重試一次：官網偶發斷線或 502/503 不再直接回錯",
+      "type": "任務",
+      "updated": "2026-09-29T12:18:31.957+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Objective：讓客人在門市的 LINE 官方帳號用對話查雄獅的機票、飯店、團體行程與票券，AI 直接回商品卡，需要時轉真人，bot 帶來的瀏覽與成交追溯得回門市",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Why It Matters：門市要一個能自己回答商品問題、轉得回門市的客服入口；bot 帶來的業績追溯不回門市，就證明不了這條線值不值得繼續投資",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before/After",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before：門市官方帳號沒有 AI 搜尋，客服 FAQ 只在客服正式機裡，客人的商品問題要靠真人回覆",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "After：正式版 bot 在公司頻道交到門市同仁手上；客人在 LINE 或 LIFF 網頁用對話查商品、拿到商品卡，答不了就轉真人並附 AI 摘要；商品連結帶門市追蹤碼",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Evidence：正式版重跑發佈驗收清單通過；LINE 版與網頁版同一批問題的成本與延遲對照；MCP 搜尋命中率看板；FAQ 1863 則已進知識庫",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Decision Needed：",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Next Milestone：正式版 LINE bot 發佈給門市同仁（FDEPROJECT-10）",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "due": null,
+      "key": "FDEPROJECT-108",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-27T11:24:29.765+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "門市 AI 客服",
+      "type": "Kick off",
+      "updated": "2026-09-27T11:24:29.779+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Objective：用開源影音模型 MiniMax H3 在自己的 GPU 沙盒產出短影音，拿出時間、費用、品質的實測數據，作為跟外部影音平台比較的依據",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Why It Matters：要決定短影音自己用開源模型產、還是用外部平台，得有自己的實測成本；外部公開的單價前後矛盾，拿二手數字比會誤導決策",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before/After",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before：沒有自產短影音的實測數據，只有外部公開、前後矛盾的平台單價",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "After：五支腳本全部產出，9 段影片 9 段成功；導入 8 步加速 LoRA 後一支 30 秒影片機器時間從約 3.9 小時降到約 1.1 小時；提示詞改用官方六欄格式後畫面文字可讀；確定要維持人物與場景一致就餵參考圖片、不餵參考影片",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Evidence：沙盒成品五支與兩輪實驗紀錄（FDEPROJECT-67、68）；補齊後製工時、平均嘗試次數與其他平台實際單價之後的成本比較（FDEPROJECT-69）",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Decision Needed：需要其他平台 Ovideo、Lumina 的實際帳單，才能做成本比較（FDEPROJECT-69）",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Next Milestone：補齊三項成本數據後做跨平台成本比較（FDEPROJECT-69）",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "due": null,
+      "key": "FDEPROJECT-109",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-73",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-27T11:24:31.372+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "AI Lab H3 影音",
+      "type": "Kick off",
+      "updated": "2026-09-27T11:24:31.390+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-110",
+      "labels": [
+        "FDE_team",
+        "notion_user"
+      ],
+      "level": 1,
+      "parent": null,
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "Notion 會議記錄轉拋",
+      "type": "大型工作",
+      "updated": "2026-09-29T08:48:29.759+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Objective：同事在 Notion 打開會議記錄頁按一下，記錄就以 MeetPilot 的外殼格式進公司共用資料夾，Notion AI Meeting Notes 與貼文字的一般頁面都適用",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Why It Matters：很多人用 Notion 自行錄音與記會議，記錄散在各人頁面（不少是個人帳號、個人方案），別人找不到也用不到；MeetPilot 的記錄已集中，Notion 這一半還沒有",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before/After",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Before：會議記錄留在各人的 Notion，要看得去問本人；格式各異，無法跟 MeetPilot 記錄放在一起讀",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "After：裝 Chrome 擴充功能、連結 Notion 一次，之後每場會後按「轉拋這一頁」，記錄以 `YYYY-MM-DD HHmm <標題>.md` 進公司共用資料夾的記錄人子資料夾；二期 AI Meeting Notes 完成後自動轉拋",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Evidence：個人 workspace 實機走通 OAuth、一般頁面與資料庫列（含屬性）轉出 MeetPilot 外殼格式（本機 commit 9c78b33，測試 25 條綠）；待驗：有 AI Meeting Notes 方案的 workspace 讀出摘要、筆記、逐字稿；寫進 SharePoint",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Decision Needed：公司共用資料夾放在哪個 SharePoint site 或 Teams 文件庫；IT 是否核發 Entra app（SPA／PKCE、只限該 site 的 delegated 權限）",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "content": [
+              {
+                "text": "Next Milestone：找一個有 AI Meeting Notes 方案的 workspace 完成實測，同時送出 IT 的 Entra app 申請",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "due": null,
+      "key": "FDEPROJECT-111",
+      "labels": [
+        "notion_user"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-110",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "Notion 會議記錄轉拋",
+      "type": "Kick off",
+      "updated": "2026-09-29T08:48:37.620+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-112",
+      "labels": [
+        "notion_user"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-110",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T08:50:06.044+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "一期：擴充功能連結 Notion 並讀取當前頁",
+      "type": "任務",
+      "updated": "2026-09-29T08:51:39.765+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-113",
+      "labels": [
+        "notion_user"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-110",
+      "points": 0.25,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T08:50:09.117+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "一期：記錄格式對齊 MeetPilot 外殼",
+      "type": "任務",
+      "updated": "2026-09-29T08:51:42.894+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-114",
+      "labels": [
+        "notion_user"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-110",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "AI Meeting Notes 實測（摘要、筆記、逐字稿）",
+      "type": "任務",
+      "updated": "2026-09-29T08:51:45.973+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-115",
+      "labels": [
+        "notion_user"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-110",
+      "points": 1.5,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "寫進公司 SharePoint 共用資料夾",
+      "type": "任務",
+      "updated": "2026-09-29T08:51:48.927+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-116",
+      "labels": [
+        "notion_user"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-110",
+      "points": 0.25,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "換 token 服務上線到 Vercel",
+      "type": "任務",
+      "updated": "2026-09-29T08:51:51.400+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-117",
+      "labels": [
+        "notion_user"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-110",
+      "points": 1.0,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "發佈擴充功能給同事安裝",
+      "type": "任務",
+      "updated": "2026-09-29T08:51:54.123+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-118",
+      "labels": [
+        "notion_user"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-110",
+      "points": 0.5,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "二期：AI Meeting Notes 完成後自動轉拋",
+      "type": "任務",
+      "updated": "2026-09-29T08:51:56.987+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-119",
+      "labels": [
+        "FDE_team"
+      ],
+      "level": 1,
+      "parent": null,
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "行政作業",
+      "type": "大型工作",
+      "updated": "2026-09-29T10:35:58.469+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-120",
+      "labels": [
+        "FDE_team"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-119",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "1 on 1 安排",
+      "type": "任務",
+      "updated": "2026-09-29T10:36:04.021+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-121",
+      "labels": [
+        "FDE_team"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-119",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "改組相關文件簽署",
+      "type": "任務",
+      "updated": "2026-09-29T10:36:05.190+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-122",
+      "labels": [
+        "FDE_team"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-119",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "系統權限申請",
+      "type": "任務",
+      "updated": "2026-09-29T10:36:06.522+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-123",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:19:22.434+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "團體搜尋 9/28 夜間起全部失敗：上游小圖欄位改回空值，MCP 格式檢查擋掉整筆",
+      "type": "漏洞",
+      "updated": "2026-09-29T12:19:22.452+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-124",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:19:23.290+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "MCP 工具呼叫失敗一律寫入錯誤紀錄，含整支被格式檢查擋下的情況",
+      "type": "任務",
+      "updated": "2026-09-29T12:19:23.308+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-125",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:19:24.164+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "機票票價明細移除重複的行李欄位，飯店評論說明不再寫死日期",
+      "type": "任務",
+      "updated": "2026-09-29T12:19:24.181+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-126",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:19:24.984+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "團體搜尋不再把同業價交給 AI",
+      "type": "任務",
+      "updated": "2026-09-29T12:19:25.006+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-127",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:19:25.943+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "LINE AI 接上 MCP 詳情工具：dify dev 與正式站、LIFF 查詢進度",
+      "type": "故事",
+      "updated": "2026-09-29T12:19:25.962+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-128",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T12:19:26.802+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "業務規範 skill v4：郵輪、飯店、票券的講法規則",
+      "type": "任務",
+      "updated": "2026-09-29T12:19:26.821+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-129",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-71",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "summary": "LIFF 在查細節的回合，於回答下方顯示「這次查的商品」小卡",
+      "type": "故事",
+      "updated": "2026-09-29T12:19:27.667+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-130",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-119",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": "2026-09-29T17:03:08.080+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "向 IT 申請 Entra app（ai-memory-kit 後端認人、notion-meeting-sync 寫 SharePoint）",
+      "type": "任務",
+      "updated": "2026-09-29T17:36:04.203+0800"
+    },
+    {
+      "assignee": "Vivian",
+      "description": {
+        "content": [
+          {
+            "attrs": {
+              "localId": "0fffe64549f7",
+              "panelType": "info"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "f0d031b90a09"
+                },
+                "content": [
+                  {
+                    "marks": [
+                      {
+                        "type": "strong"
+                      }
+                    ],
+                    "text": "Objective",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "panel"
+          },
+          {
+            "attrs": {
+              "localId": "f567eae2ba37"
+            },
+            "content": [
+              {
+                "text": "User: 入境部, 外語產品組, 李洳萱 經理",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "374b62962df6"
+            },
+            "content": [
+              {
+                "text": "目標: ",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "4053d98c6ecf"
+            },
+            "content": [
+              {
+                "text": "Inbound 由現行取得的資料，透過資料串接的方式，快速產出包含報價的成本單，讓User可以不用手key成本單",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "4c9610f489c5"
+            },
+            "content": [
+              {
+                "text": "(包含編輯成本單，也可以透過補字的方式，使用已建檔的資料，填寫價格)",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "144e263d3728"
+            },
+            "content": [
+              {
+                "text": "(因為是Inbound, 所以需求的語言包含英文、泰文、韓文、日文，但先處理英文)",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "f5130fed214b"
+            },
+            "content": [
+              {
+                "text": "(因為目前User已經有建立Res, Poi 的元件, Htl是透過 SERP的團房價電子檔，車是跟車產報價用同一套)",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "67ac857aee30"
+            },
+            "content": [
+              {
+                "text": "RES, POI, HTL的元件表:",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "acacc0ac7222"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "f992ca34a6a1",
+                  "url": "https://docs.google.com/spreadsheets/d/1IZyw5vs-WgpeEmlzSuyiEm0oDM-I3-EVCNVKn_WoEEk/edit?gid=617713914#gid=617713914"
+                },
+                "type": "inlineCard"
+              },
+              {
+                "text": " ",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "f0dba29347ed"
+            },
+            "content": [
+              {
+                "text": "車價:",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "ceec1b2c7982"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "32472cf890ca",
+                  "url": "https://docs.google.com/spreadsheets/d/1Ibb3IWI0GXI1vAPEwgxK29hKW7Y1B_7GNFT6IPPXua8/edit?gid=1820890411#gid=1820890411"
+                },
+                "type": "inlineCard"
+              },
+              {
+                "text": " ",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "08fe81714a67"
+            },
+            "content": [
+              {
+                "text": "HTL:",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "1050639e282f"
+            },
+            "content": [
+              {
+                "marks": [
+                  {
+                    "attrs": {
+                      "href": "https://lionspec.liontravel.com/CTM/CTMAPI/Component/GetRelativeFileList/GetRelativeFileList.html#id=jja4la&p=template"
+                    },
+                    "type": "link"
+                  }
+                ],
+                "text": "https://lionspec.liontravel.com/CTM/CTMAPI/Component/GetRelativeFileList/GetRelativeFileList.html#id=jja4la&p=template",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "e3ded7288ea1"
+            },
+            "content": [
+              {
+                "text": "(只提供報價單，不提供價格)",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "08b69ac3acc8"
+            },
+            "content": [
+              {
+                "text": "IT:  ",
+                "type": "text"
+              },
+              {
+                "attrs": {
+                  "accessLevel": "",
+                  "id": "712020:aedf3e00-8f34-4666-8621-d27ab5e913bf",
+                  "localId": "5db383b6-4ec3-4fc6-a24f-35f9f80dc946",
+                  "text": "@王碩緯"
+                },
+                "type": "mention"
+              },
+              {
+                "text": " ",
+                "type": "text"
+              },
+              {
+                "attrs": {
+                  "accessLevel": "",
+                  "id": "712020:e030a7f9-89ce-42fd-9587-d65f8df9ebc7",
+                  "localId": "f3749c10-995d-440f-bcfe-3e607b45ca12",
+                  "text": "@Vivian"
+                },
+                "type": "mention"
+              },
+              {
+                "text": "  協助",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "f632cf806d18"
+            },
+            "content": [
+              {
+                "text": "備註:",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "ae0c1a7b74f0"
+            },
+            "content": [
+              {
+                "text": "以上只提供短解，長期解：併入AI國旅報價系統，會通知S13， 由企本二處 經營企劃部 林芫鋐協助對接",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "1d0264620ea5",
+              "panelType": "note"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "b5a3668fa134"
+                },
+                "content": [
+                  {
+                    "marks": [
+                      {
+                        "type": "strong"
+                      }
+                    ],
+                    "text": "Why It Matters",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "panel"
+          },
+          {
+            "attrs": {
+              "localId": "e4d43780ce73"
+            },
+            "content": [
+              {
+                "text": "外語產品組目前有高頻製作需求單與成本單的需求，且大量內容仍仰賴人工查找既有資料、重複輸入與填寫價格，整體流程相當耗時，也容易形成日常作業負擔。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "6fe0f0608f3c"
+            },
+            "content": [
+              {
+                "text": "若能透過既有 RES、POI、HTL、車價等資料來源進行串接，並以補字、帶入既有建檔資料的方式協助產出與編輯成本單，可明顯降低人工 Key-in 與重複查找資料的時間，讓同仁將時間集中在報價判斷與產品規劃上。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "b55c4cdb9139"
+            },
+            "content": [
+              {
+                "text": "此外，客製國旅目前也存在相似的報價與成本單製作情境，因此這次 Inbound 的需求不只是單一部門的效率優化，也可在S13還沒完成前，提供給客製國旅使用(輸出「包含價格」的成本單)",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "a363f03ee4e8",
+              "panelType": "warning"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "9f74315aeb51"
+                },
+                "content": [
+                  {
+                    "marks": [
+                      {
+                        "type": "strong"
+                      }
+                    ],
+                    "text": "Before",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "panel"
+          },
+          {
+            "attrs": {
+              "localId": "8f01a4111619"
+            },
+            "content": [
+              {
+                "text": "目前的報價單是手動填入，雖然已經有元件資料，但因為沒有關聯，所以每次開成本單，都需要人工去查找元件表，團房價電子檔和車產資料，然後手動填入；",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "21d356283756",
+              "panelType": "success"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "ee8fb63dfda4"
+                },
+                "content": [
+                  {
+                    "marks": [
+                      {
+                        "type": "strong"
+                      }
+                    ],
+                    "text": "After",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "panel"
+          },
+          {
+            "attrs": {
+              "localId": "30957e1c8215"
+            },
+            "content": [
+              {
+                "text": "透過提供一個服務，讓User輸入需求(form), 輸出 包含價格的報價單檔案",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "4aedc2c98835",
+              "panelType": "success"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "eb3705dd02e4"
+                },
+                "content": [
+                  {
+                    "marks": [
+                      {
+                        "type": "strong"
+                      }
+                    ],
+                    "text": "Evidence",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "panel"
+          },
+          {
+            "attrs": {
+              "level": 3,
+              "localId": "9b575ad55e21"
+            },
+            "content": [
+              {
+                "text": "預期效益",
+                "type": "text"
+              }
+            ],
+            "type": "heading"
+          },
+          {
+            "attrs": {
+              "localId": "7643ffb6b218"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "29a714366463"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "d1545b8c422b"
+                    },
+                    "content": [
+                      {
+                        "text": "降低外語產品組製作成本單時，人工查找 RES、POI、HTL、車價資料與重複 Key-in 的作業時間。",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "attrs": {
+                  "localId": "7a5913e60cf0"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "36277d56d611"
+                    },
+                    "content": [
+                      {
+                        "text": "User 僅需輸入基本需求，即可透過既有建檔資料自動帶入品項與價格，快速產出「包含價格」的成本單。",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "attrs": {
+                  "localId": "e802890a9c25"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "b8a61ba05b94"
+                    },
+                    "content": [
+                      {
+                        "text": "編輯成本單時，可透過補字／搜尋既有元件資料的方式完成新增與修改，降低人工輸入錯誤。",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "attrs": {
+                  "localId": "c8cfd560233e"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "296224b2431b"
+                    },
+                    "content": [
+                      {
+                        "text": "在 S13 長期方案完成前，可先提供 Inbound 與客製國旅共用的短期能力，驗證既有元件資料是否足以支援成本單自動化。",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              }
+            ],
+            "type": "bulletList"
+          },
+          {
+            "attrs": {
+              "level": 3,
+              "localId": "8a9b5803702e"
+            },
+            "content": [
+              {
+                "text": "驗證方式",
+                "type": "text"
+              }
+            ],
+            "type": "heading"
+          },
+          {
+            "attrs": {
+              "localId": "82abd4faf925"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "03a55e8ffc8d"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "44da8a3cfc19"
+                    },
+                    "content": [
+                      {
+                        "text": "選定實際 Inbound 案件，使用服務產出成本單，與現行人工製作流程進行比較。",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "attrs": {
+                  "localId": "b16ae543f3f7"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "1b80a0033348"
+                    },
+                    "content": [
+                      {
+                        "text": "驗證 RES、POI、HTL、車價等既有資料是否可正確被搜尋、帶入與產出。",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "attrs": {
+                  "localId": "89ca491e40bf"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "3924ecb391a0"
+                    },
+                    "content": [
+                      {
+                        "text": "確認產出的成本單已包含可用價格，User 不需要再次逐筆查找來源資料。",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "attrs": {
+                  "localId": "8d72df4319ff"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "b2bfd64492dc"
+                    },
+                    "content": [
+                      {
+                        "text": "比較導入前後完成一份成本單所需的人工操作時間與 Key-in 次數。",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "attrs": {
+                  "localId": "026dc98ef27c"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "909796e87474"
+                    },
+                    "content": [
+                      {
+                        "text": "蒐集外語產品組實際使用回饋，確認產出內容是否可直接作為後續報價與編輯的基礎。",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              }
+            ],
+            "type": "bulletList"
+          },
+          {
+            "attrs": {
+              "localId": "c9fb09029231",
+              "panelType": "success"
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "6735cb022090"
+                },
+                "content": [
+                  {
+                    "marks": [
+                      {
+                        "type": "strong"
+                      }
+                    ],
+                    "text": "Next Milestone",
+                    "type": "text"
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "type": "panel"
+          },
+          {
+            "attrs": {
+              "localId": "db89c99912a2",
+              "order": 1
+            },
+            "content": [
+              {
+                "attrs": {
+                  "localId": "4081b14aa7b8"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "df9a8e08ac67"
+                    },
+                    "content": [
+                      {
+                        "text": "因為只有3天，先以處理「完整行程」的需求文字為主",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "attrs": {
+                  "localId": "23f502fa2afb"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "9285b220eeb9"
+                    },
+                    "content": [
+                      {
+                        "text": "飯店已經有建立到MSSQL-[dev_tpp_htl_code_mapping], [dev_tpp_htl_quotations_serp]; 因此先以RES, POI資料填入為主",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              },
+              {
+                "attrs": {
+                  "localId": "b3b3d850d963"
+                },
+                "content": [
+                  {
+                    "attrs": {
+                      "localId": "064ef7817bfa"
+                    },
+                    "content": [
+                      {
+                        "text": "下一階段再處理 - 行程不完整 + 車/飯店資料接入的需求",
+                        "type": "text"
+                      }
+                    ],
+                    "type": "paragraph"
+                  }
+                ],
+                "type": "listItem"
+              }
+            ],
+            "type": "orderedList"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "due": null,
+      "key": "FDEPROJECT-131",
+      "labels": [],
+      "level": 0,
+      "parent": null,
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "成本單價格填入模組(Inbound)",
+      "type": "Kick off",
+      "updated": "2026-09-29T17:49:47.248+0800"
+    },
+    {
+      "assignee": "Vivian",
+      "due": null,
+      "key": "FDEPROJECT-132",
+      "labels": [],
+      "level": -1,
+      "parent": "FDEPROJECT-131",
+      "points": 1.5,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "n8n",
+      "type": "子任務",
+      "updated": "2026-09-29T16:45:23.589+0800"
+    },
+    {
+      "assignee": "Vivian",
+      "due": null,
+      "key": "FDEPROJECT-133",
+      "labels": [],
+      "level": -1,
+      "parent": "FDEPROJECT-131",
+      "points": 1.5,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "api(產生報價單api, 填價格api)",
+      "type": "子任務",
+      "updated": "2026-09-29T16:45:43.579+0800"
+    },
+    {
+      "assignee": "王碩緯",
+      "due": null,
+      "key": "FDEPROJECT-134",
+      "labels": [],
+      "level": -1,
+      "parent": "FDEPROJECT-131",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "google script app(補字選單, 填價格)",
+      "type": "子任務",
+      "updated": "2026-09-29T15:48:36.801+0800"
+    },
+    {
+      "assignee": "王碩緯",
+      "due": null,
+      "key": "FDEPROJECT-135",
+      "labels": [],
+      "level": -1,
+      "parent": "FDEPROJECT-131",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "元件資料前處理(RES, POI)",
+      "type": "子任務",
+      "updated": "2026-09-29T15:49:15.193+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-136",
+      "labels": [],
+      "level": 0,
+      "parent": "FDEPROJECT-119",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "請 GitHub org owner 建 ai-memory-kit 的 policy repo 與 FDE team",
+      "type": "任務",
+      "updated": "2026-09-29T16:27:21.718+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "due": null,
+      "key": "FDEPROJECT-137",
+      "labels": [
+        "FDE_team"
+      ],
+      "level": 0,
+      "parent": "FDEPROJECT-119",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "notion-meeting-sync 選定 SharePoint site 並請 IT 授權 app 寫入",
+      "type": "任務",
+      "updated": "2026-09-29T17:36:01.722+0800"
+    }
+  ],
+  "period": {
+    "end_exclusive": "2026-09-30T00:00:00+08:00",
+    "start": "2026-09-23T00:00:00+08:00",
+    "week": "2026-W40",
+    "week_ending": "2026-09-29"
+  },
+  "schema": 1,
+  "site": "liontech-tw.atlassian.net"
+}

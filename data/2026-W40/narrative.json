@@ -1,0 +1,14 @@
+{
+  "highlights": [
+    "[門市 AI 客服] 完成 16 張卡，新增團體行程、房型、票券、飯店介紹查詢等 MCP 工具（FDEPROJECT-102、FDEPROJECT-103、FDEPROJECT-104、FDEPROJECT-106），並修復機票搜尋與請求層防護",
+    "[培訓課程網站] 完成 9 張卡，教材解析、投影模式、部署上線（FDEPROJECT-88）全數完成，專案結案",
+    "[MeetPilot 團隊會議記錄] 完成 9 張卡，跨平台前置、Gateway 發布、桌面 app 外殼與 Windows 實機端到端（FDEPROJECT-97）全數完成"
+  ],
+  "epic_results": {
+    "FDEPROJECT-71": "本週完成 16 張卡，新增團體行程、房型、票券、飯店介紹查詢等 MCP 工具並修復機票搜尋與請求層防護，專案 69 張卡已完成 61 張",
+    "FDEPROJECT-72": "本週無新完成卡，專案 14 張卡已全數完成",
+    "FDEPROJECT-78": "本週完成 9 張卡，教材解析、投影模式、部署上線全數完成，專案 9 張卡已全數完成並結案",
+    "FDEPROJECT-79": "本週完成 9 張卡，跨平台前置、Gateway、桌面 app 外殼與 Windows 實機端到端全數完成，專案 11 張卡已完成 9 張",
+    "FDEPROJECT-110": "本週完成 2 張卡，擴充功能連結 Notion 讀取當前頁與記錄格式對齊 MeetPilot 外殼完成，專案 7 張卡已完成 2 張"
+  }
+}
