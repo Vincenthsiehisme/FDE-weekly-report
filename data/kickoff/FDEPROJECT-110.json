@@ -1,26 +1,37 @@
 {
-  "changes": [],
+  "changes": [
+    {
+      "detected_at": "2026-09-30T07:04:59.596896+08:00",
+      "sections": [
+        "objective",
+        "why",
+        "before",
+        "after",
+        "evidence"
+      ]
+    }
+  ],
   "epic": "FDEPROJECT-110",
   "kickoff_key": "FDEPROJECT-111",
   "last_seen": {
-    "after": "裝 Chrome 擴充功能、連結 Notion 一次，之後每場會後按「轉拋這一頁」，記錄以 `YYYY-MM-DD HHmm <標題>.md` 進公司共用資料夾的記錄人子資料夾；二期 AI Meeting Notes 完成後自動轉拋",
-    "before": "會議記錄留在各人的 Notion，要看得去問本人；格式各異，無法跟 MeetPilot 記錄放在一起讀",
-    "decision": "公司共用資料夾放在哪個 SharePoint site 或 Teams 文件庫；IT 是否核發 Entra app（SPA／PKCE、只限該 site 的 delegated 權限）",
-    "evidence": "個人 workspace 實機走通 OAuth、一般頁面與資料庫列（含屬性）轉出 MeetPilot 外殼格式（本機 commit 9c78b33，測試 25 條綠）；待驗：有 AI Meeting Notes 方案的 workspace 讀出摘要、筆記、逐字稿；寫進 SharePoint",
-    "next_milestone": "找一個有 AI Meeting Notes 方案的 workspace 完成實測，同時送出 IT 的 Entra app 申請",
-    "objective": "同事在 Notion 打開會議記錄頁按一下，記錄就以 MeetPilot 的外殼格式進公司共用資料夾，Notion AI Meeting Notes 與貼文字的一般頁面都適用",
-    "why": "很多人用 Notion 自行錄音與記會議，記錄散在各人頁面（不少是個人帳號、個人方案），別人找不到也用不到；MeetPilot 的記錄已集中，Notion 這一半還沒有"
+    "after": "同事開一個連結授權一次，不裝任何東西；點名的頁 5 分鐘內進鏡像 repo，每天更新一次，再按一次書籤立刻重抓；Obsidian 自動拉取",
+    "before": "記錄留在各人的 Notion，要看得去問本人",
+    "decision": null,
+    "evidence": "Cloudflare Worker 已上線；本人 workspace 實機走通授權、書籤點名、資料庫與連到的頁鏡像、每日重排（內容沒變不寫、來源消失加標記不刪檔）；84 條測試綠；圖片與附件下載 2026-09-30 上線，待實機驗",
+    "next_milestone": "Obsidian 端設定自動拉取；第一位同事授權並點名他的頁\n（2026-09-30 改寫：原 Objective 為擴充功能轉拋會議記錄到公司共用資料夾，路線改為 notion-mirror）",
+    "objective": "同事授權 Notion 一次，我用書籤點名的頁（連同子頁面與內文連到的頁，一層）每天自動鏡像成 markdown 進一個 Obsidian vault，圖片與附件一起下載",
+    "why": "很多人把會議記錄與工作筆記放在個人 Notion（不少是個人方案），別人找不到也用不到；原本的擴充功能寫 SharePoint 路線要每人裝擴充功能、要 IT 對 site 授權，摩擦太大"
   },
-  "last_seen_at": "2026-09-30T05:22:32.138909+08:00",
+  "last_seen_at": "2026-09-30T07:04:59.596896+08:00",
   "last_seen_key": "FDEPROJECT-111",
   "locked_at": "2026-09-30T04:06:18.003769+08:00",
   "problems": [],
   "sections": {
     "after": "裝 Chrome 擴充功能、連結 Notion 一次，之後每場會後按「轉拋這一頁」，記錄以 `YYYY-MM-DD HHmm <標題>.md` 進公司共用資料夾的記錄人子資料夾；二期 AI Meeting Notes 完成後自動轉拋",
     "before": "會議記錄留在各人的 Notion，要看得去問本人；格式各異，無法跟 MeetPilot 記錄放在一起讀",
-    "decision": "公司共用資料夾放在哪個 SharePoint site 或 Teams 文件庫；IT 是否核發 Entra app（SPA／PKCE、只限該 site 的 delegated 權限）",
+    "decision": null,
     "evidence": "個人 workspace 實機走通 OAuth、一般頁面與資料庫列（含屬性）轉出 MeetPilot 外殼格式（本機 commit 9c78b33，測試 25 條綠）；待驗：有 AI Meeting Notes 方案的 workspace 讀出摘要、筆記、逐字稿；寫進 SharePoint",
-    "next_milestone": "找一個有 AI Meeting Notes 方案的 workspace 完成實測，同時送出 IT 的 Entra app 申請",
+    "next_milestone": "Obsidian 端設定自動拉取；第一位同事授權並點名他的頁\n（2026-09-30 改寫：原 Objective 為擴充功能轉拋會議記錄到公司共用資料夾，路線改為 notion-mirror）",
     "objective": "同事在 Notion 打開會議記錄頁按一下，記錄就以 MeetPilot 的外殼格式進公司共用資料夾，Notion AI Meeting Notes 與貼文字的一般頁面都適用",
     "why": "很多人用 Notion 自行錄音與記會議，記錄散在各人頁面（不少是個人帳號、個人方案），別人找不到也用不到；MeetPilot 的記錄已集中，Notion 這一半還沒有"
   }

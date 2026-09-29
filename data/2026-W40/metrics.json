@@ -101,6 +101,11 @@
       "message": "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"
     },
     {
+      "key": "FDEPROJECT-111",
+      "kind": "kickoff_modified",
+      "message": "鎖定後被修改：Objective、Why It Matters、Before、After、Evidence（偵測於 2026-09-30T07:04:59.596896+08:00），頁面的目標五段仍顯示鎖定版本"
+    },
+    {
       "key": null,
       "kind": "units_unconfigured",
       "message": "config/units.json 白名單是空的，支援單位全部歸未分類"
@@ -431,7 +436,7 @@
       "key": "FDEPROJECT-112",
       "leaf": true,
       "owner": "Vincent Hsieh",
-      "project": "FDEPROJECT-110 Notion 會議記錄轉拋",
+      "project": "FDEPROJECT-110 Notion 頁面鏡像到 Obsidian（notion-mirror）",
       "root": "FDEPROJECT-112",
       "summary": "一期：擴充功能連結 Notion 並讀取當前頁",
       "tokens": null
@@ -442,7 +447,7 @@
       "key": "FDEPROJECT-113",
       "leaf": true,
       "owner": "Vincent Hsieh",
-      "project": "FDEPROJECT-110 Notion 會議記錄轉拋",
+      "project": "FDEPROJECT-110 Notion 頁面鏡像到 Obsidian（notion-mirror）",
       "root": "FDEPROJECT-113",
       "summary": "一期：記錄格式對齊 MeetPilot 外殼",
       "tokens": null
@@ -545,7 +550,7 @@
         "hours": 1.5,
         "key": "CS-17",
         "leaf": true,
-        "owner": "未指派",
+        "owner": "hubertwang",
         "project": "CS-25 歐洲地接社-房產品資料彙整",
         "root": "CS-16",
         "summary": "回覆信串偵測與隔離模組（reply_isolate.py）",
@@ -557,7 +562,7 @@
         "hours": 1.25,
         "key": "CS-18",
         "leaf": true,
-        "owner": "未指派",
+        "owner": "hubertwang",
         "project": "CS-25 歐洲地接社-房產品資料彙整",
         "root": "CS-16",
         "summary": "表格式地接社解析器（Palma／Kuoni Tumlare／Happy Tours／Vosaio）",
@@ -569,7 +574,7 @@
         "hours": 1.25,
         "key": "CS-19",
         "leaf": true,
-        "owner": "未指派",
+        "owner": "hubertwang",
         "project": "CS-25 歐洲地接社-房產品資料彙整",
         "root": "CS-16",
         "summary": "G2 兩種特殊格式解析器（表格式＋文字信件式）",
@@ -581,7 +586,7 @@
         "hours": 0.5,
         "key": "CS-20",
         "leaf": true,
-        "owner": "未指派",
+        "owner": "hubertwang",
         "project": "CS-25 歐洲地接社-房產品資料彙整",
         "root": "CS-16",
         "summary": "MIKI PDF 附件解析（pdfplumber）",
@@ -593,7 +598,7 @@
         "hours": 0.5,
         "key": "CS-21",
         "leaf": true,
-        "owner": "未指派",
+        "owner": "hubertwang",
         "project": "CS-25 歐洲地接社-房產品資料彙整",
         "root": "CS-16",
         "summary": "OP 端輸出文件產生器（docx）",
@@ -605,7 +610,7 @@
         "hours": 2.0,
         "key": "CS-22",
         "leaf": true,
-        "owner": "未指派",
+        "owner": "hubertwang",
         "project": "CS-25 歐洲地接社-房產品資料彙整",
         "root": "CS-16",
         "summary": "Pipeline 部署至 VM（20.77.26.79）",
@@ -617,7 +622,7 @@
         "hours": 0.5,
         "key": "CS-23",
         "leaf": true,
-        "owner": "未指派",
+        "owner": "hubertwang",
         "project": "CS-25 歐洲地接社-房產品資料彙整",
         "root": "CS-16",
         "summary": "建立 GitHub Repo 並改用 Git 部署至 VM",
@@ -966,7 +971,7 @@
         "key": "FDEPROJECT-112",
         "leaf": true,
         "owner": "Vincent Hsieh",
-        "project": "FDEPROJECT-110 Notion 會議記錄轉拋",
+        "project": "FDEPROJECT-110 Notion 頁面鏡像到 Obsidian（notion-mirror）",
         "root": "FDEPROJECT-112",
         "summary": "一期：擴充功能連結 Notion 並讀取當前頁",
         "tokens": null,
@@ -978,7 +983,7 @@
         "key": "FDEPROJECT-113",
         "leaf": true,
         "owner": "Vincent Hsieh",
-        "project": "FDEPROJECT-110 Notion 會議記錄轉拋",
+        "project": "FDEPROJECT-110 Notion 頁面鏡像到 Obsidian（notion-mirror）",
         "root": "FDEPROJECT-113",
         "summary": "一期：記錄格式對齊 MeetPilot 外殼",
         "tokens": null,
@@ -1195,7 +1200,7 @@
           "unestimated_cards": 0
         },
         "status": "On Track",
-        "summary": "Notion 會議記錄轉拋",
+        "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
         "tokens": null
       }
     ],
@@ -1771,29 +1776,31 @@
       "kickoff": {
         "key": "FDEPROJECT-111",
         "locked_at": "2026-09-30T04:06:18.003769+08:00",
-        "modified_at": [],
+        "modified_at": [
+          "2026-09-30T07:04:59.596896+08:00"
+        ],
         "sections": {
           "after": "裝 Chrome 擴充功能、連結 Notion 一次，之後每場會後按「轉拋這一頁」，記錄以 `YYYY-MM-DD HHmm <標題>.md` 進公司共用資料夾的記錄人子資料夾；二期 AI Meeting Notes 完成後自動轉拋",
           "before": "會議記錄留在各人的 Notion，要看得去問本人；格式各異，無法跟 MeetPilot 記錄放在一起讀",
-          "decision": "公司共用資料夾放在哪個 SharePoint site 或 Teams 文件庫；IT 是否核發 Entra app（SPA／PKCE、只限該 site 的 delegated 權限）",
+          "decision": null,
           "evidence": "個人 workspace 實機走通 OAuth、一般頁面與資料庫列（含屬性）轉出 MeetPilot 外殼格式（本機 commit 9c78b33，測試 25 條綠）；待驗：有 AI Meeting Notes 方案的 workspace 讀出摘要、筆記、逐字稿；寫進 SharePoint",
-          "next_milestone": "找一個有 AI Meeting Notes 方案的 workspace 完成實測，同時送出 IT 的 Entra app 申請",
+          "next_milestone": "Obsidian 端設定自動拉取；第一位同事授權並點名他的頁\n（2026-09-30 改寫：原 Objective 為擴充功能轉拋會議記錄到公司共用資料夾，路線改為 notion-mirror）",
           "objective": "同事在 Notion 打開會議記錄頁按一下，記錄就以 MeetPilot 的外殼格式進公司共用資料夾，Notion AI Meeting Notes 與貼文字的一般頁面都適用",
           "why": "很多人用 Notion 自行錄音與記會議，記錄散在各人頁面（不少是個人帳號、個人方案），別人找不到也用不到；MeetPilot 的記錄已集中，Notion 這一半還沒有"
         }
       },
       "owner": "Vincent Hsieh",
       "progress": {
-        "done_cards": 2,
-        "done_points": 0.75,
-        "percent": 17,
+        "done_cards": 7,
+        "done_points": 4.5,
+        "percent": 100,
         "total_cards": 7,
         "total_points": 4.5,
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
       "status": "On Track",
-      "summary": "Notion 會議記錄轉拋",
+      "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
       "week": {
         "completed_count": 2,
         "completed_keys": [
@@ -1824,7 +1831,7 @@
       }
     }
   ],
-  "generated_at": "2026-09-30T05:22:32.138909+08:00",
+  "generated_at": "2026-09-30T07:04:59.596896+08:00",
   "in_progress": [
     {
       "current_state": "進行中",
@@ -2912,7 +2919,7 @@
             "hours": 0.75,
             "id": "FDEPROJECT-110",
             "key": "FDEPROJECT-110",
-            "summary": "Notion 會議記錄轉拋",
+            "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
             "unestimated": 0
           }
         ],
@@ -2972,7 +2979,7 @@
             "hours": 0.75,
             "id": "FDEPROJECT-110",
             "key": "FDEPROJECT-110",
-            "summary": "Notion 會議記錄轉拋",
+            "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
             "unestimated": 0
           }
         ],
@@ -3008,19 +3015,26 @@
       "cumulative": {
         "by_project": [
           {
-            "hours": 2.0,
+            "hours": 9.5,
             "id": "CS-25",
             "key": "CS-25",
             "summary": "歐洲地接社-房產品資料彙整",
             "unestimated": 0
           }
         ],
-        "completed": 1,
+        "completed": 8,
         "completed_keys": [
-          "CS-5"
+          "CS-5",
+          "CS-17",
+          "CS-18",
+          "CS-19",
+          "CS-20",
+          "CS-21",
+          "CS-22",
+          "CS-23"
         ],
-        "deliverables": 1,
-        "hours": 2.0,
+        "deliverables": 2,
+        "hours": 9.5,
         "tokens": null
       },
       "in_progress": {
@@ -3121,28 +3135,13 @@
     },
     {
       "cumulative": {
-        "by_project": [
-          {
-            "hours": 7.5,
-            "id": "CS-25",
-            "key": "CS-25",
-            "summary": "歐洲地接社-房產品資料彙整",
-            "unestimated": 0
-          }
-        ],
-        "completed": 8,
+        "by_project": [],
+        "completed": 1,
         "completed_keys": [
-          "CS-16",
-          "CS-17",
-          "CS-18",
-          "CS-19",
-          "CS-20",
-          "CS-21",
-          "CS-22",
-          "CS-23"
+          "CS-16"
         ],
-        "deliverables": 1,
-        "hours": 7.5,
+        "deliverables": 0,
+        "hours": 0.0,
         "tokens": null
       },
       "in_progress": {

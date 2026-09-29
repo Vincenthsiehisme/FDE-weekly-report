@@ -3,7 +3,7 @@
     "CS": 26,
     "FDEPROJECT": 136
   },
-  "fetched_at": "2026-09-30T05:22:32.138909+08:00",
+  "fetched_at": "2026-09-30T07:04:59.596896+08:00",
   "issues": [
     {
       "assignee": "hubertwang",
@@ -282,7 +282,7 @@
       "updated": "2026-09-23T13:38:16.892+0800"
     },
     {
-      "assignee": null,
+      "assignee": "hubertwang",
       "due": null,
       "key": "CS-17",
       "labels": [
@@ -298,10 +298,10 @@
       "status_category": "done",
       "summary": "回覆信串偵測與隔離模組（reply_isolate.py）",
       "type": "子任務",
-      "updated": "2026-09-23T13:38:18.252+0800"
+      "updated": "2026-09-30T06:02:57.302+0800"
     },
     {
-      "assignee": null,
+      "assignee": "hubertwang",
       "due": null,
       "key": "CS-18",
       "labels": [
@@ -317,10 +317,10 @@
       "status_category": "done",
       "summary": "表格式地接社解析器（Palma／Kuoni Tumlare／Happy Tours／Vosaio）",
       "type": "子任務",
-      "updated": "2026-09-23T13:38:18.912+0800"
+      "updated": "2026-09-30T06:03:00.312+0800"
     },
     {
-      "assignee": null,
+      "assignee": "hubertwang",
       "due": null,
       "key": "CS-19",
       "labels": [
@@ -336,10 +336,10 @@
       "status_category": "done",
       "summary": "G2 兩種特殊格式解析器（表格式＋文字信件式）",
       "type": "子任務",
-      "updated": "2026-09-23T13:38:19.567+0800"
+      "updated": "2026-09-30T06:03:03.263+0800"
     },
     {
-      "assignee": null,
+      "assignee": "hubertwang",
       "due": null,
       "key": "CS-20",
       "labels": [
@@ -355,10 +355,10 @@
       "status_category": "done",
       "summary": "MIKI PDF 附件解析（pdfplumber）",
       "type": "子任務",
-      "updated": "2026-09-23T13:38:20.168+0800"
+      "updated": "2026-09-30T06:03:06.031+0800"
     },
     {
-      "assignee": null,
+      "assignee": "hubertwang",
       "due": null,
       "key": "CS-21",
       "labels": [
@@ -374,10 +374,10 @@
       "status_category": "done",
       "summary": "OP 端輸出文件產生器（docx）",
       "type": "子任務",
-      "updated": "2026-09-23T13:38:20.722+0800"
+      "updated": "2026-09-30T06:03:09.254+0800"
     },
     {
-      "assignee": null,
+      "assignee": "hubertwang",
       "due": null,
       "key": "CS-22",
       "labels": [
@@ -393,10 +393,10 @@
       "status_category": "done",
       "summary": "Pipeline 部署至 VM（20.77.26.79）",
       "type": "子任務",
-      "updated": "2026-09-23T13:38:21.338+0800"
+      "updated": "2026-09-30T06:03:12.544+0800"
     },
     {
-      "assignee": null,
+      "assignee": "hubertwang",
       "due": null,
       "key": "CS-23",
       "labels": [
@@ -412,7 +412,7 @@
       "status_category": "done",
       "summary": "建立 GitHub Repo 並改用 Git 部署至 VM",
       "type": "子任務",
-      "updated": "2026-09-23T13:38:21.904+0800"
+      "updated": "2026-09-30T06:03:16.844+0800"
     },
     {
       "assignee": null,
@@ -2857,9 +2857,9 @@
       "resolved": null,
       "status": "待辦事項",
       "status_category": "new",
-      "summary": "Notion 會議記錄轉拋",
+      "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
       "type": "大型工作",
-      "updated": "2026-09-29T08:48:29.759+0800"
+      "updated": "2026-09-30T06:34:39.658+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -2868,7 +2868,7 @@
           {
             "content": [
               {
-                "text": "Objective：同事在 Notion 打開會議記錄頁按一下，記錄就以 MeetPilot 的外殼格式進公司共用資料夾，Notion AI Meeting Notes 與貼文字的一般頁面都適用",
+                "text": "Objective：同事授權 Notion 一次，我用書籤點名的頁（連同子頁面與內文連到的頁，一層）每天自動鏡像成 markdown 進一個 Obsidian vault，圖片與附件一起下載\nWhy It Matters：很多人把會議記錄與工作筆記放在個人 Notion（不少是個人方案），別人找不到也用不到；原本的擴充功能寫 SharePoint 路線要每人裝擴充功能、要 IT 對 site 授權，摩擦太大\nBefore/After\nBefore：記錄留在各人的 Notion，要看得去問本人\nAfter：同事開一個連結授權一次，不裝任何東西；點名的頁 5 分鐘內進鏡像 repo，每天更新一次，再按一次書籤立刻重抓；Obsidian 自動拉取\nEvidence：Cloudflare Worker 已上線；本人 workspace 實機走通授權、書籤點名、資料庫與連到的頁鏡像、每日重排（內容沒變不寫、來源消失加標記不刪檔）；84 條測試綠；圖片與附件下載 2026-09-30 上線，待實機驗\nNext Milestone：Obsidian 端設定自動拉取；第一位同事授權並點名他的頁",
                 "type": "text"
               }
             ],
@@ -2877,61 +2877,7 @@
           {
             "content": [
               {
-                "text": "Why It Matters：很多人用 Notion 自行錄音與記會議，記錄散在各人頁面（不少是個人帳號、個人方案），別人找不到也用不到；MeetPilot 的記錄已集中，Notion 這一半還沒有",
-                "type": "text"
-              }
-            ],
-            "type": "paragraph"
-          },
-          {
-            "content": [
-              {
-                "text": "Before/After",
-                "type": "text"
-              }
-            ],
-            "type": "paragraph"
-          },
-          {
-            "content": [
-              {
-                "text": "Before：會議記錄留在各人的 Notion，要看得去問本人；格式各異，無法跟 MeetPilot 記錄放在一起讀",
-                "type": "text"
-              }
-            ],
-            "type": "paragraph"
-          },
-          {
-            "content": [
-              {
-                "text": "After：裝 Chrome 擴充功能、連結 Notion 一次，之後每場會後按「轉拋這一頁」，記錄以 `YYYY-MM-DD HHmm <標題>.md` 進公司共用資料夾的記錄人子資料夾；二期 AI Meeting Notes 完成後自動轉拋",
-                "type": "text"
-              }
-            ],
-            "type": "paragraph"
-          },
-          {
-            "content": [
-              {
-                "text": "Evidence：個人 workspace 實機走通 OAuth、一般頁面與資料庫列（含屬性）轉出 MeetPilot 外殼格式（本機 commit 9c78b33，測試 25 條綠）；待驗：有 AI Meeting Notes 方案的 workspace 讀出摘要、筆記、逐字稿；寫進 SharePoint",
-                "type": "text"
-              }
-            ],
-            "type": "paragraph"
-          },
-          {
-            "content": [
-              {
-                "text": "Decision Needed：公司共用資料夾放在哪個 SharePoint site 或 Teams 文件庫；IT 是否核發 Entra app（SPA／PKCE、只限該 site 的 delegated 權限）",
-                "type": "text"
-              }
-            ],
-            "type": "paragraph"
-          },
-          {
-            "content": [
-              {
-                "text": "Next Milestone：找一個有 AI Meeting Notes 方案的 workspace 完成實測，同時送出 IT 的 Entra app 申請",
+                "text": "（2026-09-30 改寫：原 Objective 為擴充功能轉拋會議記錄到公司共用資料夾，路線改為 notion-mirror）",
                 "type": "text"
               }
             ],
@@ -2954,9 +2900,9 @@
       "resolved": null,
       "status": "待辦事項",
       "status_category": "new",
-      "summary": "Notion 會議記錄轉拋",
+      "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
       "type": "Kick off",
-      "updated": "2026-09-29T08:48:37.620+0800"
+      "updated": "2026-09-30T06:34:42.859+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -3008,12 +2954,12 @@
       "parent": "FDEPROJECT-110",
       "points": 0.5,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
+      "resolved": "2026-09-30T06:35:25.972+0800",
+      "status": "完成",
+      "status_category": "done",
       "summary": "AI Meeting Notes 實測（摘要、筆記、逐字稿）",
       "type": "任務",
-      "updated": "2026-09-29T08:51:45.973+0800"
+      "updated": "2026-09-30T06:35:25.996+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -3027,12 +2973,12 @@
       "parent": "FDEPROJECT-110",
       "points": 1.5,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
+      "resolved": "2026-09-30T06:35:29.073+0800",
+      "status": "完成",
+      "status_category": "done",
       "summary": "寫進公司 SharePoint 共用資料夾",
       "type": "任務",
-      "updated": "2026-09-29T08:51:48.927+0800"
+      "updated": "2026-09-30T06:35:29.087+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -3046,12 +2992,12 @@
       "parent": "FDEPROJECT-110",
       "points": 0.25,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
+      "resolved": "2026-09-30T06:35:31.969+0800",
+      "status": "完成",
+      "status_category": "done",
       "summary": "換 token 服務上線到 Vercel",
       "type": "任務",
-      "updated": "2026-09-29T08:51:51.400+0800"
+      "updated": "2026-09-30T06:35:31.983+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -3065,12 +3011,12 @@
       "parent": "FDEPROJECT-110",
       "points": 1.0,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
+      "resolved": "2026-09-30T06:35:34.886+0800",
+      "status": "完成",
+      "status_category": "done",
       "summary": "發佈擴充功能給同事安裝",
       "type": "任務",
-      "updated": "2026-09-29T08:51:54.123+0800"
+      "updated": "2026-09-30T06:35:34.905+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -3084,12 +3030,12 @@
       "parent": "FDEPROJECT-110",
       "points": 0.5,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
+      "resolved": "2026-09-30T06:35:37.966+0800",
+      "status": "完成",
+      "status_category": "done",
       "summary": "二期：AI Meeting Notes 完成後自動轉拋",
       "type": "任務",
-      "updated": "2026-09-29T08:51:56.987+0800"
+      "updated": "2026-09-30T06:35:37.986+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -4170,12 +4116,12 @@
       "parent": "FDEPROJECT-119",
       "points": null,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
+      "resolved": "2026-09-30T06:35:41.010+0800",
+      "status": "完成",
+      "status_category": "done",
       "summary": "notion-meeting-sync 選定 SharePoint site 並請 IT 授權 app 寫入",
       "type": "任務",
-      "updated": "2026-09-29T17:36:01.722+0800"
+      "updated": "2026-09-30T06:35:41.030+0800"
     }
   ],
   "period": {

@@ -1,14 +1,14 @@
 {
-  "epic_results": {
-    "FDEPROJECT-110": "本週完成 2 張：擴充功能連結 Notion 並讀取當前頁，記錄格式對齊 MeetPilot 外殼。",
-    "FDEPROJECT-71": "本週完成 16 張：新增團體行程、房型、票券、飯店介紹的 MCP 查詢工具，修復團體搜尋故障與單程機票查不到的問題，並接上 LINE AI。",
-    "FDEPROJECT-72": "本週沒有完成的卡，專案狀態 Done。",
-    "FDEPROJECT-78": "本週完成 9 張，含內容解析、投影模式與部署上線，專案狀態 Done。",
-    "FDEPROJECT-79": "本週完成 9 張，含跨平台前置、Gateway、桌面 app 外殼與 Windows 實機端到端。"
-  },
   "highlights": [
-    "[門市 AI 客服] 完成 16 張，新增 tour-detail、hotel-rooms、ticket-detail、hotel-info 等 MCP 工具，並修復團體搜尋故障與單程機票查不到的問題",
-    "[培訓課程網站] 完成 9 張，含投影模式與部署上線，專案狀態 Done",
-    "[MeetPilot 團隊會議記錄] 完成 9 張，含 Electron 桌面 app 外殼、app 內錄音與 Windows 實機端到端"
-  ]
+    "[門市 AI 客服] 完成新增 MCP 工具 tour-detail、hotel-rooms、ticket-detail、hotel-info，修復團體搜尋故障與單程機票查不到的問題，並讓 LINE AI 串接 MCP 詳情工具查進度，本週共 16 項",
+    "[培訓課程網站] 完成教材與工作坊內容整理、投影模式與部署上線等本週 9 項交付，網站已上線",
+    "[MeetPilot 團隊會議記錄] 完成跨平台前置、Gateway、桌面 app 外殼與 Windows 實機端到端等本週 9 項交付"
+  ],
+  "epic_results": {
+    "FDEPROJECT-71": "本週完成新增 MCP 工具 tour-detail、hotel-rooms、ticket-detail、hotel-info、上游連線自動重試與團體搜尋故障修復，並讓 LINE AI 串接 MCP 詳情工具查進度，共 16 項",
+    "FDEPROJECT-72": "本週沒有新完成的交付項目",
+    "FDEPROJECT-78": "本週完成教材與工作坊內容整理、投影模式與部署上線等 9 項，網站已上線",
+    "FDEPROJECT-79": "本週完成跨平台前置、Gateway、桌面 app 外殼、隨附 ffmpeg、app 內錄音、更新通道與 Windows 實機端到端等 9 項",
+    "FDEPROJECT-110": "本週完成擴充功能連結 Notion 並讀取當前頁、記錄格式對齊 MeetPilot 外殼等 2 項"
+  }
 }
