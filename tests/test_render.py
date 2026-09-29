@@ -25,8 +25,8 @@ def page(fetched_at="2026-09-22T23:59:30+08:00", in_reports_dir=False, metrics=N
 
 def panel(html, name):
     start = html.index(f'id="{name}" role="tabpanel"')
-    # 下一個頁籤、資料待補或頁尾，哪個先出現就切在哪
-    ends = [i for i in (html.find(m, start) for m in ('<section class="panel', '<section id="checks"', '<footer')) if i != -1]
+    # 下一個頁籤、名詞定義、資料檢查或頁尾，哪個先出現就切在哪
+    ends = [i for i in (html.find(m, start) for m in ('<section class="panel', '<section id="glossary"', '<section id="checks"', '<footer')) if i != -1]
     return html[start:min(ends)]
 
 
@@ -99,9 +99,10 @@ class KickoffTest(unittest.TestCase):
         return {"CS-1": {"kickoff_key": "CS-9", "locked_at": "2026-09-20T10:00:00+08:00", "sections": base, "changes": []}}
 
     def test_missing_kickoff_shows_nothing_instead_of_unfilled_rows(self):
-        html = page()
-        self.assertNotIn("未填", html)
-        self.assertNotIn('class="kickoff"', html)
+        # 只看專案所在的本週頁籤：頁尾名詞定義本來就有「未填工時」這個詞
+        week = panel(page(), "week")
+        self.assertNotIn("未填", week)
+        self.assertNotIn('class="kickoff"', week)
 
     def test_only_filled_fields_are_shown_and_decision_is_never_shown(self):
         week = panel(page(metrics=metrics_for(states=self.state(objective="讓 OP 少打字", decision="要不要買授權"))), "week")
@@ -169,10 +170,39 @@ class InProgressTest(unittest.TestCase):
 
 
 class ProgressTest(unittest.TestCase):
-    def test_progress_shows_cards_and_estimated_hours(self):
+    def test_progress_shows_cards_and_only_actual_hours_of_done_cards(self):
+        # 工時是完工後回填的實際時數：未完成卡上的 0.5 不算進去，沒填的未完成卡也不數
         issues = ISSUES + [issue("CS-3", level=0, parent="CS-1", status="todo", points=0.5),
                            issue("CS-4", level=0, parent="CS-1", status="todo")]
-        self.assertIn("<span>1/3 張完成 · 1.5/2h 預估，1 張未估點</span>", panel(page(metrics=metrics_for(issues)), "week"))
+        self.assertIn("<span>1/3 張完成 · 實際工時 1.5h</span>", panel(page(metrics=metrics_for(issues)), "week"))
+
+
+class WordingTest(unittest.TestCase):
+    """2026-09-30 使用者確認 Story point estimate 是完工後回填的實際時數；每個詞的口徑寫在頁尾名詞定義。"""
+
+    def test_hours_are_called_actual_and_never_estimated(self):
+        issues = ISSUES + [issue("CS-3", level=0, parent="CS-1", status="done", resolved=IN_WEEK)]
+        html = page(metrics=metrics_for(issues))
+        self.assertNotIn("預估", html)
+        self.assertNotIn("估點", html)
+        self.assertIn("<span>實際工時</span>", html)
+        self.assertIn("1 張完成卡未填工時", panel(html, "week"))
+        # 只寫「實際工時」，不單獨寫「實際」（2026-09-30 使用者裁）
+        self.assertEqual(html.count("實際"), html.count("實際工時"))
+
+    def test_glossary_spells_out_the_period_with_weekdays(self):
+        html = page()
+        self.assertIn("<h1>2026/09/16（三） – 2026/09/22（二）</h1>", html)
+        glossary = html[html.index('<section id="glossary"'):html.index("</section>", html.index('<section id="glossary"'))]
+        self.assertIn("2026/09/16（三） 00:00 到 2026/09/22（二） 23:59（UTC+8）", glossary)
+        for term in ("本週", "累計", "完成卡片", "交付", "實際工時", "未填工時", "進度", "Done／On Track", "資料檢查"):
+            self.assertIn(f"<dt>{term}</dt>", glossary)
+
+    def test_checks_are_called_data_checks(self):
+        issues = ISSUES + [issue("CS-3", level=0, parent="CS-1", status="done", resolved=IN_WEEK)]
+        html = page(metrics=metrics_for(issues))
+        self.assertIn("<summary>資料檢查（", html)
+        self.assertNotIn("資料待補", html)
 
 
 class CompletedSectionTest(unittest.TestCase):
