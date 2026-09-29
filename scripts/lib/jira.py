@@ -72,6 +72,28 @@ class JiraClient:
         except urllib.error.URLError as err:
             raise JiraError(f"連不到 Jira（{self.site}）：{err.reason}") from err
 
+    def verify(self) -> None:
+        """抓資料前確認 Jira 認得這組憑證。email 或 token 錯時 search 不回 401，而是當成匿名回 200 和 0 張卡，
+        錯誤只說得出「查到 0 張卡」（2026-09-29 雲端第一班）；/myself 不接受匿名，憑證錯就回 401。"""
+        request = urllib.request.Request(
+            f"https://{self.site}/rest/api/3/myself",
+            method="GET",
+            headers={"Authorization": self._auth, "Accept": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=60) as response:
+                response.read()
+        except urllib.error.HTTPError as err:
+            if err.code == 401:
+                reason = err.headers.get("X-Seraph-LoginReason") or "無"
+                raise CredentialError(
+                    f"Jira 不接受這組憑證（GET /rest/api/3/myself 回 401，X-Seraph-LoginReason：{reason}）："
+                    "檢查 JIRA_EMAIL 與 JIRA_API_TOKEN，token 是否完整、過期或被撤銷") from err
+            detail = err.read().decode(errors="replace")[:500]
+            raise JiraError(f"Jira API HTTP {err.code}：GET /rest/api/3/myself — {detail}") from err
+        except urllib.error.URLError as err:
+            raise JiraError(f"連不到 Jira（{self.site}）：{err.reason}") from err
+
     def search(self, jql: str, fields: list) -> list:
         """/rest/api/3/search/jql 以 nextPageToken 翻頁，回傳全部 issue。"""
         issues, token = [], None

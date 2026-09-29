@@ -3,7 +3,7 @@
 這份是雲端 Claude Code routine 每週要照做的步驟，routine 的 prompt 只需要寫「照 ROUTINE.md 執行」。
 
 - 排程：每週二 15:59 UTC（台北 23:59），cron `59 15 * * 2`
-- 環境變數：`JIRA_SITE`、`JIRA_EMAIL`、`JIRA_API_TOKEN`，設在 routine 的環境設定，不寫進 repo
+- 環境變數：`JIRA_SITE`、`JIRA_EMAIL`、`JIRA_API_TOKEN`，設在雲端環境 `fde-weekly-report` 的 Environment variables（claude.ai/code 輸入框上方的環境選單 → 編輯該環境），不在 routine 設定頁，也不寫進 repo。值不加引號、不加 `<>`；token 錯時第 3 步會報「Jira 不接受這組憑證」
 - 寫入範圍：只有 `data/` 與 `site/`，只 push 到 `main`
 
 任何一步失敗就停下來回報錯誤訊息，不要跳過、不要用別的方式補救、不要 commit 部分結果。

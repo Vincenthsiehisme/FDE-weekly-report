@@ -68,6 +68,7 @@ def parse_jira_time(value: str) -> datetime:
 
 def fetch_snapshot(client, period, fetched_at: datetime) -> dict:
     scope = f"project in ({', '.join(PROJECTS)})"
+    client.verify()
     issues = [normalize(i) for i in client.search(f"{scope} ORDER BY key", FIELDS)]
     kickoffs = client.search(f'{scope} AND issuetype = "{KICKOFF_TYPE}" ORDER BY key', FIELDS + ["description"])
     by_key = {i["key"]: i for i in issues}
@@ -82,8 +83,8 @@ def fetch_snapshot(client, period, fetched_at: datetime) -> dict:
             raise ValueError(f"{issue['key']} 屬於查詢範圍外的專案 {issue['project']}")
         counts[issue["project"]] += 1
     if not issues:
-        # 單一專案 0 張是合法的（FDEPROJECT 剛開），兩個加起來 0 張代表查詢或權限壞了
-        raise ValueError(f"{scope} 查到 0 張卡：檢查憑證權限或專案 key")
+        # 單一專案 0 張是合法的（FDEPROJECT 剛開），兩個加起來 0 張代表查詢或權限壞了；憑證錯已經在 verify 擋下
+        raise ValueError(f"{scope} 查到 0 張卡：憑證有效，檢查這個帳號看不看得到這兩個專案，或專案 key 是否改了")
 
     issues.sort(key=lambda i: issue_sort_key(i["key"]))
     return {
