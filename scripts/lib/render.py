@@ -16,6 +16,7 @@ from datetime import datetime, timedelta
 
 from .metrics import SCHEMA, UNASSIGNED_OWNER
 from .period import TZ
+from .snapshot import parse_jira_time
 
 DASH = "—"
 STALE_DAYS = 8
@@ -275,7 +276,29 @@ def _completed_by_delivery(metrics, page) -> str:
         for c in metrics["completed"] if c["group"] not in shown)
     if others:
         groups.append(f'<h4>其他完成的卡 <span class="muted">· 所屬 epic 已結案</span></h4><ul class="list">{others}</ul>')
-    return "".join(groups) or '<p class="muted">本週沒有完成的卡。</p>'
+    return ("".join(groups) or '<p class="muted">本週沒有完成的卡。</p>') + _breakpoint(metrics["migrated"]["week"], page, with_week=False)
+
+
+BREAKPOINT_LABEL = "改組前"  # 2026-09-30 使用者定名；程式與 metrics 裡叫 migrated／斷點
+BREAKPOINT_NOTE = "以下是改組前在其他專案就已完成、之後才搬進來的卡，只列出，不算進完成卡片、交付與實際工時。"
+
+
+def _month_day(moment: datetime) -> str:
+    return moment.astimezone(TZ).strftime("%m/%d")
+
+
+def _breakpoint(rows: list, page, with_week: bool) -> str:
+    """「改組前」分隔線之後灰字列出搬入前已完成的卡：只給人對得上 Jira，不算任何數字、不列資料檢查（AC-16）。
+    resolved 是 Jira 的時間格式（+0800），moved_in 是 snapshot 寫的 ISO，兩個解析方式不同。"""
+    if not rows:
+        return ""
+    items = "".join(
+        f'<li><span>{page.issue(r["key"])} {esc(r["summary"])} <span class="muted">· {esc(r["project"])} · {esc(r["owner"])}</span></span>'
+        f'<span class="nums">{esc(r["week"]) + " · " if with_week else ""}結案 {esc(_month_day(parse_jira_time(r["resolved"])))} · 搬入 {esc(_month_day(datetime.fromisoformat(r["moved_in"])))}</span></li>'
+        for r in rows)
+    return (f'<div class="breakpoint"><span>{BREAKPOINT_LABEL}</span></div>'
+            f'<details class="migrated"><summary>{BREAKPOINT_LABEL}已完成 {len(rows)} 張 <span class="muted">· 不計入</span></summary>'
+            f'<p class="note">{esc(BREAKPOINT_NOTE)}</p><ul class="list">{items}</ul></details>')
 
 
 def _units(metrics) -> str:
@@ -332,7 +355,8 @@ def _cumulative_panel(metrics, page) -> str:
   <h3>人</h3>
   {_people_rows(metrics["people"], "cumulative")}
   <h3>完成</h3>
-  {"".join(weeks) or '<p class="muted">還沒有任何完成的卡。</p>'}"""
+  {"".join(weeks) or '<p class="muted">還沒有任何完成的卡。</p>'}
+  {_breakpoint(metrics["migrated"]["cumulative"], page, with_week=True)}"""
 
 
 def _split(by_project: list) -> str:
@@ -405,6 +429,8 @@ def _glossary(metrics) -> str:
         ("進度", "專案底下沒有子卡的卡，算「完成張數／總張數」：本週頁照 Jira 目前狀態，累計頁以本週結束時是否已完成為準。"),
         ("Done／On Track", "Done 是 epic 在 Jira 已完成；On Track 只表示 epic 還沒完成，不代表進度評估。"),
         ("不列入的卡", "config/excluded.json 列的卡不算完成卡片、交付、實際工時，專案進度仍照 Jira 狀態算；列的 epic 連同底下所有卡整個不列入週報。"),
+        (BREAKPOINT_LABEL, "卡片在 Jira 結案的時間早於或等於它搬進本專案的時間，是改組前在別的專案完成的歷史：本週與累計都不算，"
+                           f"只在「完成」清單最後的「{BREAKPOINT_LABEL}」分隔線之後灰字列出。搬進來之後才結案的照算。"),
         ("資料檢查", "Jira 資料的缺漏與排除說明，不影響發布。"),
     )
     items = "".join(f"<div><dt>{esc(term)}</dt><dd>{esc(text)}</dd></div>" for term, text in terms)
@@ -609,6 +635,11 @@ details summary{cursor:pointer}
 .split p{margin:2px 0 0;color:var(--muted);font-size:13px}
 .warn-card{border-color:var(--warn-fg)}
 .warn-card h3{color:var(--warn-fg)}
+.breakpoint{display:flex;align-items:center;gap:10px;margin:22px 0 8px;color:var(--muted);font-size:12px}
+.breakpoint::before,.breakpoint::after{content:"";flex:1;border-top:1px dashed var(--line)}
+.migrated{color:var(--muted);font-size:14px}
+.migrated summary{color:var(--muted)}
+.migrated .list li{color:var(--muted)}
 #glossary{margin-top:40px}
 #glossary summary{font-weight:600}
 .glossary{margin:8px 0 0;font-size:14px}

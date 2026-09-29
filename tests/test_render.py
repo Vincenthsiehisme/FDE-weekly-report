@@ -177,6 +177,40 @@ class ProgressTest(unittest.TestCase):
         self.assertIn("<span>1/3 張完成 · 實際工時 1.5h</span>", panel(page(metrics=metrics_for(issues)), "week"))
 
 
+class BreakpointRenderTest(unittest.TestCase):
+    """「改組前」分隔線之後灰字列出搬入前已完成的卡，數字不算（AC-16）。"""
+    MOVED = "2026-09-18T07:00:00+00:00"
+
+    def html(self):
+        issues = ISSUES + [
+            issue("CS-7", level=0, parent="CS-1", status="done", points=4.0, resolved=IN_WEEK, assignee="Jin", summary="搬來的卡", moved_in=self.MOVED),
+            issue("CS-8", level=0, parent="CS-1", status="done", points=2.0, resolved=LAST_WEEK, assignee="Jin", summary="更早搬來的卡", moved_in=self.MOVED),
+        ]
+        return page(metrics=metrics_for(issues))
+
+    def test_week_and_cumulative_list_history_after_the_breakpoint(self):
+        html = self.html()
+        week, cum = panel(html, "week"), panel(html, "cumulative")
+        for tab, keys in ((week, ["CS-7"]), (cum, ["CS-7", "CS-8"])):
+            after = tab[tab.index('<div class="breakpoint">'):]
+            self.assertIn(f"改組前已完成 {len(keys)} 張", after)
+            self.assertIn("<span>改組前</span>", after)
+            for key in keys:
+                self.assertIn(f">{key}</a>", after)
+                self.assertNotIn(f">{key}</a>", tab[:tab.index('<div class="breakpoint">')])
+        self.assertIn("2026-W38 · 結案 09/10 · 搬入 09/18", cum)
+        self.assertIn("<strong class=\"\">1.5h</strong>", week)  # 實際工時只有 CS-2 的 1.5h，搬來的 4h 不算
+        self.assertNotIn("CS-7", html[html.index('<section id="checks"'):] if '<section id="checks"' in html else "")
+
+    def test_no_breakpoint_without_migrated_cards(self):
+        self.assertNotIn('class="breakpoint"', page())
+
+    def test_glossary_explains_breakpoint(self):
+        html = self.html()
+        self.assertIn("<dt>改組前</dt>", html)
+        self.assertNotIn("斷點", html)  # 頁面一律叫「改組前」（2026-09-30 使用者定名）
+
+
 class WordingTest(unittest.TestCase):
     """2026-09-30 使用者確認 Story point estimate 是完工後回填的實際時數；每個詞的口徑寫在頁尾名詞定義。"""
 

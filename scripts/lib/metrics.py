@@ -14,6 +14,9 @@
   epic 進度照 Jira 狀態算完成（2026-09-27 使用者裁：Squad 8 移轉時補建的 8 張不算當週）。
 - 整棵排除：config/excluded.json 的 epics 列的 epic 連同底下所有卡在算之前就移出，不列專案、不算數字、
   不做 Kick off 鎖定與資料檢查（2026-09-29 使用者裁：行政作業 epic 不放入成效統計）。
+- 斷點：Jira 結案時間早於或等於搬進 FDEPROJECT／CS 的時間（snapshot 的 moved_in），是搬入前已完成的歷史，
+  本週與累計都不算，也不列資料檢查，只給頁面在「斷點」分隔線之後灰字列出；搬入後才結案的照算；
+  epic 進度照 Jira 狀態（2026-09-30 使用者裁：Squad 8 移轉的卡集中在陳勁佑）。
 """
 from __future__ import annotations
 
@@ -31,7 +34,8 @@ UNASSIGNED_OWNER = "未指派"
 UNIT_UNCLASSIFIED = "未分類"
 UNIT_MULTIPLE = "多個單位（待釐清）"
 STALE_DAYS = 7
-SCHEMA = 2
+SCHEMA = 3  # 3：多了 migrated（斷點）
+SNAPSHOT_SCHEMA = 2  # snapshot 要有 moved_in 才判斷得了斷點
 
 
 def _round(value: float) -> float:
@@ -205,6 +209,8 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     excluded 是 {卡號: 理由}，列的卡不算完成；沒有要排除的就傳 {}。"""
     if tokens is not None and cumulative_tokens is None:
         raise ValueError("這一期有 Token 資料，累計 Token 卻是 None：累計應包含這一期")
+    if snapshot.get("schema") != SNAPSHOT_SCHEMA:
+        raise ValueError(f"snapshot 的 schema 是 {snapshot.get('schema')}，需要 {SNAPSHOT_SCHEMA}（有搬入時間才判斷得了斷點）：重跑 prepare 抓一次 Jira")
     checks = list(extra_checks)
     tree = _Tree(snapshot["issues"], checks)
     unit_set = set(units)
@@ -226,11 +232,15 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     # 排除只在這裡接一次：本週與累計的完成集合都扣掉，下游的張數、工時、交付、人、支援單位都從這兩個集合算
     for key in sorted(raw_week_done & set(excluded), key=issue_sort_key):
         checks.append(_check("excluded", key, f"依 config/excluded.json 不算本週與累計完成：{excluded[key]}"))
-    week_done = raw_week_done - set(excluded)
+    # 斷點：搬進來時就已完成的卡是別的專案的歷史，靜默不算，不列資料檢查
+    migrated = {i["key"] for i in tree.work
+                if _done(i) and i["resolved"] and i["moved_in"]
+                and parse_jira_time(i["resolved"]) <= datetime.fromisoformat(i["moved_in"])}
+    week_done = raw_week_done - set(excluded) - migrated
     # 完成時間早於本期結束的都算累計；沒有 resolutiondate 的上面已經列進資料檢查
     done_by_end = {i["key"] for i in tree.work
                    if _done(i) and i["resolved"] and parse_jira_time(i["resolved"]) < period.end_exclusive}
-    cumulative_done = done_by_end - set(excluded)
+    cumulative_done = done_by_end - set(excluded) - migrated
     group_of = {i["key"]: (tree.epic_of(i) or UNASSIGNED_EPIC) for i in tree.work}
     leaves = [i for i in tree.work if tree.is_leaf(i)]
     week_leaves = [i for i in leaves if i["key"] in week_done]
@@ -389,6 +399,12 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
 
     completed = [completed_row(key, tokens) for key in sorted(week_done, key=issue_sort_key)]
 
+    def migrated_row(key: str) -> dict:
+        item = tree.by_key[key]
+        return dict(completed_row(key, None),
+                    week=period_containing(parse_jira_time(item["resolved"])).week_id,
+                    resolved=item["resolved"], moved_in=item["moved_in"])
+
     in_progress = []
     for item in sorted((i for i in tree.work if i["status_category"] == "indeterminate"), key=lambda i: issue_sort_key(i["key"])):
         kids = tree.children[item["key"]]
@@ -439,6 +455,10 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         "in_progress": in_progress,
         "cumulative": cumulative,
         "people": people,
+        "migrated": {
+            "week": [migrated_row(k) for k in sorted(raw_week_done & migrated, key=issue_sort_key)],
+            "cumulative": [migrated_row(k) for k in sorted(done_by_end & migrated, key=issue_sort_key)],
+        },
         "checks": _dedupe(checks),
     }
 

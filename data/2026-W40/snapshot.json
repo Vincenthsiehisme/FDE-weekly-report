@@ -3,7 +3,7 @@
     "CS": 26,
     "FDEPROJECT": 136
   },
-  "fetched_at": "2026-09-30T05:00:30.264330+08:00",
+  "fetched_at": "2026-09-30T05:22:32.138909+08:00",
   "issues": [
     {
       "assignee": "hubertwang",
@@ -11,6 +11,7 @@
       "key": "CS-1",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "CS-7",
       "points": null,
       "project": "CS",
@@ -27,6 +28,7 @@
       "key": "CS-2",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "CS-7",
       "points": null,
       "project": "CS",
@@ -43,6 +45,7 @@
       "key": "CS-3",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "CS-7",
       "points": null,
       "project": "CS",
@@ -59,6 +62,7 @@
       "key": "CS-4",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "CS-7",
       "points": 2.5,
       "project": "CS",
@@ -77,6 +81,7 @@
         "歐洲團產TP"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "CS-25",
       "points": 2.0,
       "project": "CS",
@@ -93,6 +98,7 @@
       "key": "CS-6",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "CS-7",
       "points": null,
       "project": "CS",
@@ -109,6 +115,7 @@
       "key": "CS-7",
       "labels": [],
       "level": 1,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "CS",
@@ -125,6 +132,7 @@
       "key": "CS-8",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "CS-7",
       "points": null,
       "project": "CS",
@@ -141,6 +149,7 @@
       "key": "CS-9",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-4",
       "points": null,
       "project": "CS",
@@ -157,6 +166,7 @@
       "key": "CS-10",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-4",
       "points": null,
       "project": "CS",
@@ -173,6 +183,7 @@
       "key": "CS-11",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-4",
       "points": null,
       "project": "CS",
@@ -189,6 +200,7 @@
       "key": "CS-12",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-4",
       "points": null,
       "project": "CS",
@@ -205,6 +217,7 @@
       "key": "CS-13",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-4",
       "points": null,
       "project": "CS",
@@ -221,6 +234,7 @@
       "key": "CS-14",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-4",
       "points": null,
       "project": "CS",
@@ -237,6 +251,7 @@
       "key": "CS-15",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-4",
       "points": null,
       "project": "CS",
@@ -255,6 +270,7 @@
         "歐洲團產TP"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "CS-25",
       "points": 5.0,
       "project": "CS",
@@ -273,6 +289,7 @@
         "歐洲團產TP"
       ],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-16",
       "points": 1.5,
       "project": "CS",
@@ -291,6 +308,7 @@
         "歐洲團產TP"
       ],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-16",
       "points": 1.25,
       "project": "CS",
@@ -309,6 +327,7 @@
         "歐洲團產TP"
       ],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-16",
       "points": 1.25,
       "project": "CS",
@@ -327,6 +346,7 @@
         "歐洲團產TP"
       ],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-16",
       "points": 0.5,
       "project": "CS",
@@ -345,6 +365,7 @@
         "歐洲團產TP"
       ],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-16",
       "points": 0.5,
       "project": "CS",
@@ -363,6 +384,7 @@
         "歐洲團產TP"
       ],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-16",
       "points": 2.0,
       "project": "CS",
@@ -381,6 +403,7 @@
         "歐洲團產TP"
       ],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-16",
       "points": 0.5,
       "project": "CS",
@@ -399,6 +422,7 @@
         "歐洲團產TP"
       ],
       "level": -1,
+      "moved_in": null,
       "parent": "CS-16",
       "points": 0.0,
       "project": "CS",
@@ -417,6 +441,7 @@
         "歐洲團產TP"
       ],
       "level": 1,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "CS",
@@ -511,6 +536,7 @@
       "key": "CS-26",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "CS-25",
       "points": null,
       "project": "CS",
@@ -529,6 +555,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:06:01.388000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 3.0,
       "project": "FDEPROJECT",
@@ -547,6 +574,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:08:37.043000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -565,6 +593,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:08:40.204000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -583,6 +612,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -601,6 +631,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:03.558000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -619,6 +650,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:04.176000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -637,6 +669,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:04.645000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -655,6 +688,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:05.094000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -673,6 +707,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": 3.0,
       "project": "FDEPROJECT",
@@ -691,6 +726,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:05.975000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 3.0,
       "project": "FDEPROJECT",
@@ -709,6 +745,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -727,6 +764,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:11.683000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -745,6 +783,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:12.117000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -763,6 +802,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:12.539000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -781,6 +821,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:13.046000+00:00",
       "parent": "FDEPROJECT-72",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -799,6 +840,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:13.581000+00:00",
       "parent": "FDEPROJECT-72",
       "points": null,
       "project": "FDEPROJECT",
@@ -817,6 +859,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:14.029000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -835,6 +878,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:14.506000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -853,6 +897,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:14.930000+00:00",
       "parent": "FDEPROJECT-72",
       "points": 0.25,
       "project": "FDEPROJECT",
@@ -871,6 +916,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:21.428000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -889,6 +935,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:21.933000+00:00",
       "parent": "FDEPROJECT-72",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -907,6 +954,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:22.351000+00:00",
       "parent": "FDEPROJECT-72",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -925,6 +973,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:22.765000+00:00",
       "parent": "FDEPROJECT-72",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -943,6 +992,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:23.164000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -961,6 +1011,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:23.565000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -979,6 +1030,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": 2.0,
       "project": "FDEPROJECT",
@@ -997,6 +1049,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:24.432000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1015,6 +1068,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:24.847000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -1033,6 +1087,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:25.260000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1051,6 +1106,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:25.740000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 0.25,
       "project": "FDEPROJECT",
@@ -1069,6 +1125,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:26.198000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1087,6 +1144,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -1105,6 +1163,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:26.983000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 2.0,
       "project": "FDEPROJECT",
@@ -1123,6 +1182,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:27.392000+00:00",
       "parent": "FDEPROJECT-72",
       "points": 2.0,
       "project": "FDEPROJECT",
@@ -1141,6 +1201,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:27.803000+00:00",
       "parent": "FDEPROJECT-72",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -1159,6 +1220,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:28.227000+00:00",
       "parent": "FDEPROJECT-72",
       "points": 0.25,
       "project": "FDEPROJECT",
@@ -1177,6 +1239,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:28.644000+00:00",
       "parent": "FDEPROJECT-72",
       "points": null,
       "project": "FDEPROJECT",
@@ -1195,6 +1258,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:29.045000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1213,6 +1277,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:29.551000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1231,6 +1296,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:29.975000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1249,6 +1315,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:30.367000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1267,6 +1334,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:30.750000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1285,6 +1353,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:31.161000+00:00",
       "parent": "FDEPROJECT-72",
       "points": null,
       "project": "FDEPROJECT",
@@ -1303,6 +1372,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:31.587000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 0.25,
       "project": "FDEPROJECT",
@@ -1321,6 +1391,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:32.071000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1339,6 +1410,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:32.541000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -1357,6 +1429,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:32.971000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1375,6 +1448,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:33.366000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1393,6 +1467,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:33.788000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1411,6 +1486,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:34.205000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1429,6 +1505,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:34.627000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1447,6 +1524,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:35.080000+00:00",
       "parent": "FDEPROJECT-72",
       "points": null,
       "project": "FDEPROJECT",
@@ -1465,6 +1543,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1483,6 +1562,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:49.062000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1501,6 +1581,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:49.604000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1519,6 +1600,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:50.040000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1537,6 +1619,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:50.464000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1555,6 +1638,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:50.866000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1573,6 +1657,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:51.335000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1591,6 +1676,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:51.762000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1609,6 +1695,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:52.148000+00:00",
       "parent": "FDEPROJECT-72",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -1627,6 +1714,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:52.581000+00:00",
       "parent": "FDEPROJECT-71",
       "points": 0.25,
       "project": "FDEPROJECT",
@@ -1645,6 +1733,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:53.020000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1663,6 +1752,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:53.414000+00:00",
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1681,6 +1771,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:10:53.811000+00:00",
       "parent": "FDEPROJECT-72",
       "points": null,
       "project": "FDEPROJECT",
@@ -1699,6 +1790,7 @@
         "AILab"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:17:13.398000+00:00",
       "parent": "FDEPROJECT-73",
       "points": 2.0,
       "project": "FDEPROJECT",
@@ -1717,6 +1809,7 @@
         "AILab"
       ],
       "level": 0,
+      "moved_in": "2026-09-23T07:17:16.204000+00:00",
       "parent": "FDEPROJECT-73",
       "points": null,
       "project": "FDEPROJECT",
@@ -1735,6 +1828,7 @@
         "AILab"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-73",
       "points": null,
       "project": "FDEPROJECT",
@@ -1753,6 +1847,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1769,6 +1864,7 @@
       "key": "FDEPROJECT-71",
       "labels": [],
       "level": 1,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "FDEPROJECT",
@@ -1785,6 +1881,7 @@
       "key": "FDEPROJECT-72",
       "labels": [],
       "level": 1,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "FDEPROJECT",
@@ -1801,6 +1898,7 @@
       "key": "FDEPROJECT-73",
       "labels": [],
       "level": 1,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "FDEPROJECT",
@@ -1819,6 +1917,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1837,6 +1936,7 @@
         "門市"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -1931,6 +2031,7 @@
       "key": "FDEPROJECT-76",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": null,
       "project": "FDEPROJECT",
@@ -2025,6 +2126,7 @@
       "key": "FDEPROJECT-77",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": null,
       "project": "FDEPROJECT",
@@ -2043,6 +2145,7 @@
         "IT_team"
       ],
       "level": 1,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "FDEPROJECT",
@@ -2061,6 +2164,7 @@
         "FDE_team"
       ],
       "level": 1,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "FDEPROJECT",
@@ -2077,6 +2181,7 @@
       "key": "FDEPROJECT-80",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2093,6 +2198,7 @@
       "key": "FDEPROJECT-81",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2109,6 +2215,7 @@
       "key": "FDEPROJECT-82",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2125,6 +2232,7 @@
       "key": "FDEPROJECT-83",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2141,6 +2249,7 @@
       "key": "FDEPROJECT-84",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2157,6 +2266,7 @@
       "key": "FDEPROJECT-85",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2173,6 +2283,7 @@
       "key": "FDEPROJECT-86",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2189,6 +2300,7 @@
       "key": "FDEPROJECT-87",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2205,6 +2317,7 @@
       "key": "FDEPROJECT-88",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-78",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2221,6 +2334,7 @@
       "key": "FDEPROJECT-89",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2237,6 +2351,7 @@
       "key": "FDEPROJECT-90",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2253,6 +2368,7 @@
       "key": "FDEPROJECT-91",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2269,6 +2385,7 @@
       "key": "FDEPROJECT-92",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2285,6 +2402,7 @@
       "key": "FDEPROJECT-93",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2301,6 +2419,7 @@
       "key": "FDEPROJECT-94",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2317,6 +2436,7 @@
       "key": "FDEPROJECT-95",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2333,6 +2453,7 @@
       "key": "FDEPROJECT-96",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2349,6 +2470,7 @@
       "key": "FDEPROJECT-97",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2365,6 +2487,7 @@
       "key": "FDEPROJECT-98",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2381,6 +2504,7 @@
       "key": "FDEPROJECT-99",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-79",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2397,6 +2521,7 @@
       "key": "FDEPROJECT-100",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -2413,6 +2538,7 @@
       "key": "FDEPROJECT-101",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -2429,6 +2555,7 @@
       "key": "FDEPROJECT-102",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -2445,6 +2572,7 @@
       "key": "FDEPROJECT-103",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -2461,6 +2589,7 @@
       "key": "FDEPROJECT-104",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -2477,6 +2606,7 @@
       "key": "FDEPROJECT-105",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -2493,6 +2623,7 @@
       "key": "FDEPROJECT-106",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -2509,6 +2640,7 @@
       "key": "FDEPROJECT-107",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -2603,6 +2735,7 @@
       "key": "FDEPROJECT-108",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -2697,6 +2830,7 @@
       "key": "FDEPROJECT-109",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-73",
       "points": null,
       "project": "FDEPROJECT",
@@ -2716,6 +2850,7 @@
         "notion_user"
       ],
       "level": 1,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "FDEPROJECT",
@@ -2812,6 +2947,7 @@
         "notion_user"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-110",
       "points": null,
       "project": "FDEPROJECT",
@@ -2830,6 +2966,7 @@
         "notion_user"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-110",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2848,6 +2985,7 @@
         "notion_user"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-110",
       "points": 0.25,
       "project": "FDEPROJECT",
@@ -2866,6 +3004,7 @@
         "notion_user"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-110",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2884,6 +3023,7 @@
         "notion_user"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-110",
       "points": 1.5,
       "project": "FDEPROJECT",
@@ -2902,6 +3042,7 @@
         "notion_user"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-110",
       "points": 0.25,
       "project": "FDEPROJECT",
@@ -2920,6 +3061,7 @@
         "notion_user"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-110",
       "points": 1.0,
       "project": "FDEPROJECT",
@@ -2938,6 +3080,7 @@
         "notion_user"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-110",
       "points": 0.5,
       "project": "FDEPROJECT",
@@ -2956,6 +3099,7 @@
         "FDE_team"
       ],
       "level": 1,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "FDEPROJECT",
@@ -2974,6 +3118,7 @@
         "FDE_team"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-119",
       "points": null,
       "project": "FDEPROJECT",
@@ -2992,6 +3137,7 @@
         "FDE_team"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-119",
       "points": null,
       "project": "FDEPROJECT",
@@ -3010,6 +3156,7 @@
         "FDE_team"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-119",
       "points": null,
       "project": "FDEPROJECT",
@@ -3026,6 +3173,7 @@
       "key": "FDEPROJECT-123",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -3042,6 +3190,7 @@
       "key": "FDEPROJECT-124",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -3058,6 +3207,7 @@
       "key": "FDEPROJECT-125",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -3074,6 +3224,7 @@
       "key": "FDEPROJECT-126",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -3090,6 +3241,7 @@
       "key": "FDEPROJECT-127",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -3106,6 +3258,7 @@
       "key": "FDEPROJECT-128",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -3122,6 +3275,7 @@
       "key": "FDEPROJECT-129",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-71",
       "points": null,
       "project": "FDEPROJECT",
@@ -3138,6 +3292,7 @@
       "key": "FDEPROJECT-130",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-119",
       "points": null,
       "project": "FDEPROJECT",
@@ -3149,7 +3304,7 @@
       "updated": "2026-09-29T17:36:04.203+0800"
     },
     {
-      "assignee": "Vivian",
+      "assignee": "Shira",
       "description": {
         "content": [
           {
@@ -3907,6 +4062,7 @@
       "key": "FDEPROJECT-131",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": null,
       "points": null,
       "project": "FDEPROJECT",
@@ -3915,7 +4071,7 @@
       "status_category": "new",
       "summary": "成本單價格填入模組(Inbound)",
       "type": "Kick off",
-      "updated": "2026-09-29T17:49:47.248+0800"
+      "updated": "2026-09-30T05:00:54.209+0800"
     },
     {
       "assignee": "Vivian",
@@ -3923,6 +4079,7 @@
       "key": "FDEPROJECT-132",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "FDEPROJECT-131",
       "points": 1.5,
       "project": "FDEPROJECT",
@@ -3939,6 +4096,7 @@
       "key": "FDEPROJECT-133",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "FDEPROJECT-131",
       "points": 1.5,
       "project": "FDEPROJECT",
@@ -3955,6 +4113,7 @@
       "key": "FDEPROJECT-134",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "FDEPROJECT-131",
       "points": null,
       "project": "FDEPROJECT",
@@ -3971,6 +4130,7 @@
       "key": "FDEPROJECT-135",
       "labels": [],
       "level": -1,
+      "moved_in": null,
       "parent": "FDEPROJECT-131",
       "points": null,
       "project": "FDEPROJECT",
@@ -3987,6 +4147,7 @@
       "key": "FDEPROJECT-136",
       "labels": [],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-119",
       "points": null,
       "project": "FDEPROJECT",
@@ -4005,6 +4166,7 @@
         "FDE_team"
       ],
       "level": 0,
+      "moved_in": null,
       "parent": "FDEPROJECT-119",
       "points": null,
       "project": "FDEPROJECT",
@@ -4022,6 +4184,6 @@
     "week": "2026-W40",
     "week_ending": "2026-09-29"
   },
-  "schema": 1,
+  "schema": 2,
   "site": "liontech-tw.atlassian.net"
 }

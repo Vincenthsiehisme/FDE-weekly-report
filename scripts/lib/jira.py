@@ -15,6 +15,7 @@ from pathlib import Path
 REQUIRED = ("JIRA_SITE", "JIRA_EMAIL", "JIRA_API_TOKEN")
 ENV_FILE = Path.home() / ".config" / "jira-ops" / "env"
 MAX_PAGES = 200
+BULK_IDS = 1000  # changelog/bulkfetch 一次最多 1000 張卡
 
 
 class CredentialError(RuntimeError):
@@ -93,6 +94,45 @@ class JiraClient:
             raise JiraError(f"Jira API HTTP {err.code}：GET /rest/api/3/myself — {detail}") from err
         except urllib.error.URLError as err:
             raise JiraError(f"連不到 Jira（{self.site}）：{err.reason}") from err
+
+    def _get(self, path: str) -> dict:
+        request = urllib.request.Request(
+            f"https://{self.site}{path}", method="GET",
+            headers={"Authorization": self._auth, "Accept": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=60) as response:
+                return json.loads(response.read())
+        except urllib.error.HTTPError as err:
+            detail = err.read().decode(errors="replace")[:500]
+            raise JiraError(f"Jira API HTTP {err.code}：GET {path} — {detail}") from err
+        except urllib.error.URLError as err:
+            raise JiraError(f"連不到 Jira（{self.site}）：{err.reason}") from err
+
+    def project_ids(self, keys) -> dict:
+        """{專案 key: 專案 id}。changelog 的專案異動只記 id。"""
+        return {key: str(self._get(f"/rest/api/3/project/{key}")["id"]) for key in keys}
+
+    def changelogs(self, issue_ids: list, field_ids: list) -> dict:
+        """/rest/api/3/changelog/bulkfetch 以 nextPageToken 翻頁，只取 field_ids 的異動。回傳 {issue id: [changeHistory]}。"""
+        found = {}
+        for start in range(0, len(issue_ids), BULK_IDS):
+            token = None
+            for _ in range(MAX_PAGES):
+                body = {"issueIdsOrKeys": issue_ids[start:start + BULK_IDS], "fieldIds": field_ids, "maxResults": BULK_IDS}
+                if token:
+                    body["nextPageToken"] = token
+                page = self._post("/rest/api/3/changelog/bulkfetch", body)
+                if "issueChangeLogs" not in page:
+                    raise JiraError(f"changelog 回應沒有 issueChangeLogs 欄位：{sorted(page)}")
+                for log in page["issueChangeLogs"]:
+                    found.setdefault(str(log["issueId"]), []).extend(log["changeHistories"])
+                token = page.get("nextPageToken")
+                if not token:
+                    break
+            else:
+                raise JiraError(f"changelog 翻頁超過 {MAX_PAGES} 頁仍未結束")
+        return found
 
     def search(self, jql: str, fields: list) -> list:
         """/rest/api/3/search/jql 以 nextPageToken 翻頁，回傳全部 issue。"""

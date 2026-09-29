@@ -232,6 +232,45 @@ class DeliverablesTest(unittest.TestCase):
         self.assertEqual(sum(u["deliverables"] for u in m["units"]), 1)
 
 
+class BreakpointTest(unittest.TestCase):
+    """斷點：搬進來時就已完成的卡靜默不算；搬進來之後才結案的照算（2026-09-30 使用者裁，AC-16）。"""
+    MOVED = "2026-09-18T07:00:00+00:00"  # 台北 09-18 15:00，IN_WEEK 是 09-18 04:00
+
+    def issues(self):
+        return [
+            issue("CS-1", level=1, status="doing"),
+            issue("CS-2", level=0, parent="CS-1", status="done", points=1.0, resolved=IN_WEEK, assignee="Amy", labels=("資料組",), moved_in=self.MOVED),
+            issue("CS-3", level=0, parent="CS-1", status="done", points=2.0, resolved=LAST_WEEK, assignee="Amy", moved_in=self.MOVED),
+            issue("CS-4", level=0, parent="CS-1", status="done", points=3.0, resolved="2026-09-19T10:00:00.000+0800", assignee="Amy", moved_in=self.MOVED),
+            issue("CS-5", level=0, parent="CS-1", status="done", points=0.5, resolved=IN_WEEK, assignee="Bob"),
+        ]
+
+    def test_done_before_move_counts_nowhere_and_raises_no_check(self):
+        m = run(self.issues())
+        self.assertEqual([c["key"] for c in m["completed"]], ["CS-4", "CS-5"])  # CS-4 搬入後才結案，照算
+        self.assertEqual((m["totals"]["completed"], m["totals"]["deliverables"], m["totals"]["hours"]), (2, 2, 3.5))
+        self.assertEqual([c["key"] for c in m["cumulative"]["completed"]], ["CS-4", "CS-5"])
+        self.assertEqual(m["cumulative"]["totals"]["hours"], 3.5)
+        amy = next(p for p in m["people"] if p["name"] == "Amy")
+        self.assertEqual((amy["week"]["completed"], amy["cumulative"]["completed"], amy["cumulative"]["hours"]), (1, 1, 3.0))
+        self.assertNotIn("資料組", [u["unit"] for u in m["units"]])  # 只有 CS-2 帶這個 label
+        self.assertFalse([c for c in m["checks"] if c["key"] in ("CS-2", "CS-3")])
+
+    def test_progress_still_follows_jira_and_history_is_listed_after_the_breakpoint(self):
+        m = run(self.issues())
+        epic = next(e for e in m["epics"] if e["key"] == "CS-1")
+        self.assertEqual((epic["progress"]["done_cards"], epic["progress"]["total_cards"]), (4, 4))
+        self.assertEqual([r["key"] for r in m["migrated"]["week"]], ["CS-2"])
+        self.assertEqual([(r["key"], r["week"]) for r in m["migrated"]["cumulative"]], [("CS-2", "2026-W39"), ("CS-3", "2026-W38")])
+        self.assertEqual(m["migrated"]["week"][0]["moved_in"], self.MOVED)
+
+    def test_old_snapshot_without_moved_in_is_refused(self):
+        old = snapshot(self.issues())
+        old["schema"] = 1
+        with self.assertRaisesRegex(ValueError, "重跑 prepare"):
+            compute(old, PERIOD, [], None, {}, [], cumulative_tokens=None, excluded={})
+
+
 class ExclusionTest(unittest.TestCase):
     """config/excluded.json 列的卡不算完成：本週、累計的張數、工時、交付、人、支援單位都不算，
     epic 進度照 Jira 狀態算完成。2026-09-27 使用者裁：Squad 8 移轉時補建的 8 張不算當週。"""
