@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-79",
+  "kickoff_key": "FDEPROJECT-77",
+  "last_seen": {
+    "after": "記錄人裝 .dmg 或 .exe、輸入邀請碼就能錄音與轉錄；Gemini key 與名單由 gateway 發放，不落在設定檔；記錄以 markdown 投影到共享資料夾，讀的人零安裝；新版放進共享資料夾的更新區就能更新",
+    "before": "MeetPilot 只在一台 Mac 上本地架設，要自己裝 Node 與 ffmpeg、編設定檔、放 Gemini key 與名單 CSV，其他人無法使用",
+    "decision": null,
+    "evidence": "乾淨的 Mac 與 Windows 各裝一次、啟動到主畫面；Windows 上一場真實錄音跑到轉錄完成，記錄出現在共享資料夾；CI 的 macOS 與 Windows 矩陣全綠；語音備忘錄與 app 內錄音的逐字稿對照",
+    "next_milestone": "第一次發版給 5 位記錄人（FDEPROJECT-99），前置是 Windows 實機端到端（FDEPROJECT-97）與共享資料夾上傳驗證",
+    "objective": "讓每位會議記錄人在自己的 Mac 或 Windows 電腦上安裝就能用 MeetPilot 錄音與轉錄，會議記錄自動放進共享資料夾，其他人不用安裝就能讀",
+    "why": "一場會議只有一位記錄人，記錄人各自用 Mac 或 Windows，Windows 是多數；工具只在一台電腦上能跑，其他記錄人就無法自己產出會議記錄"
+  },
+  "last_seen_at": "2026-09-30T04:06:18.003769+08:00",
+  "last_seen_key": "FDEPROJECT-77",
+  "locked_at": "2026-09-30T04:06:18.003769+08:00",
+  "problems": [],
+  "sections": {
+    "after": "記錄人裝 .dmg 或 .exe、輸入邀請碼就能錄音與轉錄；Gemini key 與名單由 gateway 發放，不落在設定檔；記錄以 markdown 投影到共享資料夾，讀的人零安裝；新版放進共享資料夾的更新區就能更新",
+    "before": "MeetPilot 只在一台 Mac 上本地架設，要自己裝 Node 與 ffmpeg、編設定檔、放 Gemini key 與名單 CSV，其他人無法使用",
+    "decision": null,
+    "evidence": "乾淨的 Mac 與 Windows 各裝一次、啟動到主畫面；Windows 上一場真實錄音跑到轉錄完成，記錄出現在共享資料夾；CI 的 macOS 與 Windows 矩陣全綠；語音備忘錄與 app 內錄音的逐字稿對照",
+    "next_milestone": "第一次發版給 5 位記錄人（FDEPROJECT-99），前置是 Windows 實機端到端（FDEPROJECT-97）與共享資料夾上傳驗證",
+    "objective": "讓每位會議記錄人在自己的 Mac 或 Windows 電腦上安裝就能用 MeetPilot 錄音與轉錄，會議記錄自動放進共享資料夾，其他人不用安裝就能讀",
+    "why": "一場會議只有一位記錄人，記錄人各自用 Mac 或 Windows，Windows 是多數；工具只在一台電腦上能跑，其他記錄人就無法自己產出會議記錄"
+  }
+}

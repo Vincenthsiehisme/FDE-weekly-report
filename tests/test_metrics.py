@@ -216,6 +216,22 @@ class PeopleTest(unittest.TestCase):
         self.assertIsNone(p["Amy"]["week"]["tokens"])
 
 
+class DeliverablesTest(unittest.TestCase):
+    """本週交付在資源 KPI、人、支援單位同一個口徑（2026-09-30 Fable 審 PR #8 finding 1）。"""
+
+    def test_card_under_settled_epic_counts_as_a_deliverable_everywhere(self):
+        issues = [
+            issue("CS-1", level=1, status="done", resolved=LAST_WEEK),
+            issue("CS-2", level=0, parent="CS-1", status="done", points=1.0, resolved=IN_WEEK, assignee="Amy"),
+        ]
+        m = run(issues)
+        self.assertEqual(m["totals"]["completed"], 1)
+        self.assertEqual(m["totals"]["deliverables"], 1)
+        amy = next(p for p in m["people"] if p["name"] == "Amy")
+        self.assertEqual(amy["week"]["deliverables"], 1)
+        self.assertEqual(sum(u["deliverables"] for u in m["units"]), 1)
+
+
 class ExclusionTest(unittest.TestCase):
     """config/excluded.json 列的卡不算完成：本週、累計的張數、工時、交付、人、支援單位都不算，
     epic 進度照 Jira 狀態算完成。2026-09-27 使用者裁：Squad 8 移轉時補建的 8 張不算當週。"""

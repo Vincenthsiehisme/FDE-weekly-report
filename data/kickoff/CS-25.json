@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "CS-25",
+  "kickoff_key": "CS-26",
+  "last_seen": {
+    "after": "解析 Pipeline 部署在 VM、改用 Git 部署；能隔離回覆信串，解析 Palma、Kuoni Tumlare、Happy Tours、Vosaio 四家表格式、G2 兩種格式與 MIKI 的 PDF 附件，輸出 OP 端 docx；解析結果存進資料庫並與 OTA／Expedia 資料整合",
+    "before": "地接社各自用不同格式寄飯店資料：表格、文字信件、PDF 附件，信裡還夾著回覆信串",
+    "decision": "CS-24 標「非本人待辦」，資料庫儲存與 OTA／Expedia 資料整合要由誰接手",
+    "evidence": "Pipeline 在 VM 上產出 OP 端 docx；資料庫儲存與 OTA／Expedia 資料整合完成（CS-24）",
+    "next_milestone": "資料庫儲存與 OTA／Expedia 資料整合（CS-24）",
+    "objective": "把歐洲地接社寄來的飯店資料信件自動解析，整理成 OP 可以直接用的文件，並存進資料庫",
+    "why": "地接社各自用不同格式寄資料，要先解析、標準化，後續的 Agent Workflow 才有乾淨的資料可用"
+  },
+  "last_seen_at": "2026-09-30T04:06:18.003769+08:00",
+  "last_seen_key": "CS-26",
+  "locked_at": "2026-09-30T04:06:18.003769+08:00",
+  "problems": [],
+  "sections": {
+    "after": "解析 Pipeline 部署在 VM、改用 Git 部署；能隔離回覆信串，解析 Palma、Kuoni Tumlare、Happy Tours、Vosaio 四家表格式、G2 兩種格式與 MIKI 的 PDF 附件，輸出 OP 端 docx；解析結果存進資料庫並與 OTA／Expedia 資料整合",
+    "before": "地接社各自用不同格式寄飯店資料：表格、文字信件、PDF 附件，信裡還夾著回覆信串",
+    "decision": "CS-24 標「非本人待辦」，資料庫儲存與 OTA／Expedia 資料整合要由誰接手",
+    "evidence": "Pipeline 在 VM 上產出 OP 端 docx；資料庫儲存與 OTA／Expedia 資料整合完成（CS-24）",
+    "next_milestone": "資料庫儲存與 OTA／Expedia 資料整合（CS-24）",
+    "objective": "把歐洲地接社寄來的飯店資料信件自動解析，整理成 OP 可以直接用的文件，並存進資料庫",
+    "why": "地接社各自用不同格式寄資料，要先解析、標準化，後續的 Agent Workflow 才有乾淨的資料可用"
+  }
+}
