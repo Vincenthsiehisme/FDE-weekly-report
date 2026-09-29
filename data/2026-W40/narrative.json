@@ -1,14 +1,14 @@
 {
-  "highlights": [
-    "[門市 AI 客服] 完成 16 張，新增 MCP 查詢工具並修復團體搜尋故障，已達到累計完成 61 張、進度 72%",
-    "[培訓課程網站] 完成 9 張並部署上線，已達到累計完成 9 張、進度 100%",
-    "[MeetPilot 團隊會議記錄] 完成 9 張，含 Windows 實機端到端測試，已達到累計完成 9 張、進度 82%"
-  ],
   "epic_results": {
-    "FDEPROJECT-71": "本週完成 16 張，新增 MCP 工具 tour-detail、hotel-rooms、ticket-detail、hotel-info，並修復團體搜尋故障，累計完成 61 張、進度 72%。",
-    "FDEPROJECT-72": "本週無完成卡，累計完成 14 張、進度 100%，狀態為 Done。",
-    "FDEPROJECT-78": "本週完成 9 張，網站部署上線，累計完成 9 張、進度 100%，狀態為 Done。",
-    "FDEPROJECT-79": "本週完成 9 張，含 Windows 實機端到端測試，累計完成 9 張、進度 82%。",
-    "FDEPROJECT-110": "本週完成 2 張，累計完成 2 張、進度 17%。"
-  }
+    "FDEPROJECT-110": "本週完成 2 張：擴充功能連結 Notion 並讀取當前頁，記錄格式對齊 MeetPilot 外殼。",
+    "FDEPROJECT-71": "本週完成 16 張：新增團體行程、房型、票券、飯店介紹的 MCP 查詢工具，修復團體搜尋故障與單程機票查不到的問題，並接上 LINE AI。",
+    "FDEPROJECT-72": "本週沒有完成的卡，專案狀態 Done。",
+    "FDEPROJECT-78": "本週完成 9 張，含內容解析、投影模式與部署上線，專案狀態 Done。",
+    "FDEPROJECT-79": "本週完成 9 張，含跨平台前置、Gateway、桌面 app 外殼與 Windows 實機端到端。"
+  },
+  "highlights": [
+    "[門市 AI 客服] 完成 16 張，新增 tour-detail、hotel-rooms、ticket-detail、hotel-info 等 MCP 工具，並修復團體搜尋故障與單程機票查不到的問題",
+    "[培訓課程網站] 完成 9 張，含投影模式與部署上線，專案狀態 Done",
+    "[MeetPilot 團隊會議記錄] 完成 9 張，含 Electron 桌面 app 外殼、app 內錄音與 Windows 實機端到端"
+  ]
 }
