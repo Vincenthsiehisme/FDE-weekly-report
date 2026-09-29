@@ -5,8 +5,9 @@ from datetime import date
 from pathlib import Path
 from unittest import mock
 
-from helpers import IN_WEEK, issue, snapshot
+from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 import weekly
+from lib.narrative import NarrativeError
 
 
 class AtomicWriteTest(unittest.TestCase):
@@ -175,6 +176,82 @@ class ExcludedConfigTest(AtomicWriteTest):
         self.assertEqual(metrics["totals"]["tokens"], 5)
         self.assertEqual(metrics["cumulative"]["totals"]["tokens"], 5)
         self.assertEqual([c["kind"] for c in metrics["checks"] if c["kind"] == "token_unknown_key"], [])
+
+    def test_excluded_epic_missing_right_after_fetching_is_an_error(self):
+        # prepare 剛抓完 Jira 還找不到：卡號打錯，或 epic 被刪、搬走。放行的話整個專案會照樣上週報
+        self._write('{"cards": {}, "epics": {"CS-99": "打錯的卡號"}}')
+        with mock.patch.object(weekly, "fetch_snapshot", return_value=self._snap()), \
+                mock.patch.object(weekly, "load_credentials"), mock.patch.object(weekly, "JiraClient"):
+            with self.assertRaisesRegex(ValueError, "CS-99"):
+                weekly.main(["prepare", "--week-ending", "2026-09-22"])
+        self.assertFalse((self.root / "data").exists())
+
+    def test_excluded_epic_missing_when_recomputing_is_allowed(self):
+        # metrics 重算：epic 可能比這一期的 snapshot 晚建（FDEPROJECT-119 之於 W39），下一次 prepare 會再驗
+        self._write('{"cards": {}, "epics": {"CS-99": "之後才建的 epic"}}')
+        self.assertEqual(weekly.publish_week(self._snap())["totals"]["completed"], 1)
+
+    def test_finalize_refuses_metrics_computed_before_the_epic_was_excluded(self):
+        site = self.root / "site"
+        weekly.publish_week(self._snap())
+        folder = self.root / "data" / "2026-W39"
+        (folder / "narrative.json").write_text('{"highlights": ["完成 CS-3"], "epic_results": {"CS-1": "完成"}}', encoding="utf-8")
+        self._write('{"cards": {}, "epics": {"CS-1": "行政作業"}}')
+        with mock.patch.object(weekly, "SITE", site):
+            with self.assertRaisesRegex(ValueError, "CS-1.*metrics 2026-W39"):
+                weekly.main(["finalize", "2026-W39"])
+        self.assertFalse(site.exists())
+
+    def test_finalize_refuses_an_excluded_epic_that_only_shows_on_the_cumulative_page(self):
+        # 上一期就結案的 epic 不在本週專案列，只在累計頁
+        snap = snapshot([issue("CS-1", level=1, status="done", resolved=LAST_WEEK),
+                         issue("CS-3", level=0, parent="CS-1", status="done", points=1.0, resolved=LAST_WEEK)])
+        snap["period"] = {"week": "2026-W39", "week_ending": "2026-09-22", "start": "", "end_exclusive": ""}
+        weekly.publish_week(snap)
+        (self.root / "data" / "2026-W39" / "narrative.json").write_text('{"highlights": [], "epic_results": {}}', encoding="utf-8")
+        self._write('{"cards": {}, "epics": {"CS-1": "行政作業"}}')
+        with mock.patch.object(weekly, "SITE", self.root / "site"):
+            with self.assertRaisesRegex(ValueError, "CS-1"):
+                weekly.main(["finalize", "2026-W39"])
+
+    def test_backfill_refuses_to_redraw_the_index_from_stale_latest_metrics(self):
+        # 補建舊的一期時首頁用最新一期的 metrics 重繪；那份是排除前算的，被排除的 epic 會回到公開首頁
+        site = self.root / "site"
+        with mock.patch.object(weekly, "SITE", site):
+            for week, ending in (("2026-W40", "2026-09-29"), ("2026-W39", "2026-09-22")):
+                snap = snapshot([issue("CS-1", level=1, status="doing", summary="行政作業")], fetched_at=f"{ending}T23:59:00+08:00")
+                snap["period"] = {"week": week, "week_ending": ending, "start": "", "end_exclusive": ""}
+                if week == "2026-W40":
+                    weekly.publish_week(snap)
+                    (self.root / "data" / week / "narrative.json").write_text('{"highlights": [], "epic_results": {}}', encoding="utf-8")
+                    weekly.main(["finalize", week])
+                    self._write('{"cards": {}, "epics": {"CS-1": "行政作業"}}')
+                else:
+                    weekly.publish_week(snap)
+                    (self.root / "data" / week / "narrative.json").write_text('{"highlights": [], "epic_results": {}}', encoding="utf-8")
+                    before = (site / "index.html").read_text(encoding="utf-8")
+                    with self.assertRaisesRegex(ValueError, "CS-1.*metrics 2026-W40"):
+                        weekly.main(["finalize", week])
+            self.assertEqual((site / "index.html").read_text(encoding="utf-8"), before)
+            self.assertFalse((site / "reports" / "2026-W39.html").exists())
+
+    def test_narrative_cannot_cite_cards_of_an_excluded_epic(self):
+        # narrative 驗證用的卡號要跟 metrics 同一個範圍，不然行政作業的卡號可以寫進公開頁面
+        site = self.root / "site"
+        snap = self._snap()
+        snap["issues"].append(issue("CS-9", level=0, status="done", points=1.0, resolved=IN_WEEK))
+        self._write('{"cards": {}, "epics": {"CS-1": "行政作業"}}')
+        weekly.publish_week(snap)
+        folder = self.root / "data" / "2026-W39"
+        with mock.patch.object(weekly, "SITE", site):
+            for key, ok in (("CS-9", True), ("CS-3", False), ("CS-1", False)):
+                with self.subTest(key=key):
+                    (folder / "narrative.json").write_text(json.dumps({"highlights": [f"完成 {key}"], "epic_results": {"_unassigned": "完成"}}, ensure_ascii=False), encoding="utf-8")
+                    if ok:
+                        weekly.main(["finalize", "2026-W39"])
+                    else:
+                        with self.assertRaisesRegex(NarrativeError, key):
+                            weekly.main(["finalize", "2026-W39"])
 
 class FinalizeArchiveTest(AtomicWriteTest):
     def test_backfilling_an_older_week_updates_the_index_archive(self):

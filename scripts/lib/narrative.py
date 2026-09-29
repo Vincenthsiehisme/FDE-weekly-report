@@ -5,7 +5,7 @@ AI 只寫兩種東西：
   epic_results：每個本週有交付的專案一句「結果」，key 是 metrics 裡 epic 的 id
 
 擋兩種編造：
-  1. 引用了 snapshot 裡不存在的卡號
+  1. 引用了 snapshot 裡不存在、或被 config/excluded.json 整棵排除的卡號
   2. 出現 metrics 裡沒有的數字（卡號裡的數字不算）
 數字比對是刻意的嚴格：AI 想寫「完成 62%」，62 就必須是 metrics 算出來的值。
 """
@@ -94,7 +94,7 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
             errors.append(f"{where} 超過 {MAX_LEN} 字（{len(text)}）")
         for key in ISSUE_KEY.findall(text):
             if key not in snapshot_keys:
-                errors.append(f"{where} 引用了不存在的卡號 {key}")
+                errors.append(f"{where} 引用了不存在或已排除的卡號 {key}")
         for quantity in chinese_quantities(text):
             errors.append(f"{where} 用了中文數字「{quantity}」，數量一律寫阿拉伯數字")
         for number in NUMBER.findall(ISSUE_KEY.sub(" ", text)):

@@ -119,12 +119,23 @@ def _read_tokens(path: Path) -> dict:
     return data
 
 
-def compute_week(snapshot: dict) -> tuple:
-    """只算不寫：回傳 (metrics, {路徑: 要寫的內容})。任何一步失敗都不會留下檔案。"""
+
+def excluded_view(snapshot: dict, *, fresh_fetch: bool) -> tuple:
+    """回傳 (cards, epics, 留下的卡, checks)：cards、epics 是 config/excluded.json 的兩欄，留下的卡已扣掉整棵排除的 epic。
+    compute_week 與 finalize 共用，metrics 與 narrative 驗證才會是同一個範圍。
+    fresh_fetch 只在 prepare 剛抓完 Jira 時為 True：這時找不到設定的 epic 就是卡號打錯或 epic 不見了，直接失敗。
+    重算與 finalize 放行：epic 可能比那一期的 snapshot 晚建，下一次 prepare 會再驗。"""
     period = period_from_dict(snapshot["period"])
-    excluded_cards, excluded_epics = load_excluded()
+    cards, epics = load_excluded()
+    issues, checks = drop_excluded_epics(snapshot["issues"], epics, period, allow_missing=not fresh_fetch)
+    return cards, epics, issues, checks
+
+
+def compute_week(snapshot: dict, *, fresh_fetch: bool) -> tuple:
+    """只算不寫：回傳 (metrics, {路徑: 要寫的內容})。任何一步失敗都不會留下檔案。fresh_fetch 見 excluded_view。"""
+    period = period_from_dict(snapshot["period"])
     # 整棵排除要在 Kick off 鎖定之前：被排除的 epic 不鎖定、不列資料檢查。存檔的 snapshot 仍是原始的全部卡片。
-    issues, checks = drop_excluded_epics(snapshot["issues"], excluded_epics, period)
+    excluded_cards, _, issues, checks = excluded_view(snapshot, fresh_fetch=fresh_fetch)
     found, kickoff_checks = kickoff_by_epic(issues)
     checks += kickoff_checks
     seen_at = snapshot["fetched_at"]
@@ -160,9 +171,9 @@ def _without(tokens, keys: set):
     """None 代表沒有 Token 資料，照傳；有資料就拿掉 keys。"""
     return None if tokens is None else {k: v for k, v in tokens.items() if k not in keys}
 
-def publish_week(snapshot: dict) -> dict:
-    """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。"""
-    metrics, writes = compute_week(snapshot)
+def publish_week(snapshot: dict, *, fresh_fetch: bool = False) -> dict:
+    """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。只有 prepare 剛抓完 Jira 時傳 fresh_fetch=True。"""
+    metrics, writes = compute_week(snapshot, fresh_fetch=fresh_fetch)
     writes[week_dir(metrics["period"]["week"]) / "snapshot.json"] = snapshot
     for path in sorted(writes):
         write_json(path, writes[path])
@@ -179,7 +190,7 @@ def cmd_prepare(args) -> None:
             time.sleep(seconds)
             now = datetime.now(TZ)
     snapshot = fetch_snapshot(JiraClient(load_credentials()), period, now)
-    metrics = publish_week(snapshot)
+    metrics = publish_week(snapshot, fresh_fetch=True)
     t = metrics["totals"]
     print(f"snapshot：{sum(snapshot['counts'].values())} 張卡 {snapshot['counts']}", file=sys.stderr)
     print(f"本週完成 {t['completed']} 張、交付 {t['deliverables']} 項、{t['hours']:g}h；資料檢查 {len(metrics['checks'])} 項", file=sys.stderr)
@@ -194,24 +205,37 @@ def cmd_metrics(args) -> None:
     print(f"{args.week}：本週完成 {metrics['totals']['completed']} 張", file=sys.stderr)
 
 
+
+def refuse_stale_metrics(week: str, metrics: dict, excluded_epics: dict) -> None:
+    """metrics.json 是之後才把 epic 加進排除前算的，頁面會照樣列出那個專案，直接失敗。"""
+    shown = {e["key"] for e in metrics["epics"] + metrics["cumulative"]["epics"] if e["key"]}
+    stale = sorted(set(excluded_epics) & shown, key=issue_sort_key)
+    if stale:
+        raise ValueError(f"{week} 的 metrics.json 還列著 config/excluded.json 排除的 epic：{'、'.join(stale)}，先跑 metrics {week} 重算")
+
 def cmd_finalize(args) -> None:
     week = args.week
     folder = week_dir(week)
     snapshot = read_json(folder / "snapshot.json")
     metrics = read_json(folder / "metrics.json")
     narrative = read_json(folder / "narrative.json")
-    validate(narrative, metrics, {i["key"] for i in snapshot["issues"]})
+    # 可引用的卡號跟 metrics 同一個範圍：被整棵排除的卡不能經由文字回到公開頁面
+    _, epics, issues, _ = excluded_view(snapshot, fresh_fetch=False)
+    refuse_stale_metrics(week, metrics, epics)
+    validate(narrative, metrics, {i["key"] for i in issues})
 
     reports = SITE / "reports"
     weeks = sorted({p.stem for p in reports.glob("*.html") if WEEK_ID.fullmatch(p.stem)} | {week}, reverse=True)
+    # 首頁永遠是最新一期；補建舊的一期時也重繪，歷史清單才會多出那一期。重繪用的那份 metrics 也要檢查，寫檔前一起擋
+    latest = weeks[0]
+    index_metrics, index_narrative = metrics, narrative
+    if latest != week:
+        index_metrics = read_json(week_dir(latest) / "metrics.json")
+        index_narrative = read_json(week_dir(latest) / "narrative.json")
+        refuse_stale_metrics(latest, index_metrics, epics)
     reports.mkdir(parents=True, exist_ok=True)
     (reports / f"{week}.html").write_text(render(metrics, narrative, weeks, in_reports_dir=True), encoding="utf-8")
-    # 首頁永遠是最新一期；補建舊的一期時也重繪，歷史清單才會多出那一期
-    latest = weeks[0]
-    if latest != week:
-        metrics = read_json(week_dir(latest) / "metrics.json")
-        narrative = read_json(week_dir(latest) / "narrative.json")
-    (SITE / "index.html").write_text(render(metrics, narrative, weeks, in_reports_dir=False), encoding="utf-8")
+    (SITE / "index.html").write_text(render(index_metrics, index_narrative, weeks, in_reports_dir=False), encoding="utf-8")
     print(f"已更新 site/reports/{week}.html，site/index.html 為最新一期 {latest}", file=sys.stderr)
 
 

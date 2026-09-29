@@ -285,11 +285,11 @@ class ExcludedEpicTest(unittest.TestCase):
         ]
 
     def test_the_whole_tree_is_dropped(self):
-        kept, _ = drop_excluded_epics(self.admin_issues(), self.EXCLUDED, PERIOD)
+        kept, _ = drop_excluded_epics(self.admin_issues(), self.EXCLUDED, PERIOD, allow_missing=False)
         self.assertEqual([i["key"] for i in kept], [i["key"] for i in base_issues()])
 
     def test_dropped_tree_leaves_no_trace_in_the_numbers(self):
-        kept, checks = drop_excluded_epics(self.admin_issues(), self.EXCLUDED, PERIOD)
+        kept, checks = drop_excluded_epics(self.admin_issues(), self.EXCLUDED, PERIOD, allow_missing=False)
         m = compute(snapshot(kept), PERIOD, ["資料組", "產品組"], None, {}, checks, cumulative_tokens=None, excluded={})
         without = run(base_issues())
         for part in ("totals", "epics", "owners", "units", "completed", "in_progress", "cumulative", "people"):
@@ -297,24 +297,39 @@ class ExcludedEpicTest(unittest.TestCase):
                 self.assertEqual(m[part], without[part])
 
     def test_completion_this_week_is_listed_once_with_its_reason(self):
-        _, checks = drop_excluded_epics(self.admin_issues(), self.EXCLUDED, PERIOD)
+        _, checks = drop_excluded_epics(self.admin_issues(), self.EXCLUDED, PERIOD, allow_missing=False)
         # CS-31、CS-32 本週完成；CS-33 上週完成、CS-34 是 Kick off，都不算
         self.assertEqual(checks, [{"kind": "excluded_epic", "key": "CS-30",
                                    "message": "依 config/excluded.json 整個 epic 不列入週報，本週完成的 2 張不算：行政作業"}])
 
     def test_no_completion_this_week_lists_nothing(self):
         issues = [i for i in self.admin_issues() if i["key"] not in ("CS-31", "CS-32")]
-        self.assertEqual(drop_excluded_epics(issues, self.EXCLUDED, PERIOD)[1], [])
+        self.assertEqual(drop_excluded_epics(issues, self.EXCLUDED, PERIOD, allow_missing=False)[1], [])
 
     def test_listing_a_non_epic_is_an_error_not_a_silent_no_op(self):
         for key in ("CS-2", "CS-3", "CS-34"):
             with self.subTest(key=key):
                 with self.assertRaisesRegex(ValueError, key):
-                    drop_excluded_epics(self.admin_issues(), {key: "誤列"}, PERIOD)
+                    drop_excluded_epics(self.admin_issues(), {key: "誤列"}, PERIOD, allow_missing=False)
 
-    def test_key_not_in_snapshot_is_allowed(self):
-        # 重算舊期時 epic 還不存在是正常的，不擋也不列
-        self.assertEqual(drop_excluded_epics(base_issues(), self.EXCLUDED, PERIOD), (base_issues(), []))
+    def test_key_not_in_snapshot_is_allowed_only_when_not_freshly_fetched(self):
+        # 重算與 finalize：epic 可能比那一期的 snapshot 晚建，不擋也不列
+        self.assertEqual(drop_excluded_epics(base_issues(), self.EXCLUDED, PERIOD, allow_missing=True), (base_issues(), []))
+        # prepare 剛抓完 Jira 還找不到：卡號打錯，或 epic 被刪、搬走。放行的話整個專案會照樣上週報，所以直接失敗
+        with self.assertRaisesRegex(ValueError, "CS-30"):
+            drop_excluded_epics(base_issues(), self.EXCLUDED, PERIOD, allow_missing=False)
+
+    def test_broken_parent_chain_is_an_error_when_something_is_excluded(self):
+        # CS-32 的父卡 CS-31 不在 snapshot：無法判斷 CS-32 是不是 CS-30 底下的，放行就可能把行政作業的卡算回去
+        issues = [i for i in self.admin_issues() if i["key"] != "CS-31"]
+        for allow_missing in (False, True):
+            with self.subTest(allow_missing=allow_missing):
+                with self.assertRaisesRegex(ValueError, "CS-32.*CS-31"):
+                    drop_excluded_epics(issues, self.EXCLUDED, PERIOD, allow_missing=allow_missing)
+
+    def test_broken_parent_chain_is_left_to_the_usual_check_when_nothing_is_excluded(self):
+        issues = [i for i in self.admin_issues() if i["key"] != "CS-31"]
+        self.assertEqual(drop_excluded_epics(issues, {}, PERIOD, allow_missing=False), (issues, []))
 
 
 class KickoffByEpicTest(unittest.TestCase):

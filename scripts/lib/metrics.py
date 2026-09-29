@@ -126,16 +126,22 @@ def _progress(group_leaves: list, is_done=_done) -> dict:
     }
 
 
-def drop_excluded_epics(issues: list, excluded_epics: dict, period) -> tuple:
+def drop_excluded_epics(issues: list, excluded_epics: dict, period, *, allow_missing: bool) -> tuple:
     """回傳 (留下的卡, checks)。excluded_epics 是 {epic 卡號: 理由}，epic 本身與底下所有卡（一般卡、子任務、Kick off）都移出。
     要在 Kick off 鎖定與 compute 之前呼叫：只在 compute 裡扣掉的話，Kick off 照樣會被鎖定、epic 照樣列進資料檢查。
-    本期有一般卡完成的 epic 在資料待補列一行帶理由，讓人知道有完成卡被拿掉；沒有就不列，不每週重複。"""
+    本期有一般卡完成的 epic 在資料待補列一行帶理由，讓人知道有完成卡被拿掉；沒有就不列，不每週重複。
+    allow_missing 只在 prepare 剛抓完 Jira 時為 False：那時找不到就是卡號打錯或 epic 不見了；
+    重算與 finalize 為 True，epic 可能比那一期的 snapshot 晚建。"""
+    if not excluded_epics:
+        return list(issues), []
     by_key = {i["key"]: i for i in issues}
     # 列了非 epic 的卡號，整棵移出等於只移出那張卡跟它的子卡，看起來卻像排除了一個專案，所以直接失敗。
-    # 卡號不在 snapshot 放行：重算舊期時那個 epic 可能還不存在。
     not_epic = sorted((k for k in excluded_epics if k in by_key and by_key[k]["level"] != EPIC_LEVEL), key=issue_sort_key)
     if not_epic:
         raise ValueError(f"config/excluded.json 的 epics 只能列 epic，這些不是：{'、'.join(not_epic)}")
+    missing = sorted((k for k in excluded_epics if k not in by_key), key=issue_sort_key)
+    if missing and not allow_missing:
+        raise ValueError(f"config/excluded.json 的 epics 在這一期的 snapshot 裡找不到：{'、'.join(missing)}（卡號打錯，或 epic 被刪除、搬到別的專案）")
 
     def excluded_root(issue: dict):
         seen = set()
@@ -146,6 +152,10 @@ def drop_excluded_epics(issues: list, excluded_epics: dict, period) -> tuple:
             if current["key"] in seen:
                 raise ValueError(f"父系關係有循環：{issue['key']}")
             seen.add(current["key"])
+            if current["parent"] and current["parent"] not in by_key:
+                # 父鏈斷在 snapshot 外，無法判斷這張卡是不是被排除的 epic 底下的；放行就可能把排除的卡算回去
+                raise ValueError(f"{issue['key']} 的父系 {current['parent']} 不在 snapshot 裡，無法判斷它是否屬於"
+                                 f" config/excluded.json 排除的 epic（{'、'.join(sorted(excluded_epics, key=issue_sort_key))}）")
             current = by_key.get(current["parent"]) if current["parent"] else None
         return None
 
