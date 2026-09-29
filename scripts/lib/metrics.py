@@ -338,6 +338,8 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
                 "completed_keys": completed_keys,
                 "hours": _round(sum(l["points"] or 0 for l in group_week_leaves)),
                 "tokens": _token_sum(([epic["key"]] if epic else []) + [i["key"] for i in members], tokens),
+                # 專案層的交付數由程式算：narrative 只能引用程式算好的數字，專案有子任務時完成張數不等於交付數
+                "deliverables": len(deliveries),
                 "deliveries": deliveries,
             },
             "kickoff": kickoff,

@@ -1258,6 +1258,7 @@
       "week": {
         "completed_count": 0,
         "completed_keys": [],
+        "deliverables": 0,
         "deliveries": [],
         "hours": 0.0,
         "tokens": null
@@ -1314,6 +1315,7 @@
           "FDEPROJECT-127",
           "FDEPROJECT-128"
         ],
+        "deliverables": 16,
         "deliveries": [
           {
             "hours": 0.0,
@@ -1469,6 +1471,7 @@
       "week": {
         "completed_count": 0,
         "completed_keys": [],
+        "deliverables": 0,
         "deliveries": [],
         "hours": 0.0,
         "tokens": null
@@ -1508,6 +1511,7 @@
       "week": {
         "completed_count": 0,
         "completed_keys": [],
+        "deliverables": 0,
         "deliveries": [],
         "hours": 0.0,
         "tokens": null
@@ -1557,6 +1561,7 @@
           "FDEPROJECT-87",
           "FDEPROJECT-88"
         ],
+        "deliverables": 9,
         "deliveries": [
           {
             "hours": 0.5,
@@ -1679,6 +1684,7 @@
           "FDEPROJECT-96",
           "FDEPROJECT-97"
         ],
+        "deliverables": 9,
         "deliveries": [
           {
             "hours": 0.5,
@@ -1794,6 +1800,7 @@
           "FDEPROJECT-112",
           "FDEPROJECT-113"
         ],
+        "deliverables": 2,
         "deliveries": [
           {
             "hours": 0.5,

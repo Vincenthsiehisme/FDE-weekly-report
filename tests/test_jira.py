@@ -1,3 +1,4 @@
+import base64
 import http.client
 import io
 import tempfile
@@ -125,7 +126,8 @@ class VerifyTest(unittest.TestCase):
         request = seen[0]
         self.assertEqual(request.full_url, "https://example.atlassian.net/rest/api/3/myself")
         self.assertEqual(request.get_method(), "GET")
-        self.assertTrue(request.get_header("Authorization").startswith("Basic "))
+        expected = "Basic " + base64.b64encode(f"{CREDS['JIRA_EMAIL']}:{CREDS['JIRA_API_TOKEN']}".encode()).decode()
+        self.assertEqual(request.get_header("Authorization"), expected)
 
     def test_401_without_headers_is_still_a_credential_error(self):
         err = urllib.error.HTTPError("https://example.atlassian.net/rest/api/3/myself", 401, "err", None, io.BytesIO(b"{}"))

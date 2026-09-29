@@ -3,7 +3,7 @@ from datetime import date
 
 from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 from lib.metrics import compute
-from lib.narrative import NarrativeError, validate
+from lib.narrative import NarrativeError, allowed_numbers, validate
 from lib.period import period_ending
 
 ISSUES = [
@@ -28,8 +28,9 @@ class ProgramNumbersOnlyTest(unittest.TestCase):
         issue("CS-1", level=1, status="doing", summary="地接社資料彙整"),
         issue("CS-2", level=0, parent="CS-1", status="done", points=1.5, resolved=IN_WEEK),
         issue("CS-3", level=0, parent="CS-1", status="done", points=4.0, resolved=LAST_WEEK),  # 累計多 1 張、4h
-        issue("CS-4", level=0, parent="CS-1", status="todo", points=7.0),                       # 進度總量 12.5h
+        issue("CS-4", level=0, parent="CS-1", status="todo", points=7.0),
         issue("CS-5", level=0, parent="CS-1", status="done", points=9.0, resolved=IN_WEEK, moved_in="2026-09-18T07:00:00+00:00"),  # 改組前
+        issue("CS-6", level=0, parent="CS-1", status="doing", points=6.0, assignee="Amy"),       # 進行中
     ]
 
     def setUp(self):
@@ -42,14 +43,37 @@ class ProgramNumbersOnlyTest(unittest.TestCase):
     def test_this_week_numbers_pass(self):
         self.check("[地接社資料彙整] 完成 1 張，本週 1.5h")
 
-    def test_cumulative_progress_and_migrated_numbers_are_rejected(self):
+    def test_cumulative_progress_migrated_and_in_progress_numbers_are_rejected(self):
+        # 案例裡的數字一律從程式算出的 metrics 讀，不手寫（先前手寫的「進度 12.5h」算錯，整條案例沒守到東西）
         m = self.metrics
-        self.assertEqual(m["cumulative"]["totals"]["completed"], 2)
-        self.assertEqual(m["epics"][0]["progress"]["done_cards"], 3)
-        for text, number in (("累計完成 2 張", "2"), ("累計 5.5h", "5.5"), ("進度 3 張", "3"),
-                             ("進度 12.5h", "12.5"), ("改組前 9h", "9")):
-            with self.assertRaisesRegex(NarrativeError, f"本週數字以外的數字 {number}"):
-                self.check(text)
+        epic = m["epics"][0]
+        cases = {
+            "累計完成張數": m["cumulative"]["totals"]["completed"],
+            "累計工時": m["cumulative"]["totals"]["hours"],
+            "進度完成張數": epic["progress"]["done_cards"],
+            "進度總工時": epic["progress"]["total_points"],
+            "進度百分比": epic["progress"]["percent"],
+            "改組前工時": m["migrated"]["week"][0]["hours"],
+            "進行中工時": next(r["hours"] for r in m["in_progress"] if r["key"] == "CS-6"),
+        }
+        allowed = allowed_numbers(m)
+        for label, value in cases.items():
+            self.assertNotIn(round(float(value), 2), allowed, f"{label} {value} 剛好等於某個本週數字，案例守不到東西")
+            with self.assertRaisesRegex(NarrativeError, "本週數字以外的數字"):
+                self.check(f"{label} {value:g}")
+
+    def test_project_deliverables_come_from_the_program(self):
+        # 專案有子任務時，交付數不等於完成張數；專案層的交付數要有程式算好的值才寫得出來
+        issues = [issue("CS-1", level=1, status="doing"),
+                  issue("CS-2", level=0, parent="CS-1", status="done", resolved=IN_WEEK),
+                  issue("CS-3", level=-1, parent="CS-2", status="done", points=1.0, resolved=IN_WEEK),
+                  issue("CS-4", level=-1, parent="CS-2", status="done", points=2.0, resolved=IN_WEEK),
+                  issue("CS-5", level=0, parent="CS-1", status="done", points=0.5, resolved=IN_WEEK)]
+        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={})
+        week = m["epics"][0]["week"]
+        self.assertEqual((week["completed_count"], week["deliverables"]), (4, 2))
+        validate({"highlights": [f"完成 {week['completed_count']} 張、交付 {week['deliverables']} 項"],
+                  "epic_results": {"CS-1": f"交付 {week['deliverables']} 項"}}, m, {i["key"] for i in issues})
 
 
 class NarrativeTest(unittest.TestCase):
