@@ -53,87 +53,82 @@
     {
       "key": "FDEPROJECT-4",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-74",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-100",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-101",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-102",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-103",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-104",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-105",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-106",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-107",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-123",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-124",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-125",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-126",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-127",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-128",
       "kind": "unestimated",
-      "message": "本週完成但沒有估點，Hours 以 0 計"
-    },
-    {
-      "key": "CS-7",
-      "kind": "kickoff_missing",
-      "message": "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"
+      "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
     },
     {
       "key": "FDEPROJECT-72",
@@ -565,54 +560,6 @@
         "project": "CS-25 歐洲地接社-房產品資料彙整",
         "root": "CS-5",
         "summary": "地接社飯店資料格式調查（Agent Workflow 前置分析）",
-        "tokens": null,
-        "week": "2026-W39"
-      },
-      {
-        "group": "CS-7",
-        "hours": null,
-        "key": "CS-9",
-        "leaf": true,
-        "owner": "hubertwang",
-        "project": "CS-7 開工確認",
-        "root": "CS-4",
-        "summary": "確認公司信箱開通",
-        "tokens": null,
-        "week": "2026-W39"
-      },
-      {
-        "group": "CS-7",
-        "hours": null,
-        "key": "CS-12",
-        "leaf": true,
-        "owner": "hubertwang",
-        "project": "CS-7 開工確認",
-        "root": "CS-4",
-        "summary": "Jira 登入與 CS/202 board 確認",
-        "tokens": null,
-        "week": "2026-W39"
-      },
-      {
-        "group": "CS-7",
-        "hours": null,
-        "key": "CS-13",
-        "leaf": true,
-        "owner": "hubertwang",
-        "project": "CS-7 開工確認",
-        "root": "CS-4",
-        "summary": "FortiClient 安裝、註冊與 VPN 連線",
-        "tokens": null,
-        "week": "2026-W39"
-      },
-      {
-        "group": "CS-7",
-        "hours": null,
-        "key": "CS-14",
-        "leaf": true,
-        "owner": "hubertwang",
-        "project": "CS-7 開工確認",
-        "root": "CS-4",
-        "summary": "Teams 登入確認",
         "tokens": null,
         "week": "2026-W39"
       },
@@ -1783,26 +1730,6 @@
     ],
     "epics": [
       {
-        "completed": 4,
-        "deliverables": 1,
-        "due": null,
-        "hours": 0.0,
-        "id": "CS-7",
-        "key": "CS-7",
-        "owner": "未指派",
-        "progress": {
-          "done_cards": 4,
-          "done_points": 0.0,
-          "percent": null,
-          "total_cards": 12,
-          "total_points": 0.0,
-          "unestimated_cards": 12
-        },
-        "status": "On Track",
-        "summary": "開工確認",
-        "tokens": null
-      },
-      {
         "completed": 9,
         "deliverables": 2,
         "due": null,
@@ -1945,12 +1872,12 @@
     ],
     "since": "2026-08-05",
     "totals": {
-      "completed": 102,
-      "deliverables": 92,
+      "completed": 98,
+      "deliverables": 91,
       "hours": 45.5,
-      "projects": 8,
+      "projects": 7,
       "tokens": null,
-      "unestimated_completed": 50
+      "unestimated_completed": 46
     },
     "weeks": [
       {
@@ -1960,8 +1887,8 @@
         "week": "2026-W40"
       },
       {
-        "completed": 22,
-        "deliverables": 12,
+        "completed": 18,
+        "deliverables": 11,
         "hours": 11.5,
         "week": "2026-W39"
       },
@@ -2004,32 +1931,6 @@
     ]
   },
   "epics": [
-    {
-      "active": false,
-      "due": null,
-      "id": "CS-7",
-      "key": "CS-7",
-      "kickoff": null,
-      "owner": "未指派",
-      "progress": {
-        "done_cards": 4,
-        "done_points": 0.0,
-        "percent": null,
-        "total_cards": 12,
-        "total_points": 0.0,
-        "unestimated_cards": 12
-      },
-      "project": "CS",
-      "status": "On Track",
-      "summary": "開工確認",
-      "week": {
-        "completed_count": 0,
-        "completed_keys": [],
-        "deliveries": [],
-        "hours": 0.0,
-        "tokens": null
-      }
-    },
     {
       "active": false,
       "due": null,
@@ -2627,97 +2528,6 @@
   "in_progress": [
     {
       "current_state": "進行中",
-      "group": "CS-7",
-      "hours": null,
-      "key": "CS-1",
-      "leaf": true,
-      "next": null,
-      "owner": "hubertwang",
-      "project": "CS-7 開工確認",
-      "root": "CS-1",
-      "summary": "確認開發環境",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中，12 天未更新",
-      "group": "CS-7",
-      "hours": null,
-      "key": "CS-2",
-      "leaf": true,
-      "next": null,
-      "owner": "Vincent Hsieh",
-      "project": "CS-7 開工確認",
-      "root": "CS-2",
-      "summary": "提供 onboarding checklist",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中，子任務 4/7 完成",
-      "group": "CS-7",
-      "hours": null,
-      "key": "CS-4",
-      "leaf": false,
-      "next": "CS-10 確認共用信箱 lionitcowork 開通",
-      "owner": "hubertwang",
-      "project": "CS-7 開工確認",
-      "root": "CS-4",
-      "summary": "IT Onboarding — 帳號與開發環境設定",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中，8 天未更新",
-      "group": "CS-7",
-      "hours": null,
-      "key": "CS-6",
-      "leaf": true,
-      "next": null,
-      "owner": "Vincent Hsieh",
-      "project": "CS-7 開工確認",
-      "root": "CS-6",
-      "summary": "確認共用信箱啟用狀態",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "CS-7",
-      "hours": null,
-      "key": "CS-8",
-      "leaf": true,
-      "next": null,
-      "owner": "Vincent Hsieh",
-      "project": "CS-7 開工確認",
-      "root": "CS-8",
-      "summary": "claude code (enterprise)申請",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中，7 天未更新",
-      "group": "CS-7",
-      "hours": null,
-      "key": "CS-10",
-      "leaf": true,
-      "next": null,
-      "owner": "hubertwang",
-      "project": "CS-7 開工確認",
-      "root": "CS-4",
-      "summary": "確認共用信箱 lionitcowork 開通",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中，11 天未更新",
-      "group": "CS-7",
-      "hours": null,
-      "key": "CS-11",
-      "leaf": true,
-      "next": null,
-      "owner": "hubertwang",
-      "project": "CS-7 開工確認",
-      "root": "CS-4",
-      "summary": "註冊 GitHub 帳號並掛載 Org",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
       "group": "FDEPROJECT-71",
       "hours": 0.5,
       "key": "FDEPROJECT-12",
@@ -3037,15 +2847,12 @@
         "tokens": null
       },
       "in_progress": {
-        "count": 4,
+        "count": 1,
         "hours": 0.5,
         "keys": [
-          "CS-2",
-          "CS-6",
-          "CS-8",
           "FDEPROJECT-99"
         ],
-        "unestimated": 3
+        "unestimated": 0
       },
       "name": "Vincent Hsieh",
       "week": {
@@ -3104,13 +2911,6 @@
       "cumulative": {
         "by_project": [
           {
-            "hours": 0.0,
-            "id": "CS-7",
-            "key": "CS-7",
-            "summary": "開工確認",
-            "unestimated": 4
-          },
-          {
             "hours": 2.0,
             "id": "CS-25",
             "key": "CS-25",
@@ -3118,27 +2918,19 @@
             "unestimated": 0
           }
         ],
-        "completed": 5,
+        "completed": 1,
         "completed_keys": [
-          "CS-5",
-          "CS-9",
-          "CS-12",
-          "CS-13",
-          "CS-14"
+          "CS-5"
         ],
-        "deliverables": 2,
+        "deliverables": 1,
         "hours": 2.0,
         "tokens": null
       },
       "in_progress": {
-        "count": 3,
+        "count": 0,
         "hours": 0.0,
-        "keys": [
-          "CS-1",
-          "CS-10",
-          "CS-11"
-        ],
-        "unestimated": 3
+        "keys": [],
+        "unestimated": 0
       },
       "name": "hubertwang",
       "week": {
