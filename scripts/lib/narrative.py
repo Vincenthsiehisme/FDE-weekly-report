@@ -6,8 +6,10 @@ AI 只寫兩種東西：
 
 擋兩種編造：
   1. 引用了 snapshot 裡不存在、或被 config/excluded.json 整棵排除的卡號
-  2. 出現 metrics 裡沒有的數字（卡號裡的數字不算）
-數字比對是刻意的嚴格：AI 想寫「完成 62%」，62 就必須是 metrics 算出來的值。
+  2. 出現程式算好的本週數字以外的數字（卡號裡的數字不算）
+任何數值都必須由程式算，不得由 AI 算或挑（2026-09-30 使用者裁）：只放行本週的數字（totals、本週有交付的
+專案的 week、本週完成卡、人的本週、支援單位、負責人）。累計、進度、改組前的數字雖然也在 metrics 裡，
+寫進本週文字就是挑錯欄位：W40 的「累計完成 61 張」其實是含改組前卡的 progress。
 """
 from __future__ import annotations
 
@@ -58,8 +60,18 @@ def _numbers_in(value, out: set):
 
 
 def allowed_numbers(metrics: dict) -> set:
+    """程式算好的本週數字。cumulative、epics[].progress、migrated、in_progress 刻意不收。"""
     out = set()
-    _numbers_in(metrics, out)
+    _numbers_in(metrics["totals"], out)
+    for epic in metrics["epics"]:
+        if epic["active"]:
+            _numbers_in(epic["week"], out)
+    for row in metrics["completed"]:
+        _numbers_in({"hours": row["hours"], "tokens": row["tokens"]}, out)
+    for person in metrics["people"]:
+        _numbers_in(person["week"], out)
+    _numbers_in(metrics["units"], out)
+    _numbers_in(metrics["owners"], out)
     return out
 
 
@@ -99,6 +111,6 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
             errors.append(f"{where} 用了中文數字「{quantity}」，數量一律寫阿拉伯數字")
         for number in NUMBER.findall(ISSUE_KEY.sub(" ", text)):
             if round(float(number.replace(",", "")), 2) not in allowed:
-                errors.append(f"{where} 出現 metrics 裡沒有的數字 {number}")
+                errors.append(f"{where} 出現程式算好的本週數字以外的數字 {number}（累計、進度、改組前的數字不能寫）")
     if errors:
         raise NarrativeError("narrative.json 驗證失敗：\n- " + "\n- ".join(errors))
