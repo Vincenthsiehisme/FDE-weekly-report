@@ -191,13 +191,16 @@ def publish_week(snapshot: dict, *, fresh_fetch: bool) -> dict:
 def cmd_prepare(args) -> None:
     now = datetime.now(TZ)
     period = period_ending(date.fromisoformat(args.week_ending)) if args.week_ending else period_for(now)
+    client = JiraClient(load_credentials())
+    # 等期間結束前先驗一次憑證：錯的話現在就停，不要等到 00:00:30 才發現（fetch_snapshot 抓之前會再驗一次）
+    client.verify()
     if args.wait_for_period_end:
         seconds = wait_for_end(period, now)
         if seconds:
             print(f"等 {seconds} 秒，到 {period.week_id} 期間結束後才抓資料", file=sys.stderr)
             time.sleep(seconds)
             now = datetime.now(TZ)
-    snapshot = fetch_snapshot(JiraClient(load_credentials()), period, now)
+    snapshot = fetch_snapshot(client, period, now)
     metrics = publish_week(snapshot, fresh_fetch=True)
     t = metrics["totals"]
     print(f"snapshot：{sum(snapshot['counts'].values())} 張卡 {snapshot['counts']}", file=sys.stderr)

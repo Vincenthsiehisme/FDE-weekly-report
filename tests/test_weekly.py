@@ -8,6 +8,7 @@ from unittest import mock
 
 from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 import weekly
+from lib.jira import CredentialError
 from lib.narrative import NarrativeError
 
 
@@ -186,6 +187,18 @@ class ExcludedConfigTest(AtomicWriteTest):
             with self.assertRaisesRegex(ValueError, "CS-99"):
                 weekly.main(["prepare", "--week-ending", "2026-09-22"])
         self.assertFalse((self.root / "data").exists())
+
+    def test_prepare_checks_credentials_before_waiting_for_the_period_end(self):
+        # 憑證錯就在 23:59 開跑時停，不要等到 00:00:30 才發現
+        client = mock.MagicMock()
+        client.verify.side_effect = CredentialError("Jira 不接受這組憑證")
+        with mock.patch.object(weekly, "load_credentials"), mock.patch.object(weekly, "JiraClient", return_value=client), \
+                mock.patch.object(weekly, "wait_for_end", return_value=90), mock.patch.object(weekly.time, "sleep") as sleep, \
+                mock.patch.object(weekly, "fetch_snapshot") as fetch:
+            with self.assertRaises(CredentialError):
+                weekly.main(["prepare", "--week-ending", "2026-09-22", "--wait-for-period-end"])
+        sleep.assert_not_called()
+        fetch.assert_not_called()
 
     def test_publish_week_must_be_told_whether_it_is_a_fresh_fetch(self):
         # 沒有預設值：新的呼叫端忘了講，不能安靜變成寬鬆的重算

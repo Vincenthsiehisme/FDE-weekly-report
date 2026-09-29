@@ -86,7 +86,8 @@ class JiraClient:
                 response.read()
         except urllib.error.HTTPError as err:
             if err.code == 401:
-                reason = err.headers.get("X-Seraph-LoginReason") or "無"
+                # 真的 urlopen 一定帶 headers；手動建的 HTTPError 可以是 None，不能讓防呆本身炸成 AttributeError
+                reason = (err.headers or {}).get("X-Seraph-LoginReason") or "無"
                 raise CredentialError(
                     f"Jira 不接受這組憑證（GET /rest/api/3/myself 回 401，X-Seraph-LoginReason：{reason}）："
                     "檢查 JIRA_EMAIL 與 JIRA_API_TOKEN，token 是否完整、過期或被撤銷") from err

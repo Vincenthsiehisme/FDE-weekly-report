@@ -202,6 +202,11 @@ class BreakpointRenderTest(unittest.TestCase):
         self.assertIn("<strong class=\"\">1.5h</strong>", week)  # 實際工時只有 CS-2 的 1.5h，搬來的 4h 不算
         self.assertNotIn("CS-7", html[html.index('<section id="checks"'):] if '<section id="checks"' in html else "")
 
+    def test_dates_are_shown_in_taipei_time(self):
+        # 09-18 17:00Z 是台北 09-19 01:00：搬入日要寫 09/19
+        issues = ISSUES + [issue("CS-9", level=0, parent="CS-1", status="done", resolved=IN_WEEK, moved_in="2026-09-18T17:00:00+00:00")]
+        self.assertIn("結案 09/18 · 搬入 09/19", panel(page(metrics=metrics_for(issues)), "week"))
+
     def test_no_breakpoint_without_migrated_cards(self):
         self.assertNotIn('class="breakpoint"', page())
 
