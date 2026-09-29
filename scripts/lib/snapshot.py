@@ -16,7 +16,7 @@ FIELDS = [
     "resolutiondate", POINTS_FIELD, "duedate", "updated", "project",
 ]
 EPIC_LEVEL = 1  # issuetype.hierarchyLevel：epic 1、一般卡 0、子任務 -1
-# 2：完成的工作卡多了 moved_in（從其他專案搬進 FDEPROJECT／CS 的時間），metrics 用它判斷搬入前已完成（斷點）
+# 2：完成的工作卡多了 moved_in（從其他專案搬進 FDEPROJECT／CS 的時間），metrics 用它判斷搬入前已完成（改組前）
 SCHEMA = 2
 
 
@@ -83,7 +83,7 @@ def fetch_snapshot(client, period, fetched_at: datetime) -> dict:
     client.verify()
     raw_issues = client.search(f"{scope} ORDER BY key", FIELDS)
     issues = [normalize(i) for i in raw_issues]
-    # 搬入時間只查完成的工作卡：斷點只管「搬進來時已經完成」的卡，沒完成的搬進來之後才會結案，照常算
+    # 搬入時間只查完成的工作卡：改組前只管「搬進來時已經完成」的卡，沒完成的搬進來之後才會結案，照常算
     # 我們的專案 id 直接問 Jira，不從查到的卡反推：某個專案剛好沒有卡時，從它搬過來的卡會被當成外部搬入
     project_ids = set(client.project_ids(PROJECTS).values())
     done_work = {i["id"]: n for i, n in zip(raw_issues, issues) if n["status_category"] == "done" and n["level"] < EPIC_LEVEL}

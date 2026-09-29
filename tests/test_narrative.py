@@ -1,7 +1,7 @@
 import unittest
 from datetime import date
 
-from helpers import IN_WEEK, issue, snapshot
+from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 from lib.metrics import compute
 from lib.narrative import NarrativeError, validate
 from lib.period import period_ending
@@ -22,6 +22,36 @@ def narrative(highlights=None, results=None):
     }
 
 
+class ProgramNumbersOnlyTest(unittest.TestCase):
+    """任何數值都必須由程式算、只放行本週數字（2026-09-30 使用者裁）。W40 寫了「累計完成 61 張」，61 是 progress。"""
+    ISSUES = [
+        issue("CS-1", level=1, status="doing", summary="地接社資料彙整"),
+        issue("CS-2", level=0, parent="CS-1", status="done", points=1.5, resolved=IN_WEEK),
+        issue("CS-3", level=0, parent="CS-1", status="done", points=4.0, resolved=LAST_WEEK),  # 累計多 1 張、4h
+        issue("CS-4", level=0, parent="CS-1", status="todo", points=7.0),                       # 進度總量 12.5h
+        issue("CS-5", level=0, parent="CS-1", status="done", points=9.0, resolved=IN_WEEK, moved_in="2026-09-18T07:00:00+00:00"),  # 改組前
+    ]
+
+    def setUp(self):
+        self.metrics = compute(snapshot(self.ISSUES), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={})
+        self.keys = {i["key"] for i in self.ISSUES}
+
+    def check(self, text):
+        validate({"highlights": [text], "epic_results": {"CS-1": "完成 1 項"}}, self.metrics, self.keys)
+
+    def test_this_week_numbers_pass(self):
+        self.check("[地接社資料彙整] 完成 1 張，本週 1.5h")
+
+    def test_cumulative_progress_and_migrated_numbers_are_rejected(self):
+        m = self.metrics
+        self.assertEqual(m["cumulative"]["totals"]["completed"], 2)
+        self.assertEqual(m["epics"][0]["progress"]["done_cards"], 3)
+        for text, number in (("累計完成 2 張", "2"), ("累計 5.5h", "5.5"), ("進度 3 張", "3"),
+                             ("進度 12.5h", "12.5"), ("改組前 9h", "9")):
+            with self.assertRaisesRegex(NarrativeError, f"本週數字以外的數字 {number}"):
+                self.check(text)
+
+
 class NarrativeTest(unittest.TestCase):
     def test_valid(self):
         validate(narrative(), METRICS, KEYS)
@@ -34,11 +64,11 @@ class NarrativeTest(unittest.TestCase):
             validate(narrative(highlights=["完成 CS-99"]), METRICS, KEYS)
 
     def test_invented_number_rejected(self):
-        with self.assertRaisesRegex(NarrativeError, "沒有的數字 62"):
+        with self.assertRaisesRegex(NarrativeError, "本週數字以外的數字 62"):
             validate(narrative(results={"CS-1": "進度 62%"}), METRICS, KEYS)
 
     def test_thousands_separator_is_one_number(self):
-        with self.assertRaisesRegex(NarrativeError, "沒有的數字 1,000"):
+        with self.assertRaisesRegex(NarrativeError, "本週數字以外的數字 1,000"):
             validate(narrative(results={"CS-1": "投入 1,000 小時"}), METRICS, KEYS)
 
     def test_chinese_numerals_with_a_measure_word_rejected(self):

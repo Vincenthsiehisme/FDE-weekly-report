@@ -233,7 +233,7 @@ class DeliverablesTest(unittest.TestCase):
 
 
 class BreakpointTest(unittest.TestCase):
-    """斷點：搬進來時就已完成的卡靜默不算；搬進來之後才結案的照算（2026-09-30 使用者裁，AC-16）。"""
+    """改組前：搬進來時就已完成的卡靜默不算；搬進來之後才結案的照算（2026-09-30 使用者裁，AC-16）。"""
     MOVED = "2026-09-18T07:00:00+00:00"  # 台北 09-18 15:00，IN_WEEK 是 09-18 04:00
 
     def issues(self):
@@ -263,6 +263,28 @@ class BreakpointTest(unittest.TestCase):
         self.assertEqual([r["key"] for r in m["migrated"]["week"]], ["CS-2"])
         self.assertEqual([(r["key"], r["week"]) for r in m["migrated"]["cumulative"]], [("CS-2", "2026-W39"), ("CS-3", "2026-W38")])
         self.assertEqual(m["migrated"]["week"][0]["moved_in"], self.MOVED)
+
+    def test_resolved_exactly_at_move_is_before_the_move(self):
+        m = run([issue("CS-1", level=1, status="doing"),
+                 issue("CS-2", level=0, parent="CS-1", status="done", resolved=IN_WEEK, moved_in="2026-09-17T20:00:00+00:00")])
+        self.assertEqual([r["key"] for r in m["migrated"]["week"]], ["CS-2"])  # IN_WEEK 09-18 04:00+0800 = 09-17 20:00Z
+
+    def test_comparison_uses_the_same_instant_across_time_zones(self):
+        # 台北 12:00 = UTC 04:00：同一刻算改組前；晚一分鐘結案照算。拿掉時區直接比牆上時間會兩張都算錯
+        m = run([issue("CS-1", level=1, status="doing"),
+                 issue("CS-2", level=0, parent="CS-1", status="done", resolved="2026-09-18T12:00:00.000+0800", moved_in="2026-09-18T04:00:00+00:00"),
+                 issue("CS-3", level=0, parent="CS-1", status="done", resolved="2026-09-18T12:01:00.000+0800", moved_in="2026-09-18T04:00:00+00:00")])
+        self.assertEqual([r["key"] for r in m["migrated"]["week"]], ["CS-2"])
+        self.assertEqual([c["key"] for c in m["completed"]], ["CS-3"])
+
+    def test_excluded_list_wins_over_migrated(self):
+        # 兩邊都命中時以排除清單為準（2026-09-30 使用者裁）：照常列資料檢查，不進改組前清單
+        issues = [issue("CS-1", level=1, status="doing"),
+                  issue("CS-2", level=0, parent="CS-1", status="done", resolved=IN_WEEK, moved_in=self.MOVED)]
+        m = run(issues, excluded={"CS-2": "手動排除"})
+        self.assertEqual(m["migrated"], {"week": [], "cumulative": []})
+        self.assertEqual([c["key"] for c in m["checks"] if c["kind"] == "excluded"], ["CS-2"])
+        self.assertEqual(m["totals"]["completed"], 0)
 
     def test_old_snapshot_without_moved_in_is_refused(self):
         old = snapshot(self.issues())

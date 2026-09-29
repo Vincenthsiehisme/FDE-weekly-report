@@ -113,6 +113,26 @@ class VerifyTest(unittest.TestCase):
         self.assertIn("AUTHENTICATED_FAILED", str(ctx.exception))
         self.assertNotIn("secret-value", str(ctx.exception))
 
+    def test_verify_asks_myself_with_the_credentials(self):
+        seen = []
+
+        def answer(request, timeout):
+            seen.append(request)
+            return mock.MagicMock(**{"__enter__.return_value.read.return_value": b"{}"})
+
+        with mock.patch("urllib.request.urlopen", side_effect=answer):
+            JiraClient(CREDS).verify()
+        request = seen[0]
+        self.assertEqual(request.full_url, "https://example.atlassian.net/rest/api/3/myself")
+        self.assertEqual(request.get_method(), "GET")
+        self.assertTrue(request.get_header("Authorization").startswith("Basic "))
+
+    def test_401_without_headers_is_still_a_credential_error(self):
+        err = urllib.error.HTTPError("https://example.atlassian.net/rest/api/3/myself", 401, "err", None, io.BytesIO(b"{}"))
+        with mock.patch("urllib.request.urlopen", side_effect=err):
+            with self.assertRaisesRegex(CredentialError, "X-Seraph-LoginReason：無"):
+                JiraClient(CREDS).verify()
+
     def test_other_http_errors_stay_jira_errors(self):
         with mock.patch("urllib.request.urlopen", side_effect=http_error(503)):
             with self.assertRaisesRegex(JiraError, "HTTP 503"):
@@ -136,9 +156,17 @@ class ChangelogTest(unittest.TestCase):
         self.assertEqual(sent[1]["nextPageToken"], "p2")
         self.assertEqual(sent[0]["fieldIds"], ["project"])
 
+    def test_more_than_1000_ids_go_in_batches(self):
+        client = JiraClient(CREDS)
+        sent = []
+        client._post = lambda path, body: (sent.append(body), {"issueChangeLogs": [{"issueId": i, "changeHistories": []} for i in body["issueIdsOrKeys"]]})[1]
+        ids = [str(i) for i in range(1001)]
+        self.assertEqual(sorted(client.changelogs(ids, ["project"])), sorted(ids))
+        self.assertEqual([len(b["issueIdsOrKeys"]) for b in sent], [1000, 1])
+
 
 class MovedInTest(unittest.TestCase):
-    """斷點的原始資料：完成的工作卡從其他專案搬進來的時間。"""
+    """改組前的原始資料：完成的工作卡從其他專案搬進來的時間。"""
 
     def snap(self, issues, histories):
         client = FakeClient(issues, [], histories=histories)

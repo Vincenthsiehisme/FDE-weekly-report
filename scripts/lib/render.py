@@ -279,7 +279,7 @@ def _completed_by_delivery(metrics, page) -> str:
     return ("".join(groups) or '<p class="muted">本週沒有完成的卡。</p>') + _breakpoint(metrics["migrated"]["week"], page, with_week=False)
 
 
-BREAKPOINT_LABEL = "改組前"  # 2026-09-30 使用者定名；程式與 metrics 裡叫 migrated／斷點
+BREAKPOINT_LABEL = "改組前"  # 2026-09-30 使用者定名；metrics 的欄位叫 migrated
 BREAKPOINT_NOTE = "以下是改組前在其他專案就已完成、之後才搬進來的卡，只列出，不算進完成卡片、交付與實際工時。"
 
 
