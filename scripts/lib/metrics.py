@@ -3,7 +3,8 @@
 規則（決策正本在 vault 的 jira-weekly-report 專案 index）：
 - 當週完成：狀態類別 done，且 resolutiondate 落在報告期間內。
 - Hours = Story point estimate，只加葉節點。有子卡的卡自己的點數不算，epic 與 Kick off 卡不算。
-  理由：父卡與子卡都估點，兩邊都加會灌水（CS-16 自己 5.0，子任務合計 7.5）。
+  理由：父卡與子卡都有值，兩邊都加會灌水（CS-16 自己 5.0，子任務合計 7.5）。
+  這個欄位由執行人完工後回填實際花費時數（2026-09-30 使用者確認），頁面叫「實際工時」。
 - 專案以 epic 分組，不在任何 epic 底下的卡歸「未歸屬 epic」。
 - 支援單位以 label 分組，只認 config/units.json 白名單裡的 label。
 - Status 只有 Done（epic 已完成）與 On Track。
@@ -129,7 +130,7 @@ def _progress(group_leaves: list, is_done=_done) -> dict:
 def drop_excluded_epics(issues: list, excluded_epics: dict, period, *, allow_missing: bool) -> tuple:
     """回傳 (留下的卡, checks)。excluded_epics 是 {epic 卡號: 理由}，epic 本身與底下所有卡（一般卡、子任務、Kick off）都移出。
     要在 Kick off 鎖定與 compute 之前呼叫：只在 compute 裡扣掉的話，Kick off 照樣會被鎖定、epic 照樣列進資料檢查。
-    本期有一般卡完成的 epic 在資料待補列一行帶理由，讓人知道有完成卡被拿掉；沒有就不列，不每週重複。
+    本期有一般卡完成的 epic 在資料檢查列一行帶理由，讓人知道有完成卡被拿掉；沒有就不列，不每週重複。
     allow_missing 只在 prepare 剛抓完 Jira 時為 False：那時找不到就是卡號打錯或 epic 不見了；
     重算與 finalize 為 True，epic 可能比那一期的 snapshot 晚建。"""
     if not excluded_epics:
@@ -230,7 +231,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
 
     for leaf in week_leaves:
         if leaf["points"] is None:
-            checks.append(_check("unestimated", leaf["key"], "本週完成但沒有估點，Hours 以 0 計"))
+            checks.append(_check("unestimated", leaf["key"], "本週完成但 Story point estimate 沒填，實際工時以 0 計"))
 
     if tokens is not None:
         for key in sorted(tokens, key=issue_sort_key):
@@ -417,7 +418,9 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         "generated_at": snapshot["fetched_at"],
         "totals": {
             "projects": len(active_rows),
-            "deliverables": sum(len(r["week"]["deliveries"]) for r in active_rows),
+            # 跟人、支援單位、累計同一個口徑：本週完成葉節點的交付單位。只加專案列的話，
+            # 所屬 epic 先前已結案的卡不算，同一頁的「交付」就有兩種數字（2026-09-30 Fable 審 PR #8）
+            "deliverables": len({tree.root_of(l)["key"] for l in week_leaves}),
             "completed": len(completed),
             "hours": _round(sum(l["points"] or 0 for l in week_leaves)),
             "tokens": sum(tokens.values()) if tokens is not None else None,
@@ -498,7 +501,7 @@ def _cumulative(tree, period, groups, group_of, leaves, done, done_in_jira, toke
 
 def _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cumulative_tokens) -> list:
     """執行人視角：每個人本週與累計的完成、工時、Token、各專案時數，加上手上進行中的葉節點卡。
-    工時與進行中都只算葉節點（跟 Hours 同一個口徑）；Token 算他名下所有完成卡，Token 是實際用量不是估點，
+    工時與進行中都只算葉節點（跟 Hours 同一個口徑）；Token 算他名下所有完成卡，Token 是用量不是工時，
     父卡與子卡各自記錄不會重複。"""
     def bucket():
         return {"roots": set(), "hours": 0.0, "cards": [], "groups": {}}

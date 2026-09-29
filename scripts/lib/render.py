@@ -3,6 +3,8 @@
 版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者是主管，
 分三個頁籤：持續累積、本週（預設）、團隊。vault 的週報範本只當資訊清單，不照它的節次排。
 Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 沒資料顯示「—」，不顯示 0。
+工時是實際花費時數（2026-09-30 使用者確認：Story point estimate 由執行人完工後回填），頁面一律叫「實際工時」；
+頁尾的名詞定義是每個詞的口徑正本，改算法時同一次改那裡。
 頁籤靠少量 JS 切換，沒有 JS 時三個頁籤全部攤開。
 
 所有文字一律經過 html.escape；數字只從 metrics 來。
@@ -21,6 +23,8 @@ STALE_DAYS = 8
 # 留一小時寬限，週二深夜手動補跑不標暫定
 PROVISIONAL_MARGIN = timedelta(hours=1)
 NO_TOKEN_SOURCE = "尚未接資料來源"
+UNFILLED = "未填工時"
+WEEKDAYS = "一二三四五六日"
 # Decision Needed 刻意不在這裡（使用者 2026-09-23 裁）
 KICKOFF_FIELDS = (
     ("objective", "目標"),
@@ -57,14 +61,18 @@ def fmt_tokens(value) -> str:
 
 
 def fmt_card_hours(row: dict) -> str:
-    """完成卡片的工時：父卡的點數不算（歸子卡），葉節點沒估點寫明，不寫成「—」。"""
+    """完成卡片的工時：父卡自己的數字不算（計在子卡），葉節點沒填寫明，不寫成「—」。"""
     if not row["leaf"]:
-        return "子卡計"
-    return "未估點" if row["hours"] is None else fmt_hours(row["hours"])
+        return "計在子卡"
+    return UNFILLED if row["hours"] is None else fmt_hours(row["hours"])
 
 
 def fmt_date(iso: str) -> str:
     return iso[:10].replace("-", "/")
+
+
+def fmt_day(iso: str) -> str:
+    return f"{fmt_date(iso)}（{WEEKDAYS[datetime.fromisoformat(iso[:10]).weekday()]}）"
 
 
 def fmt_moment(iso: str) -> str:
@@ -102,9 +110,9 @@ def _kpis(tiles: list) -> str:
 
 
 def _resource_tiles(totals: dict, prefix: str) -> list:
-    unestimated = f'{totals["unestimated_completed"]} 張完成卡未估點' if totals["unestimated_completed"] else None
+    unfilled = f'{totals["unestimated_completed"]} 張完成卡{UNFILLED}' if totals["unestimated_completed"] else None
     return [
-        (f"{prefix}預估工時", fmt_hours(totals["hours"]), unestimated),
+        (f"{prefix}實際工時", fmt_hours(totals["hours"]), unfilled),
         (f"{prefix} Token".strip(), fmt_tokens(totals["tokens"]), NO_TOKEN_SOURCE if totals["tokens"] is None else None),
         (f"{prefix}交付", str(totals["deliverables"]), None),
         (f"{prefix}完成卡片", str(totals["completed"]), None),
@@ -127,9 +135,9 @@ def _rows(headers: list, rows: list, empty: str) -> str:
 def _progress(progress: dict) -> str:
     total, done = progress["total_cards"], progress["done_cards"]
     width = round(done / total * 100) if total else 0
-    unestimated = f'，{progress["unestimated_cards"]} 張未估點' if progress["unestimated_cards"] else ""
+    # 工時是完工後回填的實際時數，未完成的卡本來就沒有，所以只寫完成部分的實際工時，不寫「總時數」也不數未填張數
     return (f'<div class="progress"><div class="bar"><span style="width:{width}%"></span></div>'
-            f'<span>{done}/{total} 張完成 · {progress["done_points"]:g}/{progress["total_points"]:g}h 預估{unestimated}</span></div>')
+            f'<span>{done}/{total} 張完成 · 實際工時 {progress["done_points"]:g}h</span></div>')
 
 
 def _kickoff(kickoff, page) -> str:
@@ -196,7 +204,7 @@ def _week_project(epic, narrative, in_progress, page) -> str:
     <article class="card project">
       <div class="card-head">
         <h3>{page.title(epic["key"], epic["summary"])}</h3>
-        <div class="figures"><span><b>{esc(fmt_hours(week["hours"]))}</b> 預估</span><span>Token <b>{esc(fmt_tokens(week["tokens"]))}</b></span>{_pill(epic["status"])}</div>
+        <div class="figures"><span>實際工時 <b>{esc(fmt_hours(week["hours"]))}</b></span><span>Token <b>{esc(fmt_tokens(week["tokens"]))}</b></span>{_pill(epic["status"])}</div>
       </div>
       {meta}
       {_progress(epic["progress"])}
@@ -226,10 +234,10 @@ def _person_name(person: dict) -> str:
 def _people_rows(people: list, scope: str) -> str:
     if scope == "week":
         shown = [p for p in people if p["week"]["completed"] or p["in_progress"]["count"]]
-        headers = ["執行人", "預估工時", "Token", "交付", "進行中"]
+        headers = ["執行人", "實際工時", "Token", "交付", "進行中"]
     else:
         shown = [p for p in people if p["cumulative"]["completed"]]
-        headers = ["執行人", "預估工時", "Token", "交付", "完成卡片"]
+        headers = ["執行人", "實際工時", "Token", "交付", "完成卡片"]
     rows = [("warn-row" if p["name"] == UNASSIGNED_OWNER else "", [_person_name(p)] + _person_cells(p, scope)) for p in shown]
     return _rows(headers, rows, "沒有人有完成或進行中的卡")
 
@@ -272,7 +280,7 @@ def _completed_by_delivery(metrics, page) -> str:
 
 def _units(metrics) -> str:
     rows = [("", [esc(u["unit"]), str(u["deliverables"]), esc(fmt_hours(u["hours"]))]) for u in metrics["units"]]
-    return _rows(["支援單位", "交付", "預估工時"], rows, "本週沒有完成的卡")
+    return _rows(["支援單位", "交付", "實際工時"], rows, "本週沒有完成的卡")
 
 
 def _week_panel(metrics, narrative, page) -> str:
@@ -320,7 +328,7 @@ def _cumulative_panel(metrics, page) -> str:
   <h3>資源</h3>
   {_kpis(_resource_tiles(c["totals"], "累計"))}
   <h3>專案列表</h3>
-  {_rows(["專案", "完成張數", "預估工時", "Token", "目標日"], projects, "還沒有任何專案")}
+  {_rows(["專案", "進度", "實際工時", "Token", "目標日"], projects, "還沒有任何專案")}
   <h3>人</h3>
   {_people_rows(metrics["people"], "cumulative")}
   <h3>完成</h3>
@@ -331,7 +339,7 @@ def _split(by_project: list) -> str:
     parts = []
     for b in by_project:
         label = b["key"] or b["summary"]
-        value = fmt_hours(b["hours"]) if b["hours"] or not b["unestimated"] else "未估點"
+        value = fmt_hours(b["hours"]) if b["hours"] or not b["unestimated"] else UNFILLED
         parts.append(f"{esc(label)} {esc(value)}")
     return " · ".join(parts) or DASH
 
@@ -358,8 +366,8 @@ def _team_panel(metrics, page) -> str:
       <div class="card-head"><h3>{esc(p["name"])}</h3><div class="figures"><span>進行中 <b>{prog["count"]}</b> 張</span></div></div>
       {note}
       <div class="split">
-        <div><span class="label">本週</span><b>{esc(fmt_hours(week["hours"]))}</b> 預估 · Token {esc(fmt_tokens(week["tokens"]))} · 交付 {week["deliverables"]}<p>{_split(week["by_project"])}</p></div>
-        <div><span class="label">累計</span><b>{esc(fmt_hours(cum["hours"]))}</b> 預估 · Token {esc(fmt_tokens(cum["tokens"]))} · 交付 {cum["deliverables"]}<p>{_split(cum["by_project"])}</p></div>
+        <div><span class="label">本週</span>實際工時 <b>{esc(fmt_hours(week["hours"]))}</b> · Token {esc(fmt_tokens(week["tokens"]))} · 交付 {week["deliverables"]}<p>{_split(week["by_project"])}</p></div>
+        <div><span class="label">累計</span>實際工時 <b>{esc(fmt_hours(cum["hours"]))}</b> · Token {esc(fmt_tokens(cum["tokens"]))} · 交付 {cum["deliverables"]}<p>{_split(cum["by_project"])}</p></div>
       </div>
       {lists}
     </article>""")
@@ -375,8 +383,36 @@ def _checks(metrics, page) -> str:
     return f"""
 <section id="checks">
   <details>
-    <summary>資料待補（{len(checks)} 項）</summary>
+    <summary>資料檢查（{len(checks)} 項）</summary>
     <ul class="checks">{items}</ul>
+  </details>
+</section>"""
+
+
+def _glossary(metrics) -> str:
+    """每個詞的口徑。跟 metrics.py 的算法一一對應，改算法時同一次改這裡。"""
+    period = metrics["period"]
+    terms = (
+        ("本週", f'{fmt_day(period["start"])} 00:00 到 {fmt_day(period["week_ending"])} 23:59（UTC+8）。'
+                 "卡片的 Jira 完成時間落在這段期間內，才算本週完成；不是週一到週日。"),
+        ("累計", f'從第一張完成卡起算，到本週結束（{fmt_date(period["week_ending"])}）為止。'),
+        ("完成卡片", "完成的卡片張數，父卡與子任務各算一張。"),
+        ("交付", "完成了沒有子卡的卡，所屬的交付單位數：一般卡本身算一個，子任務歸到它的父卡。"
+                 "父卡在期間內才結、子卡都在更早完成的，不算這一期的交付。"),
+        ("實際工時", "Jira 的 Story point estimate 欄位，由執行人完工後回填花費的時數。"
+                     "只加沒有子卡的卡；有子卡的父卡自己的數字不算，避免重複。"),
+        (UNFILLED, "卡片完成了，Story point estimate 卻是空的；實際工時以 0 計。本週的逐張列在資料檢查，累計只計張數。"),
+        ("進度", "專案底下沒有子卡的卡，算「完成張數／總張數」：本週頁照 Jira 目前狀態，累計頁以本週結束時是否已完成為準。"),
+        ("Done／On Track", "Done 是 epic 在 Jira 已完成；On Track 只表示 epic 還沒完成，不代表進度評估。"),
+        ("不列入的卡", "config/excluded.json 列的卡不算完成卡片、交付、實際工時，專案進度仍照 Jira 狀態算；列的 epic 連同底下所有卡整個不列入週報。"),
+        ("資料檢查", "Jira 資料的缺漏與排除說明，不影響發布。"),
+    )
+    items = "".join(f"<div><dt>{esc(term)}</dt><dd>{esc(text)}</dd></div>" for term, text in terms)
+    return f"""
+<section id="glossary">
+  <details>
+    <summary>名詞定義</summary>
+    <dl class="glossary">{items}</dl>
   </details>
 </section>"""
 
@@ -420,8 +456,8 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
         raise ValueError(f"metrics 的 schema 是 {metrics.get('schema')}，頁面需要 {SCHEMA}：先用 weekly.py metrics <week> 重算")
     page = _Page(metrics)
     period = metrics["period"]
-    start = fmt_date(period["start"])
-    end = fmt_date(period["week_ending"])
+    start = fmt_day(period["start"])
+    end = fmt_day(period["week_ending"])
     generated = metrics["generated_at"]
     provisional = datetime.fromisoformat(generated) < datetime.fromisoformat(period["end_exclusive"]) - PROVISIONAL_MARGIN
     banner = '<p class="warn">這一期的報告期間還沒結束，數字是產生當下的暫定值。</p>' if provisional else ""
@@ -447,11 +483,12 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
     {_week_nav(weeks, period["week"], in_reports_dir)}
   </div>
   <h1>{esc(start)} – {esc(end)}</h1>
-  <p class="generated" id="generated" data-generated="{esc(generated)}">資料截至 {esc(fmt_moment(generated))}（UTC+8）· 工時為 Story point 預估值</p>
+  <p class="generated" id="generated" data-generated="{esc(generated)}">資料截至 {esc(fmt_moment(generated))}（UTC+8）· 實際工時由執行人完工後回填，名詞定義在頁尾</p>
   <p class="warn" id="stale" hidden>這份報告超過 {STALE_DAYS} 天沒有更新，排程可能沒有成功執行。</p>
   {banner}
 </header>
 {_tabs(panels)}
+{_glossary(metrics)}
 {_checks(metrics, page)}
 {_archive(weeks, period["week"], in_reports_dir)}
 </main>
@@ -572,7 +609,13 @@ details summary{cursor:pointer}
 .split p{margin:2px 0 0;color:var(--muted);font-size:13px}
 .warn-card{border-color:var(--warn-fg)}
 .warn-card h3{color:var(--warn-fg)}
-#checks{margin-top:40px}
+#glossary{margin-top:40px}
+#glossary summary{font-weight:600}
+.glossary{margin:8px 0 0;font-size:14px}
+.glossary div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;padding:4px 0;border-bottom:1px solid var(--line)}
+.glossary div:last-child{border-bottom:0}
+.glossary dt{color:var(--muted)}.glossary dd{margin:0}
+#checks{margin-top:16px}
 #checks summary{font-weight:600}
 .checks{font-size:14px}
 #archive{margin-top:32px;border-top:1px solid var(--line)}
@@ -586,7 +629,7 @@ details summary{cursor:pointer}
   .row>span{text-align:left;font-size:13px}
   .row>span::before{content:attr(data-label);display:block;color:var(--muted);font-size:11px}
   .row.head{display:none}
-  .kickoff div{grid-template-columns:1fr;gap:0}
+  .kickoff div,.glossary div{grid-template-columns:1fr;gap:0}
   .list summary{grid-template-columns:auto minmax(0,1fr)}
   .list summary .nums{grid-column:2;margin-left:0}
   .tabs button{flex:1;padding:10px 4px}
