@@ -67,6 +67,17 @@ class ParseTest(unittest.TestCase):
         sections, _ = parse_sections(["這裡提到 Objective：不是標籤"])
         self.assertIsNone(sections["objective"])
 
+    def test_evidence_subheadings_stay_in_evidence(self):
+        # README 約定 Evidence 寫「可行性：」「完成證明：」兩行；兩個小標不能被當成新段落
+        sections, problems = parse_sections([
+            "Evidence：可行性：正式帳號只讀驗證過",
+            "完成證明：一位業務實機跑通",
+            "Decision Needed：",
+        ])
+        self.assertEqual(problems, [])
+        self.assertEqual(sections["evidence"], "可行性：正式帳號只讀驗證過\n完成證明：一位業務實機跑通")
+        self.assertIsNone(sections["decision"])
+
     def test_duplicate_label_is_reported_and_first_kept(self):
         sections, problems = parse_sections(["Evidence：A", "Evidence：B"])
         self.assertEqual(sections["evidence"], "A")
