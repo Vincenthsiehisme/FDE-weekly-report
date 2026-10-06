@@ -31,7 +31,6 @@ from lib.snapshot import EPIC_LEVEL, fetch_snapshot, issue_sort_key  # noqa: E40
 
 DATA = ROOT / "data"
 SITE = ROOT / "site"
-UNITS_FILE = ROOT / "config" / "units.json"
 EXCLUDED_FILE = ROOT / "config" / "excluded.json"
 CARD_KEY = re.compile(r"[A-Z][A-Z0-9_]*-[1-9][0-9]*")
 WEEK_ID = re.compile(r"\d{4}-W\d{2}")
@@ -52,14 +51,6 @@ def week_dir(week: str) -> Path:
     if not WEEK_ID.fullmatch(week):
         raise ValueError(f"week id 格式要像 2026-W39，收到 {week!r}")
     return DATA / week
-
-
-def load_units() -> list:
-    data = read_json(UNITS_FILE)
-    units = data.get("units")
-    if not isinstance(units, list) or not all(isinstance(u, str) and u.strip() for u in units):
-        raise ValueError(f"{UNITS_FILE.relative_to(ROOT)} 的 units 必須是非空字串陣列（可以是空陣列）")
-    return units
 
 
 def load_excluded() -> tuple:
@@ -174,7 +165,7 @@ def compute_week(snapshot: dict, *, fresh_fetch: bool) -> tuple:
         states[epic] = state
     # Token 檔是另一個來源：被整棵排除的卡的 Token 也要拿掉，否則會算進總量、還被當成不明卡號列進資料檢查
     dropped = {i["key"] for i in snapshot["issues"]} - {i["key"] for i in issues}
-    metrics = compute(dict(snapshot, issues=issues), period, load_units(), _without(load_tokens(period.week_id), dropped),
+    metrics = compute(dict(snapshot, issues=issues), period, _without(load_tokens(period.week_id), dropped),
                       states, checks, excluded=excluded_cards,
                       cumulative_tokens=_without(load_cumulative_tokens(period.week_id), dropped),
                       token_source=token_source_exists())
@@ -212,7 +203,7 @@ def cmd_prepare(args) -> None:
     metrics = publish_week(snapshot, fresh_fetch=True)
     t = metrics["totals"]
     print(f"snapshot：{sum(snapshot['counts'].values())} 張卡 {snapshot['counts']}", file=sys.stderr)
-    print(f"本週完成 {t['completed']} 張、交付 {t['deliverables']} 項、{t['hours']:g}h；資料檢查 {len(metrics['checks'])} 項", file=sys.stderr)
+    print(f"本週完成 {t['completed']} 張、{t['hours']:g}h；資料檢查 {len(metrics['checks'])} 項", file=sys.stderr)
     print(period.week_id)
 
 
@@ -232,6 +223,11 @@ def refuse_stale_metrics(week: str, metrics: dict, excluded_cards: dict, exclude
     stale = sorted((set(excluded_epics) & shown_epics) | (set(excluded_cards) & shown_cards), key=issue_sort_key)
     if stale:
         raise ValueError(f"{week} 的 metrics.json 還算著 config/excluded.json 排除的卡或 epic：{'、'.join(stale)}，先跑 metrics {week} 重算")
+    # 完成清單只列葉節點：排除一張有子卡的父卡時它不在清單裡，上面那條比不到，人表的 Token 卻已經不同（Codex 審 PR #17）
+    used = metrics.get("excluded")
+    if used != sorted(excluded_cards, key=issue_sort_key):
+        changed = sorted(set(used or []) ^ set(excluded_cards), key=issue_sort_key)
+        raise ValueError(f"{week} 的 metrics.json 是用另一份 config/excluded.json 的 cards 算的（不同的是：{'、'.join(changed) or '沒有記錄'}），先跑 metrics {week} 重算")
 
 
 def cmd_finalize(args) -> None:

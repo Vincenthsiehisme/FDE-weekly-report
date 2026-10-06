@@ -11,7 +11,7 @@ ISSUES = [
     issue("CS-2", level=0, parent="CS-1", status="done", points=1.5, resolved=IN_WEEK),
     issue("CS-3", level=0, parent="CS-1", status="done", points=2.0, resolved=IN_WEEK),
 ]
-METRICS = compute(snapshot(ISSUES), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+METRICS = compute(snapshot(ISSUES), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
 KEYS = {i["key"] for i in ISSUES}
 
 
@@ -34,7 +34,7 @@ class ProgramNumbersOnlyTest(unittest.TestCase):
     ]
 
     def setUp(self):
-        self.metrics = compute(snapshot(self.ISSUES), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+        self.metrics = compute(snapshot(self.ISSUES), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
         self.keys = {i["key"] for i in self.ISSUES}
 
     def check(self, text):
@@ -55,6 +55,7 @@ class ProgramNumbersOnlyTest(unittest.TestCase):
             "進度百分比": epic["progress"]["percent"],
             "改組前工時": m["migrated"]["week"][0]["hours"],
             "進行中工時": next(r["hours"] for r in m["in_progress"] if r["key"] == "CS-6"),
+            "label 累計工時": m["labels"][0]["cumulative"]["hours"],
         }
         allowed = allowed_numbers(m)
         for label, value in cases.items():
@@ -62,18 +63,18 @@ class ProgramNumbersOnlyTest(unittest.TestCase):
             with self.assertRaisesRegex(NarrativeError, "本週數字以外的數字"):
                 self.check(f"{label} {value:g}")
 
-    def test_project_deliverables_come_from_the_program(self):
-        # 專案有子任務時，交付數不等於完成張數；專案層的交付數要有程式算好的值才寫得出來
-        issues = [issue("CS-1", level=1, status="doing"),
+    def test_project_counts_come_from_the_program(self):
+        # 專案有子任務時，完成張數只數葉節點（父卡不算）；專案層的張數與 label 表的本週工時要有程式算好的值才寫得出來
+        issues = [issue("CS-1", level=1, status="doing", labels=("資料組",)),
                   issue("CS-2", level=0, parent="CS-1", status="done", resolved=IN_WEEK),
                   issue("CS-3", level=-1, parent="CS-2", status="done", points=1.0, resolved=IN_WEEK),
                   issue("CS-4", level=-1, parent="CS-2", status="done", points=2.0, resolved=IN_WEEK),
-                  issue("CS-5", level=0, parent="CS-1", status="done", points=0.5, resolved=IN_WEEK)]
-        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+                  issue("CS-5", level=0, parent="CS-1", status="done", points=0.25, resolved=IN_WEEK)]
+        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
         week = m["epics"][0]["week"]
-        self.assertEqual((week["completed_count"], week["deliverables"]), (4, 2))
-        validate({"highlights": [f"完成 {week['completed_count']} 張、交付 {week['deliverables']} 項"],
-                  "epic_results": {"CS-1": f"交付 {week['deliverables']} 項"}}, m, {i["key"] for i in issues})
+        self.assertEqual((week["completed_count"], m["labels"][0]["week"]["hours"]), (3, 3.25))
+        validate({"highlights": [f"完成 {week['completed_count']} 張、{m['labels'][0]['week']['hours']:g} 小時"],
+                  "epic_results": {"CS-1": f"完成 {week['completed_count']} 張"}}, m, {i["key"] for i in issues})
 
 
 class NarrativeTest(unittest.TestCase):
@@ -130,7 +131,7 @@ class NarrativeTest(unittest.TestCase):
             validate(narrative(highlights=["a", "b", "c", "d"]), METRICS, KEYS)
 
     def test_quiet_week_requires_empty_highlights(self):
-        quiet = compute(snapshot([issue("CS-1", level=1, status="doing")]), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+        quiet = compute(snapshot([issue("CS-1", level=1, status="doing")]), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
         validate({"highlights": [], "epic_results": {}}, quiet, {"CS-1"})
         with self.assertRaisesRegex(NarrativeError, "必須是空陣列"):
             validate({"highlights": ["硬寫一條"], "epic_results": {}}, quiet, {"CS-1"})
