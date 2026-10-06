@@ -3,7 +3,7 @@
     "CS": 28,
     "FDEPROJECT": 319
   },
-  "fetched_at": "2026-10-07T00:00:32.067130+08:00",
+  "fetched_at": "2026-10-07T06:27:25.382288+08:00",
   "issues": [
     {
       "assignee": "hubertwang",
@@ -534,7 +534,9 @@
       },
       "due": null,
       "key": "CS-26",
-      "labels": [],
+      "labels": [
+        "歐洲團產TP"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "CS-25",
@@ -545,13 +547,15 @@
       "status_category": "done",
       "summary": "歐洲地接社-房產品資料彙整",
       "type": "Kick off",
-      "updated": "2026-09-27T11:24:32.378+0800"
+      "updated": "2026-10-07T05:51:57.760+0800"
     },
     {
       "assignee": null,
       "due": null,
       "key": "CS-27",
-      "labels": [],
+      "labels": [
+        "歐洲團產TP"
+      ],
       "level": -1,
       "moved_in": null,
       "parent": "CS-16",
@@ -562,13 +566,15 @@
       "status_category": "done",
       "summary": "OTA（Expedia）靜態資料整合層建置",
       "type": "子任務",
-      "updated": "2026-09-30T20:11:05.545+0800"
+      "updated": "2026-10-07T05:52:00.531+0800"
     },
     {
       "assignee": null,
       "due": null,
       "key": "CS-28",
-      "labels": [],
+      "labels": [
+        "歐洲團產TP"
+      ],
       "level": -1,
       "moved_in": null,
       "parent": "CS-16",
@@ -579,7 +585,7 @@
       "status_category": "done",
       "summary": "LION-LONDON 解析器建置，並修正地接社顯示名稱重複定義的 bug",
       "type": "子任務",
-      "updated": "2026-09-30T20:12:52.779+0800"
+      "updated": "2026-10-07T05:52:03.038+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -1896,7 +1902,9 @@
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-71",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 1,
       "moved_in": null,
       "parent": null,
@@ -1907,13 +1915,15 @@
       "status_category": "indeterminate",
       "summary": "門市 AI 客服",
       "type": "大型工作",
-      "updated": "2026-10-01T18:22:43.196+0800"
+      "updated": "2026-10-07T05:40:11.440+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-72",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 1,
       "moved_in": null,
       "parent": null,
@@ -1924,13 +1934,15 @@
       "status_category": "indeterminate",
       "summary": "Dify 平台與維運",
       "type": "大型工作",
-      "updated": "2026-10-01T16:37:43.132+0800"
+      "updated": "2026-10-07T05:51:14.460+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-73",
-      "labels": [],
+      "labels": [
+        "AILab"
+      ],
       "level": 1,
       "moved_in": null,
       "parent": null,
@@ -1941,7 +1953,7 @@
       "status_category": "indeterminate",
       "summary": "AI Lab H3 影音",
       "type": "大型工作",
-      "updated": "2026-10-01T18:22:48.245+0800"
+      "updated": "2026-10-07T05:52:06.216+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -2063,7 +2075,9 @@
       },
       "due": null,
       "key": "FDEPROJECT-76",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2074,7 +2088,7 @@
       "status_category": "done",
       "summary": "培訓課程網站",
       "type": "Kick off",
-      "updated": "2026-09-27T11:17:54.806+0800"
+      "updated": "2026-10-07T05:52:08.593+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -2158,7 +2172,9 @@
       },
       "due": null,
       "key": "FDEPROJECT-77",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2169,7 +2185,7 @@
       "status_category": "done",
       "summary": "MeetPilot 團隊會議記錄",
       "type": "Kick off",
-      "updated": "2026-09-27T11:17:56.310+0800"
+      "updated": "2026-10-07T05:52:11.513+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -2213,7 +2229,9 @@
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-80",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2224,13 +2242,15 @@
       "status_category": "done",
       "summary": "內容解析：十節教材與十場工作坊轉成結構化內容",
       "type": "任務",
-      "updated": "2026-09-24T14:12:13.059+0800"
+      "updated": "2026-10-07T05:52:14.504+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-81",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2241,13 +2261,15 @@
       "status_category": "done",
       "summary": "第二節工作坊：圖片轉文字並校對數字",
       "type": "任務",
-      "updated": "2026-09-24T14:12:13.594+0800"
+      "updated": "2026-10-07T05:52:17.272+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-82",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2258,13 +2280,15 @@
       "status_category": "done",
       "summary": "每節頁面：教材／工作坊／課後講義三頁籤",
       "type": "任務",
-      "updated": "2026-09-24T14:12:14.420+0800"
+      "updated": "2026-10-07T05:52:20.573+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-83",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2275,13 +2299,15 @@
       "status_category": "done",
       "summary": "首頁導覽、十節時間軸與名詞索引",
       "type": "任務",
-      "updated": "2026-09-24T14:12:15.016+0800"
+      "updated": "2026-10-07T05:52:23.366+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-84",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2292,13 +2318,15 @@
       "status_category": "done",
       "summary": "投影模式：一題一畫面、鍵盤翻頁、工作坊倒數",
       "type": "任務",
-      "updated": "2026-09-24T14:12:15.691+0800"
+      "updated": "2026-10-07T05:52:39.655+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-85",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2309,13 +2337,15 @@
       "status_category": "done",
       "summary": "手機與深淺色走查",
       "type": "任務",
-      "updated": "2026-09-24T14:12:16.231+0800"
+      "updated": "2026-10-07T05:52:42.873+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-86",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2326,13 +2356,15 @@
       "status_category": "done",
       "summary": "向祥董取得 20 張圖的原始高解析檔",
       "type": "任務",
-      "updated": "2026-09-24T18:24:25.211+0800"
+      "updated": "2026-10-07T05:52:45.316+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-87",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2343,13 +2375,15 @@
       "status_category": "done",
       "summary": "與祥董確認網站內容",
       "type": "任務",
-      "updated": "2026-09-29T07:02:15.907+0800"
+      "updated": "2026-10-07T05:52:48.145+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-88",
-      "labels": [],
+      "labels": [
+        "IT_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-78",
@@ -2360,13 +2394,15 @@
       "status_category": "done",
       "summary": "部署上線",
       "type": "任務",
-      "updated": "2026-09-24T14:12:16.893+0800"
+      "updated": "2026-10-07T05:52:51.007+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-89",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2377,13 +2413,15 @@
       "status_category": "done",
       "summary": "跨平台前置：Windows 能跑、CI 兩平台三條 gate",
       "type": "任務",
-      "updated": "2026-09-24T16:19:07.374+0800"
+      "updated": "2026-10-07T05:52:53.577+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-90",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2394,13 +2432,15 @@
       "status_category": "done",
       "summary": "Gateway：邀請碼換 Gemini key 與名單，加名單發布",
       "type": "任務",
-      "updated": "2026-09-24T16:19:10.100+0800"
+      "updated": "2026-10-07T05:52:56.036+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-91",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2411,13 +2451,15 @@
       "status_category": "done",
       "summary": "共享資料夾：OneDrive「MeetPilot 記錄」與記錄人子資料夾",
       "type": "任務",
-      "updated": "2026-09-24T16:19:13.595+0800"
+      "updated": "2026-10-07T05:52:58.816+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-92",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2428,13 +2470,15 @@
       "status_category": "done",
       "summary": "E1 桌面 app 外殼：Electron .dmg／.exe",
       "type": "任務",
-      "updated": "2026-09-24T16:19:16.394+0800"
+      "updated": "2026-10-07T05:53:01.801+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-93",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2445,13 +2489,15 @@
       "status_category": "done",
       "summary": "E2 隨附 ffmpeg（LGPL 自編）",
       "type": "任務",
-      "updated": "2026-09-24T16:19:19.161+0800"
+      "updated": "2026-10-07T05:53:04.701+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-94",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2462,13 +2508,15 @@
       "status_category": "done",
       "summary": "E3 首次設定畫面：邀請碼與投影資料夾",
       "type": "任務",
-      "updated": "2026-09-24T16:19:21.912+0800"
+      "updated": "2026-10-07T05:53:23.773+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-95",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2479,13 +2527,15 @@
       "status_category": "done",
       "summary": "E4 app 內錄音",
       "type": "任務",
-      "updated": "2026-09-24T16:19:24.527+0800"
+      "updated": "2026-10-07T05:53:26.744+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-96",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2496,13 +2546,15 @@
       "status_category": "done",
       "summary": "E5 更新通道：從共享資料夾更新",
       "type": "任務",
-      "updated": "2026-09-24T16:19:27.163+0800"
+      "updated": "2026-10-07T05:53:29.781+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-97",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2513,13 +2565,15 @@
       "status_category": "done",
       "summary": "E6 Windows 實機端到端",
       "type": "任務",
-      "updated": "2026-09-29T18:09:33.001+0800"
+      "updated": "2026-10-07T05:53:33.013+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-98",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2530,13 +2584,15 @@
       "status_category": "new",
       "summary": "錄音品質對照：語音備忘錄 vs app 內錄音",
       "type": "任務",
-      "updated": "2026-09-24T16:19:31.336+0800"
+      "updated": "2026-10-07T05:53:35.914+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-99",
-      "labels": [],
+      "labels": [
+        "FDE_team"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-79",
@@ -2547,13 +2603,15 @@
       "status_category": "indeterminate",
       "summary": "第一次發版給 5 位記錄人",
       "type": "任務",
-      "updated": "2026-09-29T09:26:12.126+0800"
+      "updated": "2026-10-07T05:53:38.529+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-100",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -2564,13 +2622,15 @@
       "status_category": "done",
       "summary": "MCP 共用請求層補防護：每個上游請求都有逾時與錯誤紀錄、log 不再灌爆 Loki、UA 統一",
       "type": "任務",
-      "updated": "2026-09-29T12:18:22.508+0800"
+      "updated": "2026-10-07T05:53:41.239+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-101",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -2581,13 +2641,15 @@
       "status_category": "done",
       "summary": "單程機票查空的第二個原因：MCP 把 www 的防火牆 cookie 送到機票網域，改照瀏覽器規則分域",
       "type": "漏洞",
-      "updated": "2026-09-29T12:18:23.868+0800"
+      "updated": "2026-10-07T05:53:44.298+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-102",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -2598,13 +2660,15 @@
       "status_category": "done",
       "summary": "新增 MCP 工具 tour-detail：團體行程的逐日行程、費用、航班、集合地點一次查齊",
       "type": "故事",
-      "updated": "2026-09-29T12:18:25.211+0800"
+      "updated": "2026-10-07T05:53:47.300+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-103",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -2615,13 +2679,15 @@
       "status_category": "done",
       "summary": "新增 MCP 工具 hotel-rooms：指定日期與人數查房型方案、價格、餐食與取消規定",
       "type": "故事",
-      "updated": "2026-09-29T12:18:26.549+0800"
+      "updated": "2026-10-07T05:53:49.084+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-104",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -2632,13 +2698,15 @@
       "status_category": "done",
       "summary": "新增 MCP 工具 ticket-detail：票券規格、可售日期與票價、場次、取消規定",
       "type": "故事",
-      "updated": "2026-09-29T12:18:27.983+0800"
+      "updated": "2026-10-07T05:53:51.817+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-105",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -2649,13 +2717,15 @@
       "status_category": "done",
       "summary": "機票搜尋每段帶出行李、餐食、選位與改退摘要；廉航行李改顯示實際額度",
       "type": "故事",
-      "updated": "2026-09-29T12:18:29.248+0800"
+      "updated": "2026-10-07T05:54:07.637+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-106",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -2666,13 +2736,15 @@
       "status_category": "done",
       "summary": "新增 MCP 工具 hotel-info：飯店介紹、設施、入住時間與住客評論（不需日期）",
       "type": "故事",
-      "updated": "2026-09-29T12:18:30.602+0800"
+      "updated": "2026-10-07T05:54:10.387+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-107",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -2683,7 +2755,7 @@
       "status_category": "done",
       "summary": "MCP 上游連線失敗自動重試一次：官網偶發斷線或 502/503 不再直接回錯",
       "type": "任務",
-      "updated": "2026-09-29T12:18:31.957+0800"
+      "updated": "2026-10-07T05:54:12.795+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -2767,7 +2839,9 @@
       },
       "due": null,
       "key": "FDEPROJECT-108",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -2778,7 +2852,7 @@
       "status_category": "done",
       "summary": "門市 AI 客服",
       "type": "Kick off",
-      "updated": "2026-09-27T11:24:29.779+0800"
+      "updated": "2026-10-07T05:54:15.548+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -2862,7 +2936,9 @@
       },
       "due": null,
       "key": "FDEPROJECT-109",
-      "labels": [],
+      "labels": [
+        "AILab"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-73",
@@ -2873,15 +2949,14 @@
       "status_category": "done",
       "summary": "AI Lab H3 影音",
       "type": "Kick off",
-      "updated": "2026-09-27T11:24:31.390+0800"
+      "updated": "2026-10-07T05:54:17.967+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-110",
       "labels": [
-        "FDE_team",
-        "notion_user"
+        "FDE_team"
       ],
       "level": 1,
       "moved_in": null,
@@ -2893,7 +2968,7 @@
       "status_category": "done",
       "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
       "type": "大型工作",
-      "updated": "2026-10-05T12:30:37.477+0800"
+      "updated": "2026-10-07T05:54:20.653+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -2924,7 +2999,7 @@
       "due": null,
       "key": "FDEPROJECT-111",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -2936,14 +3011,14 @@
       "status_category": "done",
       "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
       "type": "Kick off",
-      "updated": "2026-10-05T09:59:39.228+0800"
+      "updated": "2026-10-07T05:54:23.098+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-112",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -2955,14 +3030,14 @@
       "status_category": "done",
       "summary": "一期：擴充功能連結 Notion 並讀取當前頁",
       "type": "任務",
-      "updated": "2026-09-29T08:51:39.765+0800"
+      "updated": "2026-10-07T05:54:26.089+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-113",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -2974,14 +3049,14 @@
       "status_category": "done",
       "summary": "一期：記錄格式對齊 MeetPilot 外殼",
       "type": "任務",
-      "updated": "2026-09-29T08:51:42.894+0800"
+      "updated": "2026-10-07T05:54:29.025+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-114",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -2993,14 +3068,14 @@
       "status_category": "done",
       "summary": "AI Meeting Notes 實測（摘要、筆記、逐字稿）",
       "type": "任務",
-      "updated": "2026-09-30T06:35:25.996+0800"
+      "updated": "2026-10-07T05:54:32.348+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-115",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -3012,14 +3087,14 @@
       "status_category": "done",
       "summary": "寫進公司 SharePoint 共用資料夾",
       "type": "任務",
-      "updated": "2026-09-30T06:35:29.087+0800"
+      "updated": "2026-10-07T05:54:47.384+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-116",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -3031,14 +3106,14 @@
       "status_category": "done",
       "summary": "換 token 服務上線到 Vercel",
       "type": "任務",
-      "updated": "2026-09-30T06:35:31.983+0800"
+      "updated": "2026-10-07T05:54:50.788+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-117",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -3050,14 +3125,14 @@
       "status_category": "done",
       "summary": "發佈擴充功能給同事安裝",
       "type": "任務",
-      "updated": "2026-09-30T06:35:34.905+0800"
+      "updated": "2026-10-07T05:54:53.840+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-118",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -3069,7 +3144,7 @@
       "status_category": "done",
       "summary": "二期：AI Meeting Notes 完成後自動轉拋",
       "type": "任務",
-      "updated": "2026-09-30T06:35:37.986+0800"
+      "updated": "2026-10-07T05:54:56.666+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -3151,7 +3226,9 @@
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-123",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -3162,13 +3239,15 @@
       "status_category": "done",
       "summary": "團體搜尋 9/28 夜間起全部失敗：上游小圖欄位改回空值，MCP 格式檢查擋掉整筆",
       "type": "漏洞",
-      "updated": "2026-09-29T12:19:22.452+0800"
+      "updated": "2026-10-07T05:54:59.792+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-124",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -3179,13 +3258,15 @@
       "status_category": "done",
       "summary": "MCP 工具呼叫失敗一律寫入錯誤紀錄，含整支被格式檢查擋下的情況",
       "type": "任務",
-      "updated": "2026-09-29T12:19:23.308+0800"
+      "updated": "2026-10-07T05:55:02.772+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-125",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -3196,13 +3277,15 @@
       "status_category": "done",
       "summary": "機票票價明細移除重複的行李欄位，飯店評論說明不再寫死日期",
       "type": "任務",
-      "updated": "2026-09-29T12:19:24.181+0800"
+      "updated": "2026-10-07T05:55:05.766+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-126",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -3213,13 +3296,15 @@
       "status_category": "done",
       "summary": "團體搜尋不再把同業價交給 AI",
       "type": "任務",
-      "updated": "2026-09-29T12:19:25.006+0800"
+      "updated": "2026-10-07T05:55:08.515+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-127",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -3230,13 +3315,15 @@
       "status_category": "done",
       "summary": "LINE AI 接上 MCP 詳情工具：dify dev 與正式站、LIFF 查詢進度",
       "type": "故事",
-      "updated": "2026-09-29T12:19:25.962+0800"
+      "updated": "2026-10-07T05:55:11.723+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
       "due": null,
       "key": "FDEPROJECT-128",
-      "labels": [],
+      "labels": [
+        "門市"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-71",
@@ -3247,7 +3334,7 @@
       "status_category": "done",
       "summary": "業務規範 skill v4：郵輪、飯店、票券的講法規則",
       "type": "任務",
-      "updated": "2026-09-29T12:19:26.821+0800"
+      "updated": "2026-10-07T05:55:14.416+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -4043,7 +4130,7 @@
       "due": null,
       "key": "FDEPROJECT-131",
       "labels": [
-        "FDE_team"
+        "入境"
       ],
       "level": 0,
       "moved_in": null,
@@ -4055,13 +4142,15 @@
       "status_category": "indeterminate",
       "summary": "成本單價格填入模組(Inbound)",
       "type": "Kick off",
-      "updated": "2026-10-02T09:19:57.611+0800"
+      "updated": "2026-10-07T05:56:18.738+0800"
     },
     {
       "assignee": "Vivian",
       "due": null,
       "key": "FDEPROJECT-132",
-      "labels": [],
+      "labels": [
+        "入境"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-140",
@@ -4072,13 +4161,15 @@
       "status_category": "new",
       "summary": "(廢棄)n8n",
       "type": "故事",
-      "updated": "2026-09-30T12:24:58.489+0800"
+      "updated": "2026-10-07T05:56:21.841+0800"
     },
     {
       "assignee": "Vivian",
       "due": null,
       "key": "FDEPROJECT-133",
-      "labels": [],
+      "labels": [
+        "入境"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-140",
@@ -4089,13 +4180,15 @@
       "status_category": "done",
       "summary": "提供 - 飯店資料 api",
       "type": "任務",
-      "updated": "2026-10-01T16:06:03.963+0800"
+      "updated": "2026-10-07T05:56:24.584+0800"
     },
     {
       "assignee": "王碩緯",
       "due": null,
       "key": "FDEPROJECT-134",
-      "labels": [],
+      "labels": [
+        "入境"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-140",
@@ -4106,13 +4199,15 @@
       "status_category": "done",
       "summary": "google app script(補字選單, 填價格_元件、飯店)",
       "type": "故事",
-      "updated": "2026-10-02T07:46:46.657+0800"
+      "updated": "2026-10-07T05:56:27.144+0800"
     },
     {
       "assignee": "王碩緯",
       "due": null,
       "key": "FDEPROJECT-135",
-      "labels": [],
+      "labels": [
+        "入境"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-140",
@@ -4123,7 +4218,7 @@
       "status_category": "done",
       "summary": "元件資料前處理(RES, POI)",
       "type": "故事",
-      "updated": "2026-10-01T15:33:57.282+0800"
+      "updated": "2026-10-07T05:56:29.990+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -4166,7 +4261,7 @@
       "due": null,
       "key": "FDEPROJECT-138",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -4178,14 +4273,14 @@
       "status_category": "done",
       "summary": "多部門接入：同事在 Notion 分享即鏡像，授權連結加邀請碼",
       "type": "任務",
-      "updated": "2026-10-05T10:05:56.366+0800"
+      "updated": "2026-10-07T05:56:32.890+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-139",
       "labels": [
-        "notion_user"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -4197,13 +4292,15 @@
       "status_category": "done",
       "summary": "每位同事一組授權碼，加管理頁記錄授權",
       "type": "任務",
-      "updated": "2026-10-05T10:05:58.526+0800"
+      "updated": "2026-10-07T05:56:35.264+0800"
     },
     {
       "assignee": "Shira",
       "due": null,
       "key": "FDEPROJECT-140",
-      "labels": [],
+      "labels": [
+        "入境"
+      ],
       "level": 1,
       "moved_in": null,
       "parent": null,
@@ -4214,13 +4311,15 @@
       "status_category": "indeterminate",
       "summary": "入境成本單",
       "type": "大型工作",
-      "updated": "2026-09-30T13:25:10.096+0800"
+      "updated": "2026-10-07T05:56:38.327+0800"
     },
     {
       "assignee": "Vivian",
       "due": null,
       "key": "FDEPROJECT-141",
-      "labels": [],
+      "labels": [
+        "入境"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-140",
@@ -4231,7 +4330,7 @@
       "status_category": "done",
       "summary": "同步inbound飯店報價單檔案路徑",
       "type": "任務",
-      "updated": "2026-10-01T16:36:01.224+0800"
+      "updated": "2026-10-07T05:56:41.131+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -5134,7 +5233,9 @@
       "assignee": "王碩緯",
       "due": null,
       "key": "FDEPROJECT-181",
-      "labels": [],
+      "labels": [
+        "入境"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-140",
@@ -5145,13 +5246,15 @@
       "status_category": "done",
       "summary": "google app script(補字選單, 填價格_車產)",
       "type": "故事",
-      "updated": "2026-10-06T11:19:25.918+0800"
+      "updated": "2026-10-07T05:56:44.326+0800"
     },
     {
       "assignee": "王碩緯",
       "due": null,
       "key": "FDEPROJECT-182",
-      "labels": [],
+      "labels": [
+        "入境"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-140",
@@ -5162,13 +5265,15 @@
       "status_category": "done",
       "summary": "分檔次_報價單同客製包團_報價單使用補字功能",
       "type": "故事",
-      "updated": "2026-10-06T11:19:09.188+0800"
+      "updated": "2026-10-07T05:57:01.409+0800"
     },
     {
       "assignee": "Vincent Hsieh",
       "due": null,
       "key": "FDEPROJECT-183",
-      "labels": [],
+      "labels": [
+        "LiLi"
+      ],
       "level": 1,
       "moved_in": null,
       "parent": null,
@@ -5179,7 +5284,7 @@
       "status_category": "new",
       "summary": "LiLi 自建系統需求盤點表",
       "type": "大型工作",
-      "updated": "2026-10-01T15:50:25.648+0800"
+      "updated": "2026-10-07T05:57:04.647+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -6318,7 +6423,9 @@
       "assignee": "王碩緯",
       "due": null,
       "key": "FDEPROJECT-236",
-      "labels": [],
+      "labels": [
+        "入境"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-140",
@@ -6329,7 +6436,7 @@
       "status_category": "done",
       "summary": "大中巴/小車全日包車/接駁_價錢依選取車型/區域自動填入",
       "type": "故事",
-      "updated": "2026-10-02T07:41:48.102+0800"
+      "updated": "2026-10-07T05:57:07.778+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -7859,7 +7966,9 @@
       },
       "due": null,
       "key": "FDEPROJECT-269",
-      "labels": [],
+      "labels": [
+        "客製國旅"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-309",
@@ -7870,7 +7979,7 @@
       "status_category": "done",
       "summary": "[客製國旅]外部報名系統資料串接 SERP，減少人工建單",
       "type": "Kick off",
-      "updated": "2026-10-06T09:35:20.575+0800"
+      "updated": "2026-10-07T05:57:11.068+0800"
     },
     {
       "assignee": "王碩緯",
@@ -8017,7 +8126,9 @@
       },
       "due": null,
       "key": "FDEPROJECT-270",
-      "labels": [],
+      "labels": [
+        "客製國旅"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": null,
@@ -8028,7 +8139,7 @@
       "status_category": "new",
       "summary": "[客製國旅]SERP 單據金額確認後，評估付款連結批次發送機制",
       "type": "Kick off",
-      "updated": "2026-10-06T09:18:23.804+0800"
+      "updated": "2026-10-07T05:57:28.385+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -8841,7 +8952,9 @@
       "assignee": "Vivian",
       "due": null,
       "key": "FDEPROJECT-306",
-      "labels": [],
+      "labels": [
+        "客製國旅"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-309",
@@ -8852,13 +8965,15 @@
       "status_category": "new",
       "summary": " input資料格式模組",
       "type": "任務",
-      "updated": "2026-10-06T13:34:31.571+0800"
+      "updated": "2026-10-07T05:57:14.150+0800"
     },
     {
       "assignee": "Vivian",
       "due": null,
       "key": "FDEPROJECT-307",
-      "labels": [],
+      "labels": [
+        "客製國旅"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-309",
@@ -8869,13 +8984,15 @@
       "status_category": "new",
       "summary": "電腦畫面操作模組錄製",
       "type": "任務",
-      "updated": "2026-10-06T10:59:02.887+0800"
+      "updated": "2026-10-07T05:57:16.925+0800"
     },
     {
       "assignee": "Vivian",
       "due": null,
       "key": "FDEPROJECT-308",
-      "labels": [],
+      "labels": [
+        "客製國旅"
+      ],
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-309",
@@ -8886,13 +9003,15 @@
       "status_category": "new",
       "summary": "電腦畫面操作模組開發",
       "type": "任務",
-      "updated": "2026-10-06T10:59:15.085+0800"
+      "updated": "2026-10-07T05:57:19.323+0800"
     },
     {
       "assignee": "Vivian",
       "due": null,
       "key": "FDEPROJECT-309",
-      "labels": [],
+      "labels": [
+        "客製國旅"
+      ],
       "level": 1,
       "moved_in": null,
       "parent": null,
@@ -8903,7 +9022,7 @@
       "status_category": "new",
       "summary": "[客製國旅]外部報名系統資料串接 SERP",
       "type": "大型工作",
-      "updated": "2026-10-06T09:21:08.833+0800"
+      "updated": "2026-10-07T05:57:22.741+0800"
     },
     {
       "assignee": "Jerry Huang",
@@ -8997,7 +9116,9 @@
       "assignee": "Jerry Huang",
       "due": null,
       "key": "FDEPROJECT-312",
-      "labels": [],
+      "labels": [
+        "東北亞"
+      ],
       "level": 1,
       "moved_in": null,
       "parent": null,
@@ -9008,7 +9129,7 @@
       "status_category": "indeterminate",
       "summary": "[東北亞]韓國線 SERP 旅客資料自動填入航空公司名單",
       "type": "大型工作",
-      "updated": "2026-10-06T13:52:09.269+0800"
+      "updated": "2026-10-07T05:57:25.505+0800"
     },
     {
       "assignee": "Jerry Huang",

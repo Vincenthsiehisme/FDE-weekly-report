@@ -36,61 +36,6 @@
       "message": "依 config/excluded.json 不算本週與累計完成：路線取消、轉完成只為結案，沒有交付；2026-09-30 使用者裁不算完成"
     },
     {
-      "key": "CS-25",
-      "kind": "label_mismatch",
-      "message": "底下 2 張卡的 label 跟 epic 的「歐洲團產TP」不同，頁面以 epic 為準：CS-27、CS-28"
-    },
-    {
-      "key": "FDEPROJECT-71",
-      "kind": "epic_label",
-      "message": "epic 沒有 label，歸未分類"
-    },
-    {
-      "key": "FDEPROJECT-72",
-      "kind": "epic_label",
-      "message": "epic 沒有 label，歸未分類"
-    },
-    {
-      "key": "FDEPROJECT-73",
-      "kind": "epic_label",
-      "message": "epic 沒有 label，歸未分類"
-    },
-    {
-      "key": "FDEPROJECT-78",
-      "kind": "label_mismatch",
-      "message": "底下 9 張卡的 label 跟 epic 的「IT_team」不同，頁面以 epic 為準：FDEPROJECT-80、FDEPROJECT-81、FDEPROJECT-82、FDEPROJECT-83、FDEPROJECT-84、FDEPROJECT-85、FDEPROJECT-86、FDEPROJECT-87、FDEPROJECT-88"
-    },
-    {
-      "key": "FDEPROJECT-79",
-      "kind": "label_mismatch",
-      "message": "底下 11 張卡的 label 跟 epic 的「FDE_team」不同，頁面以 epic 為準：FDEPROJECT-89、FDEPROJECT-90、FDEPROJECT-91、FDEPROJECT-92、FDEPROJECT-93、FDEPROJECT-94、FDEPROJECT-95、FDEPROJECT-96、FDEPROJECT-97、FDEPROJECT-98、FDEPROJECT-99"
-    },
-    {
-      "key": "FDEPROJECT-110",
-      "kind": "epic_label",
-      "message": "epic 有 2 個 label（FDE_team、notion_user），歸未分類"
-    },
-    {
-      "key": "FDEPROJECT-140",
-      "kind": "epic_label",
-      "message": "epic 沒有 label，歸未分類"
-    },
-    {
-      "key": "FDEPROJECT-183",
-      "kind": "epic_label",
-      "message": "epic 沒有 label，歸未分類"
-    },
-    {
-      "key": "FDEPROJECT-309",
-      "kind": "epic_label",
-      "message": "epic 沒有 label，歸未分類"
-    },
-    {
-      "key": "FDEPROJECT-312",
-      "kind": "epic_label",
-      "message": "epic 沒有 label，歸未分類"
-    },
-    {
       "key": "FDEPROJECT-72",
       "kind": "kickoff_missing",
       "message": "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"
@@ -3885,7 +3830,7 @@
         "progress": {
           "done_cards": 10,
           "done_points": 14.5,
-          "percent": 100,
+          "percent": 91,
           "total_cards": 11,
           "total_points": 14.5,
           "unestimated_cards": 0
@@ -3914,12 +3859,12 @@
             "why": "門市要一個能自己回答商品問題、轉得回門市的客服入口；bot 帶來的業績追溯不回門市，就證明不了這條線值不值得繼續投資"
           }
         },
-        "label": "未分類",
+        "label": "門市",
         "owner": "陳勁佑 Jincoco",
         "progress": {
           "done_cards": 88,
           "done_points": 54.0,
-          "percent": 71,
+          "percent": 63,
           "total_cards": 140,
           "total_points": 75.75,
           "unestimated_cards": 51
@@ -3935,12 +3880,12 @@
         "id": "FDEPROJECT-72",
         "key": "FDEPROJECT-72",
         "kickoff": null,
-        "label": "未分類",
+        "label": "門市",
         "owner": "陳勁佑 Jincoco",
         "progress": {
           "done_cards": 5,
           "done_points": 2.0,
-          "percent": 19,
+          "percent": 26,
           "total_cards": 19,
           "total_points": 10.5,
           "unestimated_cards": 5
@@ -3969,12 +3914,12 @@
             "why": "要決定短影音自己用開源模型產、還是用外部平台，得有自己的實測成本；外部公開的單價前後矛盾，拿二手數字比會誤導決策"
           }
         },
-        "label": "未分類",
+        "label": "AILab",
         "owner": "陳勁佑 Jincoco",
         "progress": {
           "done_cards": 9,
           "done_points": 4.75,
-          "percent": 28,
+          "percent": 75,
           "total_cards": 12,
           "total_points": 17.0,
           "unestimated_cards": 1
@@ -4073,12 +4018,12 @@
             "why": "很多人用 Notion 自行錄音與記會議，記錄散在各人頁面（不少是個人帳號、個人方案），別人找不到也用不到；MeetPilot 的記錄已集中，Notion 這一半還沒有"
           }
         },
-        "label": "未分類",
+        "label": "FDE_team",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 4,
           "done_points": 3.35,
-          "percent": 47,
+          "percent": 44,
           "total_cards": 9,
           "total_points": 7.1,
           "unestimated_cards": 0
@@ -4107,12 +4052,12 @@
             "why": "外語產品組目前有高頻製作需求單與成本單的需求，且大量內容仍仰賴人工查找既有資料、重複輸入與填寫價格，整體流程相當耗時，也容易形成日常作業負擔。\n若能透過既有 RES、POI、HTL、車價等資料來源進行串接，並以補字、帶入既有建檔資料的方式協助產出與編輯成本單，可明顯降低人工 Key-in 與重複查找資料的時間，讓同仁將時間集中在報價判斷與產品規劃上。\n此外，客製國旅目前也存在相似的報價與成本單製作情境，因此這次 Inbound 的需求不只是單一部門的效率優化，也可在S13還沒完成前，提供給客製國旅使用(輸出「包含價格」的成本單)"
           }
         },
-        "label": "未分類",
+        "label": "入境",
         "owner": "Shira",
         "progress": {
           "done_cards": 7,
           "done_points": 12.5,
-          "percent": 89,
+          "percent": 88,
           "total_cards": 8,
           "total_points": 14.0,
           "unestimated_cards": 0
@@ -4196,7 +4141,7 @@
         "id": "FDEPROJECT-183",
         "key": "FDEPROJECT-183",
         "kickoff": null,
-        "label": "未分類",
+        "label": "LiLi",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 0,
@@ -4269,7 +4214,7 @@
         "progress": {
           "done_cards": 0,
           "done_points": 0.0,
-          "percent": null,
+          "percent": 0,
           "total_cards": 6,
           "total_points": 0.0,
           "unestimated_cards": 6
@@ -4439,7 +4384,7 @@
         "progress": {
           "done_cards": 4,
           "done_points": 9.0,
-          "percent": 22,
+          "percent": 36,
           "total_cards": 11,
           "total_points": 41.0,
           "unestimated_cards": 0
@@ -4468,7 +4413,7 @@
             "why": "大型梯次團名單量大，目前從外部報名資料進入 SERP 前，仍需人工整理格式、拆分訂單、建立旅客列數，匯入後也需再次人工檢核。\n此流程在大型專案期間會造成明顯的人工作業負擔，因此第一階段先驗證是否能用輕量工具降低固定、重複的操作。\n此專案的潛在目標:\n協助處理不同系統的資料格式一致\n確認方便的User的操作流程，提供給後續系統開發參考\nCurrent Problem\n目前已確認的主要人工步驟包含：\n外部名單格式與 SERP／大團錄匯入格式不同。\n出生年月日等欄位需人工整理與轉換。\n單筆訂單有人數限制，名單需依實際訂單規則拆分。\n在 SERP 訂單內需人工新增對應旅客列數。\n匯入後仍需再次透過修改／檢核流程確認身分證字號重複、姓名不符等異常。"
           }
         },
-        "label": "未分類",
+        "label": "客製國旅",
         "owner": "Vivian",
         "progress": {
           "done_cards": 0,
@@ -4502,12 +4447,12 @@
             "why": "目前要把 SERP 的旅客資料一筆一筆手 key 到航空公司名單，航班一多就很費時，姓名拼音、護照號碼、生日等欄位也容易打錯。"
           }
         },
-        "label": "未分類",
+        "label": "東北亞",
         "owner": "Jerry Huang",
         "progress": {
           "done_cards": 2,
           "done_points": 10.0,
-          "percent": 71,
+          "percent": 50,
           "total_cards": 4,
           "total_points": 14.0,
           "unestimated_cards": 0
@@ -4567,7 +4512,7 @@
       "progress": {
         "done_cards": 10,
         "done_points": 14.5,
-        "percent": 100,
+        "percent": 91,
         "total_cards": 11,
         "total_points": 14.5,
         "unestimated_cards": 0
@@ -4618,7 +4563,7 @@
       "progress": {
         "done_cards": 88,
         "done_points": 54.0,
-        "percent": 71,
+        "percent": 63,
         "total_cards": 140,
         "total_points": 75.75,
         "unestimated_cards": 51
@@ -5294,7 +5239,7 @@
       "progress": {
         "done_cards": 5,
         "done_points": 2.0,
-        "percent": 19,
+        "percent": 26,
         "total_cards": 19,
         "total_points": 10.5,
         "unestimated_cards": 5
@@ -5380,7 +5325,7 @@
       "progress": {
         "done_cards": 9,
         "done_points": 4.75,
-        "percent": 28,
+        "percent": 75,
         "total_cards": 12,
         "total_points": 17.0,
         "unestimated_cards": 1
@@ -5543,7 +5488,7 @@
       "progress": {
         "done_cards": 4,
         "done_points": 3.35,
-        "percent": 47,
+        "percent": 44,
         "total_cards": 9,
         "total_points": 7.1,
         "unestimated_cards": 0
@@ -5602,7 +5547,7 @@
       "progress": {
         "done_cards": 7,
         "done_points": 12.5,
-        "percent": 89,
+        "percent": 88,
         "total_cards": 8,
         "total_points": 14.0,
         "unestimated_cards": 0
@@ -6026,7 +5971,7 @@
       "progress": {
         "done_cards": 0,
         "done_points": 0.0,
-        "percent": null,
+        "percent": 0,
         "total_cards": 6,
         "total_points": 0.0,
         "unestimated_cards": 6
@@ -6389,7 +6334,7 @@
       "progress": {
         "done_cards": 4,
         "done_points": 9.0,
-        "percent": 22,
+        "percent": 36,
         "total_cards": 11,
         "total_points": 41.0,
         "unestimated_cards": 0
@@ -6505,7 +6450,7 @@
       "progress": {
         "done_cards": 2,
         "done_points": 10.0,
-        "percent": 71,
+        "percent": 50,
         "total_cards": 4,
         "total_points": 14.0,
         "unestimated_cards": 0
@@ -6542,7 +6487,15 @@
       }
     }
   ],
-  "generated_at": "2026-10-07T00:00:32.067130+08:00",
+  "excluded": [
+    "FDEPROJECT-75",
+    "FDEPROJECT-114",
+    "FDEPROJECT-115",
+    "FDEPROJECT-116",
+    "FDEPROJECT-117",
+    "FDEPROJECT-118"
+  ],
+  "generated_at": "2026-10-07T06:27:25.382288+08:00",
   "in_progress": [
     {
       "current_state": "進行中",
@@ -6571,7 +6524,7 @@
       "tokens": null
     },
     {
-      "current_state": "進行中，7 天未更新",
+      "current_state": "進行中",
       "group": "FDEPROJECT-79",
       "hours": 0.5,
       "key": "FDEPROJECT-99",
@@ -6626,6 +6579,30 @@
   "labels": [
     {
       "cumulative": {
+        "hours": 56.0,
+        "unestimated": 16
+      },
+      "epics": 2,
+      "label": "門市",
+      "week": {
+        "hours": 56.0,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 19.0,
+        "unestimated": 0
+      },
+      "epics": 2,
+      "label": "東北亞",
+      "week": {
+        "hours": 19.0,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
         "hours": 14.5,
         "unestimated": 0
       },
@@ -6650,25 +6627,37 @@
     },
     {
       "cumulative": {
-        "hours": 9.0,
+        "hours": 12.5,
         "unestimated": 0
       },
-      "epics": 1,
-      "label": "東北亞",
+      "epics": 2,
+      "label": "入境",
       "week": {
-        "hours": 9.0,
+        "hours": 12.5,
         "unestimated": 0
       }
     },
     {
       "cumulative": {
-        "hours": 4.5,
+        "hours": 7.85,
+        "unestimated": 0
+      },
+      "epics": 2,
+      "label": "FDE_team",
+      "week": {
+        "hours": 2.6,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 4.75,
         "unestimated": 0
       },
       "epics": 1,
-      "label": "FDE_team",
+      "label": "AILab",
       "week": {
-        "hours": 0.0,
+        "hours": 4.75,
         "unestimated": 0
       }
     },
@@ -6690,7 +6679,7 @@
         "unestimated": 0
       },
       "epics": 1,
-      "label": "入境",
+      "label": "LiLi",
       "week": {
         "hours": 0.0,
         "unestimated": 0
@@ -6698,13 +6687,13 @@
     },
     {
       "cumulative": {
-        "hours": 86.6,
-        "unestimated": 16
+        "hours": 0.0,
+        "unestimated": 0
       },
-      "epics": 8,
-      "label": "未分類",
+      "epics": 1,
+      "label": "客製國旅",
       "week": {
-        "hours": 85.85,
+        "hours": 0.0,
         "unestimated": 0
       }
     }
