@@ -157,6 +157,21 @@ class PeopleTest(unittest.TestCase):
         self.assertIn("這些卡在 Jira 上沒有 assignee", team)
 
 
+    def test_team_tab_opens_with_people_and_hours_per_project(self):
+        team = panel(page(metrics=metrics_for(self.ISSUES)), "team")
+        self.assertLess(team.index("<h3>專案投入</h3>"), team.index("<h3>人</h3>"))
+        self.assertLess(team.index("<h3>人</h3>"), team.index("card person"))
+        # CS-1：本週 Alice 與未指派的 CS-3；累計多了上週 Dan 的 CS-5。名字照人的排序，累計工時多的在前
+        self.assertIn('alert(1)&lt;/script&gt;<small>Dan、Alice</small></div>'
+                      '<span data-label="本週人數">1<small>另有未指派</small></span><span data-label="本週實際工時">3.5h</span>'
+                      '<span data-label="累計人數">2<small>另有未指派</small></span><span data-label="累計實際工時">7.5h</span>', team)
+
+    def test_unfilled_hours_are_shown_next_to_project_hours(self):
+        issues = self.ISSUES + [issue("CS-6", level=0, parent="CS-1", status="done", resolved=IN_WEEK, assignee="Alice")]
+        team = panel(page(metrics=metrics_for(issues)), "team")
+        self.assertIn('<span data-label="本週實際工時">3.5h<small>1 張未填工時</small></span>', team)
+
+
 class TokenHiddenTest(unittest.TestCase):
     """data/tokens/ 一個檔都沒有時 Token 整欄不顯示，只在本週與累計的資源區留一行說明；有任一檔就回到「—」規則
     （主管版二次優化 AC-4，2026-09-27 使用者裁）。"""

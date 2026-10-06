@@ -377,6 +377,22 @@ def _split(by_project: list) -> str:
     return " · ".join(parts) or DASH
 
 
+def _staffing_cells(scope: dict) -> list:
+    """專案投入的人數與工時兩格。未指派不算人，另外註明；未填工時的張數接在工時下面，工時 0 不代表沒花時間。"""
+    count = str(scope["people_count"]) + ("<small>另有未指派</small>" if scope["unassigned"] else "")
+    hours = esc(fmt_hours(scope["hours"])) + (f'<small>{scope["unestimated"]} 張{UNFILLED}</small>' if scope["unestimated"] else "")
+    return [count, hours]
+
+
+def _staffing(metrics, page) -> str:
+    rows = [(
+        "",
+        [f'{page.title(s["key"], s["summary"])}<small>{esc("、".join(s["cumulative"]["people"]) or UNASSIGNED_OWNER)}</small>']
+        + _staffing_cells(s["week"]) + _staffing_cells(s["cumulative"]),
+    ) for s in metrics["staffing"]]
+    return _rows(["專案", "本週人數", "本週實際工時", "累計人數", "累計實際工時"], rows, "還沒有任何專案有完成的卡")
+
+
 def _team_panel(metrics, page) -> str:
     completed = {r["key"]: r for r in metrics["cumulative"]["completed"]}
     doing = {r["key"]: r for r in metrics["in_progress"]}
@@ -404,7 +420,11 @@ def _team_panel(metrics, page) -> str:
       </div>
       {lists}
     </article>""")
-    return "".join(cards) or '<p class="muted">還沒有任何人有完成或進行中的卡。</p>'
+    people = "".join(cards) or '<p class="muted">還沒有任何人有完成或進行中的卡。</p>'
+    return f"""
+  <h3>專案投入</h3>
+  {_staffing(metrics, page)}
+  <h3>人</h3>{people}"""
 
 
 def _checks(metrics, page) -> str:
@@ -434,6 +454,8 @@ def _glossary(metrics) -> str:
         ("實際工時", "Jira 的 Story point estimate 欄位，由執行人完工後回填花費的時數。"
                      "只加沒有子卡的卡；有子卡的父卡自己的數字不算，避免重複。"),
         (UNFILLED, "卡片完成了，Story point estimate 卻是空的；實際工時以 0 計。本週的逐張列在資料檢查，累計只計張數。"),
+        ("專案投入", "團隊頁每個專案由幾個人產出、花多少實際工時。人數是完成了沒有子卡的卡的執行人，同一人只算一次；"
+                     f"沒有執行人的卡不算人，標「另有未指派」；工時口徑同實際工時，{UNFILLED}的張數另外列出。名字是累計有產出的人。"),
         ("進度", "專案底下沒有子卡的卡，算「完成張數／總張數」：本週頁照 Jira 目前狀態，累計頁以本週結束時是否已完成為準。"),
         ("Done／On Track", "Done 是 epic 在 Jira 已完成；On Track 只表示 epic 還沒完成，不代表進度評估。"),
         ("不列入的卡", "config/excluded.json 列的卡不算完成卡片、交付、實際工時，專案進度仍照 Jira 狀態算；列的 epic 連同底下所有卡整個不列入週報。"),
@@ -624,6 +646,7 @@ details summary{cursor:pointer}
 .row{display:grid;grid-template-columns:minmax(0,1fr) repeat(var(--cols),minmax(64px,90px));gap:10px;padding:9px 0;border-bottom:1px solid var(--line);align-items:baseline;font-size:14px}
 .row:last-child{border-bottom:0}
 .row>span{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.row>span small{display:block;color:var(--muted);font-size:12px;white-space:normal}
 .row.head{font-size:12px;color:var(--muted);padding:8px 0}.row.head span:first-child{text-align:left}
 .name small{color:var(--muted);font-size:12px;margin-left:4px}
 .warn-row .name,.warn-row>span:nth-child(2){color:var(--warn-fg)}

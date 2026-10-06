@@ -228,6 +228,62 @@ class PeopleTest(unittest.TestCase):
         self.assertIsNone(p["Amy"]["week"]["tokens"])
 
 
+class StaffingTest(unittest.TestCase):
+    """專案投入：每個專案由幾個人產出、多少實際工時，跟人的工時同一個口徑（2026-10-06 使用者要求）。"""
+
+    def staffing(self, issues=None):
+        return {s["id"]: s for s in run(issues or base_issues())["staffing"]}
+
+    def test_people_and_hours_per_project_follow_leaf_owners(self):
+        s = self.staffing()
+        # CS-2 是父卡：Hubert 算人是因為子任務 CS-3 沒有 assignee、歸到父卡的 Hubert，不是因為父卡本身
+        week = s["CS-1"]["week"]
+        self.assertEqual((week["people"], week["people_count"], week["hours"], week["unestimated"], week["unassigned"]),
+                         (["Amy", "Hubert"], 2, 2.5, 0, False))  # 照在這個專案的工時排：Amy 2.0、Hubert 0.5
+        # 累計多了上週的 CS-6（未指派，3.0h）：工時照加、不算人
+        cum = s["CS-1"]["cumulative"]
+        self.assertEqual((cum["people_count"], cum["hours"], cum["unassigned"]), (2, 5.5, True))
+
+    def test_project_hours_match_the_project_lists(self):
+        m = run(base_issues())
+        s = {r["id"]: r for r in m["staffing"]}
+        for e in m["epics"]:
+            if e["id"] in s:
+                self.assertEqual(s[e["id"]]["week"]["hours"], e["week"]["hours"])
+        for e in m["cumulative"]["epics"]:
+            self.assertEqual(s[e["id"]]["cumulative"]["hours"] if e["id"] in s else 0.0, e["hours"])
+
+    def test_hours_are_rounded_once_after_summing_like_the_project_list(self):
+        # 先按人捨入再加總會變 0.0，專案列表是加總後才捨入（Codex 審 P2）
+        issues = [
+            issue("CS-1", level=1, status="doing"),
+            issue("CS-2", level=0, parent="CS-1", status="done", points=0.004, resolved=IN_WEEK, assignee="Amy"),
+            issue("CS-3", level=0, parent="CS-1", status="done", points=0.004, resolved=IN_WEEK, assignee="Dan"),
+        ]
+        m = run(issues)
+        epic = next(e for e in m["epics"] if e["id"] == "CS-1")
+        self.assertEqual(self.staffing(issues)["CS-1"]["week"]["hours"], epic["week"]["hours"])
+        self.assertEqual(epic["week"]["hours"], 0.01)
+
+    def test_parent_owner_without_own_leaf_is_not_counted_and_unfilled_is_counted(self):
+        issues = [
+            issue("CS-1", level=1, status="doing"),
+            issue("CS-2", level=0, parent="CS-1", status="done", points=3.0, resolved=IN_WEEK, assignee="Carol"),
+            issue("CS-3", level=-1, parent="CS-2", status="done", resolved=IN_WEEK, assignee="Dan"),
+        ]
+        week = self.staffing(issues)["CS-1"]["week"]
+        self.assertEqual((week["people"], week["hours"], week["unestimated"]), (["Dan"], 0.0, 1))
+
+    def test_only_projects_with_completed_leaves_are_listed_unassigned_epic_last(self):
+        self.assertEqual(list(self.staffing()), ["CS-1", "CS-9", UNASSIGNED_EPIC])
+        # 卡號照數字排，不照字串排（CS-11 在 CS-9 之後）
+        issues = base_issues() + [issue("CS-11", level=1, status="doing"),
+                                  issue("CS-12", level=0, parent="CS-11", status="done", points=1.0, resolved=IN_WEEK, assignee="Amy")]
+        self.assertEqual(list(self.staffing(issues)), ["CS-1", "CS-9", "CS-11", UNASSIGNED_EPIC])
+        # CS-9 只有上週完成：本週 0 人
+        self.assertEqual(self.staffing()["CS-9"]["week"]["people_count"], 0)
+
+
 class DeliverablesTest(unittest.TestCase):
     """本週交付在資源 KPI、人、支援單位同一個口徑（2026-09-30 Fable 審 PR #8 finding 1）。"""
 
