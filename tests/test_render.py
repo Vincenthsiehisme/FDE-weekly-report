@@ -174,7 +174,7 @@ class TokenHiddenTest(unittest.TestCase):
         self.assertNotIn("Token", team)
         # 人的列與累計專案列表少一欄：欄數跟著變，窄螢幕才不會多一格空白
         self.assertIn('<div class="rows" style="--cols:3"><div class="row head"><span>執行人</span><span>實際工時</span><span>交付</span><span>進行中</span>', week)
-        self.assertIn('<div class="rows" style="--cols:3"><div class="row head"><span>專案</span><span>進度</span><span>實際工時</span><span>目標日</span>', cumulative)
+        self.assertIn('<div class="rows" style="--cols:2"><div class="row head"><span>專案</span><span>進度</span><span>實際工時</span></div>', cumulative)
 
     def test_a_file_for_an_earlier_week_brings_every_column_back(self):
         # 這一期沒有檔、較早期有：所有 Token 欄回來並顯示「—」，不會因為這一期沒資料就安靜少一欄
@@ -292,6 +292,18 @@ class WordingTest(unittest.TestCase):
         html = page(metrics=metrics_for(issues))
         self.assertIn("<summary>資料檢查（", html)
         self.assertNotIn("資料待補", html)
+
+
+class DueDateHiddenTest(unittest.TestCase):
+    """目標日不顯示（2026-10-06 使用者裁：不是當前重點）。metrics 仍帶 due，之後要回來只改 render。"""
+
+    def test_due_date_never_appears_even_when_set(self):
+        issues = [issue("CS-1", level=1, status="doing", due="2026-10-31")] + ISSUES[1:]
+        html = page(metrics=metrics_for(issues))
+        self.assertNotIn("目標日", html)
+        self.assertNotIn("2026/10/31", html)
+        self.assertNotIn("未設定", html)
+        self.assertIn('<p class="meta">負責人 未指派</p>', panel(html, "week"))
 
 
 class CompletedSectionTest(unittest.TestCase):
