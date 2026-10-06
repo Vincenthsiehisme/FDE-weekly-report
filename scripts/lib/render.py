@@ -2,7 +2,8 @@
 
 版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者是主管，
 分三個頁籤：持續累積、本週（預設）、團隊。vault 的週報範本只當資訊清單，不照它的節次排。
-Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 沒資料顯示「—」，不顯示 0。
+Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都沒有時整欄不顯示、資源區只留一行說明，
+有檔但沒記錄的卡顯示「—」，不顯示 0。
 工時是實際花費時數（2026-09-30 使用者確認：Story point estimate 由執行人完工後回填），頁面一律叫「實際工時」；
 頁尾的名詞定義是每個詞的口徑正本，改算法時同一次改那裡。
 頁籤靠少量 JS 切換，沒有 JS 時三個頁籤全部攤開。
@@ -83,6 +84,9 @@ def fmt_moment(iso: str) -> str:
 class _Page:
     def __init__(self, metrics: dict):
         self.site = metrics["site"]
+        # data/tokens/ 一個檔都沒有時整欄不顯示，資源區只留一行說明；有任一檔就回到「—」規則，不會安靜少顯示
+        # （主管版二次優化 AC-4，2026-09-27 使用者裁）。不從累計 Token 推：較晚的週才有檔時累計是 None，但來源已經接上
+        self.tokens = metrics["token_source"]
 
     def issue(self, key) -> str:
         if not key:
@@ -101,23 +105,29 @@ def _pill(status) -> str:
 
 
 def _kpis(tiles: list) -> str:
-    """tiles：(標籤, 值, 註記或 None)。值已經格式化成字串。"""
+    """tiles：(標籤, 值, 註記或 None, 是否放大)。值已經格式化成字串；用量（工時、Token）放大，張數不放大。"""
     items = []
-    for label, value, note in tiles:
+    for label, value, note, big in tiles:
         muted = " muted" if value == DASH else ""
         note_html = f'<small>{esc(note)}</small>' if note else ""
-        items.append(f'<li><span>{esc(label)}</span><strong class="{muted.strip()}">{esc(value)}</strong>{note_html}</li>')
-    return f'<ul class="kpis">{"".join(items)}</ul>'
+        items.append(f'<li{" class=big" if big else ""}><span>{esc(label)}</span><strong class="{muted.strip()}">{esc(value)}</strong>{note_html}</li>')
+    return f'<ul class="kpis" style="--kpis:{len(tiles)}">{"".join(items)}</ul>'
 
 
-def _resource_tiles(totals: dict, prefix: str) -> list:
+def _resources(totals: dict, prefix: str, page) -> str:
+    """資源 KPI。Token 一個檔都沒有時不放 Token 格，只在格子下面留一行說明（AC-4）。"""
     unfilled = f'{totals["unestimated_completed"]} 張完成卡{UNFILLED}' if totals["unestimated_completed"] else None
-    return [
-        (f"{prefix}實際工時", fmt_hours(totals["hours"]), unfilled),
-        (f"{prefix} Token".strip(), fmt_tokens(totals["tokens"]), NO_TOKEN_SOURCE if totals["tokens"] is None else None),
-        (f"{prefix}交付", str(totals["deliverables"]), None),
-        (f"{prefix}完成卡片", str(totals["completed"]), None),
-    ]
+    tiles = [(f"{prefix}實際工時", fmt_hours(totals["hours"]), unfilled, True)]
+    if page.tokens:
+        tiles.append((f"{prefix} Token".strip(), fmt_tokens(totals["tokens"]), NO_TOKEN_SOURCE if totals["tokens"] is None else None, True))
+    tiles += [(f"{prefix}交付", str(totals["deliverables"]), None, False), (f"{prefix}完成卡片", str(totals["completed"]), None, False)]
+    note = "" if page.tokens else f'<p class="note">Token {NO_TOKEN_SOURCE}</p>'
+    return _kpis(tiles) + note
+
+
+def _token_suffix(value, page) -> str:
+    """完成清單與團隊卡裡接在工時後面的「 · Token N」；整欄隱藏時是空字串。"""
+    return f" · Token {esc(fmt_tokens(value))}" if page.tokens else ""
 
 
 def _rows(headers: list, rows: list, empty: str) -> str:
@@ -200,12 +210,13 @@ def _week_project(epic, narrative, in_progress, page) -> str:
         meta = f'<p class="meta">負責人 {esc(epic["owner"])} · 目標日 {due}</p>'
 
     doing_html = _doing([r for r in in_progress if r["group"] == epic["id"]], page, with_project=False)
+    token = f'<span>Token <b>{esc(fmt_tokens(week["tokens"]))}</b></span>' if page.tokens else ""
 
     return f"""
     <article class="card project">
       <div class="card-head">
         <h3>{page.title(epic["key"], epic["summary"])}</h3>
-        <div class="figures"><span>實際工時 <b>{esc(fmt_hours(week["hours"]))}</b></span><span>Token <b>{esc(fmt_tokens(week["tokens"]))}</b></span>{_pill(epic["status"])}</div>
+        <div class="figures"><span>實際工時 <b>{esc(fmt_hours(week["hours"]))}</b></span>{token}{_pill(epic["status"])}</div>
       </div>
       {meta}
       {_progress(epic["progress"])}
@@ -215,9 +226,9 @@ def _week_project(epic, narrative, in_progress, page) -> str:
     </article>"""
 
 
-def _person_cells(person: dict, scope: str) -> list:
+def _person_cells(person: dict, scope: str, page) -> list:
     data = person[scope]
-    cells = [fmt_hours(data["hours"]), fmt_tokens(data["tokens"]), str(data["deliverables"])]
+    cells = [fmt_hours(data["hours"])] + ([fmt_tokens(data["tokens"])] if page.tokens else []) + [str(data["deliverables"])]
     cells = [esc(c) for c in cells]
     if scope == "week":
         cells.append(f'{person["in_progress"]["count"]} 張')
@@ -232,14 +243,15 @@ def _person_name(person: dict) -> str:
     return esc(person["name"])
 
 
-def _people_rows(people: list, scope: str) -> str:
+def _people_rows(people: list, scope: str, page) -> str:
+    token_col = ["Token"] if page.tokens else []
     if scope == "week":
         shown = [p for p in people if p["week"]["completed"] or p["in_progress"]["count"]]
-        headers = ["執行人", "實際工時", "Token", "交付", "進行中"]
+        headers = ["執行人", "實際工時"] + token_col + ["交付", "進行中"]
     else:
         shown = [p for p in people if p["cumulative"]["completed"]]
-        headers = ["執行人", "實際工時", "Token", "交付", "完成卡片"]
-    rows = [("warn-row" if p["name"] == UNASSIGNED_OWNER else "", [_person_name(p)] + _person_cells(p, scope)) for p in shown]
+        headers = ["執行人", "實際工時"] + token_col + ["交付", "完成卡片"]
+    rows = [("warn-row" if p["name"] == UNASSIGNED_OWNER else "", [_person_name(p)] + _person_cells(p, scope, page)) for p in shown]
     return _rows(headers, rows, "沒有人有完成或進行中的卡")
 
 
@@ -254,7 +266,7 @@ def _completed_by_delivery(metrics, page) -> str:
             cards = [c for c in metrics["completed"] if c["root"] == d["key"] and c["key"] != d["key"]]
             sub_count = f' · {len(cards)} 張子卡' if cards else ""
             head = (f'<span>{page.issue(d["key"])} {esc(d["summary"])} <span class="muted">· {esc(d["owner"])} · {esc(d["result"])}{sub_count}</span></span>'
-                    f'<span class="nums">{esc(fmt_hours(d["hours"]))} · Token {esc(fmt_tokens(d["tokens"]))}</span>')
+                    f'<span class="nums">{esc(fmt_hours(d["hours"]))}{_token_suffix(d["tokens"], page)}</span>')
             if cards:
                 sub = "".join(f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["owner"])}</span></span>'
                               f'<span class="nums">{esc(fmt_card_hours(c))}</span></li>' for c in cards)
@@ -266,13 +278,13 @@ def _completed_by_delivery(metrics, page) -> str:
         for c in rows:
             if c["root"] not in delivered:
                 items.append(f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["owner"])} · 完成</span></span>'
-                             f'<span class="nums">{esc(fmt_card_hours(c))} · Token {esc(fmt_tokens(c["tokens"]))}</span></li>')
+                             f'<span class="nums">{esc(fmt_card_hours(c))}{_token_suffix(c["tokens"], page)}</span></li>')
         groups.append(f'<h4>{page.title(epic["key"], epic["summary"])}</h4><ul class="list">{"".join(items)}</ul>')
     # epic 先前已結案時沒有專案列，但底下的卡本週仍可能完成，完成卡片 KPI 也有算它們
     shown = {e["id"] for e in metrics["epics"]}
     others = "".join(
         f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["project"])} · {esc(c["owner"])}</span></span>'
-        f'<span class="nums">{esc(fmt_card_hours(c))} · Token {esc(fmt_tokens(c["tokens"]))}</span></li>'
+        f'<span class="nums">{esc(fmt_card_hours(c))}{_token_suffix(c["tokens"], page)}</span></li>'
         for c in metrics["completed"] if c["group"] not in shown)
     if others:
         groups.append(f'<h4>其他完成的卡 <span class="muted">· 所屬 epic 已結案</span></h4><ul class="list">{others}</ul>')
@@ -317,11 +329,11 @@ def _week_panel(metrics, narrative, page) -> str:
     return f"""
   {points}
   <h3>資源</h3>
-  {_kpis(_resource_tiles(metrics["totals"], ""))}
+  {_resources(metrics["totals"], "", page)}
   <h3>專案列表</h3>
   {projects}
   <h3>人</h3>
-  {_people_rows(metrics["people"], "week")}
+  {_people_rows(metrics["people"], "week", page)}
   <h3>依支援單位</h3>
   {_units(metrics)}
   <h3>完成</h3>
@@ -335,8 +347,9 @@ def _cumulative_panel(metrics, page) -> str:
         "",
         [f'{page.title(e["key"], e["summary"])} {_pill(e["status"])}',
          f'{e["progress"]["done_cards"]}/{e["progress"]["total_cards"]}',
-         esc(fmt_hours(e["hours"])), esc(fmt_tokens(e["tokens"])),
-         esc(fmt_date(e["due"])) if e["due"] else DASH],
+         esc(fmt_hours(e["hours"]))]
+        + ([esc(fmt_tokens(e["tokens"]))] if page.tokens else [])
+        + [esc(fmt_date(e["due"])) if e["due"] else DASH],
     ) for e in c["epics"]]
     weeks = []
     for w in c["weeks"]:
@@ -349,11 +362,11 @@ def _cumulative_panel(metrics, page) -> str:
     return f"""
   <p class="note">{since}</p>
   <h3>資源</h3>
-  {_kpis(_resource_tiles(c["totals"], "累計"))}
+  {_resources(c["totals"], "累計", page)}
   <h3>專案列表</h3>
-  {_rows(["專案", "進度", "實際工時", "Token", "目標日"], projects, "還沒有任何專案")}
+  {_rows(["專案", "進度", "實際工時"] + (["Token"] if page.tokens else []) + ["目標日"], projects, "還沒有任何專案")}
   <h3>人</h3>
-  {_people_rows(metrics["people"], "cumulative")}
+  {_people_rows(metrics["people"], "cumulative", page)}
   <h3>完成</h3>
   {"".join(weeks) or '<p class="muted">還沒有任何完成的卡。</p>'}
   {_breakpoint(metrics["migrated"]["cumulative"], page, with_week=True)}"""
@@ -390,13 +403,12 @@ def _team_panel(metrics, page) -> str:
       <div class="card-head"><h3>{esc(p["name"])}</h3><div class="figures"><span>進行中 <b>{prog["count"]}</b> 張</span></div></div>
       {note}
       <div class="split">
-        <div><span class="label">本週</span>實際工時 <b>{esc(fmt_hours(week["hours"]))}</b> · Token {esc(fmt_tokens(week["tokens"]))} · 交付 {week["deliverables"]}<p>{_split(week["by_project"])}</p></div>
-        <div><span class="label">累計</span>實際工時 <b>{esc(fmt_hours(cum["hours"]))}</b> · Token {esc(fmt_tokens(cum["tokens"]))} · 交付 {cum["deliverables"]}<p>{_split(cum["by_project"])}</p></div>
+        <div><span class="label">本週</span>實際工時 <b>{esc(fmt_hours(week["hours"]))}</b>{_token_suffix(week["tokens"], page)} · 交付 {week["deliverables"]}<p>{_split(week["by_project"])}</p></div>
+        <div><span class="label">累計</span>實際工時 <b>{esc(fmt_hours(cum["hours"]))}</b>{_token_suffix(cum["tokens"], page)} · 交付 {cum["deliverables"]}<p>{_split(cum["by_project"])}</p></div>
       </div>
       {lists}
     </article>""")
-    note = f'<p class="note">Token {NO_TOKEN_SOURCE}，下面的 Token 都顯示「{DASH}」。</p>' if metrics["cumulative"]["totals"]["tokens"] is None else ""
-    return note + ("".join(cards) or '<p class="muted">還沒有任何人有完成或進行中的卡。</p>')
+    return "".join(cards) or '<p class="muted">還沒有任何人有完成或進行中的卡。</p>'
 
 
 def _checks(metrics, page) -> str:
@@ -581,9 +593,9 @@ h4{font-size:14px;margin:18px 0 6px}
 .highlights{margin:20px 0 0;padding:12px 16px 12px 36px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0}
 .highlights li{margin:4px 0}
 p.highlights{padding-left:16px}
-.kpis{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kpis{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(var(--kpis),minmax(0,1fr));gap:10px}
 .kpis li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;min-width:0}
-.kpis li:nth-child(-n+2) strong{font-size:28px}
+.kpis li.big strong{font-size:28px}
 .kpis span{color:var(--muted);font-size:12px}
 .kpis strong{font-size:22px;font-variant-numeric:tabular-nums;line-height:1.3}
 .kpis small{color:var(--muted);font-size:12px}

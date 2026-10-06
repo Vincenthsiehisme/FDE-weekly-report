@@ -85,6 +85,13 @@ class CumulativeTokensTest(AtomicWriteTest):
         with self.assertRaises(ValueError):
             weekly.load_cumulative_tokens("2026-W39")
 
+    def test_source_exists_looks_at_the_whole_folder_not_this_week(self):
+        # 來源接上後回補更早的週：資料夾有檔但這一期的累計是 None，頁面要靠這個旗標維持「—」欄（AC-4）
+        self.assertFalse(weekly.token_source_exists())
+        self._write("2026-W40.json", {"CS-1": 1000})
+        self.assertTrue(weekly.token_source_exists())
+        self.assertIsNone(weekly.load_cumulative_tokens("2026-W39"))
+
 
 class KickoffStateTest(AtomicWriteTest):
     def _snap(self, fetched_at, with_kickoff=True, text="Objective：目標"):
@@ -178,6 +185,15 @@ class ExcludedConfigTest(AtomicWriteTest):
         self.assertEqual(metrics["totals"]["tokens"], 5)
         self.assertEqual(metrics["cumulative"]["totals"]["tokens"], 5)
         self.assertEqual([c["kind"] for c in metrics["checks"] if c["kind"] == "token_unknown_key"], [])
+
+    def test_token_source_from_a_later_week_file_is_carried_into_metrics(self):
+        # 接線：資料夾狀態要從 weekly 傳進 metrics，render 才不會從累計推成隱藏
+        self._write('{"cards": {}, "epics": {}}')
+        (self.root / "data" / "tokens").mkdir(parents=True)
+        (self.root / "data" / "tokens" / "2026-W40.json").write_text('{"CS-3": 40}', encoding="utf-8")
+        metrics = weekly.publish_week(self._snap(), fresh_fetch=False)
+        self.assertTrue(metrics["token_source"])
+        self.assertIsNone(metrics["cumulative"]["totals"]["tokens"])
 
     def test_excluded_epic_missing_right_after_fetching_is_an_error(self):
         # prepare 剛抓完 Jira 還找不到：卡號打錯，或 epic 被刪、搬走。放行的話整個專案會照樣上週報

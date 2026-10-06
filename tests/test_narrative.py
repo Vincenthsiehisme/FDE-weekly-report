@@ -11,7 +11,7 @@ ISSUES = [
     issue("CS-2", level=0, parent="CS-1", status="done", points=1.5, resolved=IN_WEEK),
     issue("CS-3", level=0, parent="CS-1", status="done", points=2.0, resolved=IN_WEEK),
 ]
-METRICS = compute(snapshot(ISSUES), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={})
+METRICS = compute(snapshot(ISSUES), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
 KEYS = {i["key"] for i in ISSUES}
 
 
@@ -34,7 +34,7 @@ class ProgramNumbersOnlyTest(unittest.TestCase):
     ]
 
     def setUp(self):
-        self.metrics = compute(snapshot(self.ISSUES), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={})
+        self.metrics = compute(snapshot(self.ISSUES), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
         self.keys = {i["key"] for i in self.ISSUES}
 
     def check(self, text):
@@ -69,7 +69,7 @@ class ProgramNumbersOnlyTest(unittest.TestCase):
                   issue("CS-3", level=-1, parent="CS-2", status="done", points=1.0, resolved=IN_WEEK),
                   issue("CS-4", level=-1, parent="CS-2", status="done", points=2.0, resolved=IN_WEEK),
                   issue("CS-5", level=0, parent="CS-1", status="done", points=0.5, resolved=IN_WEEK)]
-        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={})
+        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
         week = m["epics"][0]["week"]
         self.assertEqual((week["completed_count"], week["deliverables"]), (4, 2))
         validate({"highlights": [f"完成 {week['completed_count']} 張、交付 {week['deliverables']} 項"],
@@ -130,7 +130,7 @@ class NarrativeTest(unittest.TestCase):
             validate(narrative(highlights=["a", "b", "c", "d"]), METRICS, KEYS)
 
     def test_quiet_week_requires_empty_highlights(self):
-        quiet = compute(snapshot([issue("CS-1", level=1, status="doing")]), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={})
+        quiet = compute(snapshot([issue("CS-1", level=1, status="doing")]), period_ending(date(2026, 9, 22)), [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
         validate({"highlights": [], "epic_results": {}}, quiet, {"CS-1"})
         with self.assertRaisesRegex(NarrativeError, "必須是空陣列"):
             validate({"highlights": ["硬寫一條"], "epic_results": {}}, quiet, {"CS-1"})
