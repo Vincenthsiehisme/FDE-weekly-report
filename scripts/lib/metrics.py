@@ -10,6 +10,7 @@
 - Status 只有 Done（epic 已完成）與 On Track。
 - 累計：snapshot 抓的是兩個專案的全部卡片，不限期間，所以累計直接從同一份 snapshot 重算到本期結束，
   不讀舊期的 metrics。
+- 專案投入：每個專案由幾個人產出、花多少實際工時，人跟工時同一個口徑（完成的葉節點），未指派不算人。
 - 排除：config/excluded.json 列的卡不算完成，本週與累計的張數、工時、交付、人、支援單位都不算；
   epic 進度照 Jira 狀態算完成（2026-09-27 使用者裁：Squad 8 移轉時補建的 8 張不算當週）。
 - 整棵排除：config/excluded.json 的 epics 列的 epic 連同底下所有卡在算之前就移出，不列專案、不算數字、
@@ -35,7 +36,7 @@ UNASSIGNED_OWNER = "未指派"
 UNIT_UNCLASSIFIED = "未分類"
 UNIT_MULTIPLE = "多個單位（待釐清）"
 STALE_DAYS = 7
-SCHEMA = 4  # 4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
+SCHEMA = 5  # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
 SNAPSHOT_SCHEMA = 2  # snapshot 要有 moved_in 才判斷得了改組前
 
 
@@ -439,6 +440,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
 
     cumulative = _cumulative(tree, period, groups, group_of, leaves, cumulative_done, done_by_end, cumulative_tokens, completed_row)
     people = _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cumulative_tokens)
+    staffing = _staffing(tree, group_of, week_done, cumulative_done)
 
     active_rows = [r for r in epic_rows if r["active"]]
     return {
@@ -464,6 +466,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         "in_progress": in_progress,
         "cumulative": cumulative,
         "people": people,
+        "staffing": staffing,
         "migrated": {
             "week": [migrated_row(k) for k in sorted(raw_week_done & migrated, key=issue_sort_key)],
             "cumulative": [migrated_row(k) for k in sorted(done_by_end & migrated, key=issue_sort_key)],
@@ -534,6 +537,12 @@ def _cumulative(tree, period, groups, group_of, leaves, done, done_in_jira, toke
     }
 
 
+def _group_info(tree, group_id) -> dict:
+    if group_id == UNASSIGNED_EPIC:
+        return {"id": group_id, "key": None, "summary": UNASSIGNED_EPIC_LABEL}
+    return {"id": group_id, "key": group_id, "summary": tree.by_key[group_id]["summary"]}
+
+
 def _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cumulative_tokens) -> list:
     """執行人視角：每個人本週與累計的完成、工時、Token、各專案時數，加上手上進行中的葉節點卡。
     工時與進行中都只算葉節點（跟 Hours 同一個口徑）；Token 算他名下所有完成卡，Token 是用量不是工時，
@@ -568,11 +577,6 @@ def _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cum
         p["hours"] += points or 0
         p["unestimated"] += points is None
 
-    def group_info(group_id):
-        if group_id == UNASSIGNED_EPIC:
-            return {"id": group_id, "key": None, "summary": UNASSIGNED_EPIC_LABEL}
-        return {"id": group_id, "key": group_id, "summary": tree.by_key[group_id]["summary"]}
-
     def out(b, tokens_map):
         return {
             "hours": _round(b["hours"]),
@@ -580,7 +584,7 @@ def _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cum
             "deliverables": len(b["roots"]),
             "completed": len(b["cards"]),
             "completed_keys": sorted(b["cards"], key=issue_sort_key),
-            "by_project": [dict(group_info(g), hours=_round(v["hours"]), unestimated=v["unestimated"])
+            "by_project": [dict(_group_info(tree, g), hours=_round(v["hours"]), unestimated=v["unestimated"])
                            for g, v in sorted(b["groups"].items(), key=lambda kv: _group_sort_key(kv[0]))],
         }
 
@@ -596,6 +600,44 @@ def _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cum
         },
     } for name, p in acc.items()]
     rows.sort(key=lambda r: (r["name"] == UNASSIGNED_OWNER, -r["cumulative"]["hours"], -r["week"]["hours"], r["name"]))
+    return rows
+
+
+def _staffing(tree, group_of, week_done, cumulative_done) -> list:
+    """專案投入：每個專案本週與累計各由幾個人產出、花多少實際工時（2026-10-06 使用者：團隊要看單一 epic 由多少人產出、花多久時間）。
+    跟人的工時同一個口徑：只算完成的葉節點，父卡的執行人沒有自己完成葉節點就不算人。
+    工時從葉節點原值加總、最後捨入一次，跟專案列表一致；不從 people 已捨入的各專案時數反推（Codex 審 P2）。
+    未指派不算人，工時照加並標 unassigned；未填工時的張數另計，工時 0 不代表沒花時間。人名照他在這個專案的工時排，多的在前。"""
+    def scope():
+        return {"by_person": {}, "hours": 0.0, "unestimated": 0, "unassigned": False}
+
+    acc = {}
+    for item in tree.work:
+        if not tree.is_leaf(item):
+            continue
+        for name, done in (("week", week_done), ("cumulative", cumulative_done)):
+            if item["key"] not in done:
+                continue
+            group_id = group_of[item["key"]]
+            row = acc.setdefault(group_id, dict(_group_info(tree, group_id), week=scope(), cumulative=scope()))
+            s = row[name]
+            owner = tree.owner_of(item)
+            if owner == UNASSIGNED_OWNER:
+                s["unassigned"] = True
+            else:
+                s["by_person"][owner] = s["by_person"].get(owner, 0.0) + (item["points"] or 0)
+            s["hours"] += item["points"] or 0
+            s["unestimated"] += item["points"] is None
+    rows = []
+    for group_id in sorted(acc, key=_group_sort_key):
+        row = acc[group_id]
+        for name in ("week", "cumulative"):
+            s = row[name]
+            people = sorted(s.pop("by_person").items(), key=lambda kv: (-kv[1], kv[0]))
+            s["people"] = [n for n, _ in people]
+            s["people_count"] = len(people)
+            s["hours"] = _round(s["hours"])
+        rows.append(row)
     return rows
 
 
