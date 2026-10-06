@@ -3,7 +3,7 @@
     "CS": 28,
     "FDEPROJECT": 319
   },
-  "fetched_at": "2026-10-07T06:27:25.382288+08:00",
+  "fetched_at": "2026-10-07T06:38:51.223805+08:00",
   "issues": [
     {
       "assignee": "hubertwang",
@@ -434,7 +434,7 @@
       "updated": "2026-09-30T20:07:07.907+0800"
     },
     {
-      "assignee": null,
+      "assignee": "hubertwang",
       "due": null,
       "key": "CS-25",
       "labels": [
@@ -450,7 +450,7 @@
       "status_category": "indeterminate",
       "summary": "歐洲地接社-房產品資料彙整",
       "type": "大型工作",
-      "updated": "2026-09-23T13:39:27.240+0800"
+      "updated": "2026-10-07T06:37:09.809+0800"
     },
     {
       "assignee": "Vincent Hsieh",
