@@ -3167,8 +3167,123 @@
     "week": "2026-W40",
     "week_ending": "2026-09-29"
   },
-  "schema": 4,
+  "schema": 5,
   "site": "liontech-tw.atlassian.net",
+  "staffing": [
+    {
+      "cumulative": {
+        "hours": 9.5,
+        "people": [
+          "hubertwang"
+        ],
+        "people_count": 1,
+        "unassigned": false,
+        "unestimated": 0
+      },
+      "id": "CS-25",
+      "key": "CS-25",
+      "summary": "歐洲地接社-房產品資料彙整",
+      "week": {
+        "hours": 0.0,
+        "people": [],
+        "people_count": 0,
+        "unassigned": false,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 0.0,
+        "people": [
+          "陳勁佑 Jincoco"
+        ],
+        "people_count": 1,
+        "unassigned": false,
+        "unestimated": 16
+      },
+      "id": "FDEPROJECT-71",
+      "key": "FDEPROJECT-71",
+      "summary": "門市 AI 客服",
+      "week": {
+        "hours": 0.0,
+        "people": [
+          "陳勁佑 Jincoco"
+        ],
+        "people_count": 1,
+        "unassigned": false,
+        "unestimated": 16
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 4.5,
+        "people": [
+          "Vincent Hsieh"
+        ],
+        "people_count": 1,
+        "unassigned": false,
+        "unestimated": 0
+      },
+      "id": "FDEPROJECT-78",
+      "key": "FDEPROJECT-78",
+      "summary": "培訓課程網站",
+      "week": {
+        "hours": 4.5,
+        "people": [
+          "Vincent Hsieh"
+        ],
+        "people_count": 1,
+        "unassigned": false,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 4.5,
+        "people": [
+          "Vincent Hsieh"
+        ],
+        "people_count": 1,
+        "unassigned": false,
+        "unestimated": 0
+      },
+      "id": "FDEPROJECT-79",
+      "key": "FDEPROJECT-79",
+      "summary": "MeetPilot 團隊會議記錄",
+      "week": {
+        "hours": 4.5,
+        "people": [
+          "Vincent Hsieh"
+        ],
+        "people_count": 1,
+        "unassigned": false,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 0.75,
+        "people": [
+          "Vincent Hsieh"
+        ],
+        "people_count": 1,
+        "unassigned": false,
+        "unestimated": 0
+      },
+      "id": "FDEPROJECT-110",
+      "key": "FDEPROJECT-110",
+      "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
+      "week": {
+        "hours": 0.75,
+        "people": [
+          "Vincent Hsieh"
+        ],
+        "people_count": 1,
+        "unassigned": false,
+        "unestimated": 0
+      }
+    }
+  ],
   "token_source": false,
   "totals": {
     "completed": 36,
