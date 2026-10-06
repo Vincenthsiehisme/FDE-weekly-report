@@ -3,7 +3,7 @@
 版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者是主管，
 分三個頁籤：持續累積、本週（預設）、團隊。vault 的週報範本只當資訊清單，不照它的節次排。
 Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都沒有時整欄不顯示、資源區只留一行說明，
-有檔但沒記錄的卡顯示「—」，不顯示 0。
+有檔但沒記錄的卡顯示「—」，不顯示 0。目標日不顯示（2026-10-06 使用者裁：不是當前重點；metrics 仍帶 due）。
 工時是實際花費時數（2026-09-30 使用者確認：Story point estimate 由執行人完工後回填），頁面一律叫「實際工時」；
 頁尾的名詞定義是每個詞的口徑正本，改算法時同一次改那裡。
 頁籤靠少量 JS 切換，沒有 JS 時三個頁籤全部攤開。
@@ -204,10 +204,7 @@ def _week_project(epic, narrative, in_progress, page) -> str:
         result = f'<p class="result">{esc(narrative["epic_results"][epic["id"]])}</p>'
     else:
         result = '<p class="result muted">本週沒有完成項目</p>'
-    meta = ""
-    if epic["key"]:
-        due = esc(fmt_date(epic["due"])) if epic["due"] else "未設定"
-        meta = f'<p class="meta">負責人 {esc(epic["owner"])} · 目標日 {due}</p>'
+    meta = f'<p class="meta">負責人 {esc(epic["owner"])}</p>' if epic["key"] else ""
 
     doing_html = _doing([r for r in in_progress if r["group"] == epic["id"]], page, with_project=False)
     token = f'<span>Token <b>{esc(fmt_tokens(week["tokens"]))}</b></span>' if page.tokens else ""
@@ -348,8 +345,7 @@ def _cumulative_panel(metrics, page) -> str:
         [f'{page.title(e["key"], e["summary"])} {_pill(e["status"])}',
          f'{e["progress"]["done_cards"]}/{e["progress"]["total_cards"]}',
          esc(fmt_hours(e["hours"]))]
-        + ([esc(fmt_tokens(e["tokens"]))] if page.tokens else [])
-        + [esc(fmt_date(e["due"])) if e["due"] else DASH],
+        + ([esc(fmt_tokens(e["tokens"]))] if page.tokens else []),
     ) for e in c["epics"]]
     weeks = []
     for w in c["weeks"]:
@@ -364,7 +360,7 @@ def _cumulative_panel(metrics, page) -> str:
   <h3>資源</h3>
   {_resources(c["totals"], "累計", page)}
   <h3>專案列表</h3>
-  {_rows(["專案", "進度", "實際工時"] + (["Token"] if page.tokens else []) + ["目標日"], projects, "還沒有任何專案")}
+  {_rows(["專案", "進度", "實際工時"] + (["Token"] if page.tokens else []), projects, "還沒有任何專案")}
   <h3>人</h3>
   {_people_rows(metrics["people"], "cumulative", page)}
   <h3>完成</h3>
