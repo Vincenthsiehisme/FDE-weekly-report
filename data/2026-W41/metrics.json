@@ -36,6 +36,61 @@
       "message": "依 config/excluded.json 不算本週與累計完成：路線取消、轉完成只為結案，沒有交付；2026-09-30 使用者裁不算完成"
     },
     {
+      "key": "CS-25",
+      "kind": "label_mismatch",
+      "message": "底下 2 張卡的 label 跟 epic 的「歐洲團產TP」不同，頁面以 epic 為準：CS-27、CS-28"
+    },
+    {
+      "key": "FDEPROJECT-71",
+      "kind": "epic_label",
+      "message": "epic 沒有 label，歸未分類"
+    },
+    {
+      "key": "FDEPROJECT-72",
+      "kind": "epic_label",
+      "message": "epic 沒有 label，歸未分類"
+    },
+    {
+      "key": "FDEPROJECT-73",
+      "kind": "epic_label",
+      "message": "epic 沒有 label，歸未分類"
+    },
+    {
+      "key": "FDEPROJECT-78",
+      "kind": "label_mismatch",
+      "message": "底下 9 張卡的 label 跟 epic 的「IT_team」不同，頁面以 epic 為準：FDEPROJECT-80、FDEPROJECT-81、FDEPROJECT-82、FDEPROJECT-83、FDEPROJECT-84、FDEPROJECT-85、FDEPROJECT-86、FDEPROJECT-87、FDEPROJECT-88"
+    },
+    {
+      "key": "FDEPROJECT-79",
+      "kind": "label_mismatch",
+      "message": "底下 11 張卡的 label 跟 epic 的「FDE_team」不同，頁面以 epic 為準：FDEPROJECT-89、FDEPROJECT-90、FDEPROJECT-91、FDEPROJECT-92、FDEPROJECT-93、FDEPROJECT-94、FDEPROJECT-95、FDEPROJECT-96、FDEPROJECT-97、FDEPROJECT-98、FDEPROJECT-99"
+    },
+    {
+      "key": "FDEPROJECT-110",
+      "kind": "epic_label",
+      "message": "epic 有 2 個 label（FDE_team、notion_user），歸未分類"
+    },
+    {
+      "key": "FDEPROJECT-140",
+      "kind": "epic_label",
+      "message": "epic 沒有 label，歸未分類"
+    },
+    {
+      "key": "FDEPROJECT-183",
+      "kind": "epic_label",
+      "message": "epic 沒有 label，歸未分類"
+    },
+    {
+      "key": "FDEPROJECT-309",
+      "kind": "epic_label",
+      "message": "epic 沒有 label，歸未分類"
+    },
+    {
+      "key": "FDEPROJECT-312",
+      "kind": "epic_label",
+      "message": "epic 沒有 label，歸未分類"
+    },
+    {
       "key": "FDEPROJECT-72",
       "kind": "kickoff_missing",
       "message": "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"
@@ -49,36 +104,6 @@
       "key": "FDEPROJECT-183",
       "kind": "kickoff_missing",
       "message": "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"
-    },
-    {
-      "key": null,
-      "kind": "units_unconfigured",
-      "message": "config/units.json 白名單是空的，支援單位全部歸未分類"
-    },
-    {
-      "key": null,
-      "kind": "unit_unknown_label",
-      "message": "label「AILab」不在 config/units.json 白名單，歸為未分類"
-    },
-    {
-      "key": null,
-      "kind": "unit_unknown_label",
-      "message": "label「notion_user」不在 config/units.json 白名單，歸為未分類"
-    },
-    {
-      "key": null,
-      "kind": "unit_unknown_label",
-      "message": "label「東北亞」不在 config/units.json 白名單，歸為未分類"
-    },
-    {
-      "key": null,
-      "kind": "unit_unknown_label",
-      "message": "label「直售」不在 config/units.json 白名單，歸為未分類"
-    },
-    {
-      "key": null,
-      "kind": "unit_unknown_label",
-      "message": "label「門市」不在 config/units.json 白名單，歸為未分類"
     }
   ],
   "completed": [
@@ -1634,18 +1659,6 @@
         "project": "CS-25 歐洲地接社-房產品資料彙整",
         "root": "CS-5",
         "summary": "地接社飯店資料格式調查（Agent Workflow 前置分析）",
-        "tokens": null,
-        "week": "2026-W39"
-      },
-      {
-        "group": "CS-25",
-        "hours": null,
-        "key": "CS-16",
-        "leaf": false,
-        "owner": "hubertwang",
-        "project": "CS-25 歐洲地接社-房產品資料彙整",
-        "root": "CS-16",
-        "summary": "地接社飯店資料解析 Pipeline 建置",
         "tokens": null,
         "week": "2026-W39"
       },
@@ -3848,12 +3861,26 @@
     ],
     "epics": [
       {
-        "completed": 11,
-        "deliverables": 2,
+        "completed": 10,
         "due": null,
         "hours": 14.5,
         "id": "CS-25",
         "key": "CS-25",
+        "kickoff": {
+          "key": "CS-26",
+          "locked_at": "2026-09-30T04:06:18.003769+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "解析 Pipeline 部署在 VM、改用 Git 部署；能隔離回覆信串，解析 Palma、Kuoni Tumlare、Happy Tours、Vosaio 四家表格式、G2 兩種格式與 MIKI 的 PDF 附件，輸出 OP 端 docx；解析結果存進資料庫並與 OTA／Expedia 資料整合",
+            "before": "地接社各自用不同格式寄飯店資料：表格、文字信件、PDF 附件，信裡還夾著回覆信串",
+            "decision": "CS-24 標「非本人待辦」，資料庫儲存與 OTA／Expedia 資料整合要由誰接手",
+            "evidence": "Pipeline 在 VM 上產出 OP 端 docx；資料庫儲存與 OTA／Expedia 資料整合完成（CS-24）",
+            "next_milestone": "資料庫儲存與 OTA／Expedia 資料整合（CS-24）",
+            "objective": "把歐洲地接社寄來的飯店資料信件自動解析，整理成 OP 可以直接用的文件，並存進資料庫",
+            "why": "地接社各自用不同格式寄資料，要先解析、標準化，後續的 Agent Workflow 才有乾淨的資料可用"
+          }
+        },
+        "label": "歐洲團產TP",
         "owner": "未指派",
         "progress": {
           "done_cards": 10,
@@ -3869,16 +3896,30 @@
       },
       {
         "completed": 88,
-        "deliverables": 88,
         "due": null,
         "hours": 54.0,
         "id": "FDEPROJECT-71",
         "key": "FDEPROJECT-71",
+        "kickoff": {
+          "key": "FDEPROJECT-108",
+          "locked_at": "2026-09-30T04:06:18.003769+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "正式版 bot 在公司頻道交到門市同仁手上；客人在 LINE 或 LIFF 網頁用對話查商品、拿到商品卡，答不了就轉真人並附 AI 摘要；商品連結帶門市追蹤碼",
+            "before": "門市官方帳號沒有 AI 搜尋，客服 FAQ 只在客服正式機裡，客人的商品問題要靠真人回覆",
+            "decision": null,
+            "evidence": "正式版重跑發佈驗收清單通過；LINE 版與網頁版同一批問題的成本與延遲對照；MCP 搜尋命中率看板；FAQ 1863 則已進知識庫",
+            "next_milestone": "正式版 LINE bot 發佈給門市同仁（FDEPROJECT-10）",
+            "objective": "讓客人在門市的 LINE 官方帳號用對話查雄獅的機票、飯店、團體行程與票券，AI 直接回商品卡，需要時轉真人，bot 帶來的瀏覽與成交追溯得回門市",
+            "why": "門市要一個能自己回答商品問題、轉得回門市的客服入口；bot 帶來的業績追溯不回門市，就證明不了這條線值不值得繼續投資"
+          }
+        },
+        "label": "未分類",
         "owner": "陳勁佑 Jincoco",
         "progress": {
-          "done_cards": 133,
-          "done_points": 69.75,
-          "percent": 92,
+          "done_cards": 88,
+          "done_points": 54.0,
+          "percent": 71,
           "total_cards": 140,
           "total_points": 75.75,
           "unestimated_cards": 51
@@ -3889,16 +3930,17 @@
       },
       {
         "completed": 5,
-        "deliverables": 5,
         "due": null,
         "hours": 2.0,
         "id": "FDEPROJECT-72",
         "key": "FDEPROJECT-72",
+        "kickoff": null,
+        "label": "未分類",
         "owner": "陳勁佑 Jincoco",
         "progress": {
-          "done_cards": 19,
-          "done_points": 10.5,
-          "percent": 100,
+          "done_cards": 5,
+          "done_points": 2.0,
+          "percent": 19,
           "total_cards": 19,
           "total_points": 10.5,
           "unestimated_cards": 5
@@ -3909,16 +3951,30 @@
       },
       {
         "completed": 9,
-        "deliverables": 9,
         "due": null,
         "hours": 4.75,
         "id": "FDEPROJECT-73",
         "key": "FDEPROJECT-73",
+        "kickoff": {
+          "key": "FDEPROJECT-109",
+          "locked_at": "2026-09-30T04:06:18.003769+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "五支腳本全部產出，9 段影片 9 段成功；導入 8 步加速 LoRA 後一支 30 秒影片機器時間從約 3.9 小時降到約 1.1 小時；提示詞改用官方六欄格式後畫面文字可讀；確定要維持人物與場景一致就餵參考圖片、不餵參考影片",
+            "before": "沒有自產短影音的實測數據，只有外部公開、前後矛盾的平台單價",
+            "decision": "需要其他平台 Ovideo、Lumina 的實際帳單，才能做成本比較（FDEPROJECT-69）",
+            "evidence": "沙盒成品五支與兩輪實驗紀錄（FDEPROJECT-67、68）；補齊後製工時、平均嘗試次數與其他平台實際單價之後的成本比較（FDEPROJECT-69）",
+            "next_milestone": "補齊三項成本數據後做跨平台成本比較（FDEPROJECT-69）",
+            "objective": "用開源影音模型 MiniMax H3 在自己的 GPU 沙盒產出短影音，拿出時間、費用、品質的實測數據，作為跟外部影音平台比較的依據",
+            "why": "要決定短影音自己用開源模型產、還是用外部平台，得有自己的實測成本；外部公開的單價前後矛盾，拿二手數字比會誤導決策"
+          }
+        },
+        "label": "未分類",
         "owner": "陳勁佑 Jincoco",
         "progress": {
-          "done_cards": 11,
-          "done_points": 17.0,
-          "percent": 100,
+          "done_cards": 9,
+          "done_points": 4.75,
+          "percent": 28,
           "total_cards": 12,
           "total_points": 17.0,
           "unestimated_cards": 1
@@ -3929,11 +3985,25 @@
       },
       {
         "completed": 9,
-        "deliverables": 9,
         "due": null,
         "hours": 4.5,
         "id": "FDEPROJECT-78",
         "key": "FDEPROJECT-78",
+        "kickoff": {
+          "key": "FDEPROJECT-76",
+          "locked_at": "2026-09-30T04:06:18.003769+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "公開網站收齊十節教材、十場工作坊、20 張圖與每節課後講義；閱讀模式給學員預習複習，投影模式一題一畫面、依時間表倒數",
+            "before": "教材只有 LINE 對話匯出的文字檔 13,851 行、20 張運作圖與工作坊圖，以及只涵蓋第一節的講義 PDF，沒有整理過、能閱讀或投影的版本",
+            "decision": "講師確認第一節工作坊採 LINE 文字版、第二節採圖片版（FDEPROJECT-87）",
+            "evidence": "網站 https://lion-academy-course.vercel.app/index.html 已上線，首頁、十節、名詞索引、講義 PDF、圖片都能開，內容與 repo 建置逐檔一致",
+            "next_milestone": "講師確認網站內容後結案（FDEPROJECT-87）",
+            "objective": "把雄獅學院 EMBA「旅遊產業」十節培訓課程收攏成一個課程網站，學員閱讀與講師投影帶課共用同一份內容",
+            "why": "對象是新進協理級以上主管，每節 6 小時，前 3 小時講課、後 3 小時分組工作坊；學員要有地方課前預習、課後複習，講師要有能直接投影帶課的版本"
+          }
+        },
+        "label": "IT_team",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 9,
@@ -3949,11 +4019,25 @@
       },
       {
         "completed": 9,
-        "deliverables": 9,
         "due": null,
         "hours": 4.5,
         "id": "FDEPROJECT-79",
         "key": "FDEPROJECT-79",
+        "kickoff": {
+          "key": "FDEPROJECT-77",
+          "locked_at": "2026-09-30T04:06:18.003769+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "記錄人裝 .dmg 或 .exe、輸入邀請碼就能錄音與轉錄；Gemini key 與名單由 gateway 發放，不落在設定檔；記錄以 markdown 投影到共享資料夾，讀的人零安裝；新版放進共享資料夾的更新區就能更新",
+            "before": "MeetPilot 只在一台 Mac 上本地架設，要自己裝 Node 與 ffmpeg、編設定檔、放 Gemini key 與名單 CSV，其他人無法使用",
+            "decision": null,
+            "evidence": "乾淨的 Mac 與 Windows 各裝一次、啟動到主畫面；Windows 上一場真實錄音跑到轉錄完成，記錄出現在共享資料夾；CI 的 macOS 與 Windows 矩陣全綠；語音備忘錄與 app 內錄音的逐字稿對照",
+            "next_milestone": "第一次發版給 5 位記錄人（FDEPROJECT-99），前置是 Windows 實機端到端（FDEPROJECT-97）與共享資料夾上傳驗證",
+            "objective": "讓每位會議記錄人在自己的 Mac 或 Windows 電腦上安裝就能用 MeetPilot 錄音與轉錄，會議記錄自動放進共享資料夾，其他人不用安裝就能讀",
+            "why": "一場會議只有一位記錄人，記錄人各自用 Mac 或 Windows，Windows 是多數；工具只在一台電腦上能跑，其他記錄人就無法自己產出會議記錄"
+          }
+        },
+        "label": "FDE_team",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 9,
@@ -3969,16 +4053,32 @@
       },
       {
         "completed": 4,
-        "deliverables": 4,
         "due": null,
         "hours": 3.35,
         "id": "FDEPROJECT-110",
         "key": "FDEPROJECT-110",
+        "kickoff": {
+          "key": "FDEPROJECT-111",
+          "locked_at": "2026-09-30T04:06:18.003769+08:00",
+          "modified_at": [
+            "2026-09-30T07:04:59.596896+08:00"
+          ],
+          "sections": {
+            "after": "裝 Chrome 擴充功能、連結 Notion 一次，之後每場會後按「轉拋這一頁」，記錄以 `YYYY-MM-DD HHmm <標題>.md` 進公司共用資料夾的記錄人子資料夾；二期 AI Meeting Notes 完成後自動轉拋",
+            "before": "會議記錄留在各人的 Notion，要看得去問本人；格式各異，無法跟 MeetPilot 記錄放在一起讀",
+            "decision": null,
+            "evidence": "個人 workspace 實機走通 OAuth、一般頁面與資料庫列（含屬性）轉出 MeetPilot 外殼格式（本機 commit 9c78b33，測試 25 條綠）；待驗：有 AI Meeting Notes 方案的 workspace 讀出摘要、筆記、逐字稿；寫進 SharePoint",
+            "next_milestone": "Obsidian 端設定自動拉取；第一位同事授權並點名他的頁\n（2026-09-30 改寫：原 Objective 為擴充功能轉拋會議記錄到公司共用資料夾，路線改為 notion-mirror）",
+            "objective": "同事在 Notion 打開會議記錄頁按一下，記錄就以 MeetPilot 的外殼格式進公司共用資料夾，Notion AI Meeting Notes 與貼文字的一般頁面都適用",
+            "why": "很多人用 Notion 自行錄音與記會議，記錄散在各人頁面（不少是個人帳號、個人方案），別人找不到也用不到；MeetPilot 的記錄已集中，Notion 這一半還沒有"
+          }
+        },
+        "label": "未分類",
         "owner": "Vincent Hsieh",
         "progress": {
-          "done_cards": 9,
-          "done_points": 7.1,
-          "percent": 100,
+          "done_cards": 4,
+          "done_points": 3.35,
+          "percent": 47,
           "total_cards": 9,
           "total_points": 7.1,
           "unestimated_cards": 0
@@ -3989,11 +4089,25 @@
       },
       {
         "completed": 7,
-        "deliverables": 7,
         "due": null,
         "hours": 12.5,
         "id": "FDEPROJECT-140",
         "key": "FDEPROJECT-140",
+        "kickoff": {
+          "key": "FDEPROJECT-131",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "透過提供一個服務，讓User輸入需求(form), 輸出 包含價格的報價單檔案",
+            "before": "目前的報價單是手動填入，雖然已經有元件資料，但因為沒有關聯，所以每次開成本單，都需要人工去查找元件表，團房價電子檔和車產資料，然後手動填入；",
+            "decision": null,
+            "evidence": "預期效益\n降低外語產品組製作成本單時，人工查找 RES、POI、HTL、車價資料與重複 Key-in 的作業時間。\nUser 僅需輸入基本需求，即可透過既有建檔資料自動帶入品項與價格，快速產出「包含價格」的成本單。\n編輯成本單時，可透過補字／搜尋既有元件資料的方式完成新增與修改，降低人工輸入錯誤。\n在 S13 長期方案完成前，可先提供 Inbound 與客製國旅共用的短期能力，驗證既有元件資料是否足以支援成本單自動化。\n驗證方式\n選定實際 Inbound 案件，使用服務產出成本單，與現行人工製作流程進行比較。\n驗證 RES、POI、HTL、車價等既有資料是否可正確被搜尋、帶入與產出。\n確認產出的成本單已包含可用價格，User 不需要再次逐筆查找來源資料。\n比較導入前後完成一份成本單所需的人工操作時間與 Key-in 次數。\n蒐集外語產品組實際使用回饋，確認產出內容是否可直接作為後續報價與編輯的基礎。",
+            "next_milestone": "因為只有3天，先以處理「完整行程」的需求文字為主\n飯店已經有建立到MSSQL-[dev_tpp_htl_code_mapping], [dev_tpp_htl_quotations_serp]; 因此先以RES, POI資料填入為主\n下一階段再處理 - 行程不完整 + 車/飯店資料接入的需求",
+            "objective": "User: 入境部, 外語產品組, 李洳萱 經理\n目標:\nInbound 由現行取得的資料，透過資料串接的方式，快速產出包含報價的成本單，讓User可以不用手key成本單\n(包含編輯成本單，也可以透過補字的方式，使用已建檔的資料，填寫價格)\n(因為是Inbound, 所以需求的語言包含英文、泰文、韓文、日文，但先處理英文)\n(因為目前User已經有建立Res, Poi 的元件, Htl是透過 SERP的團房價電子檔，車是跟車產報價用同一套)\nRES, POI, HTL的元件表:\n車價:\nHTL:\nhttps://lionspec.liontravel.com/CTM/CTMAPI/Component/GetRelativeFileList/GetRelativeFileList.html#id=jja4la&p=template\n(只提供報價單，不提供價格)\nIT:     協助\n備註:\n以上只提供短解，長期解：併入AI國旅報價系統，會通知S13， 由企本二處 經營企劃部 林芫鋐協助對接",
+            "why": "外語產品組目前有高頻製作需求單與成本單的需求，且大量內容仍仰賴人工查找既有資料、重複輸入與填寫價格，整體流程相當耗時，也容易形成日常作業負擔。\n若能透過既有 RES、POI、HTL、車價等資料來源進行串接，並以補字、帶入既有建檔資料的方式協助產出與編輯成本單，可明顯降低人工 Key-in 與重複查找資料的時間，讓同仁將時間集中在報價判斷與產品規劃上。\n此外，客製國旅目前也存在相似的報價與成本單製作情境，因此這次 Inbound 的需求不只是單一部門的效率優化，也可在S13還沒完成前，提供給客製國旅使用(輸出「包含價格」的成本單)"
+          }
+        },
+        "label": "未分類",
         "owner": "Shira",
         "progress": {
           "done_cards": 7,
@@ -4009,11 +4123,25 @@
       },
       {
         "completed": 7,
-        "deliverables": 7,
         "due": null,
         "hours": 1.4,
         "id": "FDEPROJECT-164",
         "key": "FDEPROJECT-164",
+        "kickoff": {
+          "key": "FDEPROJECT-165",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "點一下，側欄列出有紅點的團，依「待你處理」「等對方回」與出發日排序，每團顯示最新一則的人、時間與內容；不存記憶、不用 AI，資料不離開瀏覽器",
+            "before": "業務在我的團單逐頁找紅點，逐張開 Q 頁看最新訊息，自己判斷要不要回",
+            "decision": "無",
+            "evidence": "2026-10-01 在直團業務正式帳號只讀驗證：紅點可直接從我的團單清單判斷（紅色未結案、藍色結案）；Q 頁可用與點圖示相同的請求讀取，時間新到舊；結束提醒、新 Q、回覆、改業務等寫入動作已找出並排除；過程中 cookie 不變",
+            "next_milestone": "鎖定驗收條件、建 repo；MVP 在一位直團業務的瀏覽器跑通",
+            "objective": "直團責任業務在 SERP 點一下擴充功能，就把「我的團單」裡 Q 信箱紅點（未結案）的訂單依團彙整，標出現在該自己處理的團；SERP 不改、只讀",
+            "why": "Q 掛在訂單上，紅點只說明有未結案；業務要逐張打開 Q 頁，從系統發送、產品端回覆、業務回覆混在一起的訊息裡判斷該誰動，樣本一張訂單就有 6 頁 Q"
+          }
+        },
+        "label": "直售",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 7,
@@ -4029,11 +4157,25 @@
       },
       {
         "completed": 6,
-        "deliverables": 6,
         "due": null,
         "hours": 1.2,
         "id": "FDEPROJECT-173",
         "key": "FDEPROJECT-173",
+        "kickoff": {
+          "key": "FDEPROJECT-174",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "點一下，側欄「尾款催收」分頁列出 7 天內未收齊的國外團訂單，黃色催收中、紅色最遲期限，每張顯示尚欠金額；跟 Q 紅點同一次掃描，不多打請求；判斷與金額計算都是固定規則的程式，不用 AI，資料不離開瀏覽器",
+            "before": "業務逐頁翻我的團單，對照出發日與費用/已收，自己算還欠多少、自己分國外或國旅",
+            "decision": "無",
+            "evidence": "2026-10-01 在業務帳號只讀驗證：訂單狀態 KK 的單也可能還有欠款，所以不看訂單狀態、改用費用減已收；「尚欠」欄只在有欠款時有值；國內外用團號第 3、4 碼對《團號34碼》表，國旅 7 碼、國外 95 碼不重疊，郵輪算國外",
+            "next_milestone": "在一位直團業務的瀏覽器跑通",
+            "objective": "直團責任業務在 SERP 點一下擴充功能，就列出自己「我的團單」裡出發前 7 天內、費用還沒收齊的國外團訂單，D-3 以內標紅；SERP 不改、只讀",
+            "why": "國外團尾款 D-7 開始催收、最遲 D-3 要完成；現在業務要逐頁看我的團單的「費用/已收」，自己判斷哪張是國外團、離出發還有幾天"
+          }
+        },
+        "label": "直售",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 6,
@@ -4049,11 +4191,12 @@
       },
       {
         "completed": 0,
-        "deliverables": 0,
         "due": null,
         "hours": 0.0,
         "id": "FDEPROJECT-183",
         "key": "FDEPROJECT-183",
+        "kickoff": null,
+        "label": "未分類",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 0,
@@ -4069,11 +4212,25 @@
       },
       {
         "completed": 6,
-        "deliverables": 6,
         "due": null,
         "hours": 0.6,
         "id": "FDEPROJECT-184",
         "key": "FDEPROJECT-184",
+        "kickoff": {
+          "key": "FDEPROJECT-185",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "每團與每張訂單都寫「已等 N 小時／N 天」，待你處理逾時換色並排在前面；等對方回只顯示時間；系統發送不顯示；年份推錯的單標時間可疑或算讀不到，不安靜顯示錯的天數",
+            "before": "業務看 Q 的月日時分自己換算，逾時的團散在清單中間",
+            "decision": "無。門檻、計時方式、排序、時間可疑上限六條規則 2026-10-01 已定",
+            "evidence": "0.4.0（v0.4.0）已合進主線；56 條測試全過，新碼逐條改壞 18 次都會紅；Codex 審兩輪，第一輪兩條缺陷已修",
+            "next_milestone": "在一位直團業務的瀏覽器跑通",
+            "objective": "直團責任業務在 SERP 點一下擴充功能，Q 紅點每團就標出產品端最後一則已等多久，待你處理滿 24 小時黃、滿 48 小時紅，紅黃排到最上面；SERP 不改、只讀",
+            "why": "側欄原本只印出最後一則 Q 的時間，業務要自己算等了多久、哪幾團拖太久；一團有多張紅點時，代表的是最新那張，等最久的要展開才看得到"
+          }
+        },
+        "label": "直售",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 6,
@@ -4089,11 +4246,25 @@
       },
       {
         "completed": 0,
-        "deliverables": 0,
         "due": null,
         "hours": 0.0,
         "id": "FDEPROJECT-190",
         "key": "FDEPROJECT-190",
+        "kickoff": {
+          "key": "FDEPROJECT-191",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "前一天全部通話當天處理完，每通有逐字稿、來電原因、滿意度；資料留在公司內部",
+            "before": "音檔靠爬蟲從 EVOX 抓；PoC 只涵蓋約 110 通；目前沒有專案權限",
+            "decision": "LLM 校正與分析能不能用雲端模型（通話錄音含個資）",
+            "evidence": "連續一週每天在隔日內處理完前一天全部通話；抽樣人工對照來電原因的準確率",
+            "next_milestone": "拿到專案權限並量出目前瓶頸",
+            "objective": "接手前同事的 EVOX 通話錄音分析 PoC，讓前一天的通話能在當天轉成逐字稿，並標出來電原因與滿意度",
+            "why": "對應 KPI list #26（錄音沒轉文字、沒標來電原因）、#1（話務資料要人工下載）。PoC 已做到轉寫與標註，但每小時約 30 通，一天約 1500 通要 50 小時，跑不完就用不上"
+          }
+        },
+        "label": "直售",
         "owner": "陳勁佑 Jincoco",
         "progress": {
           "done_cards": 0,
@@ -4109,11 +4280,25 @@
       },
       {
         "completed": 6,
-        "deliverables": 6,
         "due": null,
         "hours": 4.7,
         "id": "FDEPROJECT-237",
         "key": "FDEPROJECT-237",
+        "kickoff": {
+          "key": "FDEPROJECT-238",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "ESG 點一下連結就看到結果；連結壞掉、頁面改版或按了搜尋沒送出時，頁面頂端出現紅框寫原因，不會只看到空白頁",
+            "before": "複製、切頁、貼上、按搜尋，四個動作",
+            "decision": "merge 前定是否等 Codex 恢復再審一輪；merge 排在側欄常駐之後，版本 0.8.0",
+            "evidence": "PR #15 已開（draft），148 條測試全過，新碼逐條改壞 17 次都會紅；Codex 額度用完，改由 Claude Fable 審三輪，兩條缺陷已修、第三輪無缺陷",
+            "next_milestone": "在一位直團業務的瀏覽器從 ESG 點連結跑通",
+            "objective": "業務在旅展 ESG 網站點團名，SERP 銷售團體頁就帶入標準團名關鍵字並完成搜尋，一鍵到結果；只查詢、不改 SERP",
+            "why": "業務原本要從 ESG 複製團名、開 SERP 銷售團體、貼進標準團名、再按搜尋；ESG 網站不在 liontravel.com，跨站送查詢會被 SERP 擋下還會把業務登出，純連結頁面也不吃"
+          }
+        },
+        "label": "直售",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 6,
@@ -4129,11 +4314,25 @@
       },
       {
         "completed": 0,
-        "deliverables": 0,
         "due": "2026-10-16",
         "hours": 0.0,
         "id": "FDEPROJECT-245",
         "key": "FDEPROJECT-245",
+        "kickoff": {
+          "key": "FDEPROJECT-246",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "信件進來就有需求類型、缺漏清單與回覆草稿，業務確認後寄出；處理結果記在 Google Sheet 追蹤成效",
+            "before": "業務逐封看信、人工補問客人，來回多次才確認需求",
+            "decision": null,
+            "evidence": null,
+            "next_milestone": null,
+            "objective": "入境客製化行程需求單信件進來後，自動判斷需求類型、檢查缺漏與矛盾，並用客人的語言產生回覆草稿，業務確認後寄出",
+            "why": "客人自填的需求單常不完整、前後矛盾，業務要來回寄好幾次信才能確認，拖慢回覆速度與成單率。8/31–9/22 收到 73 封，月均 50–80 筆"
+          }
+        },
+        "label": "入境",
         "owner": "Shira",
         "progress": {
           "done_cards": 0,
@@ -4149,11 +4348,25 @@
       },
       {
         "completed": 6,
-        "deliverables": 6,
         "due": null,
         "hours": 3.0,
         "id": "FDEPROJECT-247",
         "key": "FDEPROJECT-247",
+        "kickoff": {
+          "key": "FDEPROJECT-248",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "點一下列出失敗、依訂單分組、原因照表上原文；之後已刷成功的收到下面；表上沒有的按「複製情境反饋」，訂單編號、刷卡單號、時間、代碼、提示細碼都帶好",
+            "before": "逐筆滑滑鼠看提示、往下對代碼表；表上沒有的直接在群組問，資訊不齊要來回補",
+            "decision": "merge 時機；merge 後打 v0.9.0",
+            "evidence": "PR #14（draft）0.9.0，198 條測試全過，新碼逐條改壞都會紅；上一版 Codex 三輪後 approve，0.9.0 改注入方式這輪 Codex 審查中",
+            "next_milestone": "在一位直團業務的瀏覽器跑通",
+            "objective": "業務在業務查詢刷卡單點一下，就看到自己授權失敗的刷卡與代碼表上的原因、下一步；表上沒有的代碼一鍵複製情境反饋到金流群組；只讀、不改 SERP",
+            "why": "金流群組兩年紀錄裡，刷卡失敗來問原因或代碼意思約 31 次，被叫去業務查詢刷卡單自己看約 11 次；代碼與說明財務 IT 都已放在那頁，業務要逐筆滑過去再對表，常直接到群組問，問題又缺訂單編號與代碼"
+          }
+        },
+        "label": "直售",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 6,
@@ -4169,11 +4382,25 @@
       },
       {
         "completed": 6,
-        "deliverables": 6,
         "due": null,
         "hours": 3.0,
         "id": "FDEPROJECT-271",
         "key": "FDEPROJECT-271",
+        "kickoff": {
+          "key": "FDEPROJECT-272",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "每位現場人員在每台電腦的執勤段（登入、登出或未登出、時長）與操作明細集中在一個查看頁，負責人可下載 CSV；現場人員不必多按任何東西",
+            "before": "現場人員的 SERP 登入時段與操作沒有集中紀錄，誰在哪台電腦待了多久、做了哪些查詢無從查起",
+            "decision": null,
+            "evidence": "可行性：2026-10-05 在已登入的 SERP 只讀實測：五個旅展用系統每頁頁首都有員編；登出連結統一走集中登入的登出端點；未登入時子系統頁轉到未驗證頁；集中登入頁與子系統登入狀態不同步，登入頁不能當登出\n完成證明：旅展前在一台裝新版的電腦，兩個員編各登入、操作、登出一次，再一次不登出直接關瀏覽器；查看頁出現兩段已登出、一段未登出，操作明細對得上，紀錄不含網址參數",
+            "next_milestone": "擴充功能與查看頁完成，在測試環境跑通",
+            "objective": "旅展現場人員在 SERP 的登入、登出、瀏覽與一鍵搜尋，由「SERP 團名一鍵搜尋」擴充功能自動記錄並上傳，負責人在查看頁看到每人每台電腦的執勤時段與操作；只記不改 SERP",
+            "why": "旅展現場多人輪流用同一台電腦登入 SERP，主管要評估每人工作時間卻沒有資料來源（業務端痛點清單 #10，P1）"
+          }
+        },
+        "label": "直售",
         "owner": "Vincent Hsieh",
         "progress": {
           "done_cards": 6,
@@ -4189,11 +4416,25 @@
       },
       {
         "completed": 4,
-        "deliverables": 4,
         "due": "2026-10-19",
         "hours": 9.0,
         "id": "FDEPROJECT-286",
         "key": "FDEPROJECT-286",
+        "kickoff": {
+          "key": "FDEPROJECT-287",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "打開 Flight 頁面，插件自動查價並帶入，附上比對來源的票價表名稱與開票日。",
+            "before": "OP 向 RC 詢價，或自己翻 Google 試算表、PDF，逐項核對航線、班次、出發日、版本、開票期間、週末加價。",
+            "decision": null,
+            "evidence": "魏嘉萱以 5–10 個真實團號試查，插件價格與人工查價一致。",
+            "next_milestone": "10/14 完成同仁試用，10/19 上線。",
+            "objective": "OP 在 SERP 小飛機（Flight 頁面）一打開，就看到該團華航團體機票的年度價與促銷價；只有一個價格時自動帶入 $ 格子。",
+            "why": "OP 開票常要向 RC 詢問票價；票價表分年度、促銷多個版本，各有開票期間、天數、週末加價規則，人工比對費時又容易出錯。"
+          }
+        },
+        "label": "東北亞",
         "owner": "Shira",
         "progress": {
           "done_cards": 4,
@@ -4209,11 +4450,25 @@
       },
       {
         "completed": 0,
-        "deliverables": 0,
         "due": null,
         "hours": 0.0,
         "id": "FDEPROJECT-309",
         "key": "FDEPROJECT-309",
+        "kickoff": {
+          "key": "FDEPROJECT-269",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": null,
+            "before": "目前流程大致為：\n外部報名名單\n→ 人工整理欄位與格式\n→ 依訂單規則拆分名單\n→ SERP／大團錄建立所需旅客列數\n→ 匯入名單\n→ 匯入後再次人工檢核與處理異常\nFirst Result / Phase 1 POC\n先驗證一個最小可行的垂直流程：\n來源名單\n→ 自動轉換為 SERP／大團錄所需格式\n→ 自動完成一段固定、重複的 SERP 操作（優先驗證依人數新增所需列數）\n→ 完成一筆實際測試流程\nPhase 1 的目標不是完成所有自動化，而是確認這個方式是否能實際減少人工步驟，並具備後續擴充價值。\nAfter - Phase 1\n若 POC 驗證成立：\nUser 不需再人工處理部分固定格式轉換。\n固定、重複的 SERP 操作可由工具協助完成。\nUser 主要保留例外資料處理與最終確認。\nOut of Scope - Phase 1\n修改 SERP 核心系統。\n完整外部系統 API 串接。\n付款連結批次發送。\n全自動處理所有身分證、姓名或其他異常資料。\n一次涵蓋所有團型與所有例外情境。",
+            "decision": null,
+            "evidence": "以「人工基準時間 vs. POC 實測時間」衡量，工具自動記錄執行時間、處理筆數、成功／失敗，最後算節省時間與比例。",
+            "next_milestone": "整個流程跑通後，增加不同格式的 Excel 和 PDF 檔案的兼容性。\n增加多分頁的支援",
+            "objective": "降低大型梯次團從外部報名名單進入 SERP 的人工整理與重複建單操作。\n開發的小工具在明年一、二月大型團體報名啟動前完成交付並上線使用",
+            "why": "大型梯次團名單量大，目前從外部報名資料進入 SERP 前，仍需人工整理格式、拆分訂單、建立旅客列數，匯入後也需再次人工檢核。\n此流程在大型專案期間會造成明顯的人工作業負擔，因此第一階段先驗證是否能用輕量工具降低固定、重複的操作。\n此專案的潛在目標:\n協助處理不同系統的資料格式一致\n確認方便的User的操作流程，提供給後續系統開發參考\nCurrent Problem\n目前已確認的主要人工步驟包含：\n外部名單格式與 SERP／大團錄匯入格式不同。\n出生年月日等欄位需人工整理與轉換。\n單筆訂單有人數限制，名單需依實際訂單規則拆分。\n在 SERP 訂單內需人工新增對應旅客列數。\n匯入後仍需再次透過修改／檢核流程確認身分證字號重複、姓名不符等異常。"
+          }
+        },
+        "label": "未分類",
         "owner": "Vivian",
         "progress": {
           "done_cards": 0,
@@ -4229,11 +4484,25 @@
       },
       {
         "completed": 2,
-        "deliverables": 2,
         "due": null,
         "hours": 10.0,
         "id": "FDEPROJECT-312",
         "key": "FDEPROJECT-312",
+        "kickoff": {
+          "key": "FDEPROJECT-310",
+          "locked_at": "2026-10-07T00:00:32.067130+08:00",
+          "modified_at": [],
+          "sections": {
+            "after": "安裝 Chrome 擴充套件，在 SERP 一鍵產出填好的航空公司名單，OP 只需核對。",
+            "before": "OP 打開 SERP 旅客名單，逐筆手 key 到各航空公司名單。",
+            "decision": null,
+            "evidence": "韓國線 user 以真實團號產出航空公司名單，內容與人工手 key 版本逐欄一致。",
+            "next_milestone": "轉成 Chrome 擴充套件，交付韓國線 user 試用。",
+            "objective": "韓國線 OP 在 SERP 指定團號後，旅客資料自動填入航空公司名單（Excel），不用再逐筆手 key。",
+            "why": "目前要把 SERP 的旅客資料一筆一筆手 key 到航空公司名單，航班一多就很費時，姓名拼音、護照號碼、生日等欄位也容易打錯。"
+          }
+        },
+        "label": "未分類",
         "owner": "Jerry Huang",
         "progress": {
           "done_cards": 2,
@@ -4250,8 +4519,7 @@
     ],
     "since": "2026-09-18",
     "totals": {
-      "completed": 185,
-      "deliverables": 176,
+      "completed": 184,
       "hours": 133.0,
       "projects": 16,
       "tokens": null,
@@ -4260,19 +4528,16 @@
     "weeks": [
       {
         "completed": 140,
-        "deliverables": 139,
         "hours": 113.75,
         "week": "2026-W41"
       },
       {
         "completed": 36,
-        "deliverables": 36,
         "hours": 9.75,
         "week": "2026-W40"
       },
       {
-        "completed": 9,
-        "deliverables": 2,
+        "completed": 8,
         "hours": 9.5,
         "week": "2026-W39"
       }
@@ -4316,8 +4581,8 @@
           "CS-27",
           "CS-28"
         ],
-        "deliverables": 1,
-        "deliveries": [
+        "hours": 5.0,
+        "roots": [
           {
             "hours": 5.0,
             "key": "CS-16",
@@ -4327,7 +4592,6 @@
             "tokens": null
           }
         ],
-        "hours": 5.0,
         "tokens": null
       }
     },
@@ -4352,9 +4616,9 @@
       },
       "owner": "陳勁佑 Jincoco",
       "progress": {
-        "done_cards": 133,
-        "done_points": 69.75,
-        "percent": 92,
+        "done_cards": 88,
+        "done_points": 54.0,
+        "percent": 71,
         "total_cards": 140,
         "total_points": 75.75,
         "unestimated_cards": 51
@@ -4438,8 +4702,8 @@
           "FDEPROJECT-320",
           "FDEPROJECT-321"
         ],
-        "deliverables": 72,
-        "deliveries": [
+        "hours": 54.0,
+        "roots": [
           {
             "hours": 0.5,
             "key": "FDEPROJECT-12",
@@ -5017,7 +5281,6 @@
             "tokens": null
           }
         ],
-        "hours": 54.0,
         "tokens": null
       }
     },
@@ -5029,9 +5292,9 @@
       "kickoff": null,
       "owner": "陳勁佑 Jincoco",
       "progress": {
-        "done_cards": 19,
-        "done_points": 10.5,
-        "percent": 100,
+        "done_cards": 5,
+        "done_points": 2.0,
+        "percent": 19,
         "total_cards": 19,
         "total_points": 10.5,
         "unestimated_cards": 5
@@ -5048,8 +5311,8 @@
           "FDEPROJECT-202",
           "FDEPROJECT-207"
         ],
-        "deliverables": 5,
-        "deliveries": [
+        "hours": 2.0,
+        "roots": [
           {
             "hours": 0.25,
             "key": "FDEPROJECT-152",
@@ -5091,7 +5354,6 @@
             "tokens": null
           }
         ],
-        "hours": 2.0,
         "tokens": null
       }
     },
@@ -5116,9 +5378,9 @@
       },
       "owner": "陳勁佑 Jincoco",
       "progress": {
-        "done_cards": 11,
-        "done_points": 17.0,
-        "percent": 100,
+        "done_cards": 9,
+        "done_points": 4.75,
+        "percent": 28,
         "total_cards": 12,
         "total_points": 17.0,
         "unestimated_cards": 1
@@ -5139,8 +5401,8 @@
           "FDEPROJECT-218",
           "FDEPROJECT-305"
         ],
-        "deliverables": 9,
-        "deliveries": [
+        "hours": 4.75,
+        "roots": [
           {
             "hours": 0.75,
             "key": "FDEPROJECT-211",
@@ -5214,7 +5476,6 @@
             "tokens": null
           }
         ],
-        "hours": 4.75,
         "tokens": null
       }
     },
@@ -5252,9 +5513,8 @@
       "week": {
         "completed_count": 0,
         "completed_keys": [],
-        "deliverables": 0,
-        "deliveries": [],
         "hours": 0.0,
+        "roots": [],
         "tokens": null
       }
     },
@@ -5281,9 +5541,9 @@
       },
       "owner": "Vincent Hsieh",
       "progress": {
-        "done_cards": 9,
-        "done_points": 7.1,
-        "percent": 100,
+        "done_cards": 4,
+        "done_points": 3.35,
+        "percent": 47,
         "total_cards": 9,
         "total_points": 7.1,
         "unestimated_cards": 0
@@ -5297,8 +5557,8 @@
           "FDEPROJECT-138",
           "FDEPROJECT-139"
         ],
-        "deliverables": 2,
-        "deliveries": [
+        "hours": 2.6,
+        "roots": [
           {
             "hours": 1.8,
             "key": "FDEPROJECT-138",
@@ -5316,7 +5576,6 @@
             "tokens": null
           }
         ],
-        "hours": 2.6,
         "tokens": null
       }
     },
@@ -5362,8 +5621,8 @@
           "FDEPROJECT-182",
           "FDEPROJECT-236"
         ],
-        "deliverables": 7,
-        "deliveries": [
+        "hours": 12.5,
+        "roots": [
           {
             "hours": 1.5,
             "key": "FDEPROJECT-133",
@@ -5421,7 +5680,6 @@
             "tokens": null
           }
         ],
-        "hours": 12.5,
         "tokens": null
       }
     },
@@ -5467,8 +5725,8 @@
           "FDEPROJECT-171",
           "FDEPROJECT-172"
         ],
-        "deliverables": 7,
-        "deliveries": [
+        "hours": 1.4,
+        "roots": [
           {
             "hours": 0.2,
             "key": "FDEPROJECT-166",
@@ -5526,7 +5784,6 @@
             "tokens": null
           }
         ],
-        "hours": 1.4,
         "tokens": null
       }
     },
@@ -5571,8 +5828,8 @@
           "FDEPROJECT-179",
           "FDEPROJECT-180"
         ],
-        "deliverables": 6,
-        "deliveries": [
+        "hours": 1.2,
+        "roots": [
           {
             "hours": 0.2,
             "key": "FDEPROJECT-175",
@@ -5622,7 +5879,6 @@
             "tokens": null
           }
         ],
-        "hours": 1.2,
         "tokens": null
       }
     },
@@ -5647,9 +5903,8 @@
       "week": {
         "completed_count": 0,
         "completed_keys": [],
-        "deliverables": 0,
-        "deliveries": [],
         "hours": 0.0,
+        "roots": [],
         "tokens": null
       }
     },
@@ -5694,8 +5949,8 @@
           "FDEPROJECT-234",
           "FDEPROJECT-235"
         ],
-        "deliverables": 6,
-        "deliveries": [
+        "hours": 0.6,
+        "roots": [
           {
             "hours": 0.1,
             "key": "FDEPROJECT-186",
@@ -5745,7 +6000,6 @@
             "tokens": null
           }
         ],
-        "hours": 0.6,
         "tokens": null
       }
     },
@@ -5783,9 +6037,8 @@
       "week": {
         "completed_count": 0,
         "completed_keys": [],
-        "deliverables": 0,
-        "deliveries": [],
         "hours": 0.0,
+        "roots": [],
         "tokens": null
       }
     },
@@ -5830,8 +6083,8 @@
           "FDEPROJECT-243",
           "FDEPROJECT-244"
         ],
-        "deliverables": 6,
-        "deliveries": [
+        "hours": 4.7,
+        "roots": [
           {
             "hours": 0.3,
             "key": "FDEPROJECT-239",
@@ -5881,7 +6134,6 @@
             "tokens": null
           }
         ],
-        "hours": 4.7,
         "tokens": null
       }
     },
@@ -5919,9 +6171,8 @@
       "week": {
         "completed_count": 0,
         "completed_keys": [],
-        "deliverables": 0,
-        "deliveries": [],
         "hours": 0.0,
+        "roots": [],
         "tokens": null
       }
     },
@@ -5966,8 +6217,8 @@
           "FDEPROJECT-253",
           "FDEPROJECT-254"
         ],
-        "deliverables": 6,
-        "deliveries": [
+        "hours": 3.0,
+        "roots": [
           {
             "hours": 0.5,
             "key": "FDEPROJECT-249",
@@ -6017,7 +6268,6 @@
             "tokens": null
           }
         ],
-        "hours": 3.0,
         "tokens": null
       }
     },
@@ -6062,8 +6312,8 @@
           "FDEPROJECT-277",
           "FDEPROJECT-279"
         ],
-        "deliverables": 6,
-        "deliveries": [
+        "hours": 3.0,
+        "roots": [
           {
             "hours": 0.5,
             "key": "FDEPROJECT-273",
@@ -6113,7 +6363,6 @@
             "tokens": null
           }
         ],
-        "hours": 3.0,
         "tokens": null
       }
     },
@@ -6156,8 +6405,8 @@
           "FDEPROJECT-290",
           "FDEPROJECT-291"
         ],
-        "deliverables": 4,
-        "deliveries": [
+        "hours": 9.0,
+        "roots": [
           {
             "hours": 4.0,
             "key": "FDEPROJECT-288",
@@ -6191,7 +6440,6 @@
             "tokens": null
           }
         ],
-        "hours": 9.0,
         "tokens": null
       }
     },
@@ -6229,9 +6477,8 @@
       "week": {
         "completed_count": 0,
         "completed_keys": [],
-        "deliverables": 0,
-        "deliveries": [],
         "hours": 0.0,
+        "roots": [],
         "tokens": null
       }
     },
@@ -6272,8 +6519,8 @@
           "FDEPROJECT-313",
           "FDEPROJECT-314"
         ],
-        "deliverables": 2,
-        "deliveries": [
+        "hours": 10.0,
+        "roots": [
           {
             "hours": 4.0,
             "key": "FDEPROJECT-313",
@@ -6291,7 +6538,6 @@
             "tokens": null
           }
         ],
-        "hours": 10.0,
         "tokens": null
       }
     }
@@ -6375,6 +6621,92 @@
       "root": "FDEPROJECT-284",
       "summary": "板橋門市試用 Chatwoot，收集用法回饋",
       "tokens": null
+    }
+  ],
+  "labels": [
+    {
+      "cumulative": {
+        "hours": 14.5,
+        "unestimated": 0
+      },
+      "epics": 1,
+      "label": "歐洲團產TP",
+      "week": {
+        "hours": 5.0,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 13.9,
+        "unestimated": 0
+      },
+      "epics": 7,
+      "label": "直售",
+      "week": {
+        "hours": 13.9,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 9.0,
+        "unestimated": 0
+      },
+      "epics": 1,
+      "label": "東北亞",
+      "week": {
+        "hours": 9.0,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 4.5,
+        "unestimated": 0
+      },
+      "epics": 1,
+      "label": "FDE_team",
+      "week": {
+        "hours": 0.0,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 4.5,
+        "unestimated": 0
+      },
+      "epics": 1,
+      "label": "IT_team",
+      "week": {
+        "hours": 0.0,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 0.0,
+        "unestimated": 0
+      },
+      "epics": 1,
+      "label": "入境",
+      "week": {
+        "hours": 0.0,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 86.6,
+        "unestimated": 16
+      },
+      "epics": 8,
+      "label": "未分類",
+      "week": {
+        "hours": 85.85,
+        "unestimated": 0
+      }
     }
   ],
   "migrated": {
@@ -7224,196 +7556,43 @@
   },
   "owners": [
     {
-      "deliverables": 86,
-      "deliveries": [
-        "Chatwoot 接 LINE:把 dev LIFF 的 OA(@125oxfwt)串進去試做",
-        "LIFF 在查細節的回合，於回答下方顯示「這次查的商品」小卡",
-        "讓詳情工具的回合也出商品卡，跑第二、三批情境實測並上正式站",
-        "製作 LINE AI 旅遊顧問介紹影片（91.5 秒）",
-        "實測行銷頁走知識庫預洗的做法，找出三個上限後決定改走 MCP",
-        "改版 LIFF 行銷入口：活動條、活動圖、回到對話加載入畫面",
-        "把 LIFF 正式站和 dev 切成兩個版本",
-        "研究行銷活動頁資料來源、寫 MCP 行銷工具規格，並用 15 檔真實頁面驗證",
-        "比較行銷頁篩選三種做法（A／C／Jev），實測速度與成本後定案 C",
-        "盤點專案裡「用猜的」判斷，列出改法",
-        "退役讀網頁工具（兩站）：拿掉工具與讀頁端點、停爬蟲容器",
-        "機票卡改顯示每位大人價、飯店候選顯示在查詢進度；MCP 上線後重抓工具清單兩站驗證",
-        "評估改用 LangChain／LangGraph 和加 Redis 快取：都先不做",
-        "行銷活動改走 MCP：LIFF 直接出卡、卡片帶短代碼 ?c=、15 檔驗收",
-        "修手機實測問題：精選 N 款的口氣、釘住的商品不重複出卡；刪掉 dify 測試殘留",
-        "LIFF 捲動與動畫改成主流 AI 對話的樣子",
-        "推薦問題全部交給 dify：改用 2.5-flash-lite、關思考、調提示詞",
-        "卡片規則收成一套並寫情境實測腳本；引用縮成兩行、標籤排成一排",
-        "活動介紹交給 AI 寫、商品介紹寫完整、修好回答排版",
-        "9/30 版本同步正式站並驗證",
-        "查 Google 連線、房型格式、點名商品沒出卡三個問題；LIFF 遇暫時性錯誤自動重送",
-        "驗收 MCP 參數容錯三版（20260930.4～.6），抓到票券退步並追到修好",
-        "LIFF 開機畫面＋程式檔長快取，上正式站",
-        "從兩站 dify 拿掉行銷檔期知識庫並驗證",
-        "修手機實測兩個問題：機票卡航空 Logo 不見、串流斷線停在「已完成 N 項查詢」",
-        "量測 AI「認哪個商品」「要不要轉專員」判斷錯誤率，修正轉專員判斷與空頭承諾",
-        "自動撈回切 App 期間已答完的回答",
-        "同步 10/1 版本到正式站並確認兩站同版",
-        "評估 Gemini 4 Argon 換模型的差異與成本",
-        "依縣市篩選行銷活動：接上 MCP 地區參數、改提示詞並驗收",
-        "改版轉專員卡：跟商品卡同風格、加說明、主色按鈕",
-        "改善等待畫面與面板動畫：分階段進度、滑入滑出、修正開新對話說明",
-        "修「找專員」「歷史」面板整片往左偏一半",
-        "回覆資通部 10.34.8.24 搬遷問題，草擬網路線路與防火牆申請單",
-        "準備 10/5 門市主管 demo：盤點進度、實測挑穩定情境寫腳本",
-        "申請 p-other-difyline 對外 PUBLIC IP（門市 AI 客服 5 個 lineoa 網址）",
-        "製作 H3 技術探索白底版簡報（初版 24 頁）",
-        "開放 H3 簡報與影片櫃的唯讀檢視（隱藏刪除鈕）",
-        "製作 H3 介紹影片（深色研究版 99 秒、白底版 81 秒），台灣腔旁白",
-        "補充簡報：自我介紹、機器型號與顯卡對照、生成速度比較（擴充到 25 頁）",
-        "在簡報加入技術探索短片、Claude 協作標註、ComfyUI 實際畫面與技能檔圖示",
-        "替影片櫃新增長度篩選、主題分類、整批隱藏、分段提示詞與參考圖",
-        "整理 ml-02 重建手冊並通知 group-ES 的 qwen3-emb 風險",
-        "把簡報轉成 pptx 並嵌入 12 支影片",
-        "修正飯店搜尋帶小孩一律 0 筆：新增兒童年齡參數 ChildAges",
-        "替四支詳細資料工具加上封面圖、商品頁網址與標題區欄位，讓 LIFF 直接組商品卡",
-        "讓機票搜尋帶出每位大人價與全部票價方案，飯店關鍵字改回候選地點讓 AI 挑",
-        "新增 MCP 工具 campaign-products：讀行銷活動頁的商品清單、折扣碼與規則",
-        "修正活動頁商品沒有封面圖：改用商品詳情補圖，最多等 1.5 秒",
-        "讓 MCP 參數接受模型常猜錯的寫法，並把每次轉換記進 log",
-        "修正票券只帶國家查不到：沒有城市時送空陣列",
-        "替 campaign-products 加上縣市／城市篩選，讓 AI 不用自己數清單",
-        "修正地區篩選把團體整批排除、帶「-」的城市名回錯等問題",
-        "接入正式與 dev LIFF 官方帳號到 Chatwoot 客服後台",
-        "轉真人時把 LIFF 對話自動帶進 Chatwoot（內部備註＋對話屬性＋標籤）",
-        "盤點 Chatwoot 功能與付費邊界（標籤、屬性、機器人、派單、權限、結案）",
-        "製作 Chatwoot 客服後台介紹影片",
-        "重做 LIFF AI 旅遊顧問介紹影片（橫式 v2）",
-        "修正比較上一輪商品時，比較中的商品小卡被藏起來",
-        "實驗讓 AI 點名的商品卡排前面（效果、時間成本、穩定度）",
-        "上線 AI 點名的商品卡排前面（兩站），並修正第二次搜尋的卡片順序",
-        "檢查 10.34.8.24 搬家條件，安裝 Docker 並架設連線測試站",
-        "回覆網路組 LIFF 對內網址需求（lineoa-dify、lineoa-db）",
-        "改成商品價格下方用小字顯示日期（入住日／出發日）",
-        "改版「對話裡的商品」面板：照問句分組、緊湊列表、勾選比較",
-        "新增 FAQ 原文浮窗，以及交專員後的「開新對話／繼續問 AI」",
-        "整合 LIFF 各畫面設計稿與實拍到同一份設計總覽",
-        "搬遷正式站 LIFF 到 10.34.8.24（lineoa-liff.liontravel.com）並切換",
-        "新增「請用 LINE 開啟」畫面（在 LINE 以外打開正式站時）",
-        "同步 dev 與正式站的程式與 AI 設定並上版",
-        "評估以 Chatwoot 解決各門市 LINE OA 對話分散與跨帳號歸戶",
-        "補寫 Chatwoot webhook 失敗而漏掉的轉真人 AI 紀錄",
-        "接入板橋門市 LINE OA 到 Chatwoot 收件匣",
-        "開 Chatwoot 管理者帳號給通路 Joan、家偉",
-        "開 8 個門市業務使用者帳號並分配到板橋收件匣",
-        "做等待中的小獅子動畫（取代查詢中的文字）",
-        "重發行銷入口卡片並備妥加好友歡迎訊息內容",
-        "評估用官網首頁熱門話題產生 LIFF 首頁推薦問題（是否需 MCP）",
-        "盤點 Chatwoot 企業版功能與授權機制、關閉對官方的資料回報",
-        "將自架 Chatwoot 升級到 v4.18.0",
-        "評估社群技能 MiniMax H3 Colab：結論不採用",
-        "建立正式站使用分析（主管試用期間定時產出報告）",
-        "記錄 LINE 顯示名稱到身分表",
-        "提供業務電腦網頁版（LINE 帳號登入）",
-        "調整等待動畫：查詢步驟預設展開、完成時動畫收起",
-        "實測 LINE reply token 實際可用多久"
-      ],
+      "completed": 86,
       "hours": 60.75,
       "owner": "陳勁佑 Jincoco",
       "tokens": null
     },
     {
-      "deliverables": 39,
-      "deliveries": [
-        "多部門接入：同事在 Notion 分享即鏡像，授權連結加邀請碼",
-        "每位同事一組授權碼，加管理頁記錄授權",
-        "擴充功能骨架：在 SERP 點按鈕觸發一次掃描",
-        "讀我的團單（直團 52），找出 Q 紅點訂單",
-        "讀紅點訂單的 Q 第 1 頁",
-        "依「輸入」判斷每張訂單現在該誰動",
-        "依團彙整顯示在側欄",
-        "只讀守門與錯誤明示",
-        "MVP 在一位直團業務的瀏覽器跑通",
-        "讀我的團單全部訂單的出發日與費用/已收",
-        "用團號判國外團，排除國旅",
-        "依 D-7、D-3 判斷尾款催收並換色",
-        "側欄尾款催收分頁",
-        "漏單提醒與只讀守門",
-        "尾款催收在一位直團業務的瀏覽器跑通",
-        "算出每張紅點訂單已等多久，年份推錯看得出來",
-        "待你處理逾時換色，等對方回只顯示時間",
-        "團的代表訂單取等最久那張，逾時的排前面",
-        "追蹤時限在一位直團業務的瀏覽器跑通",
-        "掃描留一份診斷紀錄，測試的人一鍵複製給負責的人",
-        "診斷寫得出為什麼判成這樣，也對得到 commit 與本機時區",
-        "ESG 連結格式固定，只在銷售團體頁動作",
-        "帶入標準團名並按頁面自己的搜尋",
-        "搜尋完按上一頁不會再搜一次",
-        "連結壞掉、頁面改版或沒送出時寫紅框",
-        "只多一條限定銷售團體頁的自動執行，不擴權限",
-        "在一位直團業務的瀏覽器從 ESG 點連結跑通",
-        "點圖示才照頁面已搜尋的條件讀，只挑授權失敗",
-        "原因照頁面代碼表原文，表外代碼不解讀",
-        "依訂單分組，之後已刷成功收到下方",
-        "表外代碼一鍵複製情境反饋貼到金流群組",
-        "只讀、不多要權限，只多一條限定刷卡單頁的自動載入",
-        "在一位直團業務的瀏覽器跑通",
-        "擴充功能記錄五個旅展系統的瀏覽與登入登出",
-        "紀錄先存本機，送成功才刪",
-        "一鍵搜尋照舊，送出後多記一筆",
-        "查看頁收件與裝置核准",
-        "依員編加裝置切執勤段",
-        "改掉只按搜尋的舊說法，寫維護文件"
-      ],
+      "completed": 39,
       "hours": 16.5,
       "owner": "Vincent Hsieh",
       "tokens": null
     },
     {
-      "deliverables": 2,
-      "deliveries": [
-        "建立 SERP 旅客名單自動產出可依航空（RF）Group Import List 的流程並展示給 user 確認",
-        "擴充名單自動產出，支援 AMADEUS、SABRE、易斯達三種航空公司格式"
-      ],
+      "completed": 2,
       "hours": 10.0,
       "owner": "Jerry Huang",
       "tokens": null
     },
     {
-      "deliverables": 5,
-      "deliveries": [
-        "google app script(補字選單, 填價格_元件、飯店)",
-        "元件資料前處理(RES, POI)",
-        "google app script(補字選單, 填價格_車產)",
-        "分檔次_報價單同客製包團_報價單使用補字功能",
-        "大中巴/小車全日包車/接駁_價錢依選取車型/區域自動填入"
-      ],
+      "completed": 5,
       "hours": 9.5,
       "owner": "王碩緯",
       "tokens": null
     },
     {
-      "deliverables": 4,
-      "deliveries": [
-        "定義票價資料格式並建立資料檢查與 PDF 雙向比對",
-        "轉檔華航 4 份票價 PDF 並逐份核對",
-        "建立查價規則，依班次、出發日、天數、開票日算出年度價與促銷價",
-        "開發 Chrome 插件讀取 Flight 頁面並帶入票價"
-      ],
+      "completed": 4,
       "hours": 9.0,
       "owner": "Shira",
       "tokens": null
     },
     {
-      "deliverables": 1,
-      "deliveries": [
-        "地接社飯店資料解析 Pipeline 建置"
-      ],
+      "completed": 2,
       "hours": 5.0,
       "owner": "hubertwang",
       "tokens": null
     },
     {
-      "deliverables": 2,
-      "deliveries": [
-        "提供 - 飯店資料 api",
-        "同步inbound飯店報價單檔案路徑"
-      ],
+      "completed": 2,
       "hours": 3.0,
       "owner": "Vivian",
       "tokens": null
@@ -7422,29 +7601,6 @@
   "people": [
     {
       "cumulative": {
-        "by_project": [
-          {
-            "hours": 54.0,
-            "id": "FDEPROJECT-71",
-            "key": "FDEPROJECT-71",
-            "summary": "門市 AI 客服",
-            "unestimated": 16
-          },
-          {
-            "hours": 2.0,
-            "id": "FDEPROJECT-72",
-            "key": "FDEPROJECT-72",
-            "summary": "Dify 平台與維運",
-            "unestimated": 0
-          },
-          {
-            "hours": 4.75,
-            "id": "FDEPROJECT-73",
-            "key": "FDEPROJECT-73",
-            "summary": "AI Lab H3 影音",
-            "unestimated": 0
-          }
-        ],
         "completed": 102,
         "completed_keys": [
           "FDEPROJECT-4",
@@ -7550,7 +7706,6 @@
           "FDEPROJECT-320",
           "FDEPROJECT-321"
         ],
-        "deliverables": 102,
         "hours": 60.75,
         "tokens": null
       },
@@ -7567,29 +7722,6 @@
       },
       "name": "陳勁佑 Jincoco",
       "week": {
-        "by_project": [
-          {
-            "hours": 54.0,
-            "id": "FDEPROJECT-71",
-            "key": "FDEPROJECT-71",
-            "summary": "門市 AI 客服",
-            "unestimated": 0
-          },
-          {
-            "hours": 2.0,
-            "id": "FDEPROJECT-72",
-            "key": "FDEPROJECT-72",
-            "summary": "Dify 平台與維運",
-            "unestimated": 0
-          },
-          {
-            "hours": 4.75,
-            "id": "FDEPROJECT-73",
-            "key": "FDEPROJECT-73",
-            "summary": "AI Lab H3 影音",
-            "unestimated": 0
-          }
-        ],
         "completed": 86,
         "completed_keys": [
           "FDEPROJECT-12",
@@ -7679,78 +7811,12 @@
           "FDEPROJECT-320",
           "FDEPROJECT-321"
         ],
-        "deliverables": 86,
         "hours": 60.75,
         "tokens": null
       }
     },
     {
       "cumulative": {
-        "by_project": [
-          {
-            "hours": 4.5,
-            "id": "FDEPROJECT-78",
-            "key": "FDEPROJECT-78",
-            "summary": "培訓課程網站",
-            "unestimated": 0
-          },
-          {
-            "hours": 4.5,
-            "id": "FDEPROJECT-79",
-            "key": "FDEPROJECT-79",
-            "summary": "MeetPilot 團隊會議記錄",
-            "unestimated": 0
-          },
-          {
-            "hours": 3.35,
-            "id": "FDEPROJECT-110",
-            "key": "FDEPROJECT-110",
-            "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
-            "unestimated": 0
-          },
-          {
-            "hours": 1.4,
-            "id": "FDEPROJECT-164",
-            "key": "FDEPROJECT-164",
-            "summary": "SERP Q 信箱紅點彙整（我的團單）",
-            "unestimated": 0
-          },
-          {
-            "hours": 1.2,
-            "id": "FDEPROJECT-173",
-            "key": "FDEPROJECT-173",
-            "summary": "SERP Q催收",
-            "unestimated": 0
-          },
-          {
-            "hours": 0.6,
-            "id": "FDEPROJECT-184",
-            "key": "FDEPROJECT-184",
-            "summary": "SERP Q 信箱追蹤時限（我的團單）",
-            "unestimated": 0
-          },
-          {
-            "hours": 4.7,
-            "id": "FDEPROJECT-237",
-            "key": "FDEPROJECT-237",
-            "summary": "標準團名一鍵帶入 SERP 銷售團體",
-            "unestimated": 0
-          },
-          {
-            "hours": 3.0,
-            "id": "FDEPROJECT-247",
-            "key": "FDEPROJECT-247",
-            "summary": "刷卡失敗原因一鍵彙整（業務查詢刷卡單）",
-            "unestimated": 0
-          },
-          {
-            "hours": 3.0,
-            "id": "FDEPROJECT-271",
-            "key": "FDEPROJECT-271",
-            "summary": "旅展人員執勤紀錄",
-            "unestimated": 0
-          }
-        ],
         "completed": 59,
         "completed_keys": [
           "FDEPROJECT-80",
@@ -7813,7 +7879,6 @@
           "FDEPROJECT-277",
           "FDEPROJECT-279"
         ],
-        "deliverables": 59,
         "hours": 26.25,
         "tokens": null
       },
@@ -7828,57 +7893,6 @@
       },
       "name": "Vincent Hsieh",
       "week": {
-        "by_project": [
-          {
-            "hours": 2.6,
-            "id": "FDEPROJECT-110",
-            "key": "FDEPROJECT-110",
-            "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
-            "unestimated": 0
-          },
-          {
-            "hours": 1.4,
-            "id": "FDEPROJECT-164",
-            "key": "FDEPROJECT-164",
-            "summary": "SERP Q 信箱紅點彙整（我的團單）",
-            "unestimated": 0
-          },
-          {
-            "hours": 1.2,
-            "id": "FDEPROJECT-173",
-            "key": "FDEPROJECT-173",
-            "summary": "SERP Q催收",
-            "unestimated": 0
-          },
-          {
-            "hours": 0.6,
-            "id": "FDEPROJECT-184",
-            "key": "FDEPROJECT-184",
-            "summary": "SERP Q 信箱追蹤時限（我的團單）",
-            "unestimated": 0
-          },
-          {
-            "hours": 4.7,
-            "id": "FDEPROJECT-237",
-            "key": "FDEPROJECT-237",
-            "summary": "標準團名一鍵帶入 SERP 銷售團體",
-            "unestimated": 0
-          },
-          {
-            "hours": 3.0,
-            "id": "FDEPROJECT-247",
-            "key": "FDEPROJECT-247",
-            "summary": "刷卡失敗原因一鍵彙整（業務查詢刷卡單）",
-            "unestimated": 0
-          },
-          {
-            "hours": 3.0,
-            "id": "FDEPROJECT-271",
-            "key": "FDEPROJECT-271",
-            "summary": "旅展人員執勤紀錄",
-            "unestimated": 0
-          }
-        ],
         "completed": 39,
         "completed_keys": [
           "FDEPROJECT-138",
@@ -7921,26 +7935,15 @@
           "FDEPROJECT-277",
           "FDEPROJECT-279"
         ],
-        "deliverables": 39,
         "hours": 16.5,
         "tokens": null
       }
     },
     {
       "cumulative": {
-        "by_project": [
-          {
-            "hours": 14.5,
-            "id": "CS-25",
-            "key": "CS-25",
-            "summary": "歐洲地接社-房產品資料彙整",
-            "unestimated": 0
-          }
-        ],
-        "completed": 11,
+        "completed": 10,
         "completed_keys": [
           "CS-5",
-          "CS-16",
           "CS-17",
           "CS-18",
           "CS-19",
@@ -7951,7 +7954,6 @@
           "CS-27",
           "CS-28"
         ],
-        "deliverables": 2,
         "hours": 14.5,
         "tokens": null
       },
@@ -7963,42 +7965,22 @@
       },
       "name": "hubertwang",
       "week": {
-        "by_project": [
-          {
-            "hours": 5.0,
-            "id": "CS-25",
-            "key": "CS-25",
-            "summary": "歐洲地接社-房產品資料彙整",
-            "unestimated": 0
-          }
-        ],
         "completed": 2,
         "completed_keys": [
           "CS-27",
           "CS-28"
         ],
-        "deliverables": 1,
         "hours": 5.0,
         "tokens": null
       }
     },
     {
       "cumulative": {
-        "by_project": [
-          {
-            "hours": 10.0,
-            "id": "FDEPROJECT-312",
-            "key": "FDEPROJECT-312",
-            "summary": "[東北亞]韓國線 SERP 旅客資料自動填入航空公司名單",
-            "unestimated": 0
-          }
-        ],
         "completed": 2,
         "completed_keys": [
           "FDEPROJECT-313",
           "FDEPROJECT-314"
         ],
-        "deliverables": 2,
         "hours": 10.0,
         "tokens": null
       },
@@ -8010,36 +7992,17 @@
       },
       "name": "Jerry Huang",
       "week": {
-        "by_project": [
-          {
-            "hours": 10.0,
-            "id": "FDEPROJECT-312",
-            "key": "FDEPROJECT-312",
-            "summary": "[東北亞]韓國線 SERP 旅客資料自動填入航空公司名單",
-            "unestimated": 0
-          }
-        ],
         "completed": 2,
         "completed_keys": [
           "FDEPROJECT-313",
           "FDEPROJECT-314"
         ],
-        "deliverables": 2,
         "hours": 10.0,
         "tokens": null
       }
     },
     {
       "cumulative": {
-        "by_project": [
-          {
-            "hours": 9.5,
-            "id": "FDEPROJECT-140",
-            "key": "FDEPROJECT-140",
-            "summary": "入境成本單",
-            "unestimated": 0
-          }
-        ],
         "completed": 5,
         "completed_keys": [
           "FDEPROJECT-134",
@@ -8048,7 +8011,6 @@
           "FDEPROJECT-182",
           "FDEPROJECT-236"
         ],
-        "deliverables": 5,
         "hours": 9.5,
         "tokens": null
       },
@@ -8060,15 +8022,6 @@
       },
       "name": "王碩緯",
       "week": {
-        "by_project": [
-          {
-            "hours": 9.5,
-            "id": "FDEPROJECT-140",
-            "key": "FDEPROJECT-140",
-            "summary": "入境成本單",
-            "unestimated": 0
-          }
-        ],
         "completed": 5,
         "completed_keys": [
           "FDEPROJECT-134",
@@ -8077,22 +8030,12 @@
           "FDEPROJECT-182",
           "FDEPROJECT-236"
         ],
-        "deliverables": 5,
         "hours": 9.5,
         "tokens": null
       }
     },
     {
       "cumulative": {
-        "by_project": [
-          {
-            "hours": 9.0,
-            "id": "FDEPROJECT-286",
-            "key": "FDEPROJECT-286",
-            "summary": "[東北亞]團體機票票價查詢插件 MVP",
-            "unestimated": 0
-          }
-        ],
         "completed": 4,
         "completed_keys": [
           "FDEPROJECT-288",
@@ -8100,7 +8043,6 @@
           "FDEPROJECT-290",
           "FDEPROJECT-291"
         ],
-        "deliverables": 4,
         "hours": 9.0,
         "tokens": null
       },
@@ -8112,15 +8054,6 @@
       },
       "name": "Shira",
       "week": {
-        "by_project": [
-          {
-            "hours": 9.0,
-            "id": "FDEPROJECT-286",
-            "key": "FDEPROJECT-286",
-            "summary": "[東北亞]團體機票票價查詢插件 MVP",
-            "unestimated": 0
-          }
-        ],
         "completed": 4,
         "completed_keys": [
           "FDEPROJECT-288",
@@ -8128,28 +8061,17 @@
           "FDEPROJECT-290",
           "FDEPROJECT-291"
         ],
-        "deliverables": 4,
         "hours": 9.0,
         "tokens": null
       }
     },
     {
       "cumulative": {
-        "by_project": [
-          {
-            "hours": 3.0,
-            "id": "FDEPROJECT-140",
-            "key": "FDEPROJECT-140",
-            "summary": "入境成本單",
-            "unestimated": 0
-          }
-        ],
         "completed": 2,
         "completed_keys": [
           "FDEPROJECT-133",
           "FDEPROJECT-141"
         ],
-        "deliverables": 2,
         "hours": 3.0,
         "tokens": null
       },
@@ -8161,21 +8083,11 @@
       },
       "name": "Vivian",
       "week": {
-        "by_project": [
-          {
-            "hours": 3.0,
-            "id": "FDEPROJECT-140",
-            "key": "FDEPROJECT-140",
-            "summary": "入境成本單",
-            "unestimated": 0
-          }
-        ],
         "completed": 2,
         "completed_keys": [
           "FDEPROJECT-133",
           "FDEPROJECT-141"
         ],
-        "deliverables": 2,
         "hours": 3.0,
         "tokens": null
       }
@@ -8187,7 +8099,7 @@
     "week": "2026-W41",
     "week_ending": "2026-10-06"
   },
-  "schema": 5,
+  "schema": 6,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {
@@ -8560,17 +8472,9 @@
   "token_source": false,
   "totals": {
     "completed": 140,
-    "deliverables": 139,
     "hours": 113.75,
     "projects": 14,
     "tokens": null,
     "unestimated_completed": 0
-  },
-  "units": [
-    {
-      "deliverables": 139,
-      "hours": 113.75,
-      "unit": "未分類"
-    }
-  ]
+  }
 }
