@@ -165,7 +165,7 @@ def _bar(progress: dict, week_done: int) -> str:
 
 
 def _progress_cell(progress: dict, week_done: int) -> str:
-    return f'<span class="prog">{_bar(progress, week_done)}<span class="num">{progress["done_cards"]}/{progress["total_cards"]}</span></span>'
+    return f'<span class="prog" data-label="進度">{_bar(progress, week_done)}<span class="num">{progress["done_cards"]}/{progress["total_cards"]}</span></span>'
 
 
 def _hbar(value: int, top: int) -> str:
@@ -232,7 +232,7 @@ def _week_row(epic, narrative, metrics, page) -> str:
     week = epic["week"]
     staffing = {s["id"]: s for s in metrics["staffing"]}
     people = staffing[epic["id"]]["week"]["people"] if epic["id"] in staffing else []
-    owner = "、".join(people) if people else (epic["owner"] or "")
+    owner = "、".join(people) if people else (epic["owner"] or UNASSIGNED_OWNER)
     plus = f'<b>+{week["completed_count"]}</b>' if week["completed_count"] else '<span class="muted">0</span>'
     signals = ""
     if epic["key"] and epic["status"] != "Done" and not week["completed_count"]:
@@ -240,11 +240,11 @@ def _week_row(epic, narrative, metrics, page) -> str:
     nxt = ""
     if epic["kickoff"] and epic["kickoff"]["sections"].get("next_milestone"):
         nxt = epic["kickoff"]["sections"]["next_milestone"].strip().splitlines()[0]
-    token = f'<span class="num">Token {esc(fmt_tokens(week["tokens"]))}</span>' if page.tokens else ""
+    token = f'<span class="num" data-label="Token">Token {esc(fmt_tokens(week["tokens"]))}</span>' if page.tokens else ""
     head = (f'<span class="name">{page.title(epic["key"], epic["summary"])} {_pill(epic["status"])}</span>'
-            f'<span class="owner">{esc(owner)}</span>{_progress_cell(epic["progress"], week["completed_count"])}'
-            f'<span class="plus">{plus}</span><span class="num">{esc(fmt_hours(week["hours"]))}</span>{token}'
-            f'<span class="sigs">{signals}</span><span class="next">{esc(nxt) if nxt else DASH}</span>')
+            f'<span class="owner" data-label="負責人">{esc(owner)}</span>{_progress_cell(epic["progress"], week["completed_count"])}'
+            f'<span class="plus" data-label="本週">{plus}</span><span class="num" data-label="本週工時">{esc(fmt_hours(week["hours"]))}</span>{token}'
+            f'<span class="sigs" data-label="訊號">{signals}</span><span class="next" data-label="下一步">{esc(nxt) if nxt else DASH}</span>')
     if epic["active"]:
         result = f'<p class="result">{esc(narrative["epic_results"][epic["id"]])}</p>'
     else:
@@ -329,15 +329,24 @@ def _completed_by_parent(metrics, page) -> str:
                 items.append(f"<li>{head}</li>")
         groups.append(_done_group(page.title(epic["key"], epic["summary"]), epic["week"]["completed_count"], epic["week"]["hours"],
                                   f'<ul class="list">{"".join(items)}</ul>'))
-    # epic 先前已結案時沒有專案列，但底下的卡本週仍可能完成，完成卡片 KPI 也有算它們
+    # epic 先前已結案時沒有專案列，但底下的卡本週仍可能完成，完成卡片 KPI 也有算它們：
+    # 一個 epic 仍一組、帶張數與工時，不合併成一組（Codex 審 PR A）。名稱從總覽的專案列拿，拿不到就讓它炸，不默默合併
     shown = {e["id"] for e in metrics["epics"]}
-    other_rows = [c for c in metrics["completed"] if c["group"] not in shown]
-    if other_rows:
-        others = "".join(
-            f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["project"])} · {esc(c["owner"])}</span></span>'
+    settled = {e["id"]: e for e in metrics["cumulative"]["epics"]}
+    other_groups = []
+    for c in metrics["completed"]:
+        if c["group"] not in shown and c["group"] not in other_groups:
+            other_groups.append(c["group"])
+    for group_id in other_groups:
+        epic = settled[group_id]
+        rows = [c for c in metrics["completed"] if c["group"] == group_id]
+        items = "".join(
+            f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["owner"])}</span></span>'
             f'<span class="nums">{esc(fmt_card_hours(c))}{_token_suffix(c["tokens"], page)}</span></li>'
-            for c in other_rows)
-        groups.append(_done_group('其他完成的卡 <span class="muted">· 所屬 epic 已結案</span>', len(other_rows), None, f'<ul class="list">{others}</ul>'))
+            for c in rows)
+        hours = sum(c["hours"] or 0 for c in rows)
+        groups.append(_done_group(f'{page.title(epic["key"], epic["summary"])} <span class="muted">· 所屬 epic 已結案</span>',
+                                  len(rows), hours, f'<ul class="list">{items}</ul>'))
     return ("".join(groups) or '<p class="muted">本週沒有完成的卡。</p>') + _breakpoint(metrics["migrated"]["week"], page, with_week=False)
 
 
@@ -418,19 +427,19 @@ def _people_cell(scope: dict) -> str:
     """總覽「人」欄（2026-10-07 使用者裁，取代團隊頁的專案投入表）：累計有產出的人數與名字，未指派不算人、另外註明。"""
     names = esc("、".join(scope["people"]))
     note = "<small>另有未指派</small>" if scope["unassigned"] else ""
-    return f'<span class="people">{scope["people_count"]}{f" <small>{names}</small>" if names else ""}{note}</span>'
+    return f'<span class="people" data-label="人">{scope["people_count"]}{f" <small>{names}</small>" if names else ""}{note}</span>'
 
 
 def _overview_project(e, week_done: dict, staffing: dict, page) -> str:
     """總覽一個專案一列：名稱、狀態、三段進度條、人、累計工時；展開看 Kick off 目標五段，預設收合（2026-10-07 使用者裁）。
     用 <details>，沒有 JS 也能展開。未歸屬 epic 沒有 Kick off，不給展開的內容。
     本週段取本週頁同一個 epic 的完成數；先前已結案的 epic 本週沒有專案列，就是 0。"""
-    token = f'<span class="num">Token {esc(fmt_tokens(e["tokens"]))}</span>' if page.tokens else ""
+    token = f'<span class="num" data-label="Token">Token {esc(fmt_tokens(e["tokens"]))}</span>' if page.tokens else ""
     scope = staffing[e["id"]]["cumulative"] if e["id"] in staffing else {"people": [], "people_count": 0, "unassigned": False, "unestimated": 0}
     unfilled = f'<small>{scope["unestimated"]} 張{UNFILLED}</small>' if scope["unestimated"] else ""
     head = (f'<span class="name">{page.title(e["key"], e["summary"])} {_pill(e["status"])}</span>'
             f'{_progress_cell(e["progress"], week_done.get(e["id"], 0))}{_people_cell(scope)}'
-            f'<span class="num">{esc(fmt_hours(e["hours"]))}{unfilled}</span>{token}')
+            f'<span class="num" data-label="累計工時">{esc(fmt_hours(e["hours"]))}{unfilled}</span>{token}')
     if not e["key"]:
         return f'<div class="proj"><div class="proj-head">{head}</div></div>'
     body = _kickoff(e["kickoff"], BENEFIT_FIELDS) or '<p class="muted">Kick off 未填</p>'
@@ -821,6 +830,9 @@ details summary{cursor:pointer}
   .list summary{grid-template-columns:auto minmax(0,1fr)}
   .proj.head{display:none}
   .proj-head{flex-wrap:wrap;gap:4px 10px}
+  .proj-head>[data-label]::before{content:attr(data-label);display:block;color:var(--muted);font-size:11px}
+  .proj-head>[data-label]:empty{display:none}
+  .proj-head .num{text-align:left;min-width:0}
   .proj-head .name{flex-basis:calc(100% - 24px)}
   .prog{flex-basis:100%;width:auto}
   .owner,.next,.people{width:auto;white-space:normal;flex-basis:100%}
