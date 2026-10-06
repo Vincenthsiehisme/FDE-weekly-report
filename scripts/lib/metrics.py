@@ -5,20 +5,26 @@
 - Hours = Story point estimate，只加葉節點。有子卡的卡自己的點數不算，epic 與 Kick off 卡不算。
   理由：父卡與子卡都有值，兩邊都加會灌水（CS-16 自己 5.0，子任務合計 7.5）。
   這個欄位由執行人完工後回填實際花費時數（2026-09-30 使用者確認），頁面叫「實際工時」。
+- 完成卡片也只數葉節點，跟工時同一批卡：有子卡的父卡不算張數，張數與工時都計在子卡（2026-10-07 使用者裁，
+  原本父卡與子卡各算一張，累計 185 張對 176 個交付，頁面上兩個數字對不上）。交付不再算（同日使用者裁）。
 - 專案以 epic 分組，不在任何 epic 底下的卡歸「未歸屬 epic」。
-- 支援單位以 label 分組，只認 config/units.json 白名單裡的 label。
+- label：專案的 label 取 epic 的 label；不在 epic 底下的卡用自己的 label；不是恰好一個 label 歸「未分類」。
+  epic 不是恰好一個 label、或底下卡片的 label 跟 epic 不同，列資料檢查（2026-10-07 使用者裁：Jira 上已補齊，
+  以 epic 為準；原本的 config/units.json 白名單退場）。
+- 進度：累計完成的葉節點（跟完成卡片同一批，扣排除與改組前）／epic 底下全部葉節點（2026-10-07 使用者裁：
+  分母不扣，Jira 上全部完成的專案可能不到 100%）。本週頁與總覽同一個數。
 - Status 只有 Done（epic 已完成）與 On Track。
 - 累計：snapshot 抓的是兩個專案的全部卡片，不限期間，所以累計直接從同一份 snapshot 重算到本期結束，
   不讀舊期的 metrics。
 - 專案投入：每個專案由幾個人產出、花多少實際工時，人跟工時同一個口徑（完成的葉節點），未指派不算人。
-- 排除：config/excluded.json 列的卡不算完成，本週與累計的張數、工時、交付、人、支援單位都不算；
-  epic 進度照 Jira 狀態算完成（2026-09-27 使用者裁：Squad 8 移轉時補建的 8 張不算當週）。
+- 排除：config/excluded.json 列的卡不算完成，本週與累計的張數、工時、進度、人、label 都不算
+  （2026-09-27 使用者裁：Squad 8 移轉時補建的 8 張不算當週）。
 - 整棵排除：config/excluded.json 的 epics 列的 epic 連同底下所有卡在算之前就移出，不列專案、不算數字、
   不做 Kick off 鎖定與資料檢查（2026-09-29 使用者裁：行政作業 epic 不放入成效統計）。
 - 改組前：Jira 結案時間早於或等於搬進 FDEPROJECT／CS 的時間（snapshot 的 moved_in），是搬入前已完成的歷史，
   本週與累計都不算，也不列資料檢查，只給頁面在「改組前」分隔線之後灰字列出；搬入後才結案的照算；
-  同一張卡也列在 config/excluded.json 的 cards 時以排除清單為準（照常列資料檢查，不進改組前清單）；
-  epic 進度照 Jira 狀態（2026-09-30 使用者裁：Squad 8 移轉的卡集中在陳勁佑）。
+  同一張卡也列在 config/excluded.json 的 cards 時以排除清單為準（照常列資料檢查，不進改組前清單）
+  （2026-09-30 使用者裁：Squad 8 移轉的卡集中在陳勁佑）。
 """
 from __future__ import annotations
 
@@ -33,10 +39,11 @@ SECTION_LABELS = dict(SECTIONS)
 UNASSIGNED_EPIC = "_unassigned"
 UNASSIGNED_EPIC_LABEL = "未歸屬 epic"
 UNASSIGNED_OWNER = "未指派"
-UNIT_UNCLASSIFIED = "未分類"
-UNIT_MULTIPLE = "多個單位（待釐清）"
+UNLABELED = "未分類"
 STALE_DAYS = 7
-SCHEMA = 5  # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
+# 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
+# 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
+SCHEMA = 6
 SNAPSHOT_SCHEMA = 2  # snapshot 要有 moved_in 才判斷得了改組前
 
 
@@ -84,15 +91,15 @@ class _Tree:
         return not self.children[item["key"]]
 
     def root_of(self, item: dict) -> dict:
-        """交付單位：一般卡本身；子任務歸到它的父卡（父卡不在範圍內就以子任務本身為單位）。"""
+        """所屬的父卡：一般卡是自己；子任務歸到它的父卡（父卡不在範圍內就是子任務自己）。負責人歸屬與完成清單分組用。"""
         parent = self.parent_of(item)
         if item["level"] < 0 and parent is not None and parent["key"] in self.work_keys:
             return parent
         return item
 
     def owner_of(self, item: dict) -> str:
-        """負責人：卡片自己的 assignee → 交付單位的 assignee → 未指派。
-        子任務常常不指派人，歸給父卡的人。一般卡的交付單位就是自己，不往上算給 epic 負責人：
+        """負責人：卡片自己的 assignee → 所屬父卡的 assignee → 未指派。
+        子任務常常不指派人，歸給父卡的人。一般卡的父卡就是自己，不往上算給 epic 負責人：
         epic 負責人是專案負責人，不一定是做這張卡的人，算給他等於用猜的。"""
         if item["assignee"]:
             return item["assignee"]
@@ -119,8 +126,9 @@ def _group_sort_key(group_id: str):
     return (group_id == UNASSIGNED_EPIC, issue_sort_key(group_id) if group_id != UNASSIGNED_EPIC else ("", 0))
 
 
-def _progress(group_leaves: list, is_done=_done) -> dict:
-    """is_done 預設看卡片現在的狀態；累計要改用「本期結束前完成」，補算舊的一期才不會算進之後才完成的卡。"""
+def _progress(group_leaves: list, is_done) -> dict:
+    """is_done 是「算進累計完成卡片」：本期結束前完成、扣排除與改組前。不看卡片在 Jira 現在的狀態，
+    進度才會跟同一列的工時、張數是同一批卡，補算舊的一期也不會算進之後才完成的卡。分母是全部葉節點（2026-10-07 使用者裁）。"""
     total_points = sum(i["points"] for i in group_leaves if i["points"] is not None)
     done_points = sum(i["points"] for i in group_leaves if i["points"] is not None and is_done(i))
     return {
@@ -204,7 +212,48 @@ def kickoff_by_epic(issues: list) -> tuple:
     return found, checks
 
 
-def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, extra_checks: list, *,
+def _kickoff_view(state) -> dict:
+    """頁面要的 Kick off 內容；state 是 None 代表這個 epic 沒有 Kick off。資料檢查由呼叫端列，這裡不列。"""
+    if state is None:
+        return None
+    return {
+        "key": state["kickoff_key"],
+        "locked_at": state["locked_at"],
+        "sections": state["sections"],
+        "modified_at": [c["detected_at"] for c in state["changes"]],
+    }
+
+
+def _labels_of(tree, groups, checks) -> tuple:
+    """回傳 (group_label, card_label)：group_label 是 {epic: label}，card_label(item) 給未歸屬 epic 的卡用自己的 label。
+    不是恰好一個 label 歸「未分類」；epic 本身、或 epic 底下卡片的 label 跟 epic 不同，各列一行資料檢查，讓人回 Jira 補。"""
+    group_label = {}
+    for group_id, epic in groups:
+        if epic is None:
+            continue
+        labels = epic["labels"]
+        if len(labels) == 1:
+            group_label[group_id] = labels[0]
+            off = sorted((i["key"] for i in tree.work if tree.epic_of(i) == group_id and i["labels"] != labels), key=issue_sort_key)
+            if off:
+                checks.append(_check("label_mismatch", group_id, f"底下 {len(off)} 張卡的 label 跟 epic 的「{labels[0]}」不同，頁面以 epic 為準：{'、'.join(off)}"))
+        else:
+            group_label[group_id] = UNLABELED
+            what = "沒有 label" if not labels else f"有 {len(labels)} 個 label（{'、'.join(labels)}）"
+            checks.append(_check("epic_label", group_id, f"epic {what}，歸{UNLABELED}"))
+
+    def card_label(item: dict) -> str:
+        labels = item["labels"]
+        return labels[0] if len(labels) == 1 else UNLABELED
+
+    for item in tree.work:
+        if tree.epic_of(item) is None and len(item["labels"]) != 1:
+            what = "沒有 label" if not item["labels"] else f"有 {len(item['labels'])} 個 label（{'、'.join(item['labels'])}）"
+            checks.append(_check("card_label", item["key"], f"不在 epic 底下的卡{what}，歸{UNLABELED}"))
+    return group_label, card_label
+
+
+def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: list, *,
             cumulative_tokens, excluded: dict, token_source: bool) -> dict:
     """tokens 是這一期的 Token 檔；cumulative_tokens 是週次不晚於這一期的 Token 檔逐卡相加。
     兩個都是 None 代表這一期之前沒有任何 Token 資料。這一期有 Token 但累計沒有，代表呼叫端沒把累計接上。
@@ -219,7 +268,6 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         raise ValueError(f"snapshot 的 schema 是 {snapshot.get('schema')}，需要 {SNAPSHOT_SCHEMA}（有搬入時間才判斷得了改組前）：重跑 prepare 抓一次 Jira")
     checks = list(extra_checks)
     tree = _Tree(snapshot["issues"], checks)
-    unit_set = set(units)
 
     def completed_this_week(item: dict) -> bool:
         if not _done(item):
@@ -235,7 +283,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     if not_work:
         raise ValueError(f"config/excluded.json 只能列一般工作卡，這些是 epic 或 Kick off 卡：{'、'.join(not_work)}")
     raw_week_done = {i["key"] for i in tree.work if completed_this_week(i)}
-    # 排除只在這裡接一次：本週與累計的完成集合都扣掉，下游的張數、工時、交付、人、支援單位都從這兩個集合算
+    # 排除只在這裡接一次：本週與累計的完成集合都扣掉，下游的張數、工時、進度、人、label 都從這兩個集合算
     for key in sorted(raw_week_done & set(excluded), key=issue_sort_key):
         checks.append(_check("excluded", key, f"依 config/excluded.json 不算本週與累計完成：{excluded[key]}"))
     # 改組前：搬進來時就已完成的卡是別的專案的歷史，靜默不算，不列資料檢查。
@@ -250,7 +298,13 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     cumulative_done = done_by_end - set(excluded) - migrated
     group_of = {i["key"]: (tree.epic_of(i) or UNASSIGNED_EPIC) for i in tree.work}
     leaves = [i for i in tree.work if tree.is_leaf(i)]
+    # 完成卡片、工時、進度、人、label 都只看這兩批葉節點：父卡的張數與工時計在子卡（2026-10-07 使用者裁）
     week_leaves = [i for i in leaves if i["key"] in week_done]
+    cumulative_leaves = [i for i in leaves if i["key"] in cumulative_done]
+    leaf_keys = {i["key"] for i in leaves}
+
+    def counted(item: dict) -> bool:
+        return item["key"] in cumulative_done
 
     for leaf in week_leaves:
         if leaf["points"] is None:
@@ -269,11 +323,17 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     epic_rows = []
     groups = [(e["key"], e) for e in sorted(tree.epics, key=lambda i: issue_sort_key(i["key"]))]
     groups.append((UNASSIGNED_EPIC, None))
+    group_label, card_label = _labels_of(tree, groups, checks)
+
+    def label_of(item: dict) -> str:
+        group = group_of[item["key"]]
+        return card_label(item) if group == UNASSIGNED_EPIC else group_label[group]
+
     for group_id, epic in groups:
         members = [i for i in tree.work if group_of[i["key"]] == group_id]
         group_leaves = [i for i in leaves if group_of[i["key"]] == group_id]
         group_week_leaves = [i for i in week_leaves if group_of[i["key"]] == group_id]
-        completed_keys = sorted((i["key"] for i in members if i["key"] in week_done), key=issue_sort_key)
+        completed_keys = sorted((i["key"] for i in group_week_leaves), key=issue_sort_key)
         epic_done_this_week = bool(epic and _done(epic) and epic["resolved"] and period.contains(parse_jira_time(epic["resolved"])))
         active = bool(completed_keys) or epic_done_this_week
         if epic is None and not active:
@@ -281,13 +341,14 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         if epic is not None and _done(epic) and not epic_done_this_week:
             continue  # 先前就已結算的專案不再列
 
-        progress = _progress(group_leaves)
+        progress = _progress(group_leaves, counted)
 
-        roots = {}
+        # 完成清單的分組：子任務歸到父卡下面，一般卡自成一組。只是頁面的分組，不是一個要算的數
+        by_root = {}
         for leaf in group_week_leaves:
-            roots.setdefault(tree.root_of(leaf)["key"], []).append(leaf)
-        deliveries = []
-        for root_key in sorted(roots, key=issue_sort_key):
+            by_root.setdefault(tree.root_of(leaf)["key"], []).append(leaf)
+        roots = []
+        for root_key in sorted(by_root, key=issue_sort_key):
             root = tree.by_key[root_key]
             kids = tree.children[root_key]
             if root_key in week_done:
@@ -297,11 +358,11 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
             else:
                 done_kids = sum(1 for k in kids if _done(k))
                 result = f"{root['status']}（子任務 {done_kids}/{len(kids)} 完成）" if kids else root["status"]
-            deliveries.append({
+            roots.append({
                 "key": root_key,
                 "summary": root["summary"],
                 "owner": root["assignee"] or UNASSIGNED_OWNER,
-                "hours": _round(sum(l["points"] or 0 for l in roots[root_key])),
+                "hours": _round(sum(l["points"] or 0 for l in by_root[root_key])),
                 "tokens": _token_sum([root_key] + [k["key"] for k in kids], tokens),
                 "result": result,
             })
@@ -312,12 +373,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
             if state is None:
                 checks.append(_check("kickoff_missing", epic["key"], "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"))
             else:
-                kickoff = {
-                    "key": state["kickoff_key"],
-                    "locked_at": state["locked_at"],
-                    "sections": state["sections"],
-                    "modified_at": [c["detected_at"] for c in state["changes"]],
-                }
+                kickoff = _kickoff_view(state)
                 for problem in state.get("problems", []):
                     checks.append(_check("kickoff_format", state["kickoff_key"], problem))
                 for change in state["changes"]:
@@ -343,9 +399,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
                 "completed_keys": completed_keys,
                 "hours": _round(sum(l["points"] or 0 for l in group_week_leaves)),
                 "tokens": _token_sum(([epic["key"]] if epic else []) + [i["key"] for i in members], tokens),
-                # 專案層的交付數由程式算：narrative 只能引用程式算好的數字，專案有子任務時完成張數不等於交付數
-                "deliverables": len(deliveries),
-                "deliveries": deliveries,
+                "roots": roots,
             },
             "kickoff": kickoff,
         })
@@ -353,41 +407,19 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     # 依負責人
     owners = {}
     for leaf in week_leaves:
-        row = owners.setdefault(tree.owner_of(leaf), {"roots": set(), "hours": 0.0, "keys": []})
-        row["roots"].add(tree.root_of(leaf)["key"])
+        row = owners.setdefault(tree.owner_of(leaf), {"hours": 0.0, "keys": []})
         row["hours"] += leaf["points"] or 0
         row["keys"].append(leaf["key"])
     owner_rows = [{
         "owner": name,
-        "deliveries": [tree.by_key[k]["summary"] for k in sorted(row["roots"], key=issue_sort_key)],
-        "deliverables": len(row["roots"]),
+        "completed": len(row["keys"]),
         "hours": _round(row["hours"]),
         "tokens": _token_sum(row["keys"], tokens),
     } for name, row in owners.items()]
     owner_rows.sort(key=lambda r: (-r["hours"], r["owner"] == UNASSIGNED_OWNER, r["owner"]))
 
-    # 依支援單位
-    unknown_labels = set()
-    units_acc = {}
-    for leaf in week_leaves:
-        matched = [l for l in leaf["labels"] if l in unit_set]
-        unknown_labels.update(l for l in leaf["labels"] if l not in unit_set)
-        unit = matched[0] if len(matched) == 1 else (UNIT_UNCLASSIFIED if not matched else UNIT_MULTIPLE)
-        if len(matched) > 1:
-            checks.append(_check("unit_multiple", leaf["key"], f"同時有多個支援單位 label：{'、'.join(matched)}"))
-        row = units_acc.setdefault(unit, {"roots": set(), "hours": 0.0})
-        row["roots"].add(tree.root_of(leaf)["key"])
-        row["hours"] += leaf["points"] or 0
-    if not units:
-        checks.append(_check("units_unconfigured", None, f"config/units.json 白名單是空的，支援單位全部歸{UNIT_UNCLASSIFIED}"))
-    for label in sorted(unknown_labels):
-        checks.append(_check("unit_unknown_label", None, f"label「{label}」不在 config/units.json 白名單，歸為{UNIT_UNCLASSIFIED}"))
-    unit_rows = [{"unit": u, "deliverables": len(r["roots"]), "hours": _round(r["hours"])} for u, r in units_acc.items()]
-    special = {UNIT_UNCLASSIFIED: 1, UNIT_MULTIPLE: 2}
-    unit_rows.sort(key=lambda r: (special.get(r["unit"], 0), -r["hours"], r["unit"]))
-
     # Jira Tracking
-    def group_label(key: str) -> str:
+    def group_label_text(key: str) -> str:
         group = group_of[key]
         return UNASSIGNED_EPIC_LABEL if group == UNASSIGNED_EPIC else f"{group} {tree.by_key[group]['summary']}"
 
@@ -398,7 +430,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
             "key": key,
             "group": group_of[key],
             "root": tree.root_of(item)["key"],
-            "project": group_label(key),
+            "project": group_label_text(key),
             "owner": tree.owner_of(item),
             "summary": item["summary"],
             "leaf": leaf,
@@ -406,7 +438,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
             "tokens": _token_sum([key], tokens_map),
         }
 
-    completed = [completed_row(key, tokens) for key in sorted(week_done, key=issue_sort_key)]
+    completed = [completed_row(key, tokens) for key in sorted(week_done & leaf_keys, key=issue_sort_key)]
 
     def migrated_row(key: str) -> dict:
         item = tree.by_key[key]
@@ -429,7 +461,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
             "group": group_of[item["key"]],
             "root": tree.root_of(item)["key"],
             "leaf": not kids,
-            "project": group_label(item["key"]),
+            "project": group_label_text(item["key"]),
             "owner": tree.owner_of(item),
             "summary": item["summary"],
             "current_state": state,
@@ -438,9 +470,11 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
             "tokens": _token_sum([item["key"]], tokens),
         })
 
-    cumulative = _cumulative(tree, period, groups, group_of, leaves, cumulative_done, done_by_end, cumulative_tokens, completed_row)
-    people = _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cumulative_tokens)
+    cumulative = _cumulative(tree, period, groups, group_of, group_label, leaves, cumulative_done, kickoff_states,
+                             cumulative_tokens, completed_row)
+    people = _people(tree, week_done, cumulative_done, in_progress, tokens, cumulative_tokens)
     staffing = _staffing(tree, group_of, week_done, cumulative_done)
+    labels = _label_rows(cumulative["epics"], week_leaves, cumulative_leaves, label_of)
 
     active_rows = [r for r in epic_rows if r["active"]]
     return {
@@ -451,9 +485,6 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         "generated_at": snapshot["fetched_at"],
         "totals": {
             "projects": len(active_rows),
-            # 跟人、支援單位、累計同一個口徑：本週完成葉節點的交付單位。只加專案列的話，
-            # 所屬 epic 先前已結案的卡不算，同一頁的「交付」就有兩種數字（2026-09-30 Fable 審 PR #8）
-            "deliverables": len({tree.root_of(l)["key"] for l in week_leaves}),
             "completed": len(completed),
             "hours": _round(sum(l["points"] or 0 for l in week_leaves)),
             "tokens": sum(tokens.values()) if tokens is not None else None,
@@ -461,7 +492,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
         },
         "epics": epic_rows,
         "owners": owner_rows,
-        "units": unit_rows,
+        "labels": labels,
         "completed": completed,
         "in_progress": in_progress,
         "cumulative": cumulative,
@@ -475,10 +506,10 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     }
 
 
-def _cumulative(tree, period, groups, group_of, leaves, done, done_in_jira, tokens, completed_row) -> dict:
+def _cumulative(tree, period, groups, group_of, group_label, leaves, done, kickoff_states, tokens, completed_row) -> dict:
     """到本期結束為止的累計：專案（含已結案的 epic）、完成卡片（標上完成那一週）、總量。
     完成、進度與 Done 狀態都以本期結束為界，不看卡片現在的狀態。
-    done 已扣掉排除清單，用來算張數、工時、交付；進度用 done_in_jira，跟本週頁一樣照 Jira 狀態算。"""
+    done 已扣掉排除清單與改組前；張數、工時、進度都只看 done 裡的葉節點，跟本週頁同一批卡。"""
     done_leaves = [i for i in leaves if i["key"] in done]
 
     def done_by_end(item) -> bool:
@@ -489,8 +520,7 @@ def _cumulative(tree, period, groups, group_of, leaves, done, done_in_jira, toke
         members = [i for i in tree.work if group_of[i["key"]] == group_id]
         group_leaves = [i for i in leaves if group_of[i["key"]] == group_id]
         group_done_leaves = [i for i in group_leaves if i["key"] in done]
-        completed = sum(1 for i in members if i["key"] in done)
-        if epic is None and not completed:
+        if epic is None and not group_done_leaves:
             continue
         epic_rows.append({
             "id": group_id,
@@ -499,33 +529,32 @@ def _cumulative(tree, period, groups, group_of, leaves, done, done_in_jira, toke
             "owner": (epic["assignee"] or UNASSIGNED_OWNER) if epic else None,
             "status": ("Done" if done_by_end(epic) else "On Track") if epic else None,
             "due": epic["due"] if epic else None,
-            "progress": _progress(group_leaves, lambda i: i["key"] in done_in_jira),
-            "completed": completed,
-            "deliverables": len({tree.root_of(i)["key"] for i in group_done_leaves}),
+            # 未歸屬 epic 沒有自己的 label：裡面的卡各自用自己的 label 算進 label 表，頁面放在最後一段
+            "label": group_label[group_id] if epic else None,
+            "progress": _progress(group_leaves, lambda i: i["key"] in done),
+            "completed": len(group_done_leaves),
             "hours": _round(sum(i["points"] or 0 for i in group_done_leaves)),
             "tokens": _token_sum(([epic["key"]] if epic else []) + [i["key"] for i in members], tokens),
+            "kickoff": _kickoff_view(kickoff_states.get(epic["key"])) if epic else None,
         })
 
     completed = []
-    for key in sorted(done, key=issue_sort_key):
-        row = completed_row(key, tokens)
-        row["week"] = period_containing(parse_jira_time(tree.by_key[key]["resolved"])).week_id
+    for item in sorted(done_leaves, key=lambda i: issue_sort_key(i["key"])):
+        row = completed_row(item["key"], tokens)
+        row["week"] = period_containing(parse_jira_time(item["resolved"])).week_id
         completed.append(row)
     weeks = {}
     for row in completed:
-        w = weeks.setdefault(row["week"], {"week": row["week"], "completed": 0, "hours": 0.0, "roots": set()})
+        w = weeks.setdefault(row["week"], {"week": row["week"], "completed": 0, "hours": 0.0})
         w["completed"] += 1
-        if row["leaf"]:
-            w["hours"] += tree.by_key[row["key"]]["points"] or 0
-            w["roots"].add(row["root"])
-    week_rows = [{"week": w["week"], "completed": w["completed"], "hours": _round(w["hours"]), "deliverables": len(w["roots"])}
+        w["hours"] += tree.by_key[row["key"]]["points"] or 0
+    week_rows = [{"week": w["week"], "completed": w["completed"], "hours": _round(w["hours"])}
                  for w in sorted(weeks.values(), key=lambda w: w["week"], reverse=True)]
-    since = min((parse_jira_time(tree.by_key[k]["resolved"]) for k in done), default=None)
+    since = min((parse_jira_time(i["resolved"]) for i in done_leaves), default=None)
     return {
         "since": since.date().isoformat() if since else None,
         "totals": {
             "projects": sum(1 for r in epic_rows if r["completed"]),
-            "deliverables": len({tree.root_of(i)["key"] for i in done_leaves}),
             "completed": len(completed),
             "hours": _round(sum(i["points"] or 0 for i in done_leaves)),
             "tokens": sum(tokens.values()) if tokens is not None else None,
@@ -537,18 +566,43 @@ def _cumulative(tree, period, groups, group_of, leaves, done, done_in_jira, toke
     }
 
 
+def _label_rows(cumulative_epics, week_leaves, cumulative_leaves, label_of) -> list:
+    """依 label：每個 label 本週與累計的實際工時、底下幾個 epic。總覽與本週頁共用這一份（2026-10-07 使用者裁）。
+    epic 數只數總覽專案列表裡的 epic，未歸屬 epic 不算 epic，它的卡照自己的 label 算工時。
+    各列工時加總等於本週與累計的工時總數，epic 數加總等於總覽專案列表的 epic 數；工時加總後才捨入一次。"""
+    def row():
+        return {"epics": 0, "week": {"hours": 0.0, "unestimated": 0}, "cumulative": {"hours": 0.0, "unestimated": 0}}
+
+    acc = {}
+    for epic in cumulative_epics:
+        if epic["key"]:
+            acc.setdefault(epic["label"], row())["epics"] += 1
+    for scope, done_leaves in (("week", week_leaves), ("cumulative", cumulative_leaves)):
+        for leaf in done_leaves:
+            s = acc.setdefault(label_of(leaf), row())[scope]
+            s["hours"] += leaf["points"] or 0
+            s["unestimated"] += leaf["points"] is None
+    rows = []
+    for label, r in acc.items():
+        for scope in ("week", "cumulative"):
+            r[scope]["hours"] = _round(r[scope]["hours"])
+        rows.append(dict(label=label, **r))
+    rows.sort(key=lambda r: (r["label"] == UNLABELED, -r["cumulative"]["hours"], -r["week"]["hours"], r["label"]))
+    return rows
+
+
 def _group_info(tree, group_id) -> dict:
     if group_id == UNASSIGNED_EPIC:
         return {"id": group_id, "key": None, "summary": UNASSIGNED_EPIC_LABEL}
     return {"id": group_id, "key": group_id, "summary": tree.by_key[group_id]["summary"]}
 
 
-def _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cumulative_tokens) -> list:
-    """執行人視角：每個人本週與累計的完成、工時、Token、各專案時數，加上手上進行中的葉節點卡。
-    工時與進行中都只算葉節點（跟 Hours 同一個口徑）；Token 算他名下所有完成卡，Token 是用量不是工時，
-    父卡與子卡各自記錄不會重複。"""
+def _people(tree, week_done, cumulative_done, in_progress, tokens, cumulative_tokens) -> list:
+    """執行人視角：每個人本週與累計的完成卡片、工時、Token，加上手上進行中的葉節點卡。
+    完成卡片、工時與進行中都只算葉節點（跟總數同一個口徑）；Token 算他名下所有完成卡（含父卡），
+    Token 是用量不是工時，父卡與子卡各自記錄不會重複。"""
     def bucket():
-        return {"roots": set(), "hours": 0.0, "cards": [], "groups": {}}
+        return {"hours": 0.0, "cards": [], "token_cards": []}
 
     acc = {}
 
@@ -561,13 +615,10 @@ def _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cum
             if key not in done:
                 continue
             b = person(tree.owner_of(item))[scope]
-            b["cards"].append(key)
+            b["token_cards"].append(key)
             if tree.is_leaf(item):
+                b["cards"].append(key)
                 b["hours"] += item["points"] or 0
-                b["roots"].add(tree.root_of(item)["key"])
-                g = b["groups"].setdefault(group_of[key], {"hours": 0.0, "unestimated": 0})
-                g["hours"] += item["points"] or 0
-                g["unestimated"] += item["points"] is None
     for row in in_progress:
         if not row["leaf"]:
             continue
@@ -580,12 +631,9 @@ def _people(tree, group_of, week_done, cumulative_done, in_progress, tokens, cum
     def out(b, tokens_map):
         return {
             "hours": _round(b["hours"]),
-            "tokens": _token_sum(b["cards"], tokens_map),
-            "deliverables": len(b["roots"]),
+            "tokens": _token_sum(b["token_cards"], tokens_map),
             "completed": len(b["cards"]),
             "completed_keys": sorted(b["cards"], key=issue_sort_key),
-            "by_project": [dict(_group_info(tree, g), hours=_round(v["hours"]), unestimated=v["unestimated"])
-                           for g, v in sorted(b["groups"].items(), key=lambda kv: _group_sort_key(kv[0]))],
         }
 
     rows = [{

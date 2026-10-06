@@ -19,12 +19,10 @@ class AtomicWriteTest(unittest.TestCase):
         self.tmp = tempfile.TemporaryDirectory()
         root = Path(self.tmp.name)
         (root / "config").mkdir()
-        (root / "config" / "units.json").write_text('{"units": []}', encoding="utf-8")
         (root / "config" / "excluded.json").write_text('{"cards": {}, "epics": {}}', encoding="utf-8")
         self.patches = [
             mock.patch.object(weekly, "ROOT", root),
             mock.patch.object(weekly, "DATA", root / "data"),
-            mock.patch.object(weekly, "UNITS_FILE", root / "config" / "units.json"),
             mock.patch.object(weekly, "EXCLUDED_FILE", root / "config" / "excluded.json"),
         ]
         for p in self.patches:
@@ -168,7 +166,7 @@ class ExcludedConfigTest(AtomicWriteTest):
         metrics = weekly.publish_week(snap, fresh_fetch=False)
         self.assertEqual(metrics["totals"]["completed"], 0)
         self.assertEqual([e["id"] for e in metrics["epics"]], [])
-        self.assertEqual([(c["kind"], c["key"]) for c in metrics["checks"]], [("excluded_epic", "CS-1"), ("units_unconfigured", None)])
+        self.assertEqual([(c["kind"], c["key"]) for c in metrics["checks"]], [("excluded_epic", "CS-1")])
         self.assertFalse((self.root / "data" / "kickoff").exists())
         saved = json.loads((self.root / "data" / "2026-W39" / "snapshot.json").read_text(encoding="utf-8"))
         self.assertEqual([i["key"] for i in saved["issues"]], ["CS-1", "CS-3", "CS-2"])  # 原始快照照存，不刪卡

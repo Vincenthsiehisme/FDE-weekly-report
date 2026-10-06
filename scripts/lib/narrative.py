@@ -2,13 +2,13 @@
 
 AI 只寫兩種東西：
   highlights：本週重點，1 到 3 條（本週沒有任何完成的卡時必須是空陣列）
-  epic_results：每個本週有交付的專案一句「結果」，key 是 metrics 裡 epic 的 id
+  epic_results：每個本週有完成的專案一句「結果」，key 是 metrics 裡 epic 的 id
 
 擋兩種編造：
   1. 引用了 snapshot 裡不存在、或被 config/excluded.json 整棵排除的卡號
   2. 出現程式算好的本週數字以外的數字（卡號裡的數字不算）
-任何數值都必須由程式算，不得由 AI 算或挑（2026-09-30 使用者裁）：只放行本週的數字（totals、本週有交付的
-專案的 week、本週完成卡、人的本週、支援單位、負責人）。累計、進度、改組前的數字雖然也在 metrics 裡，
+任何數值都必須由程式算，不得由 AI 算或挑（2026-09-30 使用者裁）：只放行本週的數字（totals、本週有完成的
+專案的 week、本週完成卡、人的本週、label 表的本週、負責人）。累計、進度、改組前的數字雖然也在 metrics 裡，
 寫進本週文字就是挑錯欄位：W40 的「累計完成 61 張」其實是含改組前卡的 progress。
 """
 from __future__ import annotations
@@ -60,7 +60,7 @@ def _numbers_in(value, out: set):
 
 
 def allowed_numbers(metrics: dict) -> set:
-    """程式算好的本週數字。cumulative、epics[].progress、migrated、in_progress 刻意不收。"""
+    """程式算好的本週數字。cumulative、epics[].progress、migrated、in_progress、labels 的累計與 epic 數刻意不收。"""
     out = set()
     _numbers_in(metrics["totals"], out)
     for epic in metrics["epics"]:
@@ -70,7 +70,8 @@ def allowed_numbers(metrics: dict) -> set:
         _numbers_in({"hours": row["hours"], "tokens": row["tokens"]}, out)
     for person in metrics["people"]:
         _numbers_in(person["week"], out)
-    _numbers_in(metrics["units"], out)
+    for row in metrics["labels"]:
+        _numbers_in(row["week"], out)
     _numbers_in(metrics["owners"], out)
     return out
 
@@ -94,7 +95,7 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
     expected = {e["id"] for e in metrics["epics"] if e["active"]}
     if set(results) != expected:
         missing, extra = sorted(expected - set(results)), sorted(set(results) - expected)
-        errors.append(f"epic_results 要剛好涵蓋本週有交付的專案：缺 {missing}，多 {extra}")
+        errors.append(f"epic_results 要剛好涵蓋本週有完成的專案：缺 {missing}，多 {extra}")
 
     allowed = allowed_numbers(metrics)
     texts = [(f"highlights[{i}]", h) for i, h in enumerate(highlights)] + [(f"epic_results[{k}]", v) for k, v in sorted(results.items())]
