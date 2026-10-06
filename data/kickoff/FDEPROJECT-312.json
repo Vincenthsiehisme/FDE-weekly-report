@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-312",
+  "kickoff_key": "FDEPROJECT-310",
+  "last_seen": {
+    "after": "安裝 Chrome 擴充套件，在 SERP 一鍵產出填好的航空公司名單，OP 只需核對。",
+    "before": "OP 打開 SERP 旅客名單，逐筆手 key 到各航空公司名單。",
+    "decision": null,
+    "evidence": "韓國線 user 以真實團號產出航空公司名單，內容與人工手 key 版本逐欄一致。",
+    "next_milestone": "轉成 Chrome 擴充套件，交付韓國線 user 試用。",
+    "objective": "韓國線 OP 在 SERP 指定團號後，旅客資料自動填入航空公司名單（Excel），不用再逐筆手 key。",
+    "why": "目前要把 SERP 的旅客資料一筆一筆手 key 到航空公司名單，航班一多就很費時，姓名拼音、護照號碼、生日等欄位也容易打錯。"
+  },
+  "last_seen_at": "2026-10-07T00:00:32.067130+08:00",
+  "last_seen_key": "FDEPROJECT-310",
+  "locked_at": "2026-10-07T00:00:32.067130+08:00",
+  "problems": [],
+  "sections": {
+    "after": "安裝 Chrome 擴充套件，在 SERP 一鍵產出填好的航空公司名單，OP 只需核對。",
+    "before": "OP 打開 SERP 旅客名單，逐筆手 key 到各航空公司名單。",
+    "decision": null,
+    "evidence": "韓國線 user 以真實團號產出航空公司名單，內容與人工手 key 版本逐欄一致。",
+    "next_milestone": "轉成 Chrome 擴充套件，交付韓國線 user 試用。",
+    "objective": "韓國線 OP 在 SERP 指定團號後，旅客資料自動填入航空公司名單（Excel），不用再逐筆手 key。",
+    "why": "目前要把 SERP 的旅客資料一筆一筆手 key 到航空公司名單，航班一多就很費時，姓名拼音、護照號碼、生日等欄位也容易打錯。"
+  }
+}

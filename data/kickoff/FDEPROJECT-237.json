@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-237",
+  "kickoff_key": "FDEPROJECT-238",
+  "last_seen": {
+    "after": "ESG 點一下連結就看到結果；連結壞掉、頁面改版或按了搜尋沒送出時，頁面頂端出現紅框寫原因，不會只看到空白頁",
+    "before": "複製、切頁、貼上、按搜尋，四個動作",
+    "decision": "merge 前定是否等 Codex 恢復再審一輪；merge 排在側欄常駐之後，版本 0.8.0",
+    "evidence": "PR #15 已開（draft），148 條測試全過，新碼逐條改壞 17 次都會紅；Codex 額度用完，改由 Claude Fable 審三輪，兩條缺陷已修、第三輪無缺陷",
+    "next_milestone": "在一位直團業務的瀏覽器從 ESG 點連結跑通",
+    "objective": "業務在旅展 ESG 網站點團名，SERP 銷售團體頁就帶入標準團名關鍵字並完成搜尋，一鍵到結果；只查詢、不改 SERP",
+    "why": "業務原本要從 ESG 複製團名、開 SERP 銷售團體、貼進標準團名、再按搜尋；ESG 網站不在 liontravel.com，跨站送查詢會被 SERP 擋下還會把業務登出，純連結頁面也不吃"
+  },
+  "last_seen_at": "2026-10-07T00:00:32.067130+08:00",
+  "last_seen_key": "FDEPROJECT-238",
+  "locked_at": "2026-10-07T00:00:32.067130+08:00",
+  "problems": [],
+  "sections": {
+    "after": "ESG 點一下連結就看到結果；連結壞掉、頁面改版或按了搜尋沒送出時，頁面頂端出現紅框寫原因，不會只看到空白頁",
+    "before": "複製、切頁、貼上、按搜尋，四個動作",
+    "decision": "merge 前定是否等 Codex 恢復再審一輪；merge 排在側欄常駐之後，版本 0.8.0",
+    "evidence": "PR #15 已開（draft），148 條測試全過，新碼逐條改壞 17 次都會紅；Codex 額度用完，改由 Claude Fable 審三輪，兩條缺陷已修、第三輪無缺陷",
+    "next_milestone": "在一位直團業務的瀏覽器從 ESG 點連結跑通",
+    "objective": "業務在旅展 ESG 網站點團名，SERP 銷售團體頁就帶入標準團名關鍵字並完成搜尋，一鍵到結果；只查詢、不改 SERP",
+    "why": "業務原本要從 ESG 複製團名、開 SERP 銷售團體、貼進標準團名、再按搜尋；ESG 網站不在 liontravel.com，跨站送查詢會被 SERP 擋下還會把業務登出，純連結頁面也不吃"
+  }
+}
