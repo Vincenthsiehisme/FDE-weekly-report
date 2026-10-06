@@ -3826,7 +3826,7 @@
           }
         },
         "label": "歐洲團產TP",
-        "owner": "未指派",
+        "owner": "hubertwang",
         "progress": {
           "done_cards": 10,
           "done_points": 14.5,
@@ -4508,7 +4508,7 @@
           "why": "地接社各自用不同格式寄資料，要先解析、標準化，後續的 Agent Workflow 才有乾淨的資料可用"
         }
       },
-      "owner": "未指派",
+      "owner": "hubertwang",
       "progress": {
         "done_cards": 10,
         "done_points": 14.5,
@@ -6495,7 +6495,7 @@
     "FDEPROJECT-117",
     "FDEPROJECT-118"
   ],
-  "generated_at": "2026-10-07T06:27:25.382288+08:00",
+  "generated_at": "2026-10-07T06:38:51.223805+08:00",
   "in_progress": [
     {
       "current_state": "進行中",
