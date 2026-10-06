@@ -27,7 +27,7 @@ publish   commit data/ 與 site/，push main，Vercel 自動部署              
 - **整棵排除**：`config/excluded.json` 的 `epics` 列的 epic 連同底下所有卡（一般卡、子任務、Kick off）在算之前就移出：不列專案、不算數字、不做 Kick off 鎖定與資料檢查；`data/<週>/snapshot.json` 照存原始的全部卡片。只能列 epic，列到別的卡直接失敗；`prepare` 剛抓完 Jira 時找不到列的 epic 也直接失敗（卡號打錯或 epic 不見了）；`metrics` 重算與 `finalize` 放行並在 stderr 印一行警告，因為 epic 可能比那一期的 snapshot 晚建。有設定整棵排除時，子任務的父卡不在 snapshot 就直接失敗（父卡一定同專案，找不到是抓取不一致，判斷不出它屬不屬於被排除的 epic）；一般卡掛在 snapshot 外的 epic 底下照常列 parent_missing 資料檢查，掛在排除清單裡的 epic 底下則一起移出。finalize 驗 narrative 卡號時同樣扣掉這些卡；metrics.json 還列著排除的 epic（之後才加進排除）時 finalize 直接失敗，要先重跑 `metrics <週>`；週報頁與首頁都畫完才寫檔。本週有完成卡被拿掉時在資料檢查列一行帶理由。目前列的是 FDEPROJECT-119 行政作業、CS-7 開工確認。已發布的舊期不回溯重產：加進排除清單之前發布的那一期（例：2026-W39 含 CS-7）維持原樣，它的 narrative 可能引用後來才排除的卡，重產要先重寫 narrative。
 - **累計**：snapshot 抓的是兩個專案的全部卡片，累計直接從同一份 snapshot 重算到本期結束（`resolutiondate` 早於本期結束的完成卡），不讀舊期的 metrics。每張完成卡標上它完成的那一週。
 - **人**：執行人規則同 Owner。工時與「進行中」只算葉節點；一個人的 Token 是他名下所有完成卡（含父卡）的用量。
-- **Token**：讀 `data/tokens/<week>.json`，格式 `{"CS-17": 12000}`（卡號對 token 數）。檔案裡沒有的卡號代表這期沒有記錄到用量。單張卡沒有記錄顯示「—」；專案、交付、Owner 的彙總只加有記錄的卡，一張都沒有才顯示「—」；Total Token 是檔案裡全部值的總和。整個檔案不存在時全部顯示「—」，不顯示 0。累計 Token 是 `data/tokens/` 裡週次不晚於本期的檔案逐卡相加；檔名不是 `YYYY-Www.json` 就直接失敗，不安靜少算一週。
+- **Token**：讀 `data/tokens/<week>.json`，格式 `{"CS-17": 12000}`（卡號對 token 數）。檔案裡沒有的卡號代表這期沒有記錄到用量。單張卡沒有記錄顯示「—」；專案、交付、Owner 的彙總只加有記錄的卡，一張都沒有才顯示「—」；Total Token 是檔案裡全部值的總和。這一期的檔不存在、較早期有檔時，這一期全部顯示「—」，不顯示 0；`data/tokens/` 一個檔都沒有時 Token 的 KPI 格與各欄整個不顯示，只在本週與累計的資源區留一行「Token 尚未接資料來源」。累計 Token 是 `data/tokens/` 裡週次不晚於本期的檔案逐卡相加；檔名不是 `YYYY-Www.json` 就直接失敗，不安靜少算一週。
 
 ## 頁面
 

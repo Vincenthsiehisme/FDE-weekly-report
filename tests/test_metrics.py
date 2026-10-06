@@ -28,7 +28,8 @@ def base_issues():
 
 
 def run(issues, units=("資料組", "產品組"), tokens=None, states=None, excluded=None):
-    return compute(snapshot(issues), PERIOD, list(units), tokens, states or {}, [], cumulative_tokens=tokens, excluded=excluded or {})
+    return compute(snapshot(issues), PERIOD, list(units), tokens, states or {}, [], cumulative_tokens=tokens, excluded=excluded or {},
+                   token_source=tokens is not None)
 
 
 class HoursTest(unittest.TestCase):
@@ -171,18 +172,29 @@ class CumulativeTest(unittest.TestCase):
                          [("2026-W39", 4, 4.5, 2), ("2026-W38", 2, 4.0, 2)])
 
     def test_cumulative_tokens_are_separate_from_this_week(self):
-        m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-6": 40}, excluded={})
+        m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-6": 40}, excluded={}, token_source=True)
         self.assertEqual((m["totals"]["tokens"], m["cumulative"]["totals"]["tokens"]), (100, 140))
 
     def test_unknown_key_only_in_earlier_token_files_is_reported(self):
-        m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-98": 5}, excluded={})
+        m = compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-98": 5}, excluded={}, token_source=True)
         self.assertEqual(m["cumulative"]["totals"]["tokens"], 105)
         self.assertIn(("token_unknown_key", "CS-98"), [(c["kind"], c["key"]) for c in m["checks"]])
         self.assertNotIn(("token_unknown_key", "CS-3"), [(c["kind"], c["key"]) for c in m["checks"]])
 
     def test_week_tokens_without_cumulative_is_a_wiring_error(self):
         with self.assertRaises(ValueError):
-            compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens=None, excluded={})
+            compute(snapshot(base_issues()), PERIOD, [], {"CS-3": 100}, {}, [], cumulative_tokens=None, excluded={}, token_source=True)
+
+    def test_cumulative_tokens_without_source_flag_is_a_wiring_error(self):
+        with self.assertRaises(ValueError):
+            compute(snapshot(base_issues()), PERIOD, [], None, {}, [], cumulative_tokens={"CS-3": 100}, excluded={}, token_source=False)
+
+    def test_token_source_is_carried_even_when_this_week_and_cumulative_are_empty(self):
+        # 較晚的週才有檔：兩個都是 None，但來源已接上，頁面要靠這個旗標顯示「—」欄
+        m = compute(snapshot(base_issues()), PERIOD, [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=True)
+        self.assertTrue(m["token_source"])
+        self.assertIsNone(m["cumulative"]["totals"]["tokens"])
+        self.assertFalse(run(base_issues())["token_source"])
 
 
 class PeopleTest(unittest.TestCase):
@@ -290,7 +302,7 @@ class BreakpointTest(unittest.TestCase):
         old = snapshot(self.issues())
         old["schema"] = 1
         with self.assertRaisesRegex(ValueError, "重跑 prepare"):
-            compute(old, PERIOD, [], None, {}, [], cumulative_tokens=None, excluded={})
+            compute(old, PERIOD, [], None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
 
 
 class ExclusionTest(unittest.TestCase):
@@ -367,7 +379,7 @@ class ExcludedEpicTest(unittest.TestCase):
 
     def test_dropped_tree_leaves_no_trace_in_the_numbers(self):
         kept, checks = drop_excluded_epics(self.admin_issues(), self.EXCLUDED, PERIOD, allow_missing=False)
-        m = compute(snapshot(kept), PERIOD, ["資料組", "產品組"], None, {}, checks, cumulative_tokens=None, excluded={})
+        m = compute(snapshot(kept), PERIOD, ["資料組", "產品組"], None, {}, checks, cumulative_tokens=None, excluded={}, token_source=False)
         without = run(base_issues())
         for part in ("totals", "epics", "owners", "units", "completed", "in_progress", "cumulative", "people"):
             with self.subTest(part=part):

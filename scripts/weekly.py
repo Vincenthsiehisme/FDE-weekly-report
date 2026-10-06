@@ -108,6 +108,13 @@ def load_cumulative_tokens(week: str):
     return total
 
 
+def token_source_exists() -> bool:
+    """data/tokens/ 有沒有任何檔，含比這一期晚的。較晚的週才有檔時，這一期的累計是 None，
+    但來源已經接上，頁面要顯示「—」欄而不是整欄隱藏（AC-4）。"""
+    folder = DATA / "tokens"
+    return folder.is_dir() and any(folder.glob("*.json"))
+
+
 def _read_tokens(path: Path) -> dict:
     data = read_json(path)
     if not isinstance(data, dict):
@@ -169,7 +176,8 @@ def compute_week(snapshot: dict, *, fresh_fetch: bool) -> tuple:
     dropped = {i["key"] for i in snapshot["issues"]} - {i["key"] for i in issues}
     metrics = compute(dict(snapshot, issues=issues), period, load_units(), _without(load_tokens(period.week_id), dropped),
                       states, checks, excluded=excluded_cards,
-                      cumulative_tokens=_without(load_cumulative_tokens(period.week_id), dropped))
+                      cumulative_tokens=_without(load_cumulative_tokens(period.week_id), dropped),
+                      token_source=token_source_exists())
     writes[week_dir(period.week_id) / "metrics.json"] = metrics
     return metrics, writes
 

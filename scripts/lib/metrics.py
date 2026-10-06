@@ -35,7 +35,7 @@ UNASSIGNED_OWNER = "未指派"
 UNIT_UNCLASSIFIED = "未分類"
 UNIT_MULTIPLE = "多個單位（待釐清）"
 STALE_DAYS = 7
-SCHEMA = 3  # 3：多了 migrated（改組前）
+SCHEMA = 4  # 4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
 SNAPSHOT_SCHEMA = 2  # snapshot 要有 moved_in 才判斷得了改組前
 
 
@@ -204,12 +204,16 @@ def kickoff_by_epic(issues: list) -> tuple:
 
 
 def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, extra_checks: list, *,
-            cumulative_tokens, excluded: dict) -> dict:
+            cumulative_tokens, excluded: dict, token_source: bool) -> dict:
     """tokens 是這一期的 Token 檔；cumulative_tokens 是週次不晚於這一期的 Token 檔逐卡相加。
-    兩個都是 None 代表沒有任何 Token 資料。這一期有 Token 但累計沒有，代表呼叫端沒把累計接上。
+    兩個都是 None 代表這一期之前沒有任何 Token 資料。這一期有 Token 但累計沒有，代表呼叫端沒把累計接上。
+    token_source 是 data/tokens/ 有沒有任何檔（含比這一期晚的）：頁面靠它決定 Token 欄顯不顯示，
+    不能從累計推，較晚的週才有檔時累計是 None 但來源已經接上（AC-4）。
     excluded 是 {卡號: 理由}，列的卡不算完成；沒有要排除的就傳 {}。"""
     if tokens is not None and cumulative_tokens is None:
         raise ValueError("這一期有 Token 資料，累計 Token 卻是 None：累計應包含這一期")
+    if cumulative_tokens is not None and not token_source:
+        raise ValueError("累計有 Token 資料，token_source 卻是 False：呼叫端沒把 data/tokens/ 的狀態接上")
     if snapshot.get("schema") != SNAPSHOT_SCHEMA:
         raise ValueError(f"snapshot 的 schema 是 {snapshot.get('schema')}，需要 {SNAPSHOT_SCHEMA}（有搬入時間才判斷得了改組前）：重跑 prepare 抓一次 Jira")
     checks = list(extra_checks)
@@ -440,6 +444,7 @@ def compute(snapshot: dict, period, units: list, tokens, kickoff_states: dict, e
     return {
         "schema": SCHEMA,
         "site": snapshot["site"],
+        "token_source": token_source,
         "period": period.as_dict(),
         "generated_at": snapshot["fetched_at"],
         "totals": {

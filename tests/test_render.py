@@ -14,8 +14,11 @@ ISSUES = [
 NARRATIVE = {"highlights": ["完成 CS-2"], "epic_results": {"CS-1": "完成"}}
 
 
-def metrics_for(issues=ISSUES, fetched_at="2026-09-22T23:59:30+08:00", tokens=None, cumulative_tokens=None, states=None):
-    return compute(snapshot(issues, fetched_at=fetched_at), PERIOD, [], tokens, states or {}, [], cumulative_tokens=cumulative_tokens, excluded={})
+def metrics_for(issues=ISSUES, fetched_at="2026-09-22T23:59:30+08:00", tokens=None, cumulative_tokens=None, states=None, token_source=None):
+    if token_source is None:
+        token_source = cumulative_tokens is not None
+    return compute(snapshot(issues, fetched_at=fetched_at), PERIOD, [], tokens, states or {}, [],
+                   cumulative_tokens=cumulative_tokens, excluded={}, token_source=token_source)
 
 
 def page(fetched_at="2026-09-22T23:59:30+08:00", in_reports_dir=False, metrics=None, narrative=NARRATIVE):
@@ -52,13 +55,14 @@ class RenderTest(unittest.TestCase):
         self.assertIn('document.documentElement.classList.add("js")', html)
         self.assertIn(".js .panel{display:none}", html)
 
-    def test_missing_tokens_show_dash_with_reason(self):
+    def test_missing_week_tokens_show_dash_with_reason_once_any_file_exists(self):
         self.assertEqual(fmt_tokens(None), "—")
         self.assertEqual(fmt_tokens(0), "0")
         self.assertEqual(fmt_tokens(1500), "1.5K")
         self.assertEqual(fmt_tokens(2_300_000), "2.3M")
-        week = panel(page(), "week")
-        self.assertIn('<li><span>Token</span><strong class="muted">—</strong><small>尚未接資料來源</small></li>', week)
+        # 較早期有 Token 檔、這一期沒有：這一期顯示「—」並註明，不隱藏（AC-4 只管一個檔都沒有的情況）
+        week = panel(page(metrics=metrics_for(cumulative_tokens={"CS-2": 10})), "week")
+        self.assertIn('<li class=big><span>Token</span><strong class="muted">—</strong><small>尚未接資料來源</small></li>', week)
 
     def test_week_kpis_use_unique_deliverables_and_all_week_tokens(self):
         issues = [
@@ -70,7 +74,7 @@ class RenderTest(unittest.TestCase):
         tokens = {"CS-1": 500, "CS-3": 100}
         week = panel(page(metrics=metrics_for(issues, tokens=tokens, cumulative_tokens=tokens)), "week")
         self.assertIn('<li><span>交付</span><strong class="">1</strong></li>', week)   # 同一張父卡只算一項
-        self.assertIn('<li><span>Token</span><strong class="">600</strong></li>', week)  # 含記在 epic 上的 500
+        self.assertIn('<li class=big><span>Token</span><strong class="">600</strong></li>', week)  # 含記在 epic 上的 500
 
     def test_scheduled_run_is_not_provisional_but_early_run_is(self):
         self.assertNotIn("數字是產生當下的暫定值", page("2026-09-22T23:59:30+08:00"))
@@ -138,16 +142,62 @@ class PeopleTest(unittest.TestCase):
         self.assertIn('<div class="name">Dan</div>', cumulative)
         self.assertNotIn("Carol", cumulative)  # 沒有完成過任何卡
 
-    def test_team_tab_explains_missing_tokens(self):
-        self.assertIn("尚未接資料來源", panel(page(metrics=metrics_for(self.ISSUES)), "team"))
+    def test_team_tab_shows_tokens_only_when_a_file_exists(self):
+        # 一個 Token 檔都沒有：團隊卡連 Token 字樣都沒有，說明只留在資源區（AC-4）
+        self.assertNotIn("Token", panel(page(metrics=metrics_for(self.ISSUES)), "team"))
         tokens = {"CS-2": 10}
-        self.assertNotIn("尚未接資料來源", panel(page(metrics=metrics_for(self.ISSUES, tokens=tokens, cumulative_tokens=tokens)), "team"))
+        team = panel(page(metrics=metrics_for(self.ISSUES, tokens=tokens, cumulative_tokens=tokens)), "team")
+        self.assertIn("<b>1.5h</b> · Token 10 · 交付 1", team)
+        self.assertNotIn("尚未接資料來源", team)
 
     def test_team_card_lists_completed_and_in_progress(self):
         team = panel(page(metrics=metrics_for(self.ISSUES)), "team")
         self.assertIn("<summary>進行中 1 張</summary>", team[team.index("Carol"):])
         self.assertIn("card person warn-card", team)
         self.assertIn("這些卡在 Jira 上沒有 assignee", team)
+
+
+class TokenHiddenTest(unittest.TestCase):
+    """data/tokens/ 一個檔都沒有時 Token 整欄不顯示，只在本週與累計的資源區留一行說明；有任一檔就回到「—」規則
+    （主管版二次優化 AC-4，2026-09-27 使用者裁）。"""
+    ISSUES = PeopleTest.ISSUES
+
+    def test_no_token_file_hides_every_token_column_and_leaves_one_note_per_resource_block(self):
+        html = page(metrics=metrics_for(self.ISSUES))
+        week, cumulative, team = panel(html, "week"), panel(html, "cumulative"), panel(html, "team")
+        note = '<p class="note">Token 尚未接資料來源</p>'
+        self.assertEqual(html.count("Token"), 2)
+        self.assertIn(f'</ul>{note}\n  <h3>專案列表</h3>', week)
+        self.assertIn(f'</ul>{note}\n  <h3>專案列表</h3>', cumulative)
+        self.assertIn('<ul class="kpis" style="--kpis:3">', week)
+        self.assertIn('<ul class="kpis" style="--kpis:3">', cumulative)
+        self.assertNotIn("Token", team)
+        # 人的列與累計專案列表少一欄：欄數跟著變，窄螢幕才不會多一格空白
+        self.assertIn('<div class="rows" style="--cols:3"><div class="row head"><span>執行人</span><span>實際工時</span><span>交付</span><span>進行中</span>', week)
+        self.assertIn('<div class="rows" style="--cols:3"><div class="row head"><span>專案</span><span>進度</span><span>實際工時</span><span>目標日</span>', cumulative)
+
+    def test_a_file_for_an_earlier_week_brings_every_column_back(self):
+        # 這一期沒有檔、較早期有：所有 Token 欄回來並顯示「—」，不會因為這一期沒資料就安靜少一欄
+        html = page(metrics=metrics_for(self.ISSUES, cumulative_tokens={"CS-2": 10}))
+        week, cumulative, team = panel(html, "week"), panel(html, "cumulative"), panel(html, "team")
+        self.assertNotIn('<p class="note">Token', html)
+        self.assertIn('<ul class="kpis" style="--kpis:4">', week)
+        self.assertIn('<li class=big><span>累計 Token</span><strong class="">10</strong></li>', cumulative)
+        self.assertIn("<span>Token <b>—</b></span>", week)                      # 專案卡
+        self.assertIn("<span>執行人</span><span>實際工時</span><span>Token</span>", week)
+        self.assertIn('<span class="nums">1.5h · Token —</span>', week)         # 完成清單
+        self.assertIn("<span>專案</span><span>進度</span><span>實際工時</span><span>Token</span>", cumulative)
+        self.assertIn("<b>1.5h</b> · Token — · 交付 1", team)                   # 本週
+        self.assertIn("<b>1.5h</b> · Token 10 · 交付 1", team)                  # 累計
+
+    def test_a_file_for_a_later_week_only_still_shows_the_columns(self):
+        # 來源接上後回補更早的週：資料夾有檔但這一期的累計是 None，欄要顯示「—」，不能從累計推成隱藏（Codex 2026-10-06 審出）
+        html = page(metrics=metrics_for(self.ISSUES, token_source=True))
+        week = panel(html, "week")
+        self.assertNotIn('<p class="note">Token', html)
+        self.assertIn('<ul class="kpis" style="--kpis:4">', week)
+        self.assertIn("<span>執行人</span><span>實際工時</span><span>Token</span>", week)
+        self.assertIn("<b>1.5h</b> · Token — · 交付 1", panel(html, "team"))
 
 
 class InProgressTest(unittest.TestCase):
