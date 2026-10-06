@@ -263,6 +263,20 @@ class ExcludedConfigTest(AtomicWriteTest):
                 weekly.main(["finalize", "2026-W39"])
         self.assertFalse(site.exists())
 
+    def test_finalize_refuses_metrics_computed_before_a_parent_card_was_excluded(self):
+        # 完成清單只列葉節點：排除有子卡的父卡時它不在任何清單裡，要靠 metrics 記下的排除清單擋（Codex 審 PR #17）
+        snap = snapshot([issue("CS-1", level=1, status="doing"),
+                         issue("CS-3", level=0, parent="CS-1", status="done", resolved=IN_WEEK, assignee="Amy"),
+                         issue("CS-4", level=-1, parent="CS-3", status="done", points=1.0, resolved=IN_WEEK)])
+        snap["period"] = {"week": "2026-W39", "week_ending": "2026-09-22", "start": "", "end_exclusive": ""}
+        weekly.publish_week(snap, fresh_fetch=False)
+        (self.root / "data" / "2026-W39" / "narrative.json").write_text('{"highlights": ["完成 CS-4"], "epic_results": {"CS-1": "完成"}}', encoding="utf-8")
+        self._write('{"cards": {"CS-3": "誤建"}, "epics": {}}')
+        with mock.patch.object(weekly, "SITE", self.root / "site"):
+            with self.assertRaisesRegex(ValueError, "另一份 config/excluded.json.*CS-3.*metrics 2026-W39"):
+                weekly.main(["finalize", "2026-W39"])
+        self.assertFalse((self.root / "site").exists())
+
     def test_finalize_refuses_an_excluded_card_that_only_shows_on_the_cumulative_page(self):
         snap = snapshot([issue("CS-1", level=1, status="doing"),
                          issue("CS-3", level=0, parent="CS-1", status="done", points=1.0, resolved=LAST_WEEK)])

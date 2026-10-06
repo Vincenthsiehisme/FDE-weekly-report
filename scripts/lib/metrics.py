@@ -131,12 +131,14 @@ def _progress(group_leaves: list, is_done) -> dict:
     進度才會跟同一列的工時、張數是同一批卡，補算舊的一期也不會算進之後才完成的卡。分母是全部葉節點（2026-10-07 使用者裁）。"""
     total_points = sum(i["points"] for i in group_leaves if i["points"] is not None)
     done_points = sum(i["points"] for i in group_leaves if i["points"] is not None and is_done(i))
+    done_cards = sum(1 for i in group_leaves if is_done(i))
     return {
-        "done_cards": sum(1 for i in group_leaves if is_done(i)),
+        "done_cards": done_cards,
         "total_cards": len(group_leaves),
         "done_points": _round(done_points),
         "total_points": _round(total_points),
-        "percent": round(done_points / total_points * 100) if total_points else None,
+        # 跟頁面的進度條同一個比例：張數，不是工時（Codex 審 PR #17）
+        "percent": round(done_cards / len(group_leaves) * 100) if group_leaves else None,
         "unestimated_cards": sum(1 for i in group_leaves if i["points"] is None),
     }
 
@@ -224,9 +226,10 @@ def _kickoff_view(state) -> dict:
     }
 
 
-def _labels_of(tree, groups, checks) -> tuple:
+def _labels_of(tree, groups, checks, skip: set) -> tuple:
     """回傳 (group_label, card_label)：group_label 是 {epic: label}，card_label(item) 給未歸屬 epic 的卡用自己的 label。
-    不是恰好一個 label 歸「未分類」；epic 本身、或 epic 底下卡片的 label 跟 epic 不同，各列一行資料檢查，讓人回 Jira 補。"""
+    不是恰好一個 label 歸「未分類」；epic 本身、或 epic 底下卡片的 label 跟 epic 不同，各列一行資料檢查，讓人回 Jira 補。
+    skip 是排除清單與改組前的卡：本來就不進報告，不要求人回 Jira 補它們的 label（改組前也不列資料檢查，Codex 審 PR #17）。"""
     group_label = {}
     for group_id, epic in groups:
         if epic is None:
@@ -234,7 +237,8 @@ def _labels_of(tree, groups, checks) -> tuple:
         labels = epic["labels"]
         if len(labels) == 1:
             group_label[group_id] = labels[0]
-            off = sorted((i["key"] for i in tree.work if tree.epic_of(i) == group_id and i["labels"] != labels), key=issue_sort_key)
+            off = sorted((i["key"] for i in tree.work if i["key"] not in skip and tree.epic_of(i) == group_id and i["labels"] != labels),
+                         key=issue_sort_key)
             if off:
                 checks.append(_check("label_mismatch", group_id, f"底下 {len(off)} 張卡的 label 跟 epic 的「{labels[0]}」不同，頁面以 epic 為準：{'、'.join(off)}"))
         else:
@@ -247,7 +251,7 @@ def _labels_of(tree, groups, checks) -> tuple:
         return labels[0] if len(labels) == 1 else UNLABELED
 
     for item in tree.work:
-        if tree.epic_of(item) is None and len(item["labels"]) != 1:
+        if item["key"] not in skip and tree.epic_of(item) is None and len(item["labels"]) != 1:
             what = "沒有 label" if not item["labels"] else f"有 {len(item['labels'])} 個 label（{'、'.join(item['labels'])}）"
             checks.append(_check("card_label", item["key"], f"不在 epic 底下的卡{what}，歸{UNLABELED}"))
     return group_label, card_label
@@ -323,7 +327,7 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
     epic_rows = []
     groups = [(e["key"], e) for e in sorted(tree.epics, key=lambda i: issue_sort_key(i["key"]))]
     groups.append((UNASSIGNED_EPIC, None))
-    group_label, card_label = _labels_of(tree, groups, checks)
+    group_label, card_label = _labels_of(tree, groups, checks, set(excluded) | migrated)
 
     def label_of(item: dict) -> str:
         group = group_of[item["key"]]
@@ -481,6 +485,8 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
         "schema": SCHEMA,
         "site": snapshot["site"],
         "token_source": token_source,
+        # 算這份 metrics 時的排除清單：finalize 拿它跟現在的 config 比，排除了沒有葉節點出現在頁面上的父卡也擋得到
+        "excluded": sorted(excluded, key=issue_sort_key),
         "period": period.as_dict(),
         "generated_at": snapshot["fetched_at"],
         "totals": {

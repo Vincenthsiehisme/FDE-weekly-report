@@ -223,6 +223,11 @@ def refuse_stale_metrics(week: str, metrics: dict, excluded_cards: dict, exclude
     stale = sorted((set(excluded_epics) & shown_epics) | (set(excluded_cards) & shown_cards), key=issue_sort_key)
     if stale:
         raise ValueError(f"{week} 的 metrics.json 還算著 config/excluded.json 排除的卡或 epic：{'、'.join(stale)}，先跑 metrics {week} 重算")
+    # 完成清單只列葉節點：排除一張有子卡的父卡時它不在清單裡，上面那條比不到，人表的 Token 卻已經不同（Codex 審 PR #17）
+    used = metrics.get("excluded")
+    if used != sorted(excluded_cards, key=issue_sort_key):
+        changed = sorted(set(used or []) ^ set(excluded_cards), key=issue_sort_key)
+        raise ValueError(f"{week} 的 metrics.json 是用另一份 config/excluded.json 的 cards 算的（不同的是：{'、'.join(changed) or '沒有記錄'}），先跑 metrics {week} 重算")
 
 
 def cmd_finalize(args) -> None:

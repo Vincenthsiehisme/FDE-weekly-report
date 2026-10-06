@@ -49,9 +49,9 @@ class HoursTest(unittest.TestCase):
 
     def test_progress_uses_all_leaves_of_the_epic(self):
         epic = next(e for e in run(base_issues())["epics"] if e["id"] == "CS-1")
-        # 葉節點：CS-3、CS-4、CS-5、CS-6、CS-8
+        # 葉節點：CS-3、CS-4、CS-5、CS-6、CS-8。percent 照張數（3/5），跟頁面的進度條同一個比例；照工時會是 100（Codex 審 PR #17）
         self.assertEqual(epic["progress"], {"done_cards": 3, "total_cards": 5, "done_points": 5.5,
-                                            "total_points": 5.5, "percent": 100, "unestimated_cards": 1})
+                                            "total_points": 5.5, "percent": 60, "unestimated_cards": 1})
 
     def test_unestimated_completed_leaf_is_zero_and_reported(self):
         issues = base_issues() + [issue("CS-11", level=0, parent="CS-1", status="done", resolved=IN_WEEK)]
@@ -360,6 +360,19 @@ class LabelTest(unittest.TestCase):
         self.assertEqual(checks[("epic_label", "CS-5")], "epic 有 2 個 label（A組、B組），歸未分類")
         self.assertEqual(checks[("card_label", "CS-9")], "不在 epic 底下的卡沒有 label，歸未分類")
         self.assertNotIn(("label_mismatch", "CS-7"), checks)
+
+    def test_excluded_and_migrated_cards_raise_no_label_check(self):
+        # 本來就不進報告的卡，不要求人回 Jira 補 label；改組前也不列資料檢查（Codex 審 PR #17）
+        issues = [issue("CS-1", level=1, status="doing", labels=("門市",)),
+                  issue("CS-2", level=0, parent="CS-1", status="done", resolved=IN_WEEK, moved_in="2026-09-18T07:00:00+00:00"),
+                  issue("CS-3", level=0, parent="CS-1", status="done", resolved=IN_WEEK),
+                  issue("CS-4", level=0, status="done", resolved=IN_WEEK)]
+        checks = [c for c in run(issues, excluded={"CS-3": "誤建", "CS-4": "誤建"})["checks"] if c["kind"] in ("label_mismatch", "card_label")]
+        self.assertEqual(checks, [])
+        # 沒排除、沒搬入的同一張卡照列
+        issues[1] = issue("CS-2", level=0, parent="CS-1", status="done", resolved=IN_WEEK)
+        checks = [c["message"] for c in run(issues)["checks"] if c["kind"] in ("label_mismatch", "card_label")]
+        self.assertEqual(checks, ["底下 2 張卡的 label 跟 epic 的「門市」不同，頁面以 epic 為準：CS-2、CS-3", "不在 epic 底下的卡沒有 label，歸未分類"])
         self.assertNotIn(("card_label", "CS-8"), checks)
         self.assertIn(("epic_label", "CS-1"), {(c["kind"], c["key"]) for c in run(base_issues())["checks"]})
 
@@ -472,7 +485,10 @@ class ExclusionTest(unittest.TestCase):
     def test_key_not_in_snapshot_is_allowed(self):
         # 重算舊期時卡還不存在是正常的，不擋也不列
         m = run(base_issues(), excluded={"FDEPROJECT-3": "移轉補登"})
-        self.assertEqual(m, run(base_issues()))
+        self.assertEqual(m.pop("excluded"), ["FDEPROJECT-3"])  # 記下來給 finalize 比對，其餘不變
+        without = run(base_issues())
+        self.assertEqual(without.pop("excluded"), [])
+        self.assertEqual(m, without)
 
     def test_no_exclusions_changes_nothing(self):
         self.assertEqual(run(base_issues(), excluded={}), run(base_issues()))
