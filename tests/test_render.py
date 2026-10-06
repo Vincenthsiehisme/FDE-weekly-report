@@ -113,10 +113,14 @@ class KickoffTest(unittest.TestCase):
         self.assertNotIn('class="kickoff"', week)
 
     def test_only_filled_fields_are_shown_and_decision_is_never_shown(self):
-        week = panel(page(metrics=metrics_for(states=self.state(objective="讓 OP 少打字", decision="要不要買授權"))), "week")
-        self.assertIn("<dt>目標</dt><dd>讓 OP 少打字</dd>", week)
-        self.assertNotIn("<dt>Before</dt>", week)
-        self.assertNotIn("要不要買授權", week)
+        html = page(metrics=metrics_for(states=self.state(objective="讓 OP 少打字", decision="要不要買授權")))
+        overview, week = panel(html, "cumulative"), panel(html, "week")
+        self.assertIn("<dt>目標</dt><dd>讓 OP 少打字</dd>", overview)
+        self.assertNotIn("<dt>Before</dt>", overview)
+        # 目標五段只在總覽展開看，本週頁不再印（2026-10-07 使用者裁，視覺化改版 AC-1）
+        self.assertNotIn("<dt>目標</dt>", week)
+        self.assertNotIn('class="kickoff"', week)
+        self.assertNotIn("要不要買授權", html)
 
     def test_modified_kickoff_is_only_in_the_data_checks(self):
         # 鎖定後被修改只列在資料檢查，三個頁籤都不顯示提示（2026-10-07 使用者裁）；頁面仍顯示鎖定版本
@@ -128,7 +132,7 @@ class KickoffTest(unittest.TestCase):
             self.assertNotIn('class="warn"', panel(html, name).replace('class="warn" id="stale"', ""), name)
         checks = html[html.index('<section id="checks"'):]
         self.assertIn("鎖定後被修改：Objective（偵測於 2026-09-21T10:00:00+08:00）", checks)
-        self.assertIn("<dt>目標</dt><dd>讓 OP 少打字</dd>", panel(html, "week"))
+        self.assertIn("<dt>目標</dt><dd>讓 OP 少打字</dd>", panel(html, "cumulative"))
 
 
 class PeopleTest(unittest.TestCase):
@@ -158,29 +162,40 @@ class PeopleTest(unittest.TestCase):
         self.assertIn("<b>1.5h</b> · Token 10 · 完成卡片 1", team)
         self.assertNotIn("尚未接資料來源", team)
 
-    def test_team_card_lists_completed_and_in_progress(self):
+    def test_team_card_lists_in_progress_but_not_the_completed_cards(self):
         team = panel(page(metrics=metrics_for(self.ISSUES)), "team")
         self.assertIn("<summary>進行中 1 張</summary>", team[team.index("Carol"):])
         self.assertIn("card person warn-card", team)
         self.assertIn("這些卡在 Jira 上沒有 assignee", team)
+        # 本週完成的逐張清單不再列在人卡（本週頁的「完成」已有），張數仍在兩格裡（2026-10-07 使用者裁，視覺化改版 AC-3）
+        self.assertNotIn("本週完成", team)
+        self.assertNotIn('browse/CS-2"', team)
+        self.assertIn("實際工時 <b>1.5h</b> · 完成卡片 1", team)
 
-
-    def test_team_tab_opens_with_people_and_hours_per_project(self):
-        team = panel(page(metrics=metrics_for(self.ISSUES)), "team")
-        self.assertLess(team.index("<h3>專案投入</h3>"), team.index("<h3>人</h3>"))
-        # 人卡的本週、累計格底下不再列各專案時數（2026-10-07 使用者裁）
-        self.assertNotIn("<p>CS-1 ", team)
+    def test_people_column_on_the_overview_replaces_the_staffing_table(self):
+        html = page(metrics=metrics_for(self.ISSUES))
+        team, overview = panel(html, "team"), panel(html, "cumulative")
+        self.assertNotIn("專案投入", team)
         self.assertNotIn("交付", team)
-        self.assertLess(team.index("<h3>人</h3>"), team.index("card person"))
-        # CS-1：本週 Alice 與未指派的 CS-3；累計多了上週 Dan 的 CS-5。名字照人的排序，累計工時多的在前
-        self.assertIn('alert(1)&lt;/script&gt;<small>Dan、Alice</small></div>'
-                      '<span data-label="本週人數">1<small>另有未指派</small></span><span data-label="本週實際工時">3.5h</span>'
-                      '<span data-label="累計人數">2<small>另有未指派</small></span><span data-label="累計工時">7.5h</span>', team)
+        self.assertNotIn("<p>CS-1 ", team)
+        self.assertIn("<h3>人</h3>", team)
+        # CS-1 累計：Alice 與上週的 Dan，另有未指派的 CS-3；名字照在這個專案的工時排，多的在前
+        row = overview[overview.rindex('<details class="proj">', 0, overview.index('alert(1)&lt;/script&gt; <span class="pill')):]
+        row = row[:row.index("</details>")]
+        self.assertIn('<span class="people">2 <small>Dan、Alice</small><small>另有未指派</small></span>', row)
+        self.assertIn('<span class="people">人</span>', overview)
 
-    def test_unfilled_hours_are_shown_next_to_project_hours(self):
+    def test_unfilled_hours_are_shown_next_to_the_overview_project_hours(self):
         issues = self.ISSUES + [issue("CS-6", level=0, parent="CS-1", status="done", resolved=IN_WEEK, assignee="Alice")]
-        team = panel(page(metrics=metrics_for(issues)), "team")
-        self.assertIn('<span data-label="本週實際工時">3.5h<small>1 張未填工時</small></span>', team)
+        overview = panel(page(metrics=metrics_for(issues)), "cumulative")
+        self.assertIn('<span class="num">7.5h<small>1 張未填工時</small></span>', overview)
+
+    def test_completed_cards_are_drawn_as_bars_next_to_the_number(self):
+        week = panel(page(metrics=metrics_for(self.ISSUES)), "week")
+        # Alice 本週 1 張是最多，長條滿格；工時只給數字，不畫長度（每人填工時的粒度不同）
+        self.assertIn('<span data-label="完成卡片"><span class="hbar"><i style="width:100%"></i></span>1</span>', week)
+        self.assertIn('<span data-label="實際工時">1.5h</span>', week)
+        self.assertNotIn('data-label="實際工時"><span class="hbar"', week)
 
 
 class TokenHiddenTest(unittest.TestCase):
@@ -191,10 +206,9 @@ class TokenHiddenTest(unittest.TestCase):
     def test_no_token_file_hides_every_token_column_and_leaves_one_note_per_resource_block(self):
         html = page(metrics=metrics_for(self.ISSUES))
         week, cumulative, team = panel(html, "week"), panel(html, "cumulative"), panel(html, "team")
-        note = '<p class="note">Token 尚未接資料來源</p>'
-        self.assertEqual(html.count("Token"), 2)
-        self.assertIn(f'</ul>{note}\n  <h3>專案列表</h3>', week)
-        self.assertIn(f'</ul>{note}\n  <h3>專案列表</h3>', cumulative)
+        # 「Token 尚未接資料來源」那行也不留：整頁一個 Token 字都沒有（2026-10-07 使用者裁，取代 2026-09-27「資源區留一行」）
+        self.assertEqual(html.count("Token"), 0)
+        self.assertNotIn("尚未接資料來源", html)
         self.assertIn('<ul class="kpis" style="--kpis:2">', week)
         self.assertIn('<ul class="kpis" style="--kpis:2">', cumulative)
         self.assertNotIn("Token", team)
@@ -209,7 +223,7 @@ class TokenHiddenTest(unittest.TestCase):
         self.assertNotIn('<p class="note">Token', html)
         self.assertIn('<ul class="kpis" style="--kpis:3">', week)
         self.assertIn('<li class=big><span>累計 Token</span><strong class="">10</strong></li>', cumulative)
-        self.assertIn("<span>Token <b>—</b></span>", week)                      # 專案卡
+        self.assertIn('<span class="num">Token —</span>', week)                 # 本週一覽表的列
         self.assertIn("<span>執行人</span><span>實際工時</span><span>Token</span>", week)
         self.assertIn('<span class="nums">1.5h · Token —</span>', week)         # 完成清單
         self.assertIn('<span class="num">Token 10</span>', cumulative)          # 總覽專案列
@@ -250,7 +264,13 @@ class ProgressTest(unittest.TestCase):
         # 工時是完工後回填的實際時數：未完成卡上的 0.5 不算進去，沒填的未完成卡也不數
         issues = ISSUES + [issue("CS-3", level=0, parent="CS-1", status="todo", points=0.5),
                            issue("CS-4", level=0, parent="CS-1", status="todo")]
-        self.assertIn("<span>1/3 張完成 · 累計工時 1.5h</span>", panel(page(metrics=metrics_for(issues)), "week"))
+        week = panel(page(metrics=metrics_for(issues)), "week")
+        # 三段進度條：之前完成 0、本週完成 1、未完成 2；本週工時只有完成卡的 1.5h，未完成卡上的 0.5 不算
+        self.assertIn('<div class="bar" role="img" aria-label="1/3 張完成，本週 1 張"><span style="width:0%"></span>'
+                      '<span class=wk style=width:33.3%></span></div><span class="num">1/3</span>', week)
+        self.assertIn('<span class="num">1.5h</span>', week)
+        # 一覽表不再印專案的累計工時（總覽才有）；本週頁剩下的「累計工時」只在 label 橫條的圖例
+        self.assertNotIn("累計工時", week[week.index("<h3>專案一覽</h3>"):week.index("<h3>資源</h3>")])
 
 
 class BreakpointRenderTest(unittest.TestCase):
@@ -310,8 +330,9 @@ class WordingTest(unittest.TestCase):
         self.assertIn("<h1>2026/09/16（三） – 2026/09/22（二）</h1>", html)
         glossary = html[html.index('<section id="glossary"'):html.index("</section>", html.index('<section id="glossary"'))]
         self.assertIn("2026/09/16（三） 00:00 到 2026/09/22（二） 23:59（UTC+8）", glossary)
-        for term in ("本週", "累計", "完成卡片", "實際工時", "累計工時", "未填工時", "進度", "label", "Done／On Track", "資料檢查"):
+        for term in ("本週", "累計", "完成卡片", "實際工時", "累計工時", "未填工時", "人", "進度", "label", "Done／On Track", "資料檢查"):
             self.assertIn(f"<dt>{term}</dt>", glossary)
+        self.assertNotIn("<dt>專案投入</dt>", glossary)
         self.assertNotIn("交付", html)
 
     def test_checks_are_called_data_checks(self):
@@ -330,7 +351,7 @@ class DueDateHiddenTest(unittest.TestCase):
         self.assertNotIn("目標日", html)
         self.assertNotIn("2026/10/31", html)
         self.assertNotIn("未設定", html)
-        self.assertIn('<p class="meta">負責人 未指派</p>', panel(html, "week"))
+        self.assertIn('<span class="owner">Alice</span>', panel(html, "week"))  # 本週有產出的人，不是 epic 的 assignee
 
 
 class CompletedSectionTest(unittest.TestCase):
@@ -372,7 +393,7 @@ class CompletedSectionTest(unittest.TestCase):
     def test_unassigned_in_progress_card_is_shown_without_completions(self):
         issues = ISSUES + [issue("CS-9", level=0, status="doing", assignee="Eve", summary="沒有 epic 的進行中")]
         week = panel(page(metrics=metrics_for(issues)), "week")
-        projects = week[week.index("<h3>專案列表</h3>"):week.index("<h3>團隊</h3>")]
+        projects = week[week.index("<h3>專案一覽</h3>"):week.index("<h3>資源</h3>")]
         self.assertIn("沒有 epic 的進行中", projects)
         self.assertIn("未歸屬 epic", projects)
 
@@ -402,12 +423,12 @@ class NothingDroppedTest(unittest.TestCase):
         html = page(metrics=m, narrative={"highlights": ["完成"], "epic_results": {e["id"]: "完成" for e in m["epics"] if e["active"]}})
         week = panel(html, "week")
         done_section = week[week.index("<h3>完成</h3>"):]
-        projects = week[week.index("<h3>專案列表</h3>"):week.index("<h3>團隊</h3>")]
+        projects = week[week.index("<h3>專案一覽</h3>"):week.index("<h3>資源</h3>")]
         cumulative = panel(html, "cumulative")
         team = panel(html, "team")
         for row in m["completed"]:
             self.assertIn(f'browse/{row["key"]}"', done_section, row["key"])
-            self.assertIn(f'browse/{row["key"]}"', team, row["key"])
+            self.assertNotIn(f'browse/{row["key"]}"', team, row["key"])  # 人卡不再列完成清單（2026-10-07 使用者裁）
         for row in m["cumulative"]["completed"]:
             self.assertIn(f'browse/{row["key"]}"', cumulative, row["key"])
         for row in m["in_progress"]:
@@ -468,8 +489,14 @@ class OverviewTest(unittest.TestCase):
         self.assertIn('<details class="proj"><summary class="proj-head">', o)
         row = o[o.rindex('<details class="proj">', 0, o.index("門市客服")):]
         row = row[:row.index("</details>")]
-        self.assertIn('<div class="bar"><span style="width:50%"></span></div><span>1/2</span>', row)
+        # 門市客服 1/2 完成、那 1 張是本週：之前段 0、本週段 50
+        self.assertIn('<div class="bar" role="img" aria-label="1/2 張完成，本週 1 張"><span style="width:0%"></span>'
+                      '<span class=wk style=width:50%></span></div><span class="num">1/2</span>', row)
         self.assertIn('<span class="num">1.5h</span>', row)
+        # 已結案的直售專案本週沒有專案列，本週段是 0、不畫
+        settled = o[o.index("已結案的直售專案"):o.index("門市客服")]
+        self.assertIn('<div class="bar" role="img" aria-label="1/1 張完成"><span style="width:100%"></span></div><span class="num">1/1</span>', settled)
+        self.assertIn('<span class="people">1 <small>Bob</small></span>', settled)
         self.assertIn("<dt>目標</dt><dd>少打字</dd>", row)
         self.assertIn("<dt>Before</dt><dd>手打</dd>", row)
         self.assertNotIn("M2", row)          # 下個里程碑不在效益說明
@@ -477,19 +504,99 @@ class OverviewTest(unittest.TestCase):
         self.assertNotIn("<details class=\"proj\" open", o)
         self.assertIn("Kick off 未填", o)    # 沒有 Kick off 的專案
 
-    def test_label_table_is_shared_and_replaces_support_units(self):
+    def test_label_bars_are_shared_and_replace_the_table(self):
         html = page(metrics=metrics_for(self.ISSUES), narrative={"highlights": ["完成"], "epic_results": {"CS-1": "完成", "_unassigned": "完成"}})
         week, o = panel(html, "week"), panel(html, "cumulative")
-        head = '<div class="row head"><span>label</span><span>本週實際工時</span><span>累計工時</span><span>epic 數</span></div>'
-        row = '<div class="row "><div class="name">直售</div><span data-label="本週實際工時">0.5h</span><span data-label="累計工時">3.5h</span><span data-label="epic 數">1</span></div>'
+        # 直售累計 3.5h 是最長的一條：之前段 3.0/3.5、本週段 0.5/3.5（2026-10-07 使用者裁：兩頁都改橫條）
+        row = ('<div class="lrow"><span class="lname">直售 <span class="muted">· 1 個 epic</span></span>'
+               '<div class="bar" role="img" aria-label="累計工時 3.5h，本週 0.5h"><span style="width:85.7%"></span>'
+               '<span class=wk style=width:14.3%></span></div><span class="num">本週 0.5h · 累計 3.5h</span></div>')
         for tab in (week, o):
-            self.assertIn(head, tab)
             self.assertIn(row, tab)
+            self.assertIn('<div class="labels">', tab)
+            self.assertNotIn("<span>label</span>", tab)
         self.assertNotIn("支援單位", html)
         self.assertIn("<h3>團隊</h3>", week)
         self.assertIn("<h3>團隊</h3>", o)
         self.assertIn('<li class=big><span>累計工時</span><strong class="">5h</strong></li>', o)
         self.assertIn('<li><span>累計完成卡片</span><strong class="">3</strong></li>', o)
+
+
+class WeekTableTest(unittest.TestCase):
+    """本週頁的專案是一張一覽表，不是一張張卡（2026-10-07 使用者裁，視覺化改版 AC-1）。"""
+    ISSUES = OverviewTest.ISSUES + [
+        issue("CS-8", level=1, status="doing", labels=("門市",), summary="本週沒動的門市專案"),
+        issue("CS-9", level=0, parent="CS-8", status="todo", labels=("門市",)),
+        issue("CS-10", level=1, status="done", resolved=IN_WEEK, labels=("直售",), summary="本週結案但沒完成卡的專案"),
+    ]
+    NARRATIVE = {"highlights": ["完成"], "epic_results": {"CS-1": "門市本週做完一張", "CS-10": "結案", "_unassigned": "完成"}}
+
+    def week(self, states=None):
+        return panel(page(metrics=metrics_for(self.ISSUES, states=states), narrative=self.NARRATIVE), "week")
+
+    def test_table_comes_right_after_the_highlights_and_cards_are_gone(self):
+        week = self.week()
+        self.assertLess(week.index('class="highlights"'), week.index("<h3>專案一覽</h3>"))
+        self.assertLess(week.index("<h3>專案一覽</h3>"), week.index("<h3>資源</h3>"))
+        self.assertNotIn("card project", week)
+        self.assertIn('<div class="proj head"><span class="name">專案</span><span class="owner">負責人</span>', week)
+
+    def test_rows_are_grouped_by_label_with_week_hours_and_unassigned_last(self):
+        week = self.week()
+        table = week[week.index("<h3>專案一覽</h3>"):week.index("<h3>資源</h3>")]
+        # 段的順序跟 label 表一樣（累計工時多的在前、未分類倒數、未歸屬 epic 最後）；沒結案的 epic 本週沒動也列，跟原本的專案卡一樣
+        heads = ['<h4>直售 <span class="muted">· 1 個專案 · 本週 0.5h</span></h4>',  # 含沒有 epic 的直售卡 CS-7
+                 '<h4>門市 <span class="muted">· 2 個專案 · 本週 1.5h</span></h4>',
+                 '<h4>未分類 <span class="muted">· 1 個專案 · 本週 0h</span></h4>',
+                 "<h4>未歸屬 epic</h4>"]
+        positions = [table.index(h) for h in heads]
+        self.assertEqual(positions, sorted(positions))
+        self.assertLess(table.index("沒有 label 的專案"), table.index("<h4>未歸屬 epic</h4>"))
+
+    def test_row_cells_signal_and_next_milestone(self):
+        states = {"CS-1": {"kickoff_key": "CS-9", "locked_at": "2026-09-20T10:00:00+08:00", "changes": [],
+                           "sections": {"objective": "少打字", "why": None, "before": None, "after": None, "evidence": None,
+                                        "decision": None, "next_milestone": "M2 上線\n之後再做 M3"}}}
+        week = self.week(states)
+        row = week[week.rindex('<details class="proj">', 0, week.index("門市客服")):]
+        row = row[:row.index("</details>")]
+        self.assertIn('<span class="owner">Alice</span>', row)
+        self.assertIn('<span class="plus"><b>+1</b></span><span class="num">1.5h</span>', row)
+        self.assertIn('<span class="sigs"></span><span class="next">M2 上線</span>', row)  # 只取第一行
+        self.assertIn('<p class="result">門市本週做完一張</p>', row)
+        self.assertNotIn("<dt>目標</dt>", row)
+        # 本週沒動的專案：負責人退回 epic 的 assignee（未指派）、+0、訊號「本週無完成」、沒有 Kick off 下一步是「—」
+        idle = week[week.rindex('<details class="proj">', 0, week.index("本週沒動的門市專案")):]
+        idle = idle[:idle.index("</details>")]
+        self.assertIn('<span class="owner">未指派</span>', idle)
+        self.assertIn('<span class="plus"><span class="muted">0</span></span><span class="num">0h</span>', idle)
+        self.assertIn('<span class="sigs"><span class="sig">本週無完成</span></span><span class="next">—</span>', idle)
+        self.assertIn('<p class="result muted">本週沒有完成項目</p>', idle)
+        # 本週結案的 epic 是 Done：沒有完成卡也不亮「本週無完成」
+        done = week[week.rindex('<details class="proj">', 0, week.index("本週結案但沒完成卡的專案")):]
+        done = done[:done.index("</details>")]
+        self.assertIn('<span class="sigs"></span>', done)
+        self.assertIn('<span class="bar-empty">尚無卡片</span>', done)
+
+    def test_in_progress_cards_open_under_their_row(self):
+        issues = self.ISSUES + [issue("CS-11", level=0, parent="CS-1", status="doing", assignee="Carol", summary="門市進行中的卡")]
+        week = panel(page(metrics=metrics_for(issues), narrative=self.NARRATIVE), "week")
+        row = week[week.rindex('<details class="proj">', 0, week.index("門市客服")):]
+        row = row[:row.index("</details>")]
+        self.assertIn("<summary>進行中 1 張</summary>", row)
+        self.assertIn("門市進行中的卡", row)
+
+
+class CompletedCollapsedTest(unittest.TestCase):
+    def test_each_project_is_a_collapsed_group_with_counts(self):
+        issues = ISSUES + [issue("CS-3", level=0, parent="CS-1", status="done", points=2.0, resolved=IN_WEEK, assignee="Bob")]
+        week = panel(page(metrics=metrics_for(issues)), "week")
+        done = week[week.index("<h3>完成</h3>"):]
+        self.assertIn('<details class="done-group"><summary>', done)
+        self.assertIn('<span class="muted">· 2 張 · 3.5h</span></summary>', done)
+        self.assertNotIn('<details class="done-group" open', done)
+        self.assertLess(done.index("done-group"), done.index('browse/CS-2"'))
+
 
 
 if __name__ == "__main__":
