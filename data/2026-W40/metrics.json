@@ -3167,8 +3167,9 @@
     "week": "2026-W40",
     "week_ending": "2026-09-29"
   },
-  "schema": 3,
+  "schema": 4,
   "site": "liontech-tw.atlassian.net",
+  "token_source": false,
   "totals": {
     "completed": 36,
     "deliverables": 36,
