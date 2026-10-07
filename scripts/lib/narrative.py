@@ -1,7 +1,8 @@
 """AI 寫的文字段（narrative.json）的驗證。驗不過就不發布。
 
 AI 只寫兩種東西：
-  highlights：本週重點，1 到 3 條（本週沒有任何完成的卡時必須是空陣列）
+  highlights：本週重點，本週有完成的專案一個一條，條數由程式定（2026-10-07 使用者要求「完成多少就寫多少」，取代 1 到 3 條）；
+              本週沒有任何完成的卡時必須是空陣列
   epic_results：每個本週有完成的專案一句「結果」，key 是 metrics 裡 epic 的 id
 
 擋兩種編造：
@@ -24,7 +25,6 @@ NUMBER = re.compile(r"\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?")
 CHINESE_QUANTITY = re.compile(
     r"(?P<digits>[零〇一二兩三四五六七八九十百千萬]+)\s*(?:項|張|個|條|次|週|天|日|位|件|支|筆|成|倍|小時|%|％)")
 MAX_LEN = 200
-MAX_HIGHLIGHTS = 3
 
 
 class NarrativeError(ValueError):
@@ -76,6 +76,20 @@ def allowed_numbers(metrics: dict) -> set:
     return out
 
 
+def highlight_projects(metrics: dict) -> list:
+    """本週重點要寫的專案與順序，(id, 專案名)：先是 epics 裡本週有完成的（照 epics 的順序），再來是先前已結案、
+    底下的卡本週才完成的 epic（照完成清單第一次出現的順序，名稱取總覽的專案列）。「完成多少就寫多少」
+    （2026-10-07 使用者要求）：已結案的 epic 不在 epics 裡，只看 active 會整案漏掉（Codex 審 PR D）。
+    名稱查不到就讓它炸，不默默少寫一條。"""
+    rows = [(e["id"], e["summary"]) for e in metrics["epics"] if e["active"]]
+    shown = {e["id"] for e in metrics["epics"]}
+    settled = {e["id"]: e["summary"] for e in metrics["cumulative"]["epics"]}
+    for row in metrics["completed"]:
+        if row["group"] not in shown and row["group"] not in {r[0] for r in rows}:
+            rows.append((row["group"], settled[row["group"]]))
+    return rows
+
+
 def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
     errors = []
     if set(narrative) != {"highlights", "epic_results"}:
@@ -86,11 +100,22 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
     if not isinstance(results, dict) or not all(isinstance(v, str) for v in results.values()):
         raise NarrativeError("epic_results 必須是 {epic id: 字串}")
 
+    # 比對過的「[專案名]」開頭是 Jira 上的名稱、不是 AI 寫的，下面驗卡號與數字時拿掉：
+    # 專案名帶版本號或卡號格式（「Phase 999 升級」）時，AI 改不掉它，不拿掉就永遠發布不了（Codex 審 PR D 第二輪）
+    written = list(highlights)
     if metrics["totals"]["completed"] == 0:
         if highlights:
             errors.append("本週沒有完成的卡，highlights 必須是空陣列")
-    elif not 1 <= len(highlights) <= MAX_HIGHLIGHTS:
-        errors.append(f"highlights 要 1 到 {MAX_HIGHLIGHTS} 條，實際 {len(highlights)} 條")
+    else:
+        # 一個專案一條、照順序、以「[專案名]」開頭：只比條數的話，同一個專案寫五遍也會過（Codex 審 PR D）
+        projects = highlight_projects(metrics)
+        if len(highlights) != len(projects):
+            errors.append(f"highlights 要本週有完成的專案一個一條：{len(projects)} 個專案，實際 {len(highlights)} 條")
+        for i, ((_, name), text) in enumerate(zip(projects, highlights)):
+            if not text.startswith(f"[{name}]"):
+                errors.append(f"highlights[{i}] 要以「[{name}]」開頭（順序照本週有完成的專案）")
+            else:
+                written[i] = text[len(name) + 2:]
 
     expected = {e["id"] for e in metrics["epics"] if e["active"]}
     if set(results) != expected:
@@ -98,13 +123,15 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
         errors.append(f"epic_results 要剛好涵蓋本週有完成的專案：缺 {missing}，多 {extra}")
 
     allowed = allowed_numbers(metrics)
-    texts = [(f"highlights[{i}]", h) for i, h in enumerate(highlights)] + [(f"epic_results[{k}]", v) for k, v in sorted(results.items())]
-    for where, text in texts:
+    # (位置, 全文, AI 寫的部分)：空字串與長度看全文，卡號、中文數量、數字只驗 AI 寫的部分
+    texts = [(f"highlights[{i}]", h, w) for i, (h, w) in enumerate(zip(highlights, written))] + \
+            [(f"epic_results[{k}]", v, v) for k, v in sorted(results.items())]
+    for where, full, text in texts:
         if not text.strip():
-            errors.append(f"{where} 是空字串")
+            errors.append(f"{where} 是空字串" if not full.strip() else f"{where} 只有專案名，沒有內容")
             continue
-        if len(text) > MAX_LEN:
-            errors.append(f"{where} 超過 {MAX_LEN} 字（{len(text)}）")
+        if len(full) > MAX_LEN:
+            errors.append(f"{where} 超過 {MAX_LEN} 字（{len(full)}）")
         for key in ISSUE_KEY.findall(text):
             if key not in snapshot_keys:
                 errors.append(f"{where} 引用了不存在或已排除的卡號 {key}")

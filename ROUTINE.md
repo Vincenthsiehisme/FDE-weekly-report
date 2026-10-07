@@ -61,7 +61,7 @@
 }
 ```
 
-- `highlights`：本週重點 1 到 3 條，寫法照範本「[專案名] 完成 XXX，已達到 XXX」。本週沒有任何完成的卡（`totals.completed` 是 0）時必須是空陣列。
+- `highlights`：本週重點，本週有完成的專案一個一條，條數不能多也不能少（2026-10-07 使用者要求「完成多少就寫多少」）。順序：先是 `epics` 裡 `active` 為 true 的專案，照 `epics` 陣列的順序；再來是 `completed` 裡 `group` 不在 `epics` 的專案（所屬 epic 先前已結案），照它在 `completed` 第一次出現的順序。每條以「[專案名]」開頭，專案名照 `epics[].summary` 原文（已結案的取 `cumulative.epics[].summary`），驗證器逐條比對開頭與順序。寫法照範本「[專案名] 完成 XXX，已達到 XXX」。本週沒有任何完成的卡（`totals.completed` 是 0）時必須是空陣列。
 - `epic_results`：`metrics.json` 的 `epics` 裡每個 `active` 為 true 的專案各一句，key 用它的 `id`（未歸屬 epic 的 id 是 `_unassigned`），不能多也不能少。
 - 寫的是本週：`cumulative` 與 `people` 是給頁面用的累計與人力資料，不要拿累計數字寫進本週重點或專案結果。
 - 不寫「累計完成 N 張」「進度 N%」：`epics[].progress` 是到本期結束為止的累計進度，不是本週的成果；`percent` 是同一個累計進度的百分比。
