@@ -211,7 +211,7 @@ class TokenHiddenTest(unittest.TestCase):
         self.assertEqual(html.count("Token"), 0)
         self.assertNotIn("尚未接資料來源", html)
         self.assertIn('<ul class="kpis" style="--kpis:2">', week)
-        self.assertIn('<ul class="kpis" style="--kpis:2">', cumulative)
+        self.assertIn('<ul class="kpis" style="--kpis:3">', cumulative)  # 累計工時、累計完成卡片、epic 數
         self.assertNotIn("Token", team)
         # 團隊的列少一欄：欄數跟著變，窄螢幕才不會多一格空白
         self.assertIn('<div class="rows" style="--cols:3"><div class="row head"><span>執行人</span><span>實際工時</span><span>完成卡片</span><span>進行中</span>', week)
@@ -473,7 +473,7 @@ class OverviewTest(unittest.TestCase):
 
     def test_projects_are_grouped_by_label_with_unassigned_last(self):
         o = self.overview()
-        projects = o[o.index("<h3>專案列表</h3>"):o.index("<h3>依 label</h3>")]
+        projects = o[o.index("<h3>專案列表</h3>"):o.index("<h3>完成</h3>")]
         heads = ["<h4>直售 <span class=\"muted\">· 1 個專案 · 累計工時 3.5h</span></h4>",
                  "<h4>門市 <span class=\"muted\">· 1 個專案 · 累計工時 1.5h</span></h4>",
                  "<h4>未分類 <span class=\"muted\">· 1 個專案 · 累計工時 0h</span></h4>",
@@ -548,11 +548,21 @@ class OverviewLayoutTest(unittest.TestCase):
         self.assertIn('<span class="num">本週工時</span><span class="num tok">Token</span><span class="sigs">', week)
         self.assertIn('<span class="num">累計工時</span><span class="num tok">Token</span></div>', o)
 
-    def test_sections_follow_the_week_tab_order(self):
+    def test_resources_lead_then_labels_team_projects_and_completed(self):
+        # 2026-10-07 使用者要求，取代同日「跟本週頁一致」
         o = panel(self.html(), "cumulative")
-        heads = ["<h3>專案列表</h3>", "<h3>資源</h3>", "<h3>團隊</h3>", "<h3>依 label</h3>", "<h3>完成</h3>"]
+        heads = ["<h3>資源</h3>", "<h3>依 label</h3>", "<h3>團隊</h3>", "<h3>專案列表</h3>", "<h3>完成</h3>"]
         positions = [o.index(h) for h in heads]
         self.assertEqual(positions, sorted(positions))
+
+    def test_resources_show_the_epic_count_of_the_project_list(self):
+        # 門市客服、已結案的直售專案、沒有 label 的專案：3 個 epic；沒有 epic 的卡不算一個 epic
+        html = self.html()
+        o, week = panel(html, "cumulative"), panel(html, "week")
+        self.assertIn('<ul class="kpis" style="--kpis:3">', o)
+        self.assertIn('<li><span>epic 數</span><strong class="">3</strong></li>', o)
+        self.assertEqual(o.count('<div class="proj"><div class="proj-head">') + o.count('<details class="proj">'), 4)  # 3 個 epic＋未歸屬 epic 一列
+        self.assertNotIn("epic 數</span>", week)
 
     def test_project_without_any_kickoff_section_does_not_expand(self):
         o = panel(self.html(), "cumulative")

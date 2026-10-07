@@ -2,7 +2,7 @@
 
 版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者是主管，
 分三個頁籤：總覽（2026-10-07 由「持續累積」改名）、本週（預設）、團隊。vault 的週報範本只當資訊清單，不照它的節次排。
-總覽的專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開），區塊順序跟本週頁一致；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
+總覽依序是資源（多一格 epic 數）、依 label、團隊、專案列表、完成；專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開）；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
 Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都沒有時整欄不顯示、資源區只留一行說明，
 有檔但沒記錄的卡顯示「—」，不顯示 0。目標日不顯示（2026-10-06 使用者裁：不是當前重點；metrics 仍帶 due）。
 工時是實際花費時數（2026-09-30 使用者確認：Story point estimate 由執行人完工後回填），頁面一律叫「實際工時」；
@@ -122,14 +122,17 @@ def _kpis(tiles: list) -> str:
     return f'<ul class="kpis" style="--kpis:{len(tiles)}">{"".join(items)}</ul>'
 
 
-def _resources(totals: dict, prefix: str, hours_label: str, page) -> str:
+def _resources(totals: dict, prefix: str, hours_label: str, page, epics=None) -> str:
     """資源 KPI：工時、Token、完成卡片。Token 一個檔都沒有時不放 Token 格，也不留說明
-    （2026-10-07 使用者裁，取代 2026-09-27「資源區留一行」：AI 用量整合已擱置，沒有可預期的接入日）。"""
+    （2026-10-07 使用者裁，取代 2026-09-27「資源區留一行」：AI 用量整合已擱置，沒有可預期的接入日）。
+    epics 只有總覽給：專案列表裡的 epic 數，多一格（2026-10-07 使用者要求）。"""
     unfilled = f'{totals["unestimated_completed"]} 張完成卡{UNFILLED}' if totals["unestimated_completed"] else None
     tiles = [(hours_label, fmt_hours(totals["hours"]), unfilled, True)]
     if page.tokens:
         tiles.append((f"{prefix} Token".strip(), fmt_tokens(totals["tokens"]), NO_TOKEN_SOURCE if totals["tokens"] is None else None, True))
     tiles.append((f"{prefix}完成卡片", str(totals["completed"]), None, False))
+    if epics is not None:
+        tiles.append(("epic 數", str(epics), None, False))
     return _kpis(tiles)
 
 
@@ -495,7 +498,8 @@ def _week_projects(cards: list, order: dict, page) -> str:
 
 
 def _cumulative_panel(metrics, page) -> str:
-    """區塊順序跟本週頁一致：專案列表 → 資源 → 團隊 → 依 label → 完成（2026-10-07 總覽 UI 盤點 U3）。"""
+    """區塊順序：資源 → 依 label → 團隊 → 專案列表 → 完成（2026-10-07 使用者要求，取代同日「跟本週頁一致」）。
+    資源多一格 epic 數，是專案列表裡的 epic 數，未歸屬 epic 不是一個 epic，不算。"""
     c = metrics["cumulative"]
     since = f'從 {esc(fmt_date(c["since"]))} 第一張完成卡起算，到本期結束。' if c["since"] else "到本期結束還沒有任何完成的卡。"
     order = {e["id"]: i for i, e in enumerate(c["epics"])}
@@ -505,15 +509,15 @@ def _cumulative_panel(metrics, page) -> str:
         weeks.append(_done_group(esc(w["week"]), w["completed"], w["hours"], _week_projects(cards, order, page)))
     return f"""
   <p class="note">{since}</p>
+  <h3>資源</h3>
+  {_resources(c["totals"], "累計", "累計工時", page, epics=sum(1 for e in c["epics"] if e["key"]))}
+  <h3>依 label</h3>
+  {_labels(metrics)}
+  <h3>團隊</h3>
+  {_people_rows(metrics["people"], "cumulative", page)}
   <h3>專案列表</h3>
   <p class="legend">進度條 <i class="sw-before"></i>之前完成 <i class="sw-week"></i>本週完成 <i class="sw-left"></i>未完成；點一列看 Kick off 的目標五段。</p>
   {_overview_projects(metrics, page)}
-  <h3>資源</h3>
-  {_resources(c["totals"], "累計", "累計工時", page)}
-  <h3>團隊</h3>
-  {_people_rows(metrics["people"], "cumulative", page)}
-  <h3>依 label</h3>
-  {_labels(metrics)}
   <h3>完成</h3>
   {"".join(weeks) or '<p class="muted">還沒有任何完成的卡。</p>'}
   {_breakpoint(metrics["migrated"]["cumulative"], page, with_week=True)}"""

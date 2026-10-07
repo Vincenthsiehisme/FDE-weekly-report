@@ -334,7 +334,7 @@ class ExcludedConfigTest(AtomicWriteTest):
         site = self.root / "site"
         weekly.publish_week(self._snap(), fresh_fetch=False)
         (self.root / "data" / "2026-W39" / "narrative.json").write_text(
-            '{"highlights": ["完成 CS-3"], "epic_results": {"CS-1": "完成"}}', encoding="utf-8")
+            '{"highlights": ["[CS-1 摘要] 完成 CS-3"], "epic_results": {"CS-1": "完成"}}', encoding="utf-8")
         with mock.patch.object(weekly, "SITE", site), \
                 mock.patch.object(weekly, "render", side_effect=["<html>週報</html>", RuntimeError("boom")]):
             with self.assertRaisesRegex(RuntimeError, "boom"):
@@ -352,7 +352,7 @@ class ExcludedConfigTest(AtomicWriteTest):
         with mock.patch.object(weekly, "SITE", site):
             for key, ok in (("CS-9", True), ("CS-3", False), ("CS-1", False)):
                 with self.subTest(key=key):
-                    (folder / "narrative.json").write_text(json.dumps({"highlights": [f"完成 {key}"], "epic_results": {"_unassigned": "完成"}}, ensure_ascii=False), encoding="utf-8")
+                    (folder / "narrative.json").write_text(json.dumps({"highlights": [f"[未歸屬 epic] 完成 {key}"], "epic_results": {"_unassigned": "完成"}}, ensure_ascii=False), encoding="utf-8")
                     if ok:
                         weekly.main(["finalize", "2026-W39"])
                     else:
