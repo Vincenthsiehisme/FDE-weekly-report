@@ -2,7 +2,7 @@
 
 版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者是主管，
 分三個頁籤：總覽（2026-10-07 由「持續累積」改名）、本週（預設）、團隊。vault 的週報範本只當資訊清單，不照它的節次排。
-總覽的專案依 label 分段、每列可展開看 Kick off 目標五段；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
+總覽的專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開），區塊順序跟本週頁一致；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
 Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都沒有時整欄不顯示、資源區只留一行說明，
 有檔但沒記錄的卡顯示「—」，不顯示 0。目標日不顯示（2026-10-06 使用者裁：不是當前重點；metrics 仍帶 due）。
 工時是實際花費時數（2026-09-30 使用者確認：Story point estimate 由執行人完工後回填），頁面一律叫「實際工時」；
@@ -218,9 +218,16 @@ def _other_doing(metrics, page) -> str:
     </article>"""
 
 
-WEEK_TABLE_HEAD = (
-    '<div class="proj head"><span class="name">專案</span><span class="owner">負責人</span><span class="prog">進度（深色＝本週）</span>'
-    '<span class="plus">本週</span><span class="num">本週工時</span><span class="sigs">訊號</span><span class="next">下一步</span></div>')
+# 數字欄固定寬、表頭跟列同一組欄（2026-10-07 總覽 UI 盤點 U1）：Token 有檔時列多一格，表頭也要多一格，不然整排錯位
+TOKEN_HEAD = '<span class="num tok">Token</span>'
+
+
+def _week_table_head(page) -> str:
+    return ('<div class="proj head"><span class="name">專案</span><span class="owner">負責人</span><span class="prog">進度（深色＝本週）</span>'
+            f'<span class="plus">本週</span><span class="num">本週工時</span>{TOKEN_HEAD if page.tokens else ""}'
+            '<span class="sigs">訊號</span><span class="next">下一步</span></div>')
+
+
 NO_COMPLETION_SIGNAL = "本週無完成"
 
 
@@ -240,7 +247,7 @@ def _week_row(epic, narrative, metrics, page) -> str:
     nxt = ""
     if epic["kickoff"] and epic["kickoff"]["sections"].get("next_milestone"):
         nxt = epic["kickoff"]["sections"]["next_milestone"].strip().splitlines()[0]
-    token = f'<span class="num" data-label="Token">Token {esc(fmt_tokens(week["tokens"]))}</span>' if page.tokens else ""
+    token = f'<span class="num tok" data-label="Token">Token {esc(fmt_tokens(week["tokens"]))}</span>' if page.tokens else ""
     head = (f'<span class="name">{page.title(epic["key"], epic["summary"])} {_pill(epic["status"])}</span>'
             f'<span class="owner" data-label="負責人">{esc(owner)}</span>{_progress_cell(epic["progress"], week["completed_count"])}'
             f'<span class="plus" data-label="本週">{plus}</span><span class="num" data-label="本週工時">{esc(fmt_hours(week["hours"]))}</span>{token}'
@@ -269,7 +276,7 @@ def _week_table(metrics, narrative, page) -> str:
     loose = [e for e in epics if not e["key"]]
     if loose:
         sections.append(f'<h4>{esc(UNASSIGNED_EPIC_LABEL)}</h4><div class="projs">{"".join(_week_row(e, narrative, metrics, page) for e in loose)}</div>')
-    return WEEK_TABLE_HEAD + "".join(sections)
+    return _week_table_head(page) + "".join(sections)
 
 
 def _person_cells(person: dict, scope: str, page, top: int) -> list:
@@ -419,8 +426,9 @@ def _week_panel(metrics, narrative, page) -> str:
   {_completed_by_parent(metrics, page)}"""
 
 
-OVERVIEW_TABLE_HEAD = ('<div class="proj head"><span class="name">專案</span><span class="prog">進度（深色＝本週）</span>'
-                       '<span class="people">人</span><span class="num">累計工時</span></div>')
+def _overview_table_head(page) -> str:
+    return ('<div class="proj head"><span class="name">專案</span><span class="prog">進度（深色＝本週）</span>'
+            f'<span class="people">人</span><span class="num">累計工時</span>{TOKEN_HEAD if page.tokens else ""}</div>')
 
 
 def _people_cell(scope: dict) -> str:
@@ -432,17 +440,18 @@ def _people_cell(scope: dict) -> str:
 
 def _overview_project(e, week_done: dict, staffing: dict, page) -> str:
     """總覽一個專案一列：名稱、狀態、三段進度條、人、累計工時；展開看 Kick off 目標五段，預設收合（2026-10-07 使用者裁）。
-    用 <details>，沒有 JS 也能展開。未歸屬 epic 沒有 Kick off，不給展開的內容。
+    用 <details>，沒有 JS 也能展開。Kick off 一段都沒填（含未歸屬 epic）就不給展開，點開只看到「未填」是空的承諾；
+    缺 Kick off 卡仍列在資料檢查（2026-10-07 總覽 UI 盤點 U6）。
     本週段取本週頁同一個 epic 的完成數；先前已結案的 epic 本週沒有專案列，就是 0。"""
-    token = f'<span class="num" data-label="Token">Token {esc(fmt_tokens(e["tokens"]))}</span>' if page.tokens else ""
+    token = f'<span class="num tok" data-label="Token">Token {esc(fmt_tokens(e["tokens"]))}</span>' if page.tokens else ""
     scope = staffing[e["id"]]["cumulative"] if e["id"] in staffing else {"people": [], "people_count": 0, "unassigned": False, "unestimated": 0}
     unfilled = f'<small>{scope["unestimated"]} 張{UNFILLED}</small>' if scope["unestimated"] else ""
     head = (f'<span class="name">{page.title(e["key"], e["summary"])} {_pill(e["status"])}</span>'
             f'{_progress_cell(e["progress"], week_done.get(e["id"], 0))}{_people_cell(scope)}'
             f'<span class="num" data-label="累計工時">{esc(fmt_hours(e["hours"]))}{unfilled}</span>{token}')
-    if not e["key"]:
+    body = _kickoff(e["kickoff"], BENEFIT_FIELDS) if e["key"] else ""
+    if not body:
         return f'<div class="proj"><div class="proj-head">{head}</div></div>'
-    body = _kickoff(e["kickoff"], BENEFIT_FIELDS) or '<p class="muted">Kick off 未填</p>'
     return f'<details class="proj"><summary class="proj-head">{head}</summary><div class="proj-body">{body}</div></details>'
 
 
@@ -453,7 +462,7 @@ def _overview_projects(metrics, page) -> str:
         return '<p class="muted">還沒有任何專案</p>'
     week_done = {e["id"]: e["week"]["completed_count"] for e in metrics["epics"]}
     staffing = {s["id"]: s for s in metrics["staffing"]}
-    sections = [OVERVIEW_TABLE_HEAD]
+    sections = [_overview_table_head(page)]
     for row in metrics["labels"]:
         members = [e for e in epics if e["key"] and e["label"] == row["label"]]
         if not members:
@@ -467,28 +476,44 @@ def _overview_projects(metrics, page) -> str:
     return "".join(sections)
 
 
+def _week_projects(cards: list, order: dict, page) -> str:
+    """總覽一週的完成卡依專案分組（2026-10-07 總覽 UI 盤點 U7，跟本週頁的完成清單同一種兩層）：一個專案一列可展開，
+    標題帶張數與工時。cumulative.completed 只有葉節點（metrics 的 done_leaves），張數與工時的口徑同週標題，加總對得上。
+    專案的順序照 cumulative.epics（卡號序，跟本週〈完成〉一樣）；order 查不到 group 就讓它炸，不默默排到最後。"""
+    groups: dict = {}
+    for r in cards:
+        groups.setdefault(r["group"], []).append(r)
+    items = []
+    for group_id in sorted(groups, key=lambda g: order[g]):
+        rows = groups[group_id]
+        hours = sum(r["hours"] or 0 for r in rows)
+        sub = "".join(f'<li><span>{page.issue(r["key"])} {esc(r["summary"])} <span class="muted">· {esc(r["owner"])}</span></span>'
+                      f'<span class="nums">{esc(fmt_card_hours(r))}</span></li>' for r in rows)
+        items.append(f'<li><details><summary><span>{esc(rows[0]["project"])}</span>'
+                     f'<span class="nums">{len(rows)} 張 · {esc(fmt_hours(hours))}</span></summary><ul>{sub}</ul></details></li>')
+    return f'<ul class="list">{"".join(items)}</ul>'
+
+
 def _cumulative_panel(metrics, page) -> str:
+    """區塊順序跟本週頁一致：專案列表 → 資源 → 團隊 → 依 label → 完成（2026-10-07 總覽 UI 盤點 U3）。"""
     c = metrics["cumulative"]
     since = f'從 {esc(fmt_date(c["since"]))} 第一張完成卡起算，到本期結束。' if c["since"] else "到本期結束還沒有任何完成的卡。"
+    order = {e["id"]: i for i, e in enumerate(c["epics"])}
     weeks = []
     for w in c["weeks"]:
         cards = [r for r in c["completed"] if r["week"] == w["week"]]
-        items = "".join(
-            f'<li><span>{page.issue(r["key"])} {esc(r["summary"])} <span class="muted">· {esc(r["project"])} · {esc(r["owner"])}</span></span>'
-            f'<span class="nums">{esc(fmt_card_hours(r))}</span></li>' for r in cards)
-        weeks.append(f'<details><summary>{esc(w["week"])} <span class="muted">· {w["completed"]} 張 · {esc(fmt_hours(w["hours"]))}</span></summary>'
-                     f'<ul class="list">{items}</ul></details>')
+        weeks.append(_done_group(esc(w["week"]), w["completed"], w["hours"], _week_projects(cards, order, page)))
     return f"""
   <p class="note">{since}</p>
-  <h3>資源</h3>
-  {_resources(c["totals"], "累計", "累計工時", page)}
   <h3>專案列表</h3>
   <p class="legend">進度條 <i class="sw-before"></i>之前完成 <i class="sw-week"></i>本週完成 <i class="sw-left"></i>未完成；點一列看 Kick off 的目標五段。</p>
   {_overview_projects(metrics, page)}
-  <h3>依 label</h3>
-  {_labels(metrics)}
+  <h3>資源</h3>
+  {_resources(c["totals"], "累計", "累計工時", page)}
   <h3>團隊</h3>
   {_people_rows(metrics["people"], "cumulative", page)}
+  <h3>依 label</h3>
+  {_labels(metrics)}
   <h3>完成</h3>
   {"".join(weeks) or '<p class="muted">還沒有任何完成的卡。</p>'}
   {_breakpoint(metrics["migrated"]["cumulative"], page, with_week=True)}"""
@@ -739,14 +764,17 @@ p.highlights{padding-left:16px}
 .proj.head{color:var(--muted);font-size:12px;padding:4px 14px 0}
 details.proj>.proj-head{cursor:pointer}
 .proj-head::-webkit-details-marker{display:none}
-details.proj>.proj-head::before{content:"▸";color:var(--muted)}
+details.proj>.proj-head::before{content:"▸";color:var(--muted);margin-right:0}
 details.proj[open]>.proj-head::before{content:"▾"}
 div.proj>.proj-head,.proj.head{padding-left:16px}
 .proj-head .name,.proj.head .name{flex:1;min-width:0}
 .prog{display:flex;align-items:center;gap:8px;width:170px;font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
-.prog .num{min-width:44px}
-.proj-head .num,.proj.head .num{min-width:56px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.proj-head .num small,.people small{display:block;white-space:normal;color:var(--muted);font-size:11px}
+/* 數字欄用子選擇器：進度條旁的「88/140」也是 .num，不能被欄寬規則吃到 */
+.prog .num{min-width:56px;text-align:right;white-space:nowrap}
+.proj-head>.num,.proj.head>.num{flex:none;width:56px;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+#cumulative .proj-head>.num,#cumulative .proj.head>.num{width:88px}
+.proj-head>.tok,.proj.head>.tok{width:96px}
+.proj-head>.num small,.people small{display:block;white-space:normal;color:var(--muted);font-size:11px}
 .owner{width:90px;color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .plus{width:40px;text-align:right;font-variant-numeric:tabular-nums;color:var(--bar-week)}
 .sigs{width:96px}
@@ -766,10 +794,14 @@ div.proj>.proj-head,.proj.head{padding-left:16px}
 .kickoff{margin:8px 0;padding:8px 12px;background:var(--soft);border-radius:8px;font-size:14px}
 .kickoff div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;padding:2px 0}
 .kickoff dt{color:var(--muted);font-size:13px}.kickoff dd{margin:0;min-width:0;overflow-wrap:anywhere}
-details summary{cursor:pointer}
+/* 展開記號全頁一種：▸ 收合、▾ 展開（2026-10-07 總覽 UI 盤點 U7） */
+details summary{cursor:pointer;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details>summary::before{content:"▸";color:var(--muted);margin-right:6px}
+details[open]>summary::before{content:"▾"}
 .list summary{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:0 8px;list-style:none}
 .list summary::-webkit-details-marker{display:none}
-.list summary::before{content:"▸";color:var(--muted)}
+.list summary::before{content:"▸";color:var(--muted);margin-right:0}
 .list details[open]>summary::before{content:"▾"}
 .card details{margin-top:8px;font-size:14px}
 .card details summary{color:var(--muted)}
@@ -832,10 +864,12 @@ details summary{cursor:pointer}
   .proj-head{flex-wrap:wrap;gap:4px 10px}
   .proj-head>[data-label]::before{content:attr(data-label);display:block;color:var(--muted);font-size:11px}
   .proj-head>[data-label]:empty{display:none}
-  .proj-head .num{text-align:left;min-width:0}
+  .proj-head>.num,#cumulative .proj-head>.num,.proj-head>.tok{text-align:left;width:auto}
+  .prog .num{text-align:left;min-width:0}
   .proj-head .name{flex-basis:calc(100% - 24px)}
   .prog{flex-basis:100%;width:auto}
-  .owner,.next,.people{width:auto;white-space:normal;flex-basis:100%}
+  .owner,.next{width:auto;white-space:normal;flex-basis:100%}
+  .people{width:auto;flex:1 1 0;min-width:0}  /* 人與累計工時同一行（2026-10-07 總覽 UI 盤點 U8） */
   .sigs{width:auto}
   .lrow{flex-wrap:wrap}.lrow .lname{width:100%}.lrow .bar{flex-basis:100%}
   .list summary .nums{grid-column:2;margin-left:0}
