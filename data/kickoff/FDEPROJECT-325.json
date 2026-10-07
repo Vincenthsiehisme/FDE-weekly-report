@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-325",
+  "kickoff_key": "FDEPROJECT-326",
+  "last_seen": {
+    "after": "板橋客人訊息集中收進 Chatwoot（2 位管理者＋8 位業務帳號，業務仍在 LINE 回覆）；AI 客服由主管與專員內部試用，每日優化報告抓出答不好的地方，一類開一張卡修正；整理出開放 AI 給客人前要補的清單",
+    "before": "板橋客人訊息只在 LINE 官方帳號後台；AI 客服只在測試帳號與 10/05 主管 demo 用過",
+    "decision": "內部試用多久、AI 達到什麼標準才開放給客人；何時改在 Chatwoot 回覆；Chatwoot 企業版授權",
+    "evidence": "Chatwoot 收件紀錄；AI 試用的使用分析報告；門市同仁回饋紀錄；每日優化報告與對應的修正卡",
+    "next_milestone": "板橋試用回饋收齊（FDEPROJECT-284）",
+    "objective": "板橋門市的客人 LINE 訊息先集中收進 Chatwoot；AI 客服由主管與專員內部試用；收集回饋，達到可以把 AI 開放給客人的標準",
+    "why": "PoC 證明做得出來；要先確認門市同仁用得順、AI 的回答與轉真人流程站得住，才能開放給客人"
+  },
+  "last_seen_at": "2026-10-07T11:32:36.626963+08:00",
+  "last_seen_key": "FDEPROJECT-326",
+  "locked_at": "2026-10-07T11:32:36.626963+08:00",
+  "problems": [],
+  "sections": {
+    "after": "板橋客人訊息集中收進 Chatwoot（2 位管理者＋8 位業務帳號，業務仍在 LINE 回覆）；AI 客服由主管與專員內部試用，每日優化報告抓出答不好的地方，一類開一張卡修正；整理出開放 AI 給客人前要補的清單",
+    "before": "板橋客人訊息只在 LINE 官方帳號後台；AI 客服只在測試帳號與 10/05 主管 demo 用過",
+    "decision": "內部試用多久、AI 達到什麼標準才開放給客人；何時改在 Chatwoot 回覆；Chatwoot 企業版授權",
+    "evidence": "Chatwoot 收件紀錄；AI 試用的使用分析報告；門市同仁回饋紀錄；每日優化報告與對應的修正卡",
+    "next_milestone": "板橋試用回饋收齊（FDEPROJECT-284）",
+    "objective": "板橋門市的客人 LINE 訊息先集中收進 Chatwoot；AI 客服由主管與專員內部試用；收集回饋，達到可以把 AI 開放給客人的標準",
+    "why": "PoC 證明做得出來；要先確認門市同仁用得順、AI 的回答與轉真人流程站得住，才能開放給客人"
+  }
+}

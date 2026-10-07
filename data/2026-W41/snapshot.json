@@ -1,9 +1,9 @@
 {
   "counts": {
     "CS": 28,
-    "FDEPROJECT": 319
+    "FDEPROJECT": 328
   },
-  "fetched_at": "2026-10-07T06:38:51.223805+08:00",
+  "fetched_at": "2026-10-07T11:32:36.626963+08:00",
   "issues": [
     {
       "assignee": "hubertwang",
@@ -653,7 +653,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": null,
       "project": "FDEPROJECT",
       "resolved": null,
@@ -661,7 +661,7 @@
       "status_category": "new",
       "summary": "國旅自由行：MCP 搜尋工具與初始化 API（另案）",
       "type": "任務",
-      "updated": "2026-09-24T11:26:16.329+0800"
+      "updated": "2026-10-07T10:47:34.166+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -748,7 +748,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 3.0,
       "project": "FDEPROJECT",
       "resolved": null,
@@ -756,7 +756,7 @@
       "status_category": "new",
       "summary": "正式版 LINE bot 發佈給門市同仁前的收尾：切換公司頻道、轉真人文案定稿、門市回饋補完（合併 S8-65、S8-69、S8-5）",
       "type": "故事",
-      "updated": "2026-09-24T11:26:16.767+0800"
+      "updated": "2026-10-07T10:47:30.747+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -1071,7 +1071,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 2.0,
       "project": "FDEPROJECT",
       "resolved": null,
@@ -1079,7 +1079,7 @@
       "status_category": "indeterminate",
       "summary": "新增LIFF 六宮格 rich menu：目前LIFF沒有任何入口",
       "type": "任務",
-      "updated": "2026-10-01T09:12:04.644+0800"
+      "updated": "2026-10-07T10:47:31.420+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -1185,7 +1185,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.5,
       "project": "FDEPROJECT",
       "resolved": null,
@@ -1193,7 +1193,7 @@
       "status_category": "indeterminate",
       "summary": "門市號碼機廠商 API 對接:取得文件與憑證、界定要存哪些資料",
       "type": "任務",
-      "updated": "2026-10-01T09:12:05.293+0800"
+      "updated": "2026-10-07T10:47:32.081+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -1584,7 +1584,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": null,
       "project": "FDEPROJECT",
       "resolved": null,
@@ -1592,7 +1592,7 @@
       "status_category": "new",
       "summary": "lineOA 對話記憶壓縮規劃（待情境更複雜時調整）",
       "type": "任務",
-      "updated": "2026-09-24T11:15:48.117+0800"
+      "updated": "2026-10-07T10:47:33.482+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -1888,7 +1888,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": null,
       "project": "FDEPROJECT",
       "resolved": null,
@@ -1896,7 +1896,7 @@
       "status_category": "new",
       "summary": "Line OA 聊天 Log API開發",
       "type": "任務",
-      "updated": "2026-09-24T11:15:58.327+0800"
+      "updated": "2026-10-07T10:47:32.792+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -1911,11 +1911,11 @@
       "points": null,
       "project": "FDEPROJECT",
       "resolved": null,
-      "status": "進行中",
+      "status": "審核中",
       "status_category": "indeterminate",
-      "summary": "門市 AI 客服",
+      "summary": "門市 AI 客服 階段一：PoC",
       "type": "大型工作",
-      "updated": "2026-10-07T05:40:11.440+0800"
+      "updated": "2026-10-07T10:47:43.701+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -6436,7 +6436,7 @@
       "status_category": "done",
       "summary": "大中巴/小車全日包車/接駁_價錢依選取車型/區域自動填入",
       "type": "故事",
-      "updated": "2026-10-07T05:57:07.778+0800"
+      "updated": "2026-10-07T08:51:59.525+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -7987,10 +7987,14 @@
         "content": [
           {
             "attrs": {
+              "localId": "fe9770d57b2a",
               "panelType": "info"
             },
             "content": [
               {
+                "attrs": {
+                  "localId": "3aa9021d85b8"
+                },
                 "content": [
                   {
                     "marks": [
@@ -8009,10 +8013,39 @@
           },
           {
             "attrs": {
+              "localId": "6bdd977a6a2f"
+            },
+            "content": [
+              {
+                "text": "建立「信用卡／虛擬帳號付款連結批次發送」功能，針對梯次團大量旅客付款情境，在 SERP 單據與付款資訊設定完成後，讓業務可透過",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "一次操作或排程方式",
+                "type": "text"
+              },
+              {
+                "text": "，自動完成整團旅客的付款連結發送。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "4650da02a9f0",
               "panelType": "note"
             },
             "content": [
               {
+                "attrs": {
+                  "localId": "c9caf112ba65"
+                },
                 "content": [
                   {
                     "marks": [
@@ -8031,10 +8064,51 @@
           },
           {
             "attrs": {
+              "localId": "215506d1c59e"
+            },
+            "content": [
+              {
+                "text": "目前梯次團需由業務逐筆處理旅客資料並進入 SERP 發送付款連結，當團體規模大時，人工操作成本非常高。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "986cf1389f74"
+            },
+            "content": [
+              {
+                "text": "近期台北大團兆豐即有 ",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "8,000+ 筆",
+                "type": "text"
+              },
+              {
+                "text": "處理需求；桃園地區亦存在大量梯次團情境。除了耗費大量工時，長時間重複操作也容易產生金額、付款期限或旅客資料對應錯誤。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "7bc661c966b2",
               "panelType": "warning"
             },
             "content": [
               {
+                "attrs": {
+                  "localId": "dba581fdff8b"
+                },
                 "content": [
                   {
                     "marks": [
@@ -8053,10 +8127,103 @@
           },
           {
             "attrs": {
+              "localId": "202b38b38df9"
+            },
+            "content": [
+              {
+                "text": "目前流程：",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "f6a9b3836044"
+            },
+            "content": [
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "收到初步處理旅客清單",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 人工依「團名、出團日期」拆分清單",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 使用 Excel 公式計算每位旅客應付金額",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 將拆分後清單手動輸入 SERP",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 逐筆對照旅客的「付款金額、付款期限」",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 進入 SERP 逐筆發送繳費簡訊／付款連結",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "c8a5ca0f4328"
+            },
+            "content": [
+              {
+                "text": "主要瓶頸集中在",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "大量人工拆分、資料輸入、資料核對與逐筆發送",
+                "type": "text"
+              },
+              {
+                "text": "。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "da698fc8c3d0",
               "panelType": "success"
             },
             "content": [
               {
+                "attrs": {
+                  "localId": "3d0efce3306d"
+                },
                 "content": [
                   {
                     "marks": [
@@ -8075,10 +8242,119 @@
           },
           {
             "attrs": {
+              "localId": "b1112cd9d872"
+            },
+            "content": [
+              {
+                "text": "預期流程：",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "6b7b970539be"
+            },
+            "content": [
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "收到旅客清單",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 自動依團名、出團日期整理／拆分資料",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 自動計算或取得每位旅客付款資訊",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 自動操作 SERP 建立／輸入所需資料",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ ",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "一次啟動整團批次發送",
+                "type": "text"
+              },
+              {
+                "text": "或設定",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "每日排程，自動確認是否有待發送資料",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 自動操作 SERP 網頁逐筆發送信用卡／虛擬帳號付款連結",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "→ 紀錄每筆 Success / Failed，失敗資料可重新執行",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "d1253229961f"
+            },
+            "content": [
+              {
+                "text": "讓業務從「逐筆操作」轉為「確認資料 → 啟動任務 → 查看結果」。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "ce34d6e7a9d5",
               "panelType": "success"
             },
             "content": [
               {
+                "attrs": {
+                  "localId": "da7b097b0b4a"
+                },
                 "content": [
                   {
                     "marks": [
@@ -8097,10 +8373,84 @@
           },
           {
             "attrs": {
+              "localId": "e10ae94af5a2"
+            },
+            "content": [
+              {
+                "text": "目前已有明確的大量作業情境：",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "2ea5c4bfd59d"
+            },
+            "content": [
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "兆豐台北大團近期需求達 8,000+ 筆",
+                "type": "text"
+              },
+              {
+                "text": "，若維持人工逐筆操作，需投入大量業務工時。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "8ec840e76d61"
+            },
+            "content": [
+              {
+                "text": "桃園地區亦存在大量梯次團需求，代表此情境並非單次個案，而是具有重複使用與擴充價值。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "2b0564f40375"
+            },
+            "content": [
+              {
+                "text": "另外，全聯目前採支票付款，因此不受此流程影響，可進一步確認此功能主要適用於",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "信用卡／虛擬帳號付款的梯次團",
+                "type": "text"
+              },
+              {
+                "text": "。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "4c113b84a259",
               "panelType": "success"
             },
             "content": [
               {
+                "attrs": {
+                  "localId": "acc6066c3f2d"
+                },
                 "content": [
                   {
                     "marks": [
@@ -8118,6 +8468,78 @@
             "type": "panel"
           },
           {
+            "attrs": {
+              "localId": "a03a49a8ada6"
+            },
+            "content": [
+              {
+                "text": "第一階段先完成 ",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "PoC / 小範圍驗證",
+                "type": "text"
+              },
+              {
+                "text": "：",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "86e8534c0e4f"
+            },
+            "content": [
+              {
+                "text": "確認 SERP 網頁操作流程與可自動化範圍，先以少量旅客資料驗證「資料讀取 → SERP 操作 → 付款連結發送 → 執行結果紀錄」。",
+                "type": "text"
+              }
+            ],
+            "type": "paragraph"
+          },
+          {
+            "attrs": {
+              "localId": "80cce2d14b49"
+            },
+            "content": [
+              {
+                "text": "驗證成功後逐步進行 ",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "100 → 500 → 1,000 筆壓力與穩定性測試",
+                "type": "text"
+              },
+              {
+                "text": "，確認 Session、網頁操作穩定性、失敗續跑機制及大量資料執行時間，再評估正式導入 ",
+                "type": "text"
+              },
+              {
+                "marks": [
+                  {
+                    "type": "strong"
+                  }
+                ],
+                "text": "一鍵批次執行／每日排程",
+                "type": "text"
+              },
+              {
+                "text": "。",
+                "type": "text"
+              }
+            ],
             "type": "paragraph"
           }
         ],
@@ -8139,7 +8561,7 @@
       "status_category": "new",
       "summary": "[客製國旅]SERP 單據金額確認後，評估付款連結批次發送機制",
       "type": "Kick off",
-      "updated": "2026-10-07T05:57:28.385+0800"
+      "updated": "2026-10-07T08:05:53.078+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -8427,7 +8849,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.5,
       "project": "FDEPROJECT",
       "resolved": "2026-10-06T17:11:36.175+0800",
@@ -8435,7 +8857,7 @@
       "status_category": "done",
       "summary": "接入板橋門市 LINE OA 到 Chatwoot 收件匣",
       "type": "任務",
-      "updated": "2026-10-06T17:11:36.197+0800"
+      "updated": "2026-10-07T10:47:21.329+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -8446,7 +8868,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.5,
       "project": "FDEPROJECT",
       "resolved": "2026-10-06T17:11:38.870+0800",
@@ -8454,7 +8876,7 @@
       "status_category": "done",
       "summary": "開 Chatwoot 管理者帳號給通路 Joan、家偉",
       "type": "任務",
-      "updated": "2026-10-06T17:11:38.887+0800"
+      "updated": "2026-10-07T10:47:25.278+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -8465,7 +8887,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.75,
       "project": "FDEPROJECT",
       "resolved": "2026-10-06T17:11:41.457+0800",
@@ -8473,7 +8895,7 @@
       "status_category": "done",
       "summary": "開 8 個門市業務使用者帳號並分配到板橋收件匣",
       "type": "任務",
-      "updated": "2026-10-06T17:11:41.480+0800"
+      "updated": "2026-10-07T10:47:25.946+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -8484,7 +8906,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.5,
       "project": "FDEPROJECT",
       "resolved": null,
@@ -8492,7 +8914,7 @@
       "status_category": "indeterminate",
       "summary": "板橋門市試用 Chatwoot，收集用法回饋",
       "type": "故事",
-      "updated": "2026-10-06T17:11:44.310+0800"
+      "updated": "2026-10-07T10:47:30.059+0800"
     },
     {
       "assignee": "Shira",
@@ -8604,7 +9026,7 @@
       "status_category": "done",
       "summary": "團體機票票價查詢插件 MVP（華航日本線）",
       "type": "Kick off",
-      "updated": "2026-10-06T09:36:09.988+0800"
+      "updated": "2026-10-07T09:09:05.149+0800"
     },
     {
       "assignee": "Shira",
@@ -8699,7 +9121,7 @@
       "status_category": "new",
       "summary": "安排魏嘉萱以真實團號試用票價插件",
       "type": "任務",
-      "updated": "2026-10-05T16:58:40.797+0800"
+      "updated": "2026-10-07T09:09:05.592+0800"
     },
     {
       "assignee": "Shira",
@@ -8768,14 +9190,14 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-286",
-      "points": 8.0,
+      "points": 14.0,
       "project": "FDEPROJECT",
       "resolved": null,
       "status": "待辦事項",
       "status_category": "new",
       "summary": "支援長榮、星宇日本線團體票價",
       "type": "故事",
-      "updated": "2026-10-05T16:58:44.571+0800"
+      "updated": "2026-10-07T09:09:07.246+0800"
     },
     {
       "assignee": "Shira",
@@ -8794,7 +9216,7 @@
       "status_category": "new",
       "summary": "自動化航司票價 PDF 轉檔",
       "type": "故事",
-      "updated": "2026-10-05T16:58:45.488+0800"
+      "updated": "2026-10-07T09:09:06.387+0800"
     },
     {
       "assignee": "Shira",
@@ -8813,7 +9235,7 @@
       "status_category": "new",
       "summary": "改由公司內部伺服器提供票價資料",
       "type": "故事",
-      "updated": "2026-10-05T16:58:46.378+0800"
+      "updated": "2026-10-07T09:09:06.789+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -8958,14 +9380,14 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-309",
-      "points": 2.0,
+      "points": 3.0,
       "project": "FDEPROJECT",
       "resolved": null,
       "status": "待辦事項",
       "status_category": "new",
       "summary": " input資料格式模組",
       "type": "任務",
-      "updated": "2026-10-07T05:57:14.150+0800"
+      "updated": "2026-10-07T10:56:08.364+0800"
     },
     {
       "assignee": "Vivian",
@@ -9216,7 +9638,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.25,
       "project": "FDEPROJECT",
       "resolved": "2026-10-06T17:10:56.818+0800",
@@ -9224,7 +9646,7 @@
       "status_category": "done",
       "summary": "建立正式站使用分析（主管試用期間定時產出報告）",
       "type": "任務",
-      "updated": "2026-10-06T17:10:56.834+0800"
+      "updated": "2026-10-07T10:47:26.648+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -9235,7 +9657,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.25,
       "project": "FDEPROJECT",
       "resolved": "2026-10-06T17:11:10.938+0800",
@@ -9243,7 +9665,7 @@
       "status_category": "done",
       "summary": "記錄 LINE 顯示名稱到身分表",
       "type": "任務",
-      "updated": "2026-10-06T17:11:10.958+0800"
+      "updated": "2026-10-07T10:47:27.385+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -9254,7 +9676,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.75,
       "project": "FDEPROJECT",
       "resolved": "2026-10-06T17:11:15.332+0800",
@@ -9262,7 +9684,7 @@
       "status_category": "done",
       "summary": "提供業務電腦網頁版（LINE 帳號登入）",
       "type": "故事",
-      "updated": "2026-10-06T17:11:15.353+0800"
+      "updated": "2026-10-07T10:47:28.012+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -9273,7 +9695,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.25,
       "project": "FDEPROJECT",
       "resolved": "2026-10-06T17:11:18.460+0800",
@@ -9281,7 +9703,7 @@
       "status_category": "done",
       "summary": "調整等待動畫：查詢步驟預設展開、完成時動畫收起",
       "type": "任務",
-      "updated": "2026-10-06T17:11:18.482+0800"
+      "updated": "2026-10-07T10:47:28.735+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -9292,7 +9714,7 @@
       ],
       "level": 0,
       "moved_in": null,
-      "parent": "FDEPROJECT-71",
+      "parent": "FDEPROJECT-325",
       "points": 0.5,
       "project": "FDEPROJECT",
       "resolved": "2026-10-06T17:11:22.365+0800",
@@ -9300,7 +9722,245 @@
       "status_category": "done",
       "summary": "實測 LINE reply token 實際可用多久",
       "type": "Spike",
-      "updated": "2026-10-06T17:11:22.388+0800"
+      "updated": "2026-10-07T10:47:29.390+0800"
+    },
+    {
+      "assignee": "Shira",
+      "due": "2026-10-06",
+      "key": "FDEPROJECT-322",
+      "labels": [
+        "東北亞"
+      ],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-286",
+      "points": 2.5,
+      "project": "FDEPROJECT",
+      "resolved": "2026-10-07T09:07:40.813+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "開發團產作業列表頁票價按鈕，背景查詢各團航班帶出年度價與促銷價",
+      "type": "任務",
+      "updated": "2026-10-07T09:07:40.829+0800"
+    },
+    {
+      "assignee": "Shira",
+      "due": "2026-10-06",
+      "key": "FDEPROJECT-323",
+      "labels": [
+        "東北亞"
+      ],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-286",
+      "points": 1.25,
+      "project": "FDEPROJECT",
+      "resolved": "2026-10-07T09:07:41.940+0800",
+      "status": "完成",
+      "status_category": "done",
+      "summary": "盤點長榮、星宇票價表結構與待確認規則",
+      "type": "Spike",
+      "updated": "2026-10-07T09:07:41.962+0800"
+    },
+    {
+      "assignee": "Shira",
+      "due": null,
+      "key": "FDEPROJECT-324",
+      "labels": [
+        "東北亞"
+      ],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-286",
+      "points": 10.0,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "將航司票價 PDF 轉檔結果發佈到 Google 試算表，讓插件直接讀取最新票價",
+      "type": "故事",
+      "updated": "2026-10-07T09:06:04.642+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "due": null,
+      "key": "FDEPROJECT-325",
+      "labels": [
+        "門市"
+      ],
+      "level": 1,
+      "moved_in": null,
+      "parent": null,
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "門市 AI 客服 階段二：板橋門市試用",
+      "type": "大型工作",
+      "updated": "2026-10-07T10:54:27.175+0800"
+    },
+    {
+      "assignee": "陳勁佑 Jincoco",
+      "description": {
+        "content": [
+          {
+            "content": [
+              {
+                "text": "Objective：板橋門市的客人 LINE 訊息先集中收進 Chatwoot；AI 客服由主管與專員內部試用；收集回饋，達到可以把 AI 開放給客人的標準",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Why It Matters：PoC 證明做得出來；要先確認門市同仁用得順、AI 的回答與轉真人流程站得住，才能開放給客人",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Before/After",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Before：板橋客人訊息只在 LINE 官方帳號後台；AI 客服只在測試帳號與 10/05 主管 demo 用過",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "After：板橋客人訊息集中收進 Chatwoot（2 位管理者＋8 位業務帳號，業務仍在 LINE 回覆）；AI 客服由主管與專員內部試用，每日優化報告抓出答不好的地方，一類開一張卡修正；整理出開放 AI 給客人前要補的清單",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Evidence：Chatwoot 收件紀錄；AI 試用的使用分析報告；門市同仁回饋紀錄；每日優化報告與對應的修正卡",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Decision Needed：內部試用多久、AI 達到什麼標準才開放給客人；何時改在 Chatwoot 回覆；Chatwoot 企業版授權",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              },
+              {
+                "text": "Next Milestone：板橋試用回饋收齊（FDEPROJECT-284）",
+                "type": "text"
+              },
+              {
+                "type": "hardBreak"
+              }
+            ],
+            "type": "paragraph"
+          }
+        ],
+        "type": "doc",
+        "version": 1
+      },
+      "due": null,
+      "key": "FDEPROJECT-326",
+      "labels": [
+        "門市"
+      ],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-325",
+      "points": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "門市 AI 客服 階段二：板橋門市試用",
+      "type": "Kick off",
+      "updated": "2026-10-07T10:54:37.437+0800"
+    },
+    {
+      "assignee": "Vivian",
+      "due": null,
+      "key": "FDEPROJECT-327",
+      "labels": [
+        "客製國旅"
+      ],
+      "level": -1,
+      "moved_in": null,
+      "parent": "FDEPROJECT-306",
+      "points": 3.0,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "資料解析：CSV／XLSX、多 Sheet 與加密 XLSX",
+      "type": "子任務",
+      "updated": "2026-10-07T11:16:35.343+0800"
+    },
+    {
+      "assignee": "Vivian",
+      "due": null,
+      "key": "FDEPROJECT-328",
+      "labels": [
+        "客製國旅"
+      ],
+      "level": -1,
+      "moved_in": null,
+      "parent": "FDEPROJECT-306",
+      "points": 4.0,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "Schema Mapping：aliases、欄位 ID 與預覽修改",
+      "type": "子任務",
+      "updated": "2026-10-07T11:16:39.223+0800"
+    },
+    {
+      "assignee": "Vivian",
+      "due": null,
+      "key": "FDEPROJECT-329",
+      "labels": [
+        "客製國旅"
+      ],
+      "level": -1,
+      "moved_in": null,
+      "parent": "FDEPROJECT-306",
+      "points": 4.0,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "資料檢核與 CSV 輸出",
+      "type": "子任務",
+      "updated": "2026-10-07T11:16:43.368+0800"
+    },
+    {
+      "assignee": "Vivian",
+      "due": null,
+      "key": "FDEPROJECT-330",
+      "labels": [
+        "客製國旅"
+      ],
+      "level": -1,
+      "moved_in": null,
+      "parent": "FDEPROJECT-306",
+      "points": 3.0,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "summary": "整合測試與修正：格式轉換主流程",
+      "type": "子任務",
+      "updated": "2026-10-07T11:16:46.360+0800"
     }
   ],
   "period": {
