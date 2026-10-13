@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-423",
+  "kickoff_key": "FDEPROJECT-424",
+  "last_seen": {
+    "after": "28 間門市的 LINE 官方帳號都在 Chatwoot 正式站（10/13 已接 27 間），每店一個收件匣與團隊，店員有帳號可接單",
+    "before": "只有板橋接進 Chatwoot；其他門市各自在 LINE 官方帳號後台回覆",
+    "decision": "各店店員名單由誰提供；舊 LINE token 已作廢，n8n／推播是否受影響；選單按鈕文字洗版要不要處理；API 用量上限（主管 10/13 提出）",
+    "evidence": "收件匣訊息量、各店店員帳號開通數、轉真人比例與回覆時間",
+    "next_milestone": "各店店員帳號開通",
+    "objective": "把板橋試營運的做法推到全省門市，各店 LINE 官方帳號接進 Chatwoot，客人訊息集中在同一後台由各店業務接手",
+    "why": "板橋證明流程可行；只有一間店用，對業務端痛點（#2／#6 LINE OA 分散）的效益有限"
+  },
+  "last_seen_at": "2026-10-14T00:00:32.099355+08:00",
+  "last_seen_key": "FDEPROJECT-424",
+  "locked_at": "2026-10-14T00:00:32.099355+08:00",
+  "problems": [],
+  "sections": {
+    "after": "28 間門市的 LINE 官方帳號都在 Chatwoot 正式站（10/13 已接 27 間），每店一個收件匣與團隊，店員有帳號可接單",
+    "before": "只有板橋接進 Chatwoot；其他門市各自在 LINE 官方帳號後台回覆",
+    "decision": "各店店員名單由誰提供；舊 LINE token 已作廢，n8n／推播是否受影響；選單按鈕文字洗版要不要處理；API 用量上限（主管 10/13 提出）",
+    "evidence": "收件匣訊息量、各店店員帳號開通數、轉真人比例與回覆時間",
+    "next_milestone": "各店店員帳號開通",
+    "objective": "把板橋試營運的做法推到全省門市，各店 LINE 官方帳號接進 Chatwoot，客人訊息集中在同一後台由各店業務接手",
+    "why": "板橋證明流程可行；只有一間店用，對業務端痛點（#2／#6 LINE OA 分散）的效益有限"
+  }
+}

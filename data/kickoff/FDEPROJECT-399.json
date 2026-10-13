@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-399",
+  "kickoff_key": "FDEPROJECT-400",
+  "last_seen": {
+    "after": "每店一個 LIFF 綁該店 OA 取號，叫號以 flex 推播；取號資料回到我們",
+    "before": "廠商取號網頁＋現場叫號螢幕，資料不進我們這邊",
+    "decision": null,
+    "evidence": "板橋先試，取號與推播成功、推播則數在 OA 額度內（估板橋每月 650～2,000 則）",
+    "next_milestone": "跟號碼機廠商確認取號、狀態通知、前面幾位的 API",
+    "objective": "客人在門市 LINE 取號、叫號用 LINE 推播，取代廠商取號網頁",
+    "why": "現場取號與 LINE 對話分離，客人得盯叫號螢幕；取號資料留在廠商，我們看不到"
+  },
+  "last_seen_at": "2026-10-14T00:00:32.099355+08:00",
+  "last_seen_key": "FDEPROJECT-400",
+  "locked_at": "2026-10-14T00:00:32.099355+08:00",
+  "problems": [],
+  "sections": {
+    "after": "每店一個 LIFF 綁該店 OA 取號，叫號以 flex 推播；取號資料回到我們",
+    "before": "廠商取號網頁＋現場叫號螢幕，資料不進我們這邊",
+    "decision": null,
+    "evidence": "板橋先試，取號與推播成功、推播則數在 OA 額度內（估板橋每月 650～2,000 則）",
+    "next_milestone": "跟號碼機廠商確認取號、狀態通知、前面幾位的 API",
+    "objective": "客人在門市 LINE 取號、叫號用 LINE 推播，取代廠商取號網頁",
+    "why": "現場取號與 LINE 對話分離，客人得盯叫號螢幕；取號資料留在廠商，我們看不到"
+  }
+}

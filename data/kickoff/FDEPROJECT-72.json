@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-72",
+  "kickoff_key": "FDEPROJECT-331",
+  "last_seen": {
+    "after": "自建 image（api、web、agent 三顆）上線並升到 1.17.0；結構化輸出、知識庫欄位、內容審查開關可以自己調；token 成本有查帳與裁剪；升級有評估流程（1.17.1 評估後決定暫不升）",
+    "before": "用官方 Dify image，console 設定存不住、token 成本沒有控管、升級沒有固定做法",
+    "decision": "無；後期升級與優化另開 epic",
+    "evidence": "正式站與 dev 兩站都跑 1.17.0 自建 image；升級紀錄（1.16.0 → 1.16.1 → 1.17.0）；1.17.1 升級評估結論（FDEPROJECT-17）",
+    "next_milestone": "本階段送審收尾；升級與優化交給「Dify 平台與維運 階段二」",
+    "objective": "確定以 Dify 作為門市 AI 客服的 AI 平台，建立我們能自己維護的版本，穩定支撐 LINE bot 與 LIFF",
+    "why": "AI 客服的對話、知識庫、模型都跑在 Dify 上；官方版有限制（console 設定存不住、知識庫欄位被關、結構化輸出寫死特定 app），不能自己改就會卡住產品開發"
+  },
+  "last_seen_at": "2026-10-14T00:00:32.099355+08:00",
+  "last_seen_key": "FDEPROJECT-331",
+  "locked_at": "2026-10-14T00:00:32.099355+08:00",
+  "problems": [],
+  "sections": {
+    "after": "自建 image（api、web、agent 三顆）上線並升到 1.17.0；結構化輸出、知識庫欄位、內容審查開關可以自己調；token 成本有查帳與裁剪；升級有評估流程（1.17.1 評估後決定暫不升）",
+    "before": "用官方 Dify image，console 設定存不住、token 成本沒有控管、升級沒有固定做法",
+    "decision": "無；後期升級與優化另開 epic",
+    "evidence": "正式站與 dev 兩站都跑 1.17.0 自建 image；升級紀錄（1.16.0 → 1.16.1 → 1.17.0）；1.17.1 升級評估結論（FDEPROJECT-17）",
+    "next_milestone": "本階段送審收尾；升級與優化交給「Dify 平台與維運 階段二」",
+    "objective": "確定以 Dify 作為門市 AI 客服的 AI 平台，建立我們能自己維護的版本，穩定支撐 LINE bot 與 LIFF",
+    "why": "AI 客服的對話、知識庫、模型都跑在 Dify 上；官方版有限制（console 設定存不住、知識庫欄位被關、結構化輸出寫死特定 app），不能自己改就會卡住產品開發"
+  }
+}
