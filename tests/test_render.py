@@ -4,7 +4,7 @@ from datetime import date
 from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 from lib.metrics import compute
 from lib.period import period_ending
-from lib.render import fmt_tokens, render
+from lib.render import esc, fmt_tokens, render
 
 PERIOD = period_ending(date(2026, 9, 22))
 ISSUES = [
@@ -38,6 +38,29 @@ class RenderTest(unittest.TestCase):
         html = page()
         self.assertNotIn("<script>alert(1)</script>", html)
         self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", html)
+
+    def test_highlight_project_name_is_blue_and_escaped(self):
+        # 本週重點開頭的「[專案名]」上藍字（2026-10-14 使用者要求）；名稱照 highlight_projects 對位，也要 escape
+        week = panel(page(narrative={"highlights": ["[<script>alert(1)</script>] 完成 <b>&"], "epic_results": {"CS-1": "完成"}}), "week")
+        self.assertIn('<li><span class="epic">[&lt;script&gt;alert(1)&lt;/script&gt;]</span> 完成 &lt;b&gt;&amp;</li>', week)
+
+    def test_each_highlight_gets_its_own_project_name(self):
+        # 第二條要對到第二個專案；一律拿第一個名稱的話，第二條就不會上藍字
+        issues = ISSUES + [issue("CS-3", level=1, status="doing", summary="第二個專案"),
+                           issue("CS-4", level=0, parent="CS-3", status="done", points=1.0, resolved=IN_WEEK, assignee="Bob")]
+        metrics = metrics_for(issues)
+        active = [e for e in metrics["epics"] if e["active"]]
+        names = [e["summary"] for e in active]
+        self.assertEqual(len(names), 2)
+        highlights = [f"[{name}] 完成第 {i} 條" for i, name in enumerate(names)]
+        week = panel(page(metrics=metrics, narrative={"highlights": highlights, "epic_results": {e["id"]: "完成" for e in active}}), "week")
+        for i, name in enumerate(names):
+            self.assertIn(f'<li><span class="epic">[{esc(name)}]</span> 完成第 {i} 條</li>', week)
+
+    def test_highlight_without_project_prefix_stays_plain(self):
+        week = panel(page(narrative={"highlights": ["完成 <script>"], "epic_results": {"CS-1": "完成"}}), "week")
+        self.assertIn("<li>完成 &lt;script&gt;</li>", week)
+        self.assertNotIn('class="epic"', week)
 
     def test_removed_sections_stay_removed(self):
         html = page()
