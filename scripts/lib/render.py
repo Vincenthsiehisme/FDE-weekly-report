@@ -21,6 +21,7 @@ import html
 from datetime import datetime, timedelta
 
 from .metrics import SCHEMA, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER
+from .narrative import highlight_projects
 from .period import TZ
 from .snapshot import parse_jira_time
 
@@ -407,10 +408,22 @@ def _labels(metrics) -> str:
     return LABEL_LEGEND + f'<div class="labels">{"".join(items)}</div>'
 
 
+def _highlight(text: str, name) -> str:
+    """一條本週重點；開頭的「[專案名]」上藍字（2026-10-14 使用者要求，掃一眼就分得出專案）。
+    專案名跟 validate 同一份 highlight_projects 對位，不用 regex 猜括號：名稱本身帶「]」也切得對。
+    沒有這個開頭的整條照原文：格式由 finalize 的 validate 擋，這裡不重驗。"""
+    prefix = f"[{name}]"
+    if name is None or not text.startswith(prefix):
+        return f"<li>{esc(text)}</li>"
+    return f'<li><span class="epic">{esc(prefix)}</span>{esc(text[len(prefix):])}</li>'
+
+
 def _week_panel(metrics, narrative, page) -> str:
     highlights = narrative["highlights"]
     if highlights:
-        points = f'<ol class="highlights">{"".join(f"<li>{esc(h)}</li>" for h in highlights)}</ol>'
+        names = [name for _, name in highlight_projects(metrics)]
+        items = "".join(_highlight(h, names[i] if i < len(names) else None) for i, h in enumerate(highlights))
+        points = f'<ol class="highlights">{items}</ol>'
     else:
         points = '<p class="highlights muted">本週沒有完成的卡。</p>'
     return f"""
@@ -738,6 +751,7 @@ h4{font-size:14px;margin:18px 0 6px}
 .panel-title{border-top:1px solid var(--line);padding-top:24px}
 .highlights{margin:20px 0 0;padding:12px 16px 12px 36px;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:0 10px 10px 0}
 .highlights li{margin:4px 0}
+.highlights .epic{color:var(--accent)}
 p.highlights{padding-left:16px}
 .kpis{list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(var(--kpis),minmax(0,1fr));gap:10px}
 .kpis li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;min-width:0}

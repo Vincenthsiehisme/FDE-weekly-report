@@ -39,6 +39,16 @@ class RenderTest(unittest.TestCase):
         self.assertNotIn("<script>alert(1)</script>", html)
         self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", html)
 
+    def test_highlight_project_name_is_blue_and_escaped(self):
+        # 本週重點開頭的「[專案名]」上藍字（2026-10-14 使用者要求）；名稱照 highlight_projects 對位，也要 escape
+        week = panel(page(narrative={"highlights": ["[<script>alert(1)</script>] 完成 CS-2"], "epic_results": {"CS-1": "完成"}}), "week")
+        self.assertIn('<li><span class="epic">[&lt;script&gt;alert(1)&lt;/script&gt;]</span> 完成 CS-2</li>', week)
+
+    def test_highlight_without_project_prefix_stays_plain(self):
+        week = panel(page(), "week")
+        self.assertIn("<li>完成 CS-2</li>", week)
+        self.assertNotIn('class="epic"', week)
+
     def test_removed_sections_stay_removed(self):
         html = page()
         for word in ("Attention", "Blocked", "Decision Needed", "Risk"):
