@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-509",
+  "kickoff_key": "FDEPROJECT-510",
+  "last_seen": {
+    "after": "Chatwoot 裡有 Dify 選單可看知識庫總覽、問答列表、命中統計；之後接 FAQ 建議審核與 AI 對話紀錄",
+    "before": "知識庫只能在 Dify 後台看、看不到命中與品質；AI 對話紀錄與 Chatwoot 分開",
+    "decision": "是否往正式站推進；FAQ 建議素材來源（正式站結案對話目前 0 段）；workflow-as-tool 是否在 dev 實測",
+    "evidence": "dev 雛形（知識庫總覽＋問答列表內頁已實作）、畫布 5＋4 張畫面、知識庫品質問題清單",
+    "next_milestone": "Jin 回饋 AI 對話整合畫面，決定下一步做 FAQ 建議審核或 AI 對話紀錄",
+    "objective": "評估用 Chatwoot 介面管理 Dify（知識庫、AI 對話、FAQ 建議），讓門市與管理者不用進 Dify 後台",
+    "why": "Dify 後台設定要直接改 DB、知識庫品質看不見（1,952 塊中 1,388 塊從沒被查到；被查最多的「關於會員禮遇」只剩 6 個字）；AI 答不好的題目沒有回流機制"
+  },
+  "last_seen_at": "2026-10-21T00:00:31.859357+08:00",
+  "last_seen_key": "FDEPROJECT-510",
+  "locked_at": "2026-10-21T00:00:31.859357+08:00",
+  "problems": [],
+  "sections": {
+    "after": "Chatwoot 裡有 Dify 選單可看知識庫總覽、問答列表、命中統計；之後接 FAQ 建議審核與 AI 對話紀錄",
+    "before": "知識庫只能在 Dify 後台看、看不到命中與品質；AI 對話紀錄與 Chatwoot 分開",
+    "decision": "是否往正式站推進；FAQ 建議素材來源（正式站結案對話目前 0 段）；workflow-as-tool 是否在 dev 實測",
+    "evidence": "dev 雛形（知識庫總覽＋問答列表內頁已實作）、畫布 5＋4 張畫面、知識庫品質問題清單",
+    "next_milestone": "Jin 回饋 AI 對話整合畫面，決定下一步做 FAQ 建議審核或 AI 對話紀錄",
+    "objective": "評估用 Chatwoot 介面管理 Dify（知識庫、AI 對話、FAQ 建議），讓門市與管理者不用進 Dify 後台",
+    "why": "Dify 後台設定要直接改 DB、知識庫品質看不見（1,952 塊中 1,388 塊從沒被查到；被查最多的「關於會員禮遇」只剩 6 個字）；AI 答不好的題目沒有回流機制"
+  }
+}

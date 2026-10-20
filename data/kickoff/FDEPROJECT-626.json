@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-626",
+  "kickoff_key": "FDEPROJECT-627",
+  "last_seen": {
+    "after": "Chatwoot「行銷活動」底下有 LINE 群發與卡片範本，介面接近 OA Manager，發出的訊息進對話、成效可逐人追",
+    "before": "行銷卡片與群發只能在各店 OA Manager 發，Chatwoot 看不到、無法追客人在問哪張卡",
+    "decision": "是否正式採用與上線時機、成效規格五題、範本編輯器與發卡片入口、誰能群發",
+    "evidence": "10-20 dev 已打通發卡片（寫進對話、防重複、只扣 1 則）、群發一覽／建立／排程、範本編輯器 C、成效後端 R1～R4；費用試算：群發改 Chatwoot 不多花\n完成證明：一家門市在正式站用 Chatwoot 發出一次群發，成效頁看得到送達與點擊",
+    "next_milestone": "reply token 長測結果（10-22）後，決定先上正式站的範圍",
+    "objective": "門市與總部在 Chatwoot 裡就能發 LINE 行銷卡片與群發，取代 OA Manager，訊息進聊天紀錄、能看逐人成效",
+    "why": "群發與卡片在 OA Manager 不進聊天紀錄、不能被引用、拿不到逐人收件名單；業務要在兩個後台之間切換"
+  },
+  "last_seen_at": "2026-10-21T00:00:31.859357+08:00",
+  "last_seen_key": "FDEPROJECT-627",
+  "locked_at": "2026-10-21T00:00:31.859357+08:00",
+  "problems": [],
+  "sections": {
+    "after": "Chatwoot「行銷活動」底下有 LINE 群發與卡片範本，介面接近 OA Manager，發出的訊息進對話、成效可逐人追",
+    "before": "行銷卡片與群發只能在各店 OA Manager 發，Chatwoot 看不到、無法追客人在問哪張卡",
+    "decision": "是否正式採用與上線時機、成效規格五題、範本編輯器與發卡片入口、誰能群發",
+    "evidence": "10-20 dev 已打通發卡片（寫進對話、防重複、只扣 1 則）、群發一覽／建立／排程、範本編輯器 C、成效後端 R1～R4；費用試算：群發改 Chatwoot 不多花\n完成證明：一家門市在正式站用 Chatwoot 發出一次群發，成效頁看得到送達與點擊",
+    "next_milestone": "reply token 長測結果（10-22）後，決定先上正式站的範圍",
+    "objective": "門市與總部在 Chatwoot 裡就能發 LINE 行銷卡片與群發，取代 OA Manager，訊息進聊天紀錄、能看逐人成效",
+    "why": "群發與卡片在 OA Manager 不進聊天紀錄、不能被引用、拿不到逐人收件名單；業務要在兩個後台之間切換"
+  }
+}

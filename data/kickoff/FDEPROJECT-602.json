@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-602",
+  "kickoff_key": "FDEPROJECT-603",
+  "last_seen": {
+    "after": "30 家歷史（官方匯出）＋每日增量入庫，訊息帶 UID、來源標記（Webhook／CSV-Matched／CSV-Unmatched）、訂單編號與異常日誌，可交付下游",
+    "before": "對話只在各 OA 後台與 Chatwoot，歷史沒有 UID、跨門市同一客人被當成不同人、Webhook 約一到三成漏收",
+    "decision": "能否不用 N8N、交付欄位格式、新莊（沒加購聊天進階方案，11/1 再補）、Webhook 收集率受前端設備漏收影響怎麼算",
+    "evidence": "10-20 已匯入 30 家匯出檔（34.4 萬對話、1,626 萬則）；斗六驗證好友名單補 UID 47/47；後台 7 支 API 唯讀實測可用\n完成證明：照 PRD 驗收（Webhook 收集率 ≥99%、CSV UID 歸戶 ≥90%、比對準確 ≥95%、訂單編號抽取 ≥95%）",
+    "next_milestone": "一週內抓完全部客人清單＋近 3 個月有聊天的客人並完成歸戶",
+    "objective": "把 31 間門市 LINE OA 的歷史與每日對話收進資料庫，每則訊息對上客人的 LINE UID 與訂單編號，交給 SQUAD 13／14 做會員辨識與分析",
+    "why": "門市對話散在各 OA 後台與 Chatwoot，沒有 UID 就對不上會員；需求單 26100566 已由資通部上傳 PRD、指派 FDE"
+  },
+  "last_seen_at": "2026-10-21T00:00:31.859357+08:00",
+  "last_seen_key": "FDEPROJECT-603",
+  "locked_at": "2026-10-21T00:00:31.859357+08:00",
+  "problems": [],
+  "sections": {
+    "after": "30 家歷史（官方匯出）＋每日增量入庫，訊息帶 UID、來源標記（Webhook／CSV-Matched／CSV-Unmatched）、訂單編號與異常日誌，可交付下游",
+    "before": "對話只在各 OA 後台與 Chatwoot，歷史沒有 UID、跨門市同一客人被當成不同人、Webhook 約一到三成漏收",
+    "decision": "能否不用 N8N、交付欄位格式、新莊（沒加購聊天進階方案，11/1 再補）、Webhook 收集率受前端設備漏收影響怎麼算",
+    "evidence": "10-20 已匯入 30 家匯出檔（34.4 萬對話、1,626 萬則）；斗六驗證好友名單補 UID 47/47；後台 7 支 API 唯讀實測可用\n完成證明：照 PRD 驗收（Webhook 收集率 ≥99%、CSV UID 歸戶 ≥90%、比對準確 ≥95%、訂單編號抽取 ≥95%）",
+    "next_milestone": "一週內抓完全部客人清單＋近 3 個月有聊天的客人並完成歸戶",
+    "objective": "把 31 間門市 LINE OA 的歷史與每日對話收進資料庫，每則訊息對上客人的 LINE UID 與訂單編號，交給 SQUAD 13／14 做會員辨識與分析",
+    "why": "門市對話散在各 OA 後台與 Chatwoot，沒有 UID 就對不上會員；需求單 26100566 已由資通部上傳 PRD、指派 FDE"
+  }
+}
