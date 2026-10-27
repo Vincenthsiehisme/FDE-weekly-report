@@ -11,7 +11,7 @@ ISSUES = [
     issue("CS-2", level=0, parent="CS-1", status="done", points=1.5, resolved=IN_WEEK),
     issue("CS-3", level=0, parent="CS-1", status="done", points=2.0, resolved=IN_WEEK),
 ]
-METRICS = compute(snapshot(ISSUES), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+METRICS = compute(snapshot(ISSUES), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
 KEYS = {i["key"] for i in ISSUES}
 
 
@@ -34,7 +34,7 @@ class ProgramNumbersOnlyTest(unittest.TestCase):
     ]
 
     def setUp(self):
-        self.metrics = compute(snapshot(self.ISSUES), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+        self.metrics = compute(snapshot(self.ISSUES), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
         self.keys = {i["key"] for i in self.ISSUES}
 
     def check(self, text):
@@ -70,7 +70,7 @@ class ProgramNumbersOnlyTest(unittest.TestCase):
                   issue("CS-3", level=-1, parent="CS-2", status="done", points=1.0, resolved=IN_WEEK),
                   issue("CS-4", level=-1, parent="CS-2", status="done", points=2.0, resolved=IN_WEEK),
                   issue("CS-5", level=0, parent="CS-1", status="done", points=0.25, resolved=IN_WEEK)]
-        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
         week = m["epics"][0]["week"]
         self.assertEqual((week["completed_count"], m["labels"][0]["week"]["hours"]), (3, 3.25))
         validate({"highlights": [f"[CS-1 摘要] 完成 {week['completed_count']} 張、{m['labels'][0]['week']['hours']:g} 小時"],
@@ -135,7 +135,7 @@ class NarrativeTest(unittest.TestCase):
         for n in range(1, 6):   # 5 個專案本週各完成 1 張
             issues += [issue(f"CS-{n}", level=1, status="doing", summary=f"專案{names[n - 1]}"),
                        issue(f"CS-{n}0", level=0, parent=f"CS-{n}", status="done", points=1.0, resolved=IN_WEEK)]
-        five = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+        five = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
         keys = {i["key"] for i in issues}
         results = {f"CS-{n}": "完成" for n in range(1, 6)}
         validate({"highlights": [f"[專案{c}] 完成" for c in names], "epic_results": results}, five, keys)
@@ -151,7 +151,7 @@ class NarrativeTest(unittest.TestCase):
         # epic 上週就結案、底下的卡本週才完成：不在 epics 裡，但「完成多少就寫多少」也要寫一條，排在最後（Codex 審 PR D）
         issues = [issue("CS-7", level=1, status="done", resolved=LAST_WEEK, summary="已結案專案"),
                   issue("CS-8", level=0, parent="CS-7", status="done", points=1.0, resolved=IN_WEEK)]
-        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
         self.assertEqual([e for e in m["epics"] if e["active"]], [])
         keys = {i["key"] for i in issues}
         validate({"highlights": ["[已結案專案] 完成 CS-8"], "epic_results": {}}, m, keys)
@@ -163,7 +163,7 @@ class NarrativeTest(unittest.TestCase):
         # 開頭之後 AI 寫的部分照樣驗
         issues = [issue("CS-1", level=1, status="doing", summary="Phase 999 對照 CS-999 規格"),
                   issue("CS-2", level=0, parent="CS-1", status="done", points=1.5, resolved=IN_WEEK)]
-        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
         keys = {i["key"] for i in issues}
         validate({"highlights": ["[Phase 999 對照 CS-999 規格] 完成 CS-2，本週 1.5h"], "epic_results": {"CS-1": "完成"}}, m, keys)
         with self.assertRaisesRegex(NarrativeError, "以外的數字 999"):
@@ -174,7 +174,7 @@ class NarrativeTest(unittest.TestCase):
             validate({"highlights": ["[Phase 999 對照 CS-999 規格]"], "epic_results": {"CS-1": "完成"}}, m, keys)
 
     def test_quiet_week_requires_empty_highlights(self):
-        quiet = compute(snapshot([issue("CS-1", level=1, status="doing")]), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+        quiet = compute(snapshot([issue("CS-1", level=1, status="doing")]), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
         validate({"highlights": [], "epic_results": {}}, quiet, {"CS-1"})
         with self.assertRaisesRegex(NarrativeError, "必須是空陣列"):
             validate({"highlights": ["硬寫一條"], "epic_results": {}}, quiet, {"CS-1"})

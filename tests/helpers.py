@@ -1,13 +1,17 @@
 import sys
+from datetime import datetime
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "scripts"))
 
 
 def issue(key, level=0, parent=None, status="done", points=None, resolved=None, assignee=None,
-          labels=(), type_=None, summary=None, updated="2026-09-20T10:00:00.000+0800", due=None, moved_in=None):
+          labels=(), type_=None, summary=None, updated="2026-09-20T10:00:00.000+0800", due=None, moved_in=None,
+          created="2026-09-01T09:00:00.000+0800", progress_seen=None, status_since=None):
+    """progress_seen、status_since 沒給時照 snapshot 的規則補：完成與進行中的工作卡才有，其他是 None。"""
     category = {"done": "done", "doing": "indeterminate", "review": "indeterminate", "todo": "new"}[status]
     name = {"done": "完成", "doing": "進行中", "review": "審核中", "todo": "待辦事項"}[status]
+    tracked = category in ("done", "indeterminate") and level < 1
     return {
         "key": key,
         "project": key.split("-")[0],
@@ -23,13 +27,17 @@ def issue(key, level=0, parent=None, status="done", points=None, resolved=None, 
         "points": points,
         "due": due,
         "updated": updated,
+        "created": created,
         "moved_in": moved_in,
+        "progress_seen": (False if progress_seen is None else progress_seen) if tracked else progress_seen,
+        # snapshot 存的是 isoformat（+08:00），不是 Jira 的 +0800
+        "status_since": (status_since or datetime.strptime(created, "%Y-%m-%dT%H:%M:%S.%f%z").isoformat()) if tracked else status_since,
     }
 
 
 def snapshot(issues, fetched_at="2026-09-22T23:59:30+08:00"):
     return {
-        "schema": 2,
+        "schema": 3,
         "site": "example.atlassian.net",
         "fetched_at": fetched_at,
         "period": {"week": "2026-W39", "week_ending": "2026-09-22"},

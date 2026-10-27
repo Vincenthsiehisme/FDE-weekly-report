@@ -15,7 +15,7 @@ import json
 import re
 import sys
 import time
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -137,6 +137,13 @@ def excluded_view(snapshot: dict, *, fresh_fetch: bool) -> tuple:
     return cards, epics, issues, checks
 
 
+def load_previous(period):
+    """上一期的 metrics：本週頁四個數字的上週值從這裡讀。沒有檔是合法的（第一期，或上一期沒產出），
+    回 None，頁面不顯示差值；有檔卻讀壞了照常失敗。"""
+    path = week_dir(period_ending(period.week_ending - timedelta(days=7)).week_id) / "metrics.json"
+    return read_json(path) if path.is_file() else None
+
+
 def compute_week(snapshot: dict, *, fresh_fetch: bool) -> tuple:
     """只算不寫：回傳 (metrics, {路徑: 要寫的內容})。任何一步失敗都不會留下檔案。fresh_fetch 見 excluded_view。"""
     period = period_from_dict(snapshot["period"])
@@ -168,7 +175,7 @@ def compute_week(snapshot: dict, *, fresh_fetch: bool) -> tuple:
     metrics = compute(dict(snapshot, issues=issues), period, _without(load_tokens(period.week_id), dropped),
                       states, checks, excluded=excluded_cards,
                       cumulative_tokens=_without(load_cumulative_tokens(period.week_id), dropped),
-                      token_source=token_source_exists())
+                      token_source=token_source_exists(), previous=load_previous(period))
     writes[week_dir(period.week_id) / "metrics.json"] = metrics
     return metrics, writes
 

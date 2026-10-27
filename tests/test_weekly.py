@@ -132,6 +132,33 @@ class KickoffStateTest(AtomicWriteTest):
         self.assertEqual(self._lock(), before)
 
 
+class PreviousWeekTest(AtomicWriteTest):
+    """本週頁四個數字的上週值：有完成的專案與停滯讀上一期的 metrics.json（團隊績效評估 AC-1）。"""
+
+    def _snap(self, fetched_at):
+        # 期間由 week_ending 決定：W39 在 09-22 結束、W40 在 09-29 結束；IN_WEEK 的卡兩期都在累計裡，W40 本週沒有完成
+        snap = snapshot([issue("CS-1", level=1, status="doing"),
+                         issue("CS-3", level=0, parent="CS-1", status="done", points=1.0, resolved=IN_WEEK)], fetched_at=fetched_at)
+        ending = fetched_at[:10]
+        snap["period"] = {"week": weekly.period_ending(date.fromisoformat(ending)).week_id, "week_ending": ending, "start": "", "end_exclusive": ""}
+        return snap
+
+    def test_previous_metrics_feed_last_week_values(self):
+        first = weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00"), fresh_fetch=False)
+        self.assertEqual(first["kpis"]["projects"], {"now": 1, "prev": None})  # 2026-W38 沒有檔
+        second = weekly.publish_week(self._snap("2026-09-29T23:59:00+08:00"), fresh_fetch=False)
+        self.assertEqual(second["period"]["week"], "2026-W40")
+        self.assertEqual(second["kpis"]["projects"], {"now": 0, "prev": 1})  # 讀的是剛寫的 2026-W39
+        self.assertEqual(second["kpis"]["stalled"]["prev"], 0)
+
+    def test_broken_previous_metrics_fails_instead_of_dropping_the_comparison(self):
+        folder = self.root / "data" / "2026-W38"
+        folder.mkdir(parents=True)
+        (folder / "metrics.json").write_text("{", encoding="utf-8")
+        with self.assertRaises(json.JSONDecodeError):
+            weekly.publish_week(self._snap("2026-09-22T23:59:00+08:00"), fresh_fetch=False)
+
+
 class ExcludedConfigTest(AtomicWriteTest):
     def _snap(self):
         snap = snapshot([issue("CS-1", level=1, status="doing"),
