@@ -545,11 +545,12 @@ def _by_name(people: list) -> list:
 
 
 def _spark(trend: list) -> str:
-    """一個人自己的逐週完成張數小長條，最新一週深色；只跟自己比，每個人的高度各自縮放。"""
+    """一個人自己的逐週完成張數小長條，最新一週深色；只跟自己比，每個人的高度各自縮放。
+    寬度跟著週數長：每週至少 5px（3px 長條＋2px 縫），團隊頁的全程序列累積幾十週也不會算出負寬度（Codex 審 70a636d）。"""
     top = max((t["completed"] for t in trend), default=0) or 1
-    w, h = 96, 26
-    bw = w / max(len(trend), 1) - 3
-    bars = "".join(f'<rect x="{i * (bw + 3):.1f}" y="{h - t["completed"] / top * (h - 4):.1f}" width="{bw:.1f}" height="{max(t["completed"] / top * (h - 4), 0.5):.1f}" rx="1.5" '
+    w, h = max(96, 5 * len(trend)), 26
+    bw = w / max(len(trend), 1) - 2
+    bars = "".join(f'<rect x="{i * (bw + 2):.1f}" y="{h - t["completed"] / top * (h - 4):.1f}" width="{bw:.1f}" height="{max(t["completed"] / top * (h - 4), 0.5):.1f}" rx="1.5" '
                    f'class="{"bar-wk" if i == len(trend) - 1 else "bar-before"}"><title>{_short_week(t["week"])} {t["completed"]} 張</title></rect>'
                    for i, t in enumerate(trend))
     return f'<svg class="spark" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="近 {len(trend)} 週完成張數">{bars}</svg>'

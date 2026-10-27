@@ -758,6 +758,14 @@ class StepInTest(unittest.TestCase):
             self.assertNotIn("<h3>團隊</h3>", panel(html, name), name)
             self.assertNotIn("<span>執行人</span>", panel(html, name), name)  # 名詞定義與頁首的「執行人」是說明字，不是欄
 
+    def test_long_trend_never_draws_negative_widths(self):
+        from lib.render import _spark
+        svg = _spark([{"week": f"2026-W{i:02d}", "completed": i % 3} for i in range(1, 41)])
+        widths = [float(w) for w in re.findall(r'<rect x="[^"]+" y="[^"]+" width="([^"]+)"', svg)]
+        self.assertEqual(len(widths), 40)
+        self.assertGreater(min(widths), 0)
+        self.assertIn('viewBox="0 0 200 26" width="200"', svg)
+
     def test_series_colors_have_light_and_dark_steps(self):
         html = self.html()
         self.assertIn("--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;", html)

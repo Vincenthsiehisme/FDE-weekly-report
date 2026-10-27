@@ -184,5 +184,15 @@ class NarrativeTest(unittest.TestCase):
             validate({"highlights": []}, METRICS, KEYS)
 
 
+
+class NewSignalsStayOutTest(unittest.TestCase):
+    def test_stalled_count_is_not_an_allowed_number(self):
+        # schema 7 的停滯數放在 totals，但它是管理訊號，不能被本週重點引用（2026-10-28 鎖定 AC-7）
+        from lib.narrative import allowed_numbers
+        m = dict(METRICS, totals=dict(METRICS["totals"], stalled=987654))
+        self.assertNotIn(987654, allowed_numbers(m))
+        self.assertIn(METRICS["totals"]["completed"], allowed_numbers(m))
+
+
 if __name__ == "__main__":
     unittest.main()

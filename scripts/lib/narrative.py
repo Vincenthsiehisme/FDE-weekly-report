@@ -59,10 +59,15 @@ def _numbers_in(value, out: set):
             _numbers_in(v, out)
 
 
+NARRATIVE_TOTALS = ("projects", "completed", "hours", "tokens", "unestimated_completed")
+
+
 def allowed_numbers(metrics: dict) -> set:
-    """程式算好的本週數字。cumulative、epics[].progress、migrated、in_progress、labels 的累計與 epic 數刻意不收。"""
+    """程式算好的本週數字。cumulative、epics[].progress、migrated、in_progress、labels 的累計與 epic 數刻意不收。
+    totals 只收原本的五欄：schema 7 加的 stalled 與 kpis、health、allocation 是管理訊號與推導值，不進白名單
+    （2026-10-28 鎖定 AC-7；Codex 審 70a636d 抓到 totals 整包放行會連 stalled 一起放）。"""
     out = set()
-    _numbers_in(metrics["totals"], out)
+    _numbers_in({k: metrics["totals"][k] for k in NARRATIVE_TOTALS}, out)
     for epic in metrics["epics"]:
         if epic["active"]:
             _numbers_in(epic["week"], out)
