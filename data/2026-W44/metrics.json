@@ -1,84 +1,4 @@
 {
-  "allocation": {
-    "labels": [
-      "東北亞",
-      "門市",
-      "入境",
-      "直售",
-      "客製國旅",
-      "LiLi",
-      "歐洲團產TP",
-      "其他"
-    ],
-    "weeks": [
-      {
-        "people": 1,
-        "shares": {
-          "歐洲團產TP": 1.0
-        },
-        "week": "2026-W39"
-      },
-      {
-        "people": 2,
-        "shares": {
-          "其他": 0.5,
-          "門市": 0.5
-        },
-        "week": "2026-W40"
-      },
-      {
-        "people": 7,
-        "shares": {
-          "入境": 0.2857,
-          "其他": 0.0337,
-          "東北亞": 0.2857,
-          "歐洲團產TP": 0.1429,
-          "直售": 0.1203,
-          "門市": 0.1317
-        },
-        "week": "2026-W41"
-      },
-      {
-        "people": 7,
-        "shares": {
-          "LiLi": 0.0833,
-          "入境": 0.1429,
-          "其他": 0.0025,
-          "客製國旅": 0.1429,
-          "東北亞": 0.2857,
-          "歐洲團產TP": 0.1429,
-          "直售": 0.0989,
-          "門市": 0.1009
-        },
-        "week": "2026-W42"
-      },
-      {
-        "people": 7,
-        "shares": {
-          "LiLi": 0.2024,
-          "入境": 0.0136,
-          "其他": 0.3064,
-          "客製國旅": 0.1429,
-          "東北亞": 0.1667,
-          "直售": 0.0536,
-          "門市": 0.1144
-        },
-        "week": "2026-W43"
-      },
-      {
-        "people": 5,
-        "shares": {
-          "LiLi": 0.0364,
-          "其他": 0.3253,
-          "客製國旅": 0.12,
-          "東北亞": 0.2,
-          "直售": 0.1668,
-          "門市": 0.1516
-        },
-        "week": "2026-W44"
-      }
-    ]
-  },
   "checks": [
     {
       "key": "CS-7",
@@ -9330,7 +9250,6 @@
       "active": false,
       "due": null,
       "id": "CS-25",
-      "idle_days": 0,
       "key": "CS-25",
       "kickoff": {
         "key": "CS-26",
@@ -9356,7 +9275,6 @@
         "unestimated_cards": 4
       },
       "project": "CS",
-      "stalled": false,
       "status": "On Track",
       "summary": "歐洲地接社-房產品資料彙整",
       "week": {
@@ -9371,7 +9289,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-140",
-      "idle_days": 13,
       "key": "FDEPROJECT-140",
       "kickoff": {
         "key": "FDEPROJECT-131",
@@ -9397,7 +9314,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "入境成本單",
       "week": {
@@ -9412,7 +9328,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-271",
-      "idle_days": 15,
       "key": "FDEPROJECT-271",
       "kickoff": {
         "key": "FDEPROJECT-272",
@@ -9438,7 +9353,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": true,
       "status": "On Track",
       "summary": "旅展人員執勤紀錄",
       "week": {
@@ -9453,7 +9367,6 @@
       "active": true,
       "due": "2026-10-30",
       "id": "FDEPROJECT-286",
-      "idle_days": 0,
       "key": "FDEPROJECT-286",
       "kickoff": {
         "key": "FDEPROJECT-287",
@@ -9479,7 +9392,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[東北亞]團體機票票價查詢插件 MVP",
       "week": {
@@ -9541,7 +9453,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-309",
-      "idle_days": 0,
       "key": "FDEPROJECT-309",
       "kickoff": {
         "key": "FDEPROJECT-269",
@@ -9567,7 +9478,6 @@
         "unestimated_cards": 10
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[客製國旅]外部報名系統資料串接 SERP",
       "week": {
@@ -9606,7 +9516,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-312",
-      "idle_days": 14,
       "key": "FDEPROJECT-312",
       "kickoff": {
         "key": "FDEPROJECT-310",
@@ -9632,7 +9541,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": true,
       "status": "On Track",
       "summary": "[東北亞]韓國線 SERP 旅客資料自動填入航空公司名單",
       "week": {
@@ -9647,7 +9555,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-325",
-      "idle_days": 7,
       "key": "FDEPROJECT-325",
       "kickoff": {
         "key": "FDEPROJECT-326",
@@ -9673,7 +9580,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "門市 AI 客服 階段二：板橋門市試用",
       "week": {
@@ -9688,7 +9594,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-332",
-      "idle_days": 7,
       "key": "FDEPROJECT-332",
       "kickoff": {
         "key": "FDEPROJECT-333",
@@ -9714,7 +9619,6 @@
         "unestimated_cards": 2
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "Dify 平台與維運 階段二：升級與優化",
       "week": {
@@ -9729,7 +9633,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-391",
-      "idle_days": 15,
       "key": "FDEPROJECT-391",
       "kickoff": {
         "key": "FDEPROJECT-392",
@@ -9755,7 +9658,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": true,
       "status": "On Track",
       "summary": "評估公司共用 agent 平台：Dify 擴大使用或自建",
       "week": {
@@ -9770,7 +9672,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-399",
-      "idle_days": 0,
       "key": "FDEPROJECT-399",
       "kickoff": {
         "key": "FDEPROJECT-400",
@@ -9796,7 +9697,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "串接板橋門市號碼機取號與叫號到 LINE",
       "week": {
@@ -9831,7 +9731,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-406",
-      "idle_days": 5,
       "key": "FDEPROJECT-406",
       "kickoff": {
         "key": "FDEPROJECT-407",
@@ -9857,7 +9756,6 @@
         "unestimated_cards": 5
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "EVOX 通話分析 階段三：來電原因分析與成交歸因",
       "week": {
@@ -9883,7 +9781,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-415",
-      "idle_days": 14,
       "key": "FDEPROJECT-415",
       "kickoff": {
         "key": "FDEPROJECT-416",
@@ -9909,7 +9806,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": true,
       "status": "On Track",
       "summary": "[入境]需求單自動派單",
       "week": {
@@ -9924,7 +9820,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-419",
-      "idle_days": 7,
       "key": "FDEPROJECT-419",
       "kickoff": {
         "key": "FDEPROJECT-417",
@@ -9950,7 +9845,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[票務]國際機票百寶箱 AI 問答",
       "week": {
@@ -9965,7 +9859,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-423",
-      "idle_days": 0,
       "key": "FDEPROJECT-423",
       "kickoff": {
         "key": "FDEPROJECT-424",
@@ -9991,7 +9884,6 @@
         "unestimated_cards": 2
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "門市 AI 客服 階段三：全省門市導入",
       "week": {
@@ -10107,7 +9999,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-441",
-      "idle_days": 13,
       "key": "FDEPROJECT-441",
       "kickoff": {
         "key": "FDEPROJECT-442",
@@ -10133,7 +10024,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "LiLi FAQ 線下維運（wise 只放結果）",
       "week": {
@@ -10148,7 +10038,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-455",
-      "idle_days": 5,
       "key": "FDEPROJECT-455",
       "kickoff": {
         "key": "FDEPROJECT-456",
@@ -10174,7 +10063,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[東北亞]分房表 FINAL 一鍵產生",
       "week": {
@@ -10218,7 +10106,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-463",
-      "idle_days": 6,
       "key": "FDEPROJECT-463",
       "kickoff": {
         "key": "FDEPROJECT-270",
@@ -10244,7 +10131,6 @@
         "unestimated_cards": 1
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[客製國旅]自SERP進行付款連結批次發送機制",
       "week": {
@@ -10259,7 +10145,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-497",
-      "idle_days": 8,
       "key": "FDEPROJECT-497",
       "kickoff": {
         "key": "FDEPROJECT-498",
@@ -10285,7 +10170,6 @@
         "unestimated_cards": 1
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "EVOX 通話分析 階段二：自動化上線與每日排程",
       "week": {
@@ -10300,7 +10184,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-509",
-      "idle_days": 11,
       "key": "FDEPROJECT-509",
       "kickoff": {
         "key": "FDEPROJECT-510",
@@ -10326,7 +10209,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "Dify 與 Chatwoot CRM 整合評估",
       "week": {
@@ -10341,7 +10223,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-525",
-      "idle_days": 0,
       "key": "FDEPROJECT-525",
       "kickoff": {
         "key": "FDEPROJECT-526",
@@ -10367,7 +10248,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[東北亞]手配書一鍵產生",
       "week": {
@@ -10394,7 +10274,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-538",
-      "idle_days": 0,
       "key": "FDEPROJECT-538",
       "kickoff": {
         "key": "FDEPROJECT-539",
@@ -10420,7 +10299,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "Done",
       "summary": "LiLi 客服側窗插件：接線中查詢",
       "week": {
@@ -10455,7 +10333,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-552",
-      "idle_days": 0,
       "key": "FDEPROJECT-552",
       "kickoff": {
         "key": "FDEPROJECT-553",
@@ -10481,7 +10358,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "建置 SERP 內網 MCP：員工在 AI 工具用本人帳號查辦 SERP",
       "week": {
@@ -10543,7 +10419,6 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-575",
-      "idle_days": 7,
       "key": "FDEPROJECT-575",
       "kickoff": {
         "key": "FDEPROJECT-550",
@@ -10569,7 +10444,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[東北亞]線控團體批次加價／減價：一次調整多團售價",
       "week": {
@@ -10584,7 +10458,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-585",
-      "idle_days": 7,
       "key": "FDEPROJECT-585",
       "kickoff": {
         "key": "FDEPROJECT-586",
@@ -10610,7 +10483,6 @@
         "unestimated_cards": 3
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "Done",
       "summary": "LINE 會議助手 bot 標準化",
       "week": {
@@ -10625,7 +10497,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-602",
-      "idle_days": 0,
       "key": "FDEPROJECT-602",
       "kickoff": {
         "key": "FDEPROJECT-603",
@@ -10651,7 +10522,6 @@
         "unestimated_cards": 1
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "門市 LINE OA 資料歸戶（需求單 26100566）",
       "week": {
@@ -10785,7 +10655,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-626",
-      "idle_days": 5,
       "key": "FDEPROJECT-626",
       "kickoff": {
         "key": "FDEPROJECT-627",
@@ -10811,7 +10680,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "Chatwoot LINE 群發與卡片（取代 OA Manager 群發）",
       "week": {
@@ -10873,7 +10741,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-628",
-      "idle_days": 5,
       "key": "FDEPROJECT-628",
       "kickoff": {
         "key": "FDEPROJECT-629",
@@ -10899,7 +10766,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "Done",
       "summary": "一張訂單替每位旅客批次產生付款連結（產生刷卡付款連結）",
       "week": {
@@ -10943,7 +10809,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-645",
-      "idle_days": 6,
       "key": "FDEPROJECT-645",
       "kickoff": {
         "key": "FDEPROJECT-646",
@@ -10969,7 +10834,6 @@
         "unestimated_cards": 1
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[東北亞]房產大表與集客表一鍵產生",
       "week": {
@@ -11013,7 +10877,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-652",
-      "idle_days": 0,
       "key": "FDEPROJECT-652",
       "kickoff": {
         "key": "FDEPROJECT-601",
@@ -11039,7 +10902,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[客製國旅]規劃團體成本支單審核流程優化",
       "week": {
@@ -11092,7 +10954,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-653",
-      "idle_days": 5,
       "key": "FDEPROJECT-653",
       "kickoff": {
         "key": "FDEPROJECT-651",
@@ -11118,7 +10979,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "[國旅]SERP航班時刻自動比對與異動更新",
       "week": {
@@ -11198,7 +11058,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-677",
-      "idle_days": 5,
       "key": "FDEPROJECT-677",
       "kickoff": {
         "key": "FDEPROJECT-678",
@@ -11224,7 +11083,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "門市 LINE 客人業務歸屬：官網下單業績回到門市業務",
       "week": {
@@ -11268,7 +11126,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-693",
-      "idle_days": 0,
       "key": "FDEPROJECT-693",
       "kickoff": {
         "key": "FDEPROJECT-694",
@@ -11294,7 +11151,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "FDE 自有主機維運與資安修補",
       "week": {
@@ -11392,7 +11248,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-695",
-      "idle_days": 0,
       "key": "FDEPROJECT-695",
       "kickoff": {
         "key": "FDEPROJECT-696",
@@ -11418,7 +11273,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "門市 LINE 訊息漏收排查：前端連線逾時與 F5 擋字元",
       "week": {
@@ -11489,7 +11343,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-697",
-      "idle_days": 0,
       "key": "FDEPROJECT-697",
       "kickoff": {
         "key": "FDEPROJECT-698",
@@ -11515,7 +11368,6 @@
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "Chatwoot 依門市班表派單（板橋先試）",
       "week": {
@@ -11568,7 +11420,6 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-738",
-      "idle_days": 0,
       "key": "FDEPROJECT-738",
       "kickoff": {
         "key": "FDEPROJECT-739",
@@ -11594,7 +11445,6 @@
         "unestimated_cards": 2
       },
       "project": "FDEPROJECT",
-      "stalled": false,
       "status": "On Track",
       "summary": "開銷退單前檢核會被會計退件的地方，SERP 銷退表單一鍵帶入（銷退檢核）",
       "week": {
@@ -11670,51 +11520,7 @@
     "FDEPROJECT-117",
     "FDEPROJECT-118"
   ],
-  "generated_at": "2026-10-28T05:35:50.965938+08:00",
-  "health": [
-    {
-      "backfill": 4,
-      "completed": 8,
-      "unestimated": 0,
-      "via_progress": 0,
-      "week": "2026-W39"
-    },
-    {
-      "backfill": 16,
-      "completed": 36,
-      "unestimated": 0,
-      "via_progress": 12,
-      "week": "2026-W40"
-    },
-    {
-      "backfill": 99,
-      "completed": 140,
-      "unestimated": 0,
-      "via_progress": 14,
-      "week": "2026-W41"
-    },
-    {
-      "backfill": 63,
-      "completed": 88,
-      "unestimated": 6,
-      "via_progress": 14,
-      "week": "2026-W42"
-    },
-    {
-      "backfill": 113,
-      "completed": 152,
-      "unestimated": 7,
-      "via_progress": 20,
-      "week": "2026-W43"
-    },
-    {
-      "backfill": 78,
-      "completed": 100,
-      "unestimated": 7,
-      "via_progress": 8,
-      "week": "2026-W44"
-    }
-  ],
+  "generated_at": "2026-10-28T00:07:23.982424+08:00",
   "in_progress": [
     {
       "current_state": "進行中，子任務 2/11 完成",
@@ -11811,19 +11617,6 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": null,
-      "key": "CS-37",
-      "leaf": true,
-      "next": null,
-      "owner": "hubertwang",
-      "project": "CS-25 歐洲地接社-房產品資料彙整",
-      "root": "CS-29",
-      "summary": "本機輕量模型可行性驗證",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "CS-25",
-      "hours": null,
       "key": "CS-38",
       "leaf": true,
       "next": null,
@@ -11831,19 +11624,6 @@
       "project": "CS-25 歐洲地接社-房產品資料彙整",
       "root": "CS-29",
       "summary": "細項表新增：期限／加價／客滿紀錄",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "CS-25",
-      "hours": null,
-      "key": "CS-39",
-      "leaf": true,
-      "next": null,
-      "owner": "hubertwang",
-      "project": "CS-25 歐洲地接社-房產品資料彙整",
-      "root": "CS-29",
-      "summary": "飯店到舊城區與周邊景點距離（估算）",
       "tokens": null
     },
     {
@@ -12042,24 +11822,6 @@
       "tokens": null
     }
   ],
-  "kpis": {
-    "backfill": {
-      "now": 78,
-      "prev": 74
-    },
-    "projects": {
-      "now": 21,
-      "prev": 27
-    },
-    "stalled": {
-      "now": 4,
-      "prev": null
-    },
-    "via_progress": {
-      "now": 8,
-      "prev": 13
-    }
-  },
   "labels": [
     {
       "cumulative": {
@@ -13438,9 +13200,6 @@
         "tokens": null
       },
       "in_progress": {
-        "ages": {
-          "FDEPROJECT-405": 15
-        },
         "count": 1,
         "hours": 1.0,
         "keys": [
@@ -13449,69 +13208,6 @@
         "unestimated": 0
       },
       "name": "陳勁佑 Jincoco",
-      "recent": {
-        "backfill": 261,
-        "completed": 293,
-        "labels": [
-          [
-            "門市",
-            232
-          ],
-          [
-            "雄獅",
-            27
-          ],
-          [
-            "直售",
-            24
-          ]
-        ],
-        "weeks": 4
-      },
-      "shares": [
-        [
-          "門市",
-          0.827
-        ],
-        [
-          "直售",
-          0.073
-        ],
-        [
-          "雄獅",
-          0.0723
-        ],
-        [
-          "AILab",
-          0.0278
-        ]
-      ],
-      "trend": [
-        {
-          "completed": 0,
-          "week": "2026-W39"
-        },
-        {
-          "completed": 16,
-          "week": "2026-W40"
-        },
-        {
-          "completed": 86,
-          "week": "2026-W41"
-        },
-        {
-          "completed": 57,
-          "week": "2026-W42"
-        },
-        {
-          "completed": 91,
-          "week": "2026-W43"
-        },
-        {
-          "completed": 59,
-          "week": "2026-W44"
-        }
-      ],
       "week": {
         "completed": 59,
         "completed_keys": [
@@ -13628,11 +13324,6 @@
         "tokens": null
       },
       "in_progress": {
-        "ages": {
-          "FDEPROJECT-462": 11,
-          "FDEPROJECT-643": 6,
-          "FDEPROJECT-644": 6
-        },
         "count": 3,
         "hours": 7.0,
         "keys": [
@@ -13643,49 +13334,6 @@
         "unestimated": 0
       },
       "name": "Shira",
-      "recent": {
-        "backfill": 31,
-        "completed": 40,
-        "labels": [
-          [
-            "東北亞",
-            40
-          ]
-        ],
-        "weeks": 4
-      },
-      "shares": [
-        [
-          "東北亞",
-          1.0
-        ]
-      ],
-      "trend": [
-        {
-          "completed": 0,
-          "week": "2026-W39"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W40"
-        },
-        {
-          "completed": 4,
-          "week": "2026-W41"
-        },
-        {
-          "completed": 4,
-          "week": "2026-W42"
-        },
-        {
-          "completed": 19,
-          "week": "2026-W43"
-        },
-        {
-          "completed": 13,
-          "week": "2026-W44"
-        }
-      ],
       "week": {
         "completed": 13,
         "completed_keys": [
@@ -13739,11 +13387,6 @@
         "tokens": null
       },
       "in_progress": {
-        "ages": {
-          "FDEPROJECT-363": 15,
-          "FDEPROJECT-502": 12,
-          "FDEPROJECT-737": 0
-        },
         "count": 3,
         "hours": 8.0,
         "keys": [
@@ -13754,65 +13397,6 @@
         "unestimated": 0
       },
       "name": "Vivian",
-      "recent": {
-        "backfill": 4,
-        "completed": 23,
-        "labels": [
-          [
-            "客製國旅",
-            17
-          ],
-          [
-            "未分類",
-            4
-          ],
-          [
-            "入境",
-            2
-          ]
-        ],
-        "weeks": 4
-      },
-      "shares": [
-        [
-          "客製國旅",
-          0.6835
-        ],
-        [
-          "未分類",
-          0.2826
-        ],
-        [
-          "入境",
-          0.0339
-        ]
-      ],
-      "trend": [
-        {
-          "completed": 0,
-          "week": "2026-W39"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W40"
-        },
-        {
-          "completed": 2,
-          "week": "2026-W41"
-        },
-        {
-          "completed": 4,
-          "week": "2026-W42"
-        },
-        {
-          "completed": 7,
-          "week": "2026-W43"
-        },
-        {
-          "completed": 10,
-          "week": "2026-W44"
-        }
-      ],
       "week": {
         "completed": 10,
         "completed_keys": [
@@ -13943,12 +13527,6 @@
         "tokens": null
       },
       "in_progress": {
-        "ages": {
-          "FDEPROJECT-445": 14,
-          "FDEPROJECT-447": 14,
-          "FDEPROJECT-450": 14,
-          "FDEPROJECT-452": 14
-        },
         "count": 4,
         "hours": 3.5,
         "keys": [
@@ -13960,73 +13538,6 @@
         "unestimated": 0
       },
       "name": "Vincent Hsieh",
-      "recent": {
-        "backfill": 40,
-        "completed": 83,
-        "labels": [
-          [
-            "直售",
-            63
-          ],
-          [
-            "LiLi",
-            13
-          ],
-          [
-            "FDE_team",
-            4
-          ]
-        ],
-        "weeks": 4
-      },
-      "shares": [
-        [
-          "直售",
-          0.5092
-        ],
-        [
-          "FDE_team",
-          0.1899
-        ],
-        [
-          "LiLi",
-          0.1748
-        ],
-        [
-          "IT_team",
-          0.0971
-        ],
-        [
-          "會議bot",
-          0.0291
-        ]
-      ],
-      "trend": [
-        {
-          "completed": 0,
-          "week": "2026-W39"
-        },
-        {
-          "completed": 20,
-          "week": "2026-W40"
-        },
-        {
-          "completed": 39,
-          "week": "2026-W41"
-        },
-        {
-          "completed": 15,
-          "week": "2026-W42"
-        },
-        {
-          "completed": 18,
-          "week": "2026-W43"
-        },
-        {
-          "completed": 11,
-          "week": "2026-W44"
-        }
-      ],
       "week": {
         "completed": 11,
         "completed_keys": [
@@ -14066,9 +13577,6 @@
         "tokens": null
       },
       "in_progress": {
-        "ages": {
-          "FDEPROJECT-577": 7
-        },
         "count": 1,
         "hours": 2.0,
         "keys": [
@@ -14077,57 +13585,6 @@
         "unestimated": 0
       },
       "name": "Jerry Huang",
-      "recent": {
-        "backfill": 3,
-        "completed": 11,
-        "labels": [
-          [
-            "東北亞",
-            6
-          ],
-          [
-            "票務",
-            5
-          ]
-        ],
-        "weeks": 4
-      },
-      "shares": [
-        [
-          "東北亞",
-          0.5238
-        ],
-        [
-          "票務",
-          0.4762
-        ]
-      ],
-      "trend": [
-        {
-          "completed": 0,
-          "week": "2026-W39"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W40"
-        },
-        {
-          "completed": 2,
-          "week": "2026-W41"
-        },
-        {
-          "completed": 3,
-          "week": "2026-W42"
-        },
-        {
-          "completed": 6,
-          "week": "2026-W43"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W44"
-        }
-      ],
       "week": {
         "completed": 0,
         "completed_keys": [],
@@ -14169,64 +13626,12 @@
         "tokens": null
       },
       "in_progress": {
-        "ages": {},
         "count": 0,
         "hours": 0.0,
         "keys": [],
         "unestimated": 0
       },
       "name": "王碩緯",
-      "recent": {
-        "backfill": 11,
-        "completed": 25,
-        "labels": [
-          [
-            "國旅",
-            16
-          ],
-          [
-            "入境",
-            9
-          ]
-        ],
-        "weeks": 4
-      },
-      "shares": [
-        [
-          "入境",
-          0.5614
-        ],
-        [
-          "國旅",
-          0.4386
-        ]
-      ],
-      "trend": [
-        {
-          "completed": 0,
-          "week": "2026-W39"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W40"
-        },
-        {
-          "completed": 5,
-          "week": "2026-W41"
-        },
-        {
-          "completed": 3,
-          "week": "2026-W42"
-        },
-        {
-          "completed": 10,
-          "week": "2026-W43"
-        },
-        {
-          "completed": 7,
-          "week": "2026-W44"
-        }
-      ],
       "week": {
         "completed": 7,
         "completed_keys": [
@@ -14263,18 +13668,7 @@
         "tokens": null
       },
       "in_progress": {
-        "ages": {
-          "CS-31": 19,
-          "CS-32": 14,
-          "CS-33": 6,
-          "CS-34": 6,
-          "CS-35": 19,
-          "CS-36": 0,
-          "CS-37": 0,
-          "CS-38": 0,
-          "CS-39": 0
-        },
-        "count": 9,
+        "count": 7,
         "hours": 41.5,
         "keys": [
           "CS-31",
@@ -14283,56 +13677,11 @@
           "CS-34",
           "CS-35",
           "CS-36",
-          "CS-37",
-          "CS-38",
-          "CS-39"
+          "CS-38"
         ],
-        "unestimated": 4
+        "unestimated": 2
       },
       "name": "hubertwang",
-      "recent": {
-        "backfill": 3,
-        "completed": 4,
-        "labels": [
-          [
-            "歐洲團產TP",
-            4
-          ]
-        ],
-        "weeks": 4
-      },
-      "shares": [
-        [
-          "歐洲團產TP",
-          1.0
-        ]
-      ],
-      "trend": [
-        {
-          "completed": 8,
-          "week": "2026-W39"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W40"
-        },
-        {
-          "completed": 2,
-          "week": "2026-W41"
-        },
-        {
-          "completed": 2,
-          "week": "2026-W42"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W43"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W44"
-        }
-      ],
       "week": {
         "completed": 0,
         "completed_keys": [],
@@ -14350,56 +13699,12 @@
         "tokens": null
       },
       "in_progress": {
-        "ages": {},
         "count": 0,
         "hours": 0.0,
         "keys": [],
         "unestimated": 0
       },
       "name": "未指派",
-      "recent": {
-        "backfill": 0,
-        "completed": 1,
-        "labels": [
-          [
-            "LiLi",
-            1
-          ]
-        ],
-        "weeks": 4
-      },
-      "shares": [
-        [
-          "LiLi",
-          1.0
-        ]
-      ],
-      "trend": [
-        {
-          "completed": 0,
-          "week": "2026-W39"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W40"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W41"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W42"
-        },
-        {
-          "completed": 1,
-          "week": "2026-W43"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W44"
-        }
-      ],
       "week": {
         "completed": 0,
         "completed_keys": [],
@@ -14414,7 +13719,7 @@
     "week": "2026-W44",
     "week_ending": "2026-10-27"
   },
-  "schema": 7,
+  "schema": 6,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {
@@ -15472,7 +14777,6 @@
     "completed": 100,
     "hours": 96.5,
     "projects": 21,
-    "stalled": 4,
     "tokens": null,
     "unestimated_completed": 7
   }

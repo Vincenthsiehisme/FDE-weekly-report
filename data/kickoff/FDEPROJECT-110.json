@@ -22,7 +22,7 @@
     "objective": "同事授權 Notion 一次，我用書籤點名的頁（連同子頁面與內文連到的頁，一層）每天自動鏡像成 markdown 進一個 Obsidian vault，圖片與附件一起下載",
     "why": "很多人把會議記錄與工作筆記放在個人 Notion（不少是個人方案），別人找不到也用不到；原本的擴充功能寫 SharePoint 路線要每人裝擴充功能、要 IT 對 site 授權，摩擦太大"
   },
-  "last_seen_at": "2026-10-28T05:35:50.965938+08:00",
+  "last_seen_at": "2026-10-28T00:07:23.982424+08:00",
   "last_seen_key": "FDEPROJECT-111",
   "locked_at": "2026-09-30T04:06:18.003769+08:00",
   "problems": [],
