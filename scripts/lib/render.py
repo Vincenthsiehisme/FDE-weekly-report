@@ -1,6 +1,6 @@
 """把 metrics 與 narrative 排成靜態 HTML。
 
-版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者是主管，
+版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者原本是主管（2026-10-28 改成團隊負責人本人，見下），
 分三個頁籤：總覽（2026-10-07 由「持續累積」改名）、本週（預設）、團隊。vault 的週報範本只當資訊清單，不照它的節次排。
 總覽依序是資源（多一格 epic 數）、依 label、團隊、專案列表、完成；專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開）；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
 Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都沒有時整欄不顯示、資源區只留一行說明，
@@ -12,6 +12,9 @@ Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都�
 不是一張張卡；進度條分三段（之前完成｜本週完成｜未完成），總覽與本週同一條；依 label 是橫條；團隊表的完成卡片畫長條、
 工時只給數字（每人填工時的粒度不同，畫成長度比的是填法）；完成清單預設收合；專案投入併成總覽的「人」欄；
 Kick off 目標五段只在總覽展開看。圖都是 inline SVG 或純 CSS，沒有 JS 也顯示。
+團隊績效評估（2026-10-28 使用者鎖定，plan 在 vault 的 jira-weekly-report · 團隊績效評估）：讀者改成團隊負責人本人管理用。
+本週頁是四個數字（停滯專案、有完成的專案、照流程走、補登）、四格圖（專案地圖、投入比例、產出與補登、資料健康）、
+這週要你出手的地方、人卡、收合的專案一覽；本週重點不再獨立列。人一律照名字排、只跟自己比，三個頁籤都不放人與人並排的長條或表。
 
 所有文字一律經過 html.escape；數字只從 metrics 來。
 """
@@ -21,7 +24,6 @@ import html
 from datetime import datetime, timedelta
 
 from .metrics import SCHEMA, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER
-from .narrative import highlight_projects
 from .period import TZ
 from .snapshot import parse_jira_time
 
@@ -172,12 +174,6 @@ def _progress_cell(progress: dict, week_done: int) -> str:
     return f'<span class="prog" data-label="進度">{_bar(progress, week_done)}<span class="num">{progress["done_cards"]}/{progress["total_cards"]}</span></span>'
 
 
-def _hbar(value: int, top: int) -> str:
-    """單階橫條（張數）；top 是同一張表的最大值。數字另外印在旁邊，長條只是比例。"""
-    width = round(value / top * 100, 1) if top else 0
-    return f'<span class="hbar"><i style="width:{width:g}%"></i></span>'
-
-
 def _kickoff(kickoff, fields=KICKOFF_FIELDS) -> str:
     """Kick off 有填的段。鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。"""
     if kickoff is None:
@@ -239,14 +235,16 @@ def _week_row(epic, narrative, metrics, page) -> str:
     """本週一覽表的一列（2026-10-07 使用者裁，取代一張張專案卡）：名稱、負責人、三段進度條、本週 +N、本週工時、訊號、下一步；
     展開看 AI 寫的結果句與進行中的卡。Kick off 目標五段不在這一頁，總覽展開看。
     負責人是本週有產出的人（跟工時同一個口徑），本週沒人產出就寫 epic 負責人。
-    訊號只陳述事實：本週無完成。「N 天未更新」要 metrics 算 epic 整棵的最後更新，等 PR B。"""
+    訊號只陳述事實：停滯 N 天（metrics 的 stalled，2026-10-28），否則本週無完成。"""
     week = epic["week"]
     staffing = {s["id"]: s for s in metrics["staffing"]}
     people = staffing[epic["id"]]["week"]["people"] if epic["id"] in staffing else []
     owner = "、".join(people) if people else (epic["owner"] or UNASSIGNED_OWNER)
     plus = f'<b>+{week["completed_count"]}</b>' if week["completed_count"] else '<span class="muted">0</span>'
     signals = ""
-    if epic["key"] and epic["status"] != "Done" and not week["completed_count"]:
+    if epic["stalled"]:
+        signals = f'<span class="sig">停滯 {epic["idle_days"]} 天</span>'
+    elif epic["key"] and epic["status"] != "Done" and not week["completed_count"]:
         signals = f'<span class="sig">{NO_COMPLETION_SIGNAL}</span>'
     nxt = ""
     if epic["kickoff"] and epic["kickoff"]["sections"].get("next_milestone"):
@@ -283,82 +281,10 @@ def _week_table(metrics, narrative, page) -> str:
     return _week_table_head(page) + "".join(sections)
 
 
-def _person_cells(person: dict, scope: str, page, top: int) -> list:
-    """完成卡片畫長條、工時只給數字：每人填工時的粒度不同（整個 epic 每張 0.1h 定值與單張 6h 並存），
-    畫成長度比的是填法不是投入（2026-10-07 使用者裁）。top 是這張表完成卡片的最大值。"""
-    data = person[scope]
-    cells = [esc(fmt_hours(data["hours"]))] + ([esc(fmt_tokens(data["tokens"]))] if page.tokens else [])
-    cells.append(f'{_hbar(data["completed"], top)}{data["completed"]}')
-    if scope == "week":
-        cells.append(f'{person["in_progress"]["count"]} 張')
-    return cells
-
-
-def _person_name(person: dict) -> str:
-    if person["name"] == UNASSIGNED_OWNER:
-        return f'{esc(person["name"])} <small>卡片沒有執行人</small>'
-    return esc(person["name"])
-
-
-def _people_rows(people: list, scope: str, page) -> str:
-    token_col = ["Token"] if page.tokens else []
-    if scope == "week":
-        shown = [p for p in people if p["week"]["completed"] or p["in_progress"]["count"]]
-        headers = ["執行人", "實際工時"] + token_col + ["完成卡片", "進行中"]
-    else:
-        shown = [p for p in people if p["cumulative"]["completed"]]
-        headers = ["執行人", "累計工時"] + token_col + ["完成卡片"]
-    top = max((p[scope]["completed"] for p in shown), default=0)
-    rows = [("warn-row" if p["name"] == UNASSIGNED_OWNER else "", [_person_name(p)] + _person_cells(p, scope, page, top)) for p in shown]
-    return _rows(headers, rows, "沒有人有完成或進行中的卡")
-
-
 def _done_group(title: str, count: int, hours, body: str) -> str:
     """完成清單一個專案一組，預設收合（2026-10-07 使用者裁）：標題帶張數與工時，展開才看逐張。"""
     nums = f"{count} 張" + (f" · {fmt_hours(hours)}" if hours is not None else "")
     return f'<details class="done-group"><summary>{title} <span class="muted">· {esc(nums)}</span></summary>{body}</details>'
-
-
-def _completed_by_parent(metrics, page) -> str:
-    """本週完成的卡依專案、再依父卡分組：子任務收在父卡底下，一般卡自成一列。父卡只是分組，不是一張完成卡。"""
-    groups = []
-    for epic in metrics["epics"]:
-        rows = [c for c in metrics["completed"] if c["group"] == epic["id"]]
-        if not rows:
-            continue
-        items = []
-        for d in epic["week"]["roots"]:
-            cards = [c for c in metrics["completed"] if c["root"] == d["key"] and c["key"] != d["key"]]
-            sub_count = f' · {len(cards)} 張子卡' if cards else ""
-            head = (f'<span>{page.issue(d["key"])} {esc(d["summary"])} <span class="muted">· {esc(d["owner"])} · {esc(d["result"])}{sub_count}</span></span>'
-                    f'<span class="nums">{esc(fmt_hours(d["hours"]))}{_token_suffix(d["tokens"], page)}</span>')
-            if cards:
-                sub = "".join(f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["owner"])}</span></span>'
-                              f'<span class="nums">{esc(fmt_card_hours(c))}</span></li>' for c in cards)
-                items.append(f'<li><details><summary>{head}</summary><ul>{sub}</ul></details></li>')
-            else:
-                items.append(f"<li>{head}</li>")
-        groups.append(_done_group(page.title(epic["key"], epic["summary"]), epic["week"]["completed_count"], epic["week"]["hours"],
-                                  f'<ul class="list">{"".join(items)}</ul>'))
-    # epic 先前已結案時沒有專案列，但底下的卡本週仍可能完成，完成卡片 KPI 也有算它們：
-    # 一個 epic 仍一組、帶張數與工時，不合併成一組（Codex 審 PR A）。名稱從總覽的專案列拿，拿不到就讓它炸，不默默合併
-    shown = {e["id"] for e in metrics["epics"]}
-    settled = {e["id"]: e for e in metrics["cumulative"]["epics"]}
-    other_groups = []
-    for c in metrics["completed"]:
-        if c["group"] not in shown and c["group"] not in other_groups:
-            other_groups.append(c["group"])
-    for group_id in other_groups:
-        epic = settled[group_id]
-        rows = [c for c in metrics["completed"] if c["group"] == group_id]
-        items = "".join(
-            f'<li><span>{page.issue(c["key"])} {esc(c["summary"])} <span class="muted">· {esc(c["owner"])}</span></span>'
-            f'<span class="nums">{esc(fmt_card_hours(c))}{_token_suffix(c["tokens"], page)}</span></li>'
-            for c in rows)
-        hours = sum(c["hours"] or 0 for c in rows)
-        groups.append(_done_group(f'{page.title(epic["key"], epic["summary"])} <span class="muted">· 所屬 epic 已結案</span>',
-                                  len(rows), hours, f'<ul class="list">{items}</ul>'))
-    return ("".join(groups) or '<p class="muted">本週沒有完成的卡。</p>') + _breakpoint(metrics["migrated"]["week"], page, with_week=False)
 
 
 BREAKPOINT_LABEL = "改組前"  # 2026-09-30 使用者定名；metrics 的欄位叫 migrated
@@ -408,38 +334,279 @@ def _labels(metrics) -> str:
     return LABEL_LEGEND + f'<div class="labels">{"".join(items)}</div>'
 
 
-def _highlight(text: str, name) -> str:
-    """一條本週重點；開頭的「[專案名]」上藍字（2026-10-14 使用者要求，掃一眼就分得出專案）。
-    專案名跟 validate 同一份 highlight_projects 對位，不用 regex 猜括號：名稱本身帶「]」也切得對。
-    沒有這個開頭的整條照原文：格式由 finalize 的 validate 擋，這裡不重驗。"""
-    prefix = f"[{name}]"
-    if name is None or not text.startswith(prefix):
-        return f"<li>{esc(text)}</li>"
-    return f'<li><span class="epic">{esc(prefix)}</span>{esc(text[len(prefix):])}</li>'
+TREND_WEEKS = 6          # 圖畫最近幾週
+OLD_CARD_DAYS = 14       # 進行中超過幾天標警示色、列進原因清單
+# 投入比例的 label 色：dataviz 參考色票的前 7 槽，順序就是色弱安全的機制，不重排；亮暗兩組都跑過 validate_palette.js
+SERIES = 7
+
+
+def _delta(now, prev, unit: str) -> str:
+    """「上週 X，多／少 N」；上週沒有值（沒有上一期、上一期沒有這個欄、上週沒有完成卡）就不寫差值。百分比寫「個百分點」。"""
+    if prev is None:
+        return "沒有上週的值"
+    if now is None or now == prev:
+        return f"上週 {prev}{unit}" + ("，持平" if now == prev else "")
+    step = " 個百分點" if unit == "%" else unit
+    return f'上週 {prev}{unit}，{"多" if now > prev else "少"} {abs(now - prev)}{step}'
+
+
+def _week_kpis(metrics) -> str:
+    """四個數字（2026-10-28 鎖定 AC-2）：停滯是主數字、唯一用警示色、連到下方清單；其他三個用一般字色，寫明好壞方向。"""
+    k = metrics["kpis"]
+
+    def tile(cls, label, value, unit, delta, hint, warn=False):
+        shown = DASH if value is None else f"{value}{unit}"
+        return (f'<li class="{cls}"><span>{esc(label)}</span><strong{" class=alert" if warn else ""}>{esc(shown)}</strong>'
+                f'<small>{esc(delta)}</small><small class="hint">{hint}</small></li>')
+
+    stalled = k["stalled"]["now"]
+    return ('<ul class="kpis wk-kpis" style="--kpis:4">'
+            + tile("lead", "停滯專案", stalled, "", _delta(stalled, k["stalled"]["prev"], ""),
+                   f'14 天沒有卡更新 · <a href="#step-in">看是哪幾個</a>', warn=bool(stalled))
+            + tile("", "有完成的專案", k["projects"]["now"], "", _delta(k["projects"]["now"], k["projects"]["prev"], ""), "本週至少完成一張卡")
+            + tile("", "照流程走", k["via_progress"]["now"], "%", _delta(k["via_progress"]["now"], k["via_progress"]["prev"], "%"),
+                   "完成前到過「進行中」，越高越好")
+            + tile("", "補登", k["backfill"]["now"], "%", _delta(k["backfill"]["now"], k["backfill"]["prev"], "%"),
+                   "建卡 10 分鐘內就結案，越低越好")
+            + "</ul>")
+
+
+def _short_week(week: str) -> str:
+    return "W" + week.split("-W")[1]
+
+
+def _map_svg(metrics) -> str:
+    """專案地圖：x 完成進度、y 幾天沒動；上方是停滯區。停滯的點標名字與負責人，標籤同一邊靠太近就往下錯開。
+    沒有 JS：數字寫在 <title> 給滑鼠提示，停滯的專案在原因清單也列得出來。"""
+    rows = [e for e in metrics["epics"] if e["key"] and e["status"] != "Done"]
+    if not rows:
+        return '<p class="muted">沒有未結案的專案。</p>'
+    w, h, left, top, right, bottom = 470, 180, 34, 10, 10, 30
+    maxd = max([30] + [e["idle_days"] for e in rows])
+
+    def x(p):
+        return left + p * (w - left - right)
+
+    def y(d):
+        return top + (1 - min(d, maxd) / maxd) * (h - top - bottom)
+
+    out = [f'<svg viewBox="0 0 {w} {h}" role="img" aria-label="專案地圖：{len(rows)} 個未結案專案的進度與幾天沒動">',
+           f'<rect x="{left}" y="{top}" width="{w - left - right}" height="{y(14) - top:.1f}" class="zone"/>',
+           f'<text x="{w - right - 4}" y="{top + 14}" text-anchor="end" class="t-warn">停滯區：14 天以上沒動</text>']
+    for d in (0, 14, maxd):
+        out.append(f'<text x="{left - 6}" y="{y(d) + 4:.1f}" text-anchor="end" class="t-axis">{d}天</text>')
+    for p in (0, 0.5, 1):
+        out.append(f'<text x="{x(p):.1f}" y="{h - 12}" text-anchor="middle" class="t-axis">{p:.0%}</text>')
+    out.append(f'<text x="{(w + left) / 2:.0f}" y="{h - 1}" text-anchor="middle" class="t-axis">完成進度 →</text>')
+    used = {True: [], False: []}
+    for e in sorted(rows, key=lambda e: (e["week"]["completed_count"] > 0, e["key"])):
+        prog = e["progress"]
+        p = prog["done_cards"] / prog["total_cards"] if prog["total_cards"] else 0
+        cls = "dot" + (" moving" if e["week"]["completed_count"] else "") + (" stalled" if e["stalled"] else "")
+        out.append(f'<circle cx="{x(p):.1f}" cy="{y(e["idle_days"]):.1f}" r="6" class="{cls}"><title>{esc(e["summary"])}｜完成 {prog["done_cards"]}/{prog["total_cards"]} 張｜'
+                   f'{e["idle_days"]} 天沒動｜本週 +{e["week"]["completed_count"]}</title></circle>')
+        if e["stalled"]:
+            right_side = p > 0.6
+            ty = y(e["idle_days"]) + 4
+            while any(abs(ty - u) < 12 for u in used[right_side]):
+                ty += 12
+            used[right_side].append(ty)
+            name = e["summary"].split("]", 1)[-1] if e["summary"].startswith("[") else e["summary"]
+            name = name[:12] + ("…" if len(name) > 12 else "")
+            owner = (e["owner"] or UNASSIGNED_OWNER).split()[0]
+            out.append(f'<text x="{x(p) + (-9 if right_side else 9):.1f}" y="{ty:.1f}" text-anchor="{"end" if right_side else "start"}" class="t-label">{esc(name)} · {esc(owner)}</text>')
+    out.append("</svg>")
+    legend = ('<p class="legend"><i class="dot-on"></i>本週有完成 <i class="dot-off"></i>本週沒完成 <i class="dot-stall"></i>停滯（標名字與負責人）</p>')
+    return legend + "".join(out)
+
+
+def _alloc_svg(metrics) -> str:
+    """投入比例：每週一條 100% 橫條，每人每週先換成 100% 再平均（metrics 算）。9% 以上的段直接寫百分比，其餘看圖例與滑鼠提示。"""
+    alloc = metrics["allocation"]
+    weeks = alloc["weeks"][-TREND_WEEKS:]
+    if not weeks:
+        return '<p class="muted">還沒有完成的卡。</p>'
+    names = alloc["labels"]
+    w, rowh, gap, left, right = 470, 18, 6, 40, 8
+    span = w - left - right
+    out = [f'<svg viewBox="0 0 {w} {len(weeks) * (rowh + gap)}" role="img" aria-label="近 {len(weeks)} 週投入比例">']
+    for i, row in enumerate(weeks):
+        top = i * (rowh + gap)
+        out.append(f'<text x="0" y="{top + 13}" class="t-axis">{_short_week(row["week"])}</text>')
+        cursor = left
+        for j, name in enumerate(names):
+            share = row["shares"].get(name, 0)
+            if share <= 0:
+                continue
+            series = f"s{j + 1}" if j < SERIES else "s-other"
+            out.append(f'<rect x="{cursor:.1f}" y="{top}" width="{max(span * share - 2, 1):.1f}" height="{rowh}" rx="2" class="{series}">'
+                       f'<title>{_short_week(row["week"])} {esc(name)} {share:.0%}（{row["people"]} 人）</title></rect>')
+            if share >= 0.09:
+                out.append(f'<text x="{cursor + 4:.1f}" y="{top + 13}" class="t-in">{share:.0%}</text>')
+            cursor += span * share
+    out.append("</svg>")
+    legend = "".join(f'<span><i class="{f"s{j + 1}" if j < SERIES else "s-other"}"></i>{esc(n)}</span>' for j, n in enumerate(names))
+    return f'<p class="legend swatches">{legend}</p>' + "".join(out)
+
+
+def _output_svg(metrics) -> str:
+    """產出與補登：每週完成卡片張數，斜線那段是補登。只畫一個量（張數），不疊第二個軸。"""
+    rows = metrics["health"][-TREND_WEEKS:]
+    if not rows:
+        return '<p class="muted">還沒有完成的卡。</p>'
+    w, h, base, bw = 470, 170, 140, 44
+    top = max(r["completed"] for r in rows) or 1  # 近幾週全是 0 張時長條都是 0 高，不除以 0
+    step = (w - 20) / len(rows)
+    out = [f'<svg viewBox="0 0 {w} {h}" role="img" aria-label="近 {len(rows)} 週完成卡片與補登">',
+           '<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
+           '<rect width="6" height="6" class="hatch-bg"/><line x1="0" y1="0" x2="0" y2="6" class="hatch-line"/></pattern></defs>']
+    for i, r in enumerate(rows):
+        n, bf = r["completed"], r["backfill"]
+        x = 10 + i * step + (step - bw) / 2
+        hb, hn = bf / top * 110, (n - bf) / top * 110
+        out.append(f'<rect x="{x:.1f}" y="{base - hb:.1f}" width="{bw}" height="{hb:.1f}" fill="url(#hatch)"><title>{_short_week(r["week"])} 補登 {bf} 張</title></rect>')
+        out.append(f'<rect x="{x:.1f}" y="{base - hb - hn - (2 if hn else 0):.1f}" width="{bw}" height="{hn:.1f}" rx="2" class="bar-wk"><title>{_short_week(r["week"])} 其他 {n - bf} 張</title></rect>')
+        out.append(f'<text x="{x + bw / 2:.1f}" y="{base - hb - hn - 6:.1f}" text-anchor="middle" class="t-val">{n}</text>')
+        out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 16}" text-anchor="middle" class="t-axis">{_short_week(r["week"])}</text>')
+    out.append(f'<line x1="0" x2="{w}" y1="{base}" y2="{base}" class="axis"/></svg>')
+    legend = '<p class="legend">每週完成張數 <i class="sw-week"></i>一般 <i class="sw-hatch"></i>補登（建卡 10 分鐘內結案）</p>'
+    return legend + "".join(out)
+
+
+def _health_svg(metrics) -> str:
+    """資料健康：照流程走與補登逐週的比例，各一列長條、各自 0～100%，不共用一個軸疊在一起。"""
+    rows = metrics["health"][-TREND_WEEKS:]
+    if not rows:
+        return '<p class="muted">還沒有完成的卡。</p>'
+    w = 470
+    step = (w - 70) / len(rows)
+    lines = (("照流程走", "via_progress", "bar-wk"), ("補登", "backfill", "bar-warn"))
+    out = [f'<svg viewBox="0 0 {w} 150" role="img" aria-label="資料健康：照流程走與補登的比例">']
+    for k, (name, field, cls) in enumerate(lines):
+        y0 = 10 + k * 66
+        out.append(f'<text x="0" y="{y0 + 30}" class="t-axis">{name}</text>')
+        for i, r in enumerate(rows):
+            v = r[field] / r["completed"] if r["completed"] else 0
+            shown = f"{v:.0%}" if r["completed"] else "—"  # 那週沒有完成卡：比例不存在，不是 0%
+            x = 70 + i * step
+            out.append(f'<rect x="{x + 6:.1f}" y="{y0 + 44 - 40 * v:.1f}" width="{step - 12:.1f}" height="{40 * v:.1f}" rx="2" class="{cls}">'
+                       f'<title>{_short_week(r["week"])} {name} {r[field]}/{r["completed"]} 張</title></rect>')
+            out.append(f'<text x="{x + step / 2:.1f}" y="{y0 + 44 - 40 * v - 3:.1f}" text-anchor="middle" class="t-val">{shown}</text>')
+        out.append(f'<line x1="70" x2="{w}" y1="{y0 + 44}" y2="{y0 + 44}" class="axis"/>')
+    for i, r in enumerate(rows):
+        out.append(f'<text x="{70 + i * step + step / 2:.1f}" y="146" text-anchor="middle" class="t-axis">{_short_week(r["week"])}</text>')
+    out.append("</svg>")
+    return "".join(out)
+
+
+def _viz(metrics) -> str:
+    open_count = sum(1 for e in metrics["epics"] if e["key"] and e["status"] != "Done")
+    panels = (
+        ("專案地圖", f'未結案 {open_count} 個：越上越久沒動、越右越接近完成，停滯的標名字。', _map_svg(metrics)),
+        ("力氣花在哪", "全隊的力氣：每人每週先換成 100% 再平均，不比小時。", _alloc_svg(metrics)),
+        ("產出與補登", "", _output_svg(metrics)),  # 圖說併進圖例那一行，下排兩格的圖上半才進得了 1024×768 第一屏
+        ("資料健康", "照流程走越高、補登越低，週報上的「本週完成」才是真的做完時間。", _health_svg(metrics)),
+    )
+    return '<div class="viz">' + "".join(f'<div class="viz-panel"><h4>{esc(t)}</h4>{f"<p class=note>{esc(n)}</p>" if n else ""}{body}</div>' for t, n, body in panels) + "</div>"
+
+
+def _causes(metrics, page) -> str:
+    """這週要你出手的地方：四類原因列，前三類有內容就展開（2026-10-28 鎖定 AC-3）。每列先寫數字再寫原因，展開看是哪些。"""
+    stalled = sorted((e for e in metrics["epics"] if e["stalled"]), key=lambda e: (-e["idle_days"], e["key"]))
+    doing = {r["key"]: r for r in metrics["in_progress"]}
+    old = sorted(((p["name"], k, d) for p in metrics["people"] for k, d in p["in_progress"]["ages"].items() if d >= OLD_CARD_DAYS),
+                 key=lambda t: (-t[2], t[1]))
+    decided = [e for e in metrics["epics"] if e["key"] and e["status"] != "Done" and e["kickoff"] and e["kickoff"]["sections"].get("decision")]
+    this_week = next((h for h in metrics["health"] if h["week"] == metrics["period"]["week"]), None)
+    backfill = this_week["backfill"] if this_week else 0
+    blocks = (
+        (len(stalled), "個專案停滯", "未結案、14 天以上沒有任何卡更新。找負責人問要收還是要推。",
+         [f'{page.title(e["key"], e["summary"])} <span class="muted">· {esc(e["owner"] or UNASSIGNED_OWNER)} · {e["idle_days"]} 天沒動 · '
+          f'完成 {e["progress"]["done_cards"]}/{e["progress"]["total_cards"]} 張</span>' for e in stalled]),
+        (len(old), f"張卡放在進行中超過 {OLD_CARD_DAYS} 天", "從進入目前狀態算起。卡住、做完沒關，或拆太大。",
+         [f'{page.issue(k)} {esc(doing[k]["summary"])} <span class="muted">· {esc(name)} · {d} 天</span>' for name, k, d in old]),
+        (len(decided), "個專案在 Kick off 寫了要你決定的事", "Kick off 的「需要決定」段，有寫就列。",
+         [f'{page.title(e["key"], e["summary"])}：<span class="muted">{esc(e["kickoff"]["sections"]["decision"])}</span>' for e in decided]),
+        (backfill, "張卡本週是補登", "近 4 週各人的補登比例。比例高代表「本週完成」量到的是補登時間，不是做完的時間。",
+         [f'{esc(p["name"])} <span class="muted">· {p["recent"]["completed"]} 張裡 {p["recent"]["backfill"]} 張補登</span>'
+          for p in _by_name(metrics["people"]) if p["recent"]["completed"]]),
+    )
+    out = []
+    for i, (count, title, hint, items) in enumerate(blocks):
+        body = "".join(f"<li>{x}</li>" for x in items) or '<li class="muted">無</li>'
+        out.append(f'<details class="cause"{" open" if i < 3 and count else ""}><summary><b class="cnt{" alert" if count and i < 2 else ""}">{count}</b> {esc(title)}</summary>'
+                   f'<p class="note">{esc(hint)}</p><ul>{body}</ul></details>')
+    return "".join(out)
+
+
+def _by_name(people: list) -> list:
+    """人一律照名字排、未指派最後，不照任何數字排（2026-10-28 鎖定 AC-4、AC-5：不排名）。"""
+    return sorted(people, key=lambda p: (p["name"] == UNASSIGNED_OWNER, p["name"].casefold()))
+
+
+def _spark(trend: list) -> str:
+    """一個人自己的逐週完成張數小長條，最新一週深色；只跟自己比，每個人的高度各自縮放。
+    寬度跟著週數長：每週至少 5px（3px 長條＋2px 縫），團隊頁的全程序列累積幾十週也不會算出負寬度（Codex 審 70a636d）。"""
+    top = max((t["completed"] for t in trend), default=0) or 1
+    w, h = max(96, 5 * len(trend)), 26
+    bw = w / max(len(trend), 1) - 2
+    bars = "".join(f'<rect x="{i * (bw + 2):.1f}" y="{h - t["completed"] / top * (h - 4):.1f}" width="{bw:.1f}" height="{max(t["completed"] / top * (h - 4), 0.5):.1f}" rx="1.5" '
+                   f'class="{"bar-wk" if i == len(trend) - 1 else "bar-before"}"><title>{_short_week(t["week"])} {t["completed"]} 張</title></rect>'
+                   for i, t in enumerate(trend))
+    return f'<svg class="spark" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" aria-label="近 {len(trend)} 週完成張數">{bars}</svg>'
+
+
+def _doing_list(person: dict, doing: dict, page, limit) -> str:
+    ages = person["in_progress"]["ages"]
+    keys = sorted(person["in_progress"]["keys"], key=lambda k: (-ages[k], k))
+    shown = keys if limit is None else keys[:limit]
+    items = "".join(f'<li>{page.issue(k)} {esc(doing[k]["summary"])} <span class="{"alert" if ages[k] >= OLD_CARD_DAYS else "muted"}">{ages[k]} 天</span></li>' for k in shown)
+    more = f'<li class="muted">另 {len(keys) - len(shown)} 張</li>' if len(keys) > len(shown) else ""
+    return f'<ul class="list-doing">{items or "<li class=muted>沒有進行中的卡</li>"}{more}</ul>'
+
+
+def _week_people(metrics, page) -> str:
+    """本週頁人卡：負責的未結案專案、近 6 週完成小長條（只跟自己比）、近 4 週落在哪些 label、補登比例、進行中的卡與天數。"""
+    doing = {r["key"]: r for r in metrics["in_progress"]}
+    owned = {}
+    for e in metrics["epics"]:
+        if e["key"] and e["status"] != "Done":
+            owned.setdefault(e["owner"] or UNASSIGNED_OWNER, []).append(e["summary"])
+    cards = []
+    for p in _by_name(metrics["people"]):
+        if not p["recent"]["completed"] and not p["in_progress"]["count"]:
+            continue
+        trend = p["trend"][-TREND_WEEKS:]
+        this_week = next(t["completed"] for t in p["trend"] if t["week"] == metrics["period"]["week"])
+        mine = owned.get(p["name"], [])
+        epics = "、".join(esc(s) for s in mine[:3]) + (f" 等 {len(mine)} 個" if len(mine) > 3 else "") or "無"
+        recent = p["recent"]
+        labels = "、".join(f"{esc(l)} {n} 張" for l, n in recent["labels"]) or "無"
+        bf = f'{recent["completed"]} 張裡 {recent["backfill"]} 張補登' if recent["completed"] else f'近 {recent["weeks"]} 週沒有完成'
+        cards.append(f'<article class="pcard"><h4>{esc(p["name"])}</h4>'
+                     f'<div class="prow"><span>近 {len(trend)} 週完成（只跟自己比）· 本週 {this_week} 張</span>{_spark(trend)}</div>'
+                     f'<div class="prow"><span>負責：{epics}</span></div>'
+                     f'<div class="prow"><span>近 {recent["weeks"]} 週落在：{labels}</span><span>{bf}</span></div>'
+                     f'{_doing_list(p, doing, page, 4)}</article>')
+    return f'<div class="pcards">{"".join(cards)}</div>' if cards else '<p class="muted">這週沒有人有完成或進行中的卡。</p>'
 
 
 def _week_panel(metrics, narrative, page) -> str:
-    highlights = narrative["highlights"]
-    if highlights:
-        names = [name for _, name in highlight_projects(metrics)]
-        items = "".join(_highlight(h, names[i] if i < len(names) else None) for i, h in enumerate(highlights))
-        points = f'<ol class="highlights">{items}</ol>'
-    else:
-        points = '<p class="highlights muted">本週沒有完成的卡。</p>'
+    """本週頁（2026-10-28 鎖定 AC-2、AC-3）：四個數字 → 四格圖 → 這週要你出手的地方 → 人卡 → 專案一覽（收合）。
+    本週重點 highlights 照舊由 routine 產生與驗證，頁面不再獨立列；每個專案的結果句在專案一覽展開看。"""
+    rows = len(metrics["epics"])
     return f"""
-  {points}
-  <h3>專案一覽</h3>
-  <p class="legend">進度條 <i class="sw-before"></i>之前完成 <i class="sw-week"></i>本週完成 <i class="sw-left"></i>未完成；點一列看結果與進行中的卡。</p>
+  {_week_kpis(metrics)}
+  {_viz(metrics)}
+  <h3 id="step-in">這週要你出手的地方</h3>
+  {_causes(metrics, page)}
+  <h3>人</h3>
+  {_week_people(metrics, page)}
+  <details class="proj-list"><summary>專案一覽（{rows} 列，點開）</summary>
+  <p class="legend">進度條 <i class="sw-before"></i>之前完成 <i class="sw-week"></i>本週完成 <i class="sw-left"></i>未完成；點一列看本週結果與進行中的卡。</p>
   {_week_table(metrics, narrative, page)}
   {_other_doing(metrics, page)}
-  <h3>資源</h3>
-  {_resources(metrics["totals"], "", "實際工時", page)}
-  <h3>團隊</h3>
-  {_people_rows(metrics["people"], "week", page)}
-  <h3>依 label</h3>
-  {_labels(metrics)}
-  <h3>完成</h3>
-  {_completed_by_parent(metrics, page)}"""
+  </details>"""
 
 
 def _overview_table_head(page) -> str:
@@ -511,7 +678,8 @@ def _week_projects(cards: list, order: dict, page) -> str:
 
 
 def _cumulative_panel(metrics, page) -> str:
-    """區塊順序：資源 → 依 label → 團隊 → 專案列表 → 完成（2026-10-07 使用者要求，取代同日「跟本週頁一致」）。
+    """區塊順序：資源 → 依 label → 專案列表 → 完成（2026-10-07 使用者要求，取代同日「跟本週頁一致」；
+    2026-10-28 團隊表拿掉：每人累計工時與張數並排就是人與人比較，跟「不排名」衝突，人的累計看團隊頁）。
     資源多一格 epic 數，是專案列表裡的 epic 數，未歸屬 epic 不是一個 epic，不算。"""
     c = metrics["cumulative"]
     since = f'從 {esc(fmt_date(c["since"]))} 第一張完成卡起算，到本期結束。' if c["since"] else "到本期結束還沒有任何完成的卡。"
@@ -526,8 +694,6 @@ def _cumulative_panel(metrics, page) -> str:
   {_resources(c["totals"], "累計", "累計工時", page, epics=sum(1 for e in c["epics"] if e["key"]))}
   <h3>依 label</h3>
   {_labels(metrics)}
-  <h3>團隊</h3>
-  {_people_rows(metrics["people"], "cumulative", page)}
   <h3>專案列表</h3>
   <p class="legend">進度條 <i class="sw-before"></i>之前完成 <i class="sw-week"></i>本週完成 <i class="sw-left"></i>未完成；點一列看 Kick off 的目標五段。</p>
   {_overview_projects(metrics, page)}
@@ -537,28 +703,31 @@ def _cumulative_panel(metrics, page) -> str:
 
 
 def _team_panel(metrics, page) -> str:
-    """一人一張卡：本週與累計兩格、進行中清單。本週完成的逐張清單不再列（本週頁的「完成」已有），
-    專案投入表併成總覽的「人」欄（2026-10-07 使用者裁）。"""
+    """團隊頁：累計版人卡（2026-10-28 使用者裁）。每人自第一張完成卡起的逐週完成小長條、負責過的專案、累計投入比例、
+    他自己的累計工時與張數、進行中的卡與天數。照名字排；人與人並排的長條與表都不放（AC-5）。"""
     doing = {r["key"]: r for r in metrics["in_progress"]}
+    owned = {}
+    for e in metrics["cumulative"]["epics"]:
+        if e["key"]:
+            owned.setdefault(e["owner"] or UNASSIGNED_OWNER, []).append(e)
     cards = []
-    for p in metrics["people"]:
-        week, cum, prog = p["week"], p["cumulative"], p["in_progress"]
-        doing_items = "".join(f'<li><span>{page.issue(k)} {esc(doing[k]["summary"])} <span class="muted">· {esc(doing[k]["project"])} · {esc(doing[k]["current_state"])}</span></span></li>'
-                              for k in prog["keys"])
-        lists = ""
-        if doing_items:
-            lists += f'<details><summary>進行中 {prog["count"]} 張</summary><ul class="list">{doing_items}</ul></details>'
+    for p in _by_name(metrics["people"]):
+        cum, prog = p["cumulative"], p["in_progress"]
         unassigned = p["name"] == UNASSIGNED_OWNER
         note = '<p class="warn">這些卡在 Jira 上沒有 assignee，工時算不到人。</p>' if unassigned else ""
+        epics = "、".join(f'{esc(e["summary"])}{"（Done）" if e["status"] == "Done" else ""}' for e in owned.get(p["name"], [])) or "無"
+        shares = "、".join(f"{esc(label)} {share:.0%}" for label, share in p["shares"][:4]) or "無"
+        doing_html = ""
+        if prog["count"]:
+            doing_html = f'<details><summary>進行中 {prog["count"]} 張</summary>{_doing_list(p, doing, page, None)}</details>'
         cards.append(f"""
     <article class="card person{' warn-card' if unassigned else ''}">
       <div class="card-head"><h3>{esc(p["name"])}</h3><div class="figures"><span>進行中 <b>{prog["count"]}</b> 張</span></div></div>
       {note}
-      <div class="split">
-        <div><span class="label">本週</span>實際工時 <b>{esc(fmt_hours(week["hours"]))}</b>{_token_suffix(week["tokens"], page)} · 完成卡片 {week["completed"]}</div>
-        <div><span class="label">累計</span>累計工時 <b>{esc(fmt_hours(cum["hours"]))}</b>{_token_suffix(cum["tokens"], page)} · 完成卡片 {cum["completed"]}</div>
-      </div>
-      {lists}
+      <div class="prow"><span>逐週完成（只跟自己比）· 累計 {cum["completed"]} 張 · 累計工時 {esc(fmt_hours(cum["hours"]))}{_token_suffix(cum["tokens"], page)}</span>{_spark(p["trend"])}</div>
+      <div class="prow"><span>負責過：{epics}</span></div>
+      <div class="prow"><span>累計投入比例：{shares}</span></div>
+      {doing_html}
     </article>""")
     people = "".join(cards) or '<p class="muted">還沒有任何人有完成或進行中的卡。</p>'
     return f"""
@@ -592,12 +761,18 @@ def _glossary(metrics) -> str:
         ("累計工時", "到本週結束為止的實際工時加總，口徑同實際工時。"),
         (UNFILLED, "卡片完成了，Story point estimate 卻是空的；實際工時以 0 計。本週的逐張列在資料檢查，累計只計張數。"),
         ("人", "總覽專案列表的「人」欄：這個專案累計由幾個人產出，名字列在數字旁。人數是完成了沒有子卡的卡的執行人，同一人只算一次；"
-               "沒有執行人的卡不算人，標「另有未指派」。本週一覽表的負責人是本週有產出的人，本週沒人產出就寫 epic 的負責人。"),
+               "沒有執行人的卡不算人，標「另有未指派」。本週一覽表的負責人是本週有產出的人，本週沒人產出就寫 epic 的負責人。"
+               "人卡照名字排，小長條只跟自己的前幾週比，不跟別人比。"),
         ("進度", "專案底下沒有子卡的卡：到本週結束為止算進完成卡片的張數／全部張數；進度條深色那段是其中本週完成的。"
                  "不列入的卡與改組前的卡不算完成、仍算在全部張數裡，所以 Jira 上已全部完成的專案這裡可能不到 100%。"),
         ("label", "專案的 label 取 epic 在 Jira 上的 label；不在 epic 底下的卡用自己的 label。"
                   "沒有 label、或有兩個以上 label 的歸「未分類」，並列進資料檢查。epic 數是總覽專案列表裡掛這個 label 的 epic。"),
         ("Done／On Track", "Done 是 epic 在 Jira 已完成；On Track 只表示 epic 還沒完成，不代表進度評估。"),
+        ("停滯", "epic 還沒完成，底下的卡 14 天沒有任何更新（只改 label 也算更新）；底下沒有卡就看 epic 自己。"),
+        ("補登", "卡片建立後 10 分鐘內就結案。比例高代表「本週完成」量到的是補登的時間，不是做完的時間。"),
+        ("照流程走", "完成的卡在結案前待過「進行中」狀態（直接進審核中的不算）。比例越高，週報上的時間越準。"),
+        ("投入比例", "每個人每週先把自己完成的卡換成 100%（用他自己填的實際工時當權重，沒填的卡補他這週的平均，"
+                     "整週都沒填就用張數），再對當週有產出的人取平均。只在人內換算，不拿小時跨人比。"),
         ("不列入的卡", "config/excluded.json 列的卡不算完成卡片、實際工時，也不算進度裡的完成；列的 epic 連同底下所有卡整個不列入週報。"),
         (BREAKPOINT_LABEL, "卡片在 Jira 結案的時間早於或等於它搬進本專案的時間，是改組前在別的專案完成的歷史：本週與累計都不算，"
                            f"只在「完成」清單最後的「{BREAKPOINT_LABEL}」分隔線之後灰字列出。搬進來之後才結案的照算。"),
@@ -723,9 +898,11 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
 
 CSS = """
 :root{--bg:#f7f7f5;--surface:#fff;--soft:#f0f0ed;--text:#1d1d1f;--muted:#6e6e73;--line:#e3e3e0;--accent:#2f5bea;
---done-bg:#e3f4ea;--done-fg:#1b7a45;--bar:#4faf7b;--bar-week:#1b7a45;--track-bg:#e8eefc;--track-fg:#2f5bea;--warn-bg:#fff4e0;--warn-fg:#8a5300;}
+--done-bg:#e3f4ea;--done-fg:#1b7a45;--bar:#4faf7b;--bar-week:#1b7a45;--track-bg:#e8eefc;--track-fg:#2f5bea;--warn-bg:#fff4e0;--warn-fg:#8a5300;
+--alert:#b25e09;--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;--s-other:#b5b4ad;}
 @media (prefers-color-scheme: dark){:root{--bg:#141416;--surface:#1c1c1f;--soft:#26262a;--text:#ececef;--muted:#9a9aa1;--line:#2e2e33;
---accent:#7c9cff;--done-bg:#15321f;--done-fg:#6fd39a;--bar:#2f7a52;--bar-week:#7fe0ad;--track-bg:#1b2544;--track-fg:#9fb6ff;--warn-bg:#3a2a0e;--warn-fg:#ffcf7a;}}
+--accent:#7c9cff;--done-bg:#15321f;--done-fg:#6fd39a;--bar:#2f7a52;--bar-week:#7fe0ad;--track-bg:#1b2544;--track-fg:#9fb6ff;--warn-bg:#3a2a0e;--warn-fg:#ffcf7a;
+--alert:#ffb35c;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;--s-other:#5e5e64;}}
 /* 進度與橫條兩階同色綠：dataviz validate_palette.js --ordinal 亮暗各過（2026-10-07）；兩段之間留 2px 底色縫 */
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Segoe UI",sans-serif}
@@ -867,8 +1044,42 @@ details[open]>summary::before{content:"▾"}
 .checks{font-size:14px}
 #archive{margin-top:32px;border-top:1px solid var(--line)}
 .archive{list-style:none;padding:0;display:flex;flex-wrap:wrap;gap:8px 16px}
+/* 本週頁：四個數字、四格圖、原因清單、人卡（2026-10-28 團隊績效評估） */
+.wk-kpis{margin-top:20px}
+.wk-kpis li.lead strong{font-size:36px}
+.wk-kpis strong.alert,.alert{color:var(--alert)}
+.wk-kpis small.hint{margin-top:2px}
+.viz{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0 0}
+.viz-panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.viz-panel h4{margin:0}.viz-panel .note{margin:0 0 4px}.viz-panel .legend{margin:0 0 4px}
+.viz svg{display:block;width:100%;height:auto}
+.viz text,.spark text{font-size:11px;fill:var(--muted)}
+.viz .t-val{fill:var(--text)}.viz .t-label{fill:var(--text);font-size:10px}.viz .t-in{fill:#fff;font-weight:600}.viz .t-warn{fill:var(--alert)}
+.viz .zone{fill:var(--warn-bg)}.viz .axis{stroke:var(--line)}
+.dot{fill:var(--surface);stroke:var(--bar-week);stroke-width:2}.dot.moving{fill:var(--bar-week)}.dot.stalled{stroke:var(--alert)}
+.s1{fill:var(--s1);background:var(--s1)}.s2{fill:var(--s2);background:var(--s2)}.s3{fill:var(--s3);background:var(--s3)}.s4{fill:var(--s4);background:var(--s4)}
+.s5{fill:var(--s5);background:var(--s5)}.s6{fill:var(--s6);background:var(--s6)}.s7{fill:var(--s7);background:var(--s7)}.s-other{fill:var(--s-other);background:var(--s-other)}
+.bar-wk{fill:var(--bar-week)}.bar-before{fill:var(--bar)}.bar-warn{fill:var(--alert)}
+.hatch-bg{fill:var(--bar)}.hatch-line{stroke:var(--surface);stroke-width:2}
+.sw-hatch{background:repeating-linear-gradient(45deg,var(--bar) 0 3px,var(--surface) 3px 5px)}
+.legend .dot-on,.legend .dot-off,.legend .dot-stall{width:10px;height:10px;border-radius:50%;border:2px solid var(--bar-week)}
+.legend .dot-on{background:var(--bar-week)}.legend .dot-stall{border-color:var(--alert)}
+.legend.swatches{display:flex;flex-wrap:wrap;gap:2px 10px;margin:0 0 6px}.legend.swatches i{margin-left:0}
+.cause{border-top:1px solid var(--line)}
+.cause>summary{padding:8px 0;font-size:14px}
+.cause .cnt{display:inline-block;min-width:2.2em;text-align:right;font-variant-numeric:tabular-nums}
+.cause .note{margin:0 0 4px 3em}.cause ul{margin:0 0 10px 3em;padding-left:16px;font-size:14px}
+.pcards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px;min-width:0}
+.pcard h4{margin:0 0 4px}
+.prow{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:2px 0}
+.spark{flex:none}
+.list-doing{margin:4px 0 0;padding-left:18px;font-size:13px}
+.proj-list{margin-top:24px}
+.proj-list>summary{font-weight:600;font-size:15px}
 @media (max-width:640px){
   h1{font-size:22px}
+  .viz,.pcards{grid-template-columns:minmax(0,1fr)}
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
   .split{grid-template-columns:1fr}
   .row{grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:4px 8px}

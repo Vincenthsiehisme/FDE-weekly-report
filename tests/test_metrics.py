@@ -4,6 +4,7 @@ from datetime import date
 from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 from lib.metrics import UNASSIGNED_EPIC, UNLABELED, compute, drop_excluded_epics, kickoff_by_epic
 from lib.period import period_ending
+from lib.render import render
 
 PERIOD = period_ending(date(2026, 9, 22))
 
@@ -29,7 +30,7 @@ def base_issues():
 
 def run(issues, tokens=None, states=None, excluded=None):
     return compute(snapshot(issues), PERIOD, tokens, states or {}, [], cumulative_tokens=tokens, excluded=excluded or {},
-                   token_source=tokens is not None)
+                   token_source=tokens is not None, previous=None)
 
 
 class HoursTest(unittest.TestCase):
@@ -165,26 +166,26 @@ class CumulativeTest(unittest.TestCase):
                          [("2026-W39", 3, 4.5), ("2026-W38", 2, 4.0)])
 
     def test_cumulative_tokens_are_separate_from_this_week(self):
-        m = compute(snapshot(base_issues()), PERIOD, {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-6": 40}, excluded={}, token_source=True)
+        m = compute(snapshot(base_issues()), PERIOD, {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-6": 40}, excluded={}, token_source=True, previous=None)
         self.assertEqual((m["totals"]["tokens"], m["cumulative"]["totals"]["tokens"]), (100, 140))
 
     def test_unknown_key_only_in_earlier_token_files_is_reported(self):
-        m = compute(snapshot(base_issues()), PERIOD, {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-98": 5}, excluded={}, token_source=True)
+        m = compute(snapshot(base_issues()), PERIOD, {"CS-3": 100}, {}, [], cumulative_tokens={"CS-3": 100, "CS-98": 5}, excluded={}, token_source=True, previous=None)
         self.assertEqual(m["cumulative"]["totals"]["tokens"], 105)
         self.assertIn(("token_unknown_key", "CS-98"), [(c["kind"], c["key"]) for c in m["checks"]])
         self.assertNotIn(("token_unknown_key", "CS-3"), [(c["kind"], c["key"]) for c in m["checks"]])
 
     def test_week_tokens_without_cumulative_is_a_wiring_error(self):
         with self.assertRaises(ValueError):
-            compute(snapshot(base_issues()), PERIOD, {"CS-3": 100}, {}, [], cumulative_tokens=None, excluded={}, token_source=True)
+            compute(snapshot(base_issues()), PERIOD, {"CS-3": 100}, {}, [], cumulative_tokens=None, excluded={}, token_source=True, previous=None)
 
     def test_cumulative_tokens_without_source_flag_is_a_wiring_error(self):
         with self.assertRaises(ValueError):
-            compute(snapshot(base_issues()), PERIOD, None, {}, [], cumulative_tokens={"CS-3": 100}, excluded={}, token_source=False)
+            compute(snapshot(base_issues()), PERIOD, None, {}, [], cumulative_tokens={"CS-3": 100}, excluded={}, token_source=False, previous=None)
 
     def test_token_source_is_carried_even_when_this_week_and_cumulative_are_empty(self):
         # 較晚的週才有檔：兩個都是 None，但來源已接上，頁面要靠這個旗標顯示「—」欄
-        m = compute(snapshot(base_issues()), PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=True)
+        m = compute(snapshot(base_issues()), PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=True, previous=None)
         self.assertTrue(m["token_source"])
         self.assertIsNone(m["cumulative"]["totals"]["tokens"])
         self.assertFalse(run(base_issues())["token_source"])
@@ -434,9 +435,9 @@ class BreakpointTest(unittest.TestCase):
 
     def test_old_snapshot_without_moved_in_is_refused(self):
         old = snapshot(self.issues())
-        old["schema"] = 1
-        with self.assertRaisesRegex(ValueError, "重跑 prepare"):
-            compute(old, PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False)
+        old["schema"] = 2  # schema 2 有搬入時間、沒有建立時間：一樣不收，叫人重抓
+        with self.assertRaisesRegex(ValueError, "prepare --week-ending 2026-09-22"):
+            compute(old, PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
 
 
 class ExclusionTest(unittest.TestCase):
@@ -515,7 +516,7 @@ class ExcludedEpicTest(unittest.TestCase):
 
     def test_dropped_tree_leaves_no_trace_in_the_numbers(self):
         kept, checks = drop_excluded_epics(self.admin_issues(), self.EXCLUDED, PERIOD, allow_missing=False)
-        m = compute(snapshot(kept), PERIOD, None, {}, checks, cumulative_tokens=None, excluded={}, token_source=False)
+        m = compute(snapshot(kept), PERIOD, None, {}, checks, cumulative_tokens=None, excluded={}, token_source=False, previous=None)
         without = run(base_issues())
         for part in ("totals", "epics", "owners", "labels", "completed", "in_progress", "cumulative", "people"):
             with self.subTest(part=part):
@@ -591,3 +592,151 @@ class KickoffByEpicTest(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class FlowHealthTest(unittest.TestCase):
+    """團隊績效評估 AC-1：補登、照流程走、停滯、投入比例、人卡的數字。期望值寫死。"""
+
+    def epics(self):
+        return [issue("CS-1", level=1, status="doing", assignee="Owner", labels=["甲"]),
+                issue("CS-20", level=1, status="doing", assignee="Owner", labels=["乙"])]
+
+    def test_backfill_and_via_progress_per_week(self):
+        issues = self.epics() + [
+            # 建立 5 分鐘後就結案：補登
+            issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A", created="2026-09-18T03:55:00.000+0800"),
+            # 前一天建、待過進行中
+            issue("CS-3", parent="CS-1", points=None, resolved=IN_WEEK, assignee="A", progress_seen=True),
+            # 上週：補登但待過進行中（兩個旗標各自算）
+            issue("CS-4", parent="CS-1", points=2.0, resolved=LAST_WEEK, assignee="B", created="2026-09-10T03:59:30.000+0800", progress_seen=True),
+        ]
+        m = run(issues)
+        self.assertEqual(m["health"], [
+            {"week": "2026-W38", "completed": 1, "backfill": 1, "via_progress": 1, "unestimated": 0},
+            {"week": "2026-W39", "completed": 2, "backfill": 1, "via_progress": 1, "unestimated": 1},
+        ])
+        self.assertEqual(m["kpis"]["backfill"], {"now": 50, "prev": 100})
+        self.assertEqual(m["kpis"]["via_progress"], {"now": 50, "prev": 100})
+
+    def test_done_card_without_history_fails_loudly(self):
+        bad = issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A")
+        bad["progress_seen"] = None
+        with self.assertRaisesRegex(ValueError, "CS-2.*progress_seen"):
+            run(self.epics() + [bad])
+
+    def test_previous_week_values_come_from_previous_metrics(self):
+        issues = self.epics() + [issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A")]
+        none = compute(snapshot(issues), PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
+        self.assertEqual(none["kpis"]["projects"], {"now": 1, "prev": None})
+        self.assertEqual(none["kpis"]["stalled"]["prev"], None)
+        # 上一期是 schema 6：有 projects、沒有 stalled，停滯的上週值是 None，不是 0
+        old = compute(snapshot(issues), PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False,
+                      previous={"totals": {"projects": 4}})
+        self.assertEqual(old["kpis"]["projects"], {"now": 1, "prev": 4})
+        self.assertIsNone(old["kpis"]["stalled"]["prev"])
+        new = compute(snapshot(issues), PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False,
+                      previous={"totals": {"projects": 4, "stalled": 2}})
+        self.assertEqual(new["kpis"]["stalled"]["prev"], 2)
+        # 這一週沒有上週的完成卡：上週比例是 None，不是 0%
+        self.assertIsNone(new["kpis"]["backfill"]["prev"])
+
+    def test_stalled_is_open_epic_whose_cards_have_not_moved_for_14_days(self):
+        issues = self.epics() + [
+            issue("CS-21", parent="CS-20", status="doing", assignee="B", updated="2026-09-08T10:00:00.000+0800"),  # 到 09-23 是 14 天
+            issue("CS-2", parent="CS-1", status="doing", assignee="A", updated="2026-09-10T10:00:00.000+0800"),
+            issue("CS-3", parent="CS-1", status="todo", updated="2026-09-21T10:00:00.000+0800"),  # 同一個 epic 最近的更新算數
+            issue("CS-30", level=1, status="doing", labels=["丙"], updated="2026-08-01T10:00:00.000+0800"),  # 底下沒卡看 epic 自己
+            # 抓取比期間結束晚：0 天，不是負數
+            issue("CS-40", level=1, status="doing", labels=["丙"]),
+            issue("CS-41", parent="CS-40", status="doing", updated="2026-09-23T00:05:00.000+0800"),
+        ]
+        m = run(issues)
+        got = {e["key"]: (e["idle_days"], e["stalled"]) for e in m["epics"]}
+        self.assertEqual(got, {"CS-1": (1, False), "CS-20": (14, True), "CS-30": (52, True), "CS-40": (0, False)})
+        self.assertEqual(m["totals"]["stalled"], 2)
+        self.assertEqual(m["kpis"]["stalled"]["now"], 2)
+
+    def test_done_epic_is_never_stalled(self):
+        issues = [issue("CS-1", level=1, status="done", resolved=IN_WEEK, labels=["甲"]),
+                  issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A", updated="2026-08-01T10:00:00.000+0800")]
+        epic = run(issues)["epics"][0]
+        self.assertEqual((epic["status"], epic["stalled"]), ("Done", False))
+
+    def test_allocation_is_each_person_at_100_percent_then_averaged(self):
+        issues = self.epics() + [
+            issue("CS-30", level=1, status="doing", labels=["丙"]),
+            # A：甲 3h、乙 1h、丙沒填 → 補 A 這週的平均 2h → 甲 .5、乙 1/6、丙 1/3
+            issue("CS-2", parent="CS-1", points=3.0, resolved=IN_WEEK, assignee="A"),
+            issue("CS-21", parent="CS-20", points=1.0, resolved=IN_WEEK, assignee="A"),
+            issue("CS-31", parent="CS-30", points=None, resolved=IN_WEEK, assignee="A"),
+            # B：整週都沒填工時 → 用張數，乙 1.0；B 填 10h 也不會壓過 A，因為每人先換成 100%
+            issue("CS-22", parent="CS-20", points=None, resolved=IN_WEEK, assignee="B"),
+        ]
+        alloc = run(issues)["allocation"]
+        self.assertEqual(alloc["labels"], ["乙", "甲", "丙"])
+        self.assertEqual(alloc["weeks"], [{"week": "2026-W39", "people": 2,
+                                           "shares": {"丙": 0.1667, "乙": 0.5833, "甲": 0.25}}])
+
+    def test_allocation_folds_labels_past_the_top_into_other(self):
+        labels = [f"L{i}" for i in range(9)]
+        issues = []
+        for i, label in enumerate(labels):
+            issues.append(issue(f"CS-{100 + i}", level=1, status="doing", labels=[label]))
+            # 每人只做一個 label，張數越多的 label 人越多：L0 1 人 … L8 9 人
+            for j in range(i + 1):
+                issues.append(issue(f"CS-{1000 + i * 10 + j}", parent=f"CS-{100 + i}", points=1.0, resolved=IN_WEEK, assignee=f"P{i}-{j}"))
+        alloc = run(issues)["allocation"]
+        self.assertEqual(alloc["labels"], ["L8", "L7", "L6", "L5", "L4", "L3", "L2", "其他"])
+        self.assertEqual(alloc["weeks"][0]["shares"]["其他"], round(3 / 45, 4))
+
+    def test_allocation_ranks_labels_by_the_last_four_weeks(self):
+        # 只畫 1 個 label 時：舊週的「舊」3 人比最近的「新」2 人多，照累計排會選「舊」；照最近 4 週排要選「新」
+        from unittest import mock
+        import lib.metrics as metrics_module
+        weeks = {"舊": ("2026-08-14", 3), "F35": ("2026-08-21", 1), "F36": ("2026-08-28", 1), "F37": ("2026-09-04", 1),
+                 "F38": ("2026-09-10", 1), "新": ("2026-09-18", 2)}
+        issues = []
+        for i, (label, (day, people)) in enumerate(weeks.items()):
+            issues.append(issue(f"CS-{100 + i}", level=1, status="doing", labels=[label]))
+            for j in range(people):
+                issues.append(issue(f"CS-{1000 + i * 10 + j}", parent=f"CS-{100 + i}", points=1.0,
+                                    resolved=f"{day}T04:00:00.000+0800", assignee=f"P{i}-{j}"))
+        with mock.patch.object(metrics_module, "ALLOCATION_TOP", 1):
+            alloc = run(issues)["allocation"]
+        self.assertEqual(alloc["labels"], ["新", "其他"])
+
+    def test_weeks_without_any_completion_are_zero_rows_not_skipped(self):
+        # W36 與 W38 各一張、W37 與本週 W39 全隊零張：序列連續，本週是 0，不是把 W38 當本週（Codex 審 d442a48）
+        issues = self.epics() + [
+            issue("CS-2", parent="CS-1", points=1.0, resolved="2026-08-27T04:00:00.000+0800", assignee="A"),
+            issue("CS-3", parent="CS-1", points=1.0, resolved=LAST_WEEK, assignee="A", progress_seen=True),
+        ]
+        m = run(issues)
+        self.assertEqual([h["week"] for h in m["health"]], ["2026-W36", "2026-W37", "2026-W38", "2026-W39"])
+        self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "backfill": 0, "via_progress": 0, "unestimated": 0})
+        self.assertEqual(m["kpis"]["via_progress"], {"now": None, "prev": 100})
+        self.assertEqual(m["allocation"]["weeks"][-1], {"week": "2026-W39", "people": 0, "shares": {}})
+        a = m["people"][0]
+        self.assertEqual([t["completed"] for t in a["trend"]], [1, 0, 1, 0])
+        self.assertEqual((a["recent"]["weeks"], a["recent"]["completed"]), (4, 2))
+        html = render(m, {"highlights": [], "epic_results": {}}, ["2026-W39"], in_reports_dir=False)
+        self.assertIn("近 4 週完成（只跟自己比）· 本週 0 張", html)
+
+    def test_no_completion_at_all_is_one_empty_week(self):
+        m = run(self.epics())
+        self.assertEqual([h["week"] for h in m["health"]], ["2026-W39"])
+        self.assertEqual(m["kpis"]["backfill"], {"now": None, "prev": None})
+
+    def test_person_views(self):
+        issues = self.epics() + [
+            issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A", created="2026-09-18T03:59:00.000+0800"),
+            issue("CS-3", parent="CS-1", points=1.0, resolved=LAST_WEEK, assignee="A"),
+            issue("CS-21", parent="CS-20", points=3.0, resolved=IN_WEEK, assignee="A"),
+            issue("CS-4", parent="CS-1", status="doing", assignee="A", status_since="2026-09-01T10:00:00+08:00"),
+            issue("CS-5", parent="CS-1", status="review", assignee="A", status_since="2026-09-23T00:10:00+08:00"),
+        ]
+        a = {p["name"]: p for p in run(issues)["people"]}["A"]
+        self.assertEqual(a["trend"], [{"week": "2026-W38", "completed": 1}, {"week": "2026-W39", "completed": 2}])
+        self.assertEqual(a["recent"], {"weeks": 2, "completed": 3, "backfill": 1, "labels": [["甲", 2], ["乙", 1]]})
+        self.assertEqual(a["shares"], [["乙", 0.6], ["甲", 0.4]])
+        self.assertEqual(a["in_progress"]["ages"], {"CS-4": 21, "CS-5": 0})

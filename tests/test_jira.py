@@ -27,6 +27,7 @@ def raw(key, type_="任務", level=0, **fields):
         "issuetype": {"name": type_, "hierarchyLevel": level},
         "status": {"name": "待辦事項", "statusCategory": {"key": "new"}},
         "updated": "2026-09-20T10:00:00.000+0800",
+        "created": "2026-09-15T09:00:00.000+0800",
     }
     base.update(fields)
     return {"key": key, "id": issue_id(key), "fields": base}
@@ -43,6 +44,13 @@ def move(at_ms, from_id, to_id):
     return {"created": at_ms, "items": [{"field": "project", "fieldId": "project", "from": from_id, "to": to_id}]}
 
 
+def status_move(at_ms, from_name, to_name):
+    return {"created": at_ms, "items": [{"field": "status", "fieldId": "status", "fromString": from_name, "toString": to_name}]}
+
+
+DOING = {"status": {"name": "進行中", "statusCategory": {"key": "indeterminate"}}}
+
+
 class FakeClient:
     site = "example.atlassian.net"
 
@@ -51,12 +59,14 @@ class FakeClient:
         self.histories = histories or {}
         self.searched = False
         self.changelog_ids = None
+        self.changelog_fields = None
 
     def project_ids(self, keys):
         return {k: PROJECT_IDS[k] for k in keys}
 
     def changelogs(self, issue_ids, field_ids):
         self.changelog_ids = list(issue_ids)
+        self.changelog_fields = list(field_ids)
         return {i: self.histories[i] for i in issue_ids if i in self.histories}
 
     def verify(self):
@@ -187,12 +197,64 @@ class MovedInTest(unittest.TestCase):
         self.assertIsNone(moved["CS-4"])
         # 只查完成的工作卡：epic 與未完成的卡不查
         self.assertEqual(sorted(client.changelog_ids), sorted(issue_id(k) for k in ("CS-2", "CS-3", "CS-4")))
-        self.assertEqual(snap["schema"], 2)
+        self.assertEqual(snap["schema"], 3)
 
     def test_move_from_a_project_with_no_cards_is_still_internal(self):
         # 查到的卡全是 CS，FDEPROJECT 一張都沒有；從 FDEPROJECT 搬過來仍不算外部搬入
         _, snap = self.snap([raw("CS-3", **DONE)], {issue_id("CS-3"): [move(1_758_000_000_000, "10215", "10216")]})
         self.assertIsNone(snap["issues"][0]["moved_in"])
+
+
+class StatusHistoryTest(unittest.TestCase):
+    """補登、照流程走與進行中卡放了幾天的原始資料（團隊績效評估 AC-1）。"""
+
+    def snap(self, issues, histories):
+        client = FakeClient(issues, [], histories=histories)
+        snap = fetch_snapshot(client, period_ending(date(2026, 9, 22)), datetime(2026, 9, 22, 23, 59, tzinfo=TZ))
+        return client, {i["key"]: i for i in snap["issues"]}
+
+    def test_done_card_that_went_through_progress(self):
+        at_close = 1_758_200_000_000
+        _, got = self.snap([raw("CS-2", **DONE)], {issue_id("CS-2"): [
+            status_move(1_758_100_000_000, "待辦事項", "進行中"), status_move(at_close, "進行中", "完成")]})
+        self.assertTrue(got["CS-2"]["progress_seen"])
+        self.assertEqual(got["CS-2"]["status_since"], datetime.fromtimestamp(at_close / 1000, timezone.utc).isoformat())
+        self.assertEqual(got["CS-2"]["created"], "2026-09-15T09:00:00.000+0800")
+
+    def test_review_is_not_progress(self):
+        _, got = self.snap([raw("CS-2", **DONE)], {issue_id("CS-2"): [
+            status_move(1_758_100_000_000, "待辦事項", "審核中"), status_move(1_758_200_000_000, "審核中", "完成")]})
+        self.assertFalse(got["CS-2"]["progress_seen"])
+
+    def test_created_in_progress_counts_by_moving_out(self):
+        _, got = self.snap([raw("CS-2", **DONE)], {issue_id("CS-2"): [status_move(1_758_200_000_000, "進行中", "完成")]})
+        self.assertTrue(got["CS-2"]["progress_seen"])
+
+    def test_never_moved_since_creation_is_in_status_since_creation(self):
+        _, got = self.snap([raw("CS-2", **DOING)], {})
+        self.assertFalse(got["CS-2"]["progress_seen"])
+        self.assertEqual(got["CS-2"]["status_since"], datetime(2026, 9, 15, 9, 0, tzinfo=TZ).isoformat())
+
+    def test_last_entry_into_the_current_status_wins(self):
+        later = 1_758_300_000_000
+        _, got = self.snap([raw("CS-2", **DOING)], {issue_id("CS-2"): [
+            status_move(1_758_100_000_000, "待辦事項", "進行中"), status_move(1_758_200_000_000, "進行中", "審核中"),
+            status_move(later, "審核中", "進行中")]})
+        self.assertEqual(got["CS-2"]["status_since"], datetime.fromtimestamp(later / 1000, timezone.utc).isoformat())
+
+    def test_only_done_and_doing_work_cards_are_queried(self):
+        issues = [raw("CS-1", "大型工作", 1, **DOING), raw("CS-2", **DONE), raw("CS-3", **DOING), raw("CS-4")]
+        client, got = self.snap(issues, {})
+        self.assertEqual(sorted(client.changelog_ids), sorted(issue_id(k) for k in ("CS-2", "CS-3")))
+        self.assertEqual(client.changelog_fields, ["project", "status"])
+        self.assertIsNone(got["CS-4"]["status_since"])
+        self.assertIsNone(got["CS-1"]["progress_seen"])
+
+    def test_created_is_required(self):
+        broken = raw("CS-1")
+        del broken["fields"]["created"]
+        with self.assertRaisesRegex(ValueError, "created"):
+            normalize(broken)
 
 
 class SnapshotTest(unittest.TestCase):

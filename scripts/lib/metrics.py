@@ -25,13 +25,18 @@
   本週與累計都不算，也不列資料檢查，只給頁面在「改組前」分隔線之後灰字列出；搬入後才結案的照算；
   同一張卡也列在 config/excluded.json 的 cards 時以排除清單為準（照常列資料檢查，不進改組前清單）
   （2026-09-30 使用者裁：Squad 8 移轉的卡集中在陳勁佑）。
+- 團隊績效評估（2026-10-28 使用者鎖定，plan 在 vault 的 jira-weekly-report · 團隊績效評估）：
+  補登＝卡片建立後 10 分鐘內就結案；照流程走＝結案前待過「進行中」；兩者都只看累計完成卡片那批葉節點，逐週算。
+  停滯＝epic 未結案、底下的卡 14 天沒有任何更新（含只改 label 的更新）。
+  投入比例＝每人每週先換成 100% 再平均，人內用實際工時當權重、沒填的卡補這人這週的平均，整週都沒填就用張數；
+  只在人內換算，不跨人比小時（每人填工時的粒度不同）。
 """
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .kickoff import SECTIONS
-from .period import period_containing
+from .period import period_containing, period_ending
 from .snapshot import EPIC_LEVEL, KICKOFF_TYPE, issue_sort_key, parse_jira_time
 
 SECTION_LABELS = dict(SECTIONS)
@@ -41,10 +46,17 @@ UNASSIGNED_EPIC_LABEL = "未歸屬 epic"
 UNASSIGNED_OWNER = "未指派"
 UNLABELED = "未分類"
 STALE_DAYS = 7
+STALL_DAYS = 14
+BACKFILL_SECONDS = 600
+ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（7 色過 dataviz validate_palette 亮暗）
+ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
+OTHER_LABEL = "其他"
+# 7：snapshot 3 的建立時間與狀態歷程算出 health（逐週補登、照流程走）、kpis（本週與上週）、allocation（投入比例）；
+#    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 6
-SNAPSHOT_SCHEMA = 2  # snapshot 要有 moved_in 才判斷得了改組前
+SCHEMA = 7
+SNAPSHOT_SCHEMA = 3  # snapshot 要有 moved_in 才判斷得了改組前，要有 created、progress_seen、status_since 才算得了補登與照流程走
 
 
 def _round(value: float) -> float:
@@ -258,18 +270,20 @@ def _labels_of(tree, groups, checks, skip: set) -> tuple:
 
 
 def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: list, *,
-            cumulative_tokens, excluded: dict, token_source: bool) -> dict:
+            cumulative_tokens, excluded: dict, token_source: bool, previous) -> dict:
     """tokens 是這一期的 Token 檔；cumulative_tokens 是週次不晚於這一期的 Token 檔逐卡相加。
     兩個都是 None 代表這一期之前沒有任何 Token 資料。這一期有 Token 但累計沒有，代表呼叫端沒把累計接上。
     token_source 是 data/tokens/ 有沒有任何檔（含比這一期晚的）：頁面靠它決定 Token 欄顯不顯示，
     不能從累計推，較晚的週才有檔時累計是 None 但來源已經接上（AC-4）。
-    excluded 是 {卡號: 理由}，列的卡不算完成；沒有要排除的就傳 {}。"""
+    excluded 是 {卡號: 理由}，列的卡不算完成；沒有要排除的就傳 {}。
+    previous 是上一期的 metrics；沒有上一期的檔就傳 None，上週值是 null、頁面不顯示差值。"""
     if tokens is not None and cumulative_tokens is None:
         raise ValueError("這一期有 Token 資料，累計 Token 卻是 None：累計應包含這一期")
     if cumulative_tokens is not None and not token_source:
         raise ValueError("累計有 Token 資料，token_source 卻是 False：呼叫端沒把 data/tokens/ 的狀態接上")
     if snapshot.get("schema") != SNAPSHOT_SCHEMA:
-        raise ValueError(f"snapshot 的 schema 是 {snapshot.get('schema')}，需要 {SNAPSHOT_SCHEMA}（有搬入時間才判斷得了改組前）：重跑 prepare 抓一次 Jira")
+        raise ValueError(f"snapshot 的 schema 是 {snapshot.get('schema')}，需要 {SNAPSHOT_SCHEMA}（有搬入時間、建立時間與狀態歷程才算得了改組前與補登）："
+                         f"用 weekly.py prepare --week-ending {period.week_ending.isoformat()} 重抓一次 Jira")
     checks = list(extra_checks)
     tree = _Tree(snapshot["issues"], checks)
 
@@ -480,7 +494,17 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
     staffing = _staffing(tree, group_of, week_done, cumulative_done)
     labels = _label_rows(cumulative["epics"], week_leaves, cumulative_leaves, label_of)
 
+    week_of = {row["key"]: row["week"] for row in cumulative["completed"]}
+    weeks = _week_span(week_of, period)
+    health = _health(tree, cumulative_leaves, week_of, weeks)
+    allocation = _allocation(cumulative_leaves, week_of, weeks, tree.owner_of, label_of)
+    _person_views(people, cumulative_leaves, week_of, weeks, tree, label_of, period)
+    for row in epic_rows:
+        row["idle_days"] = _idle_days(tree, group_of, row, period)
+        row["stalled"] = row["key"] is not None and row["status"] != "Done" and row["idle_days"] >= STALL_DAYS
+
     active_rows = [r for r in epic_rows if r["active"]]
+    stalled = sum(1 for r in epic_rows if r["stalled"])
     return {
         "schema": SCHEMA,
         "site": snapshot["site"],
@@ -495,7 +519,11 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
             "hours": _round(sum(l["points"] or 0 for l in week_leaves)),
             "tokens": sum(tokens.values()) if tokens is not None else None,
             "unestimated_completed": sum(1 for l in week_leaves if l["points"] is None),
+            "stalled": stalled,
         },
+        "kpis": _kpis(health, period, len(active_rows), stalled, previous),
+        "health": health,
+        "allocation": allocation,
         "epics": epic_rows,
         "owners": owner_rows,
         "labels": labels,
@@ -693,6 +721,152 @@ def _staffing(tree, group_of, week_done, cumulative_done) -> list:
             s["hours"] = _round(s["hours"])
         rows.append(row)
     return rows
+
+
+def _week_span(week_of: dict, period) -> list:
+    """從第一張完成卡那週到本期，一週不漏（舊到新）：全隊沒有完成卡的週也要有一列、數字是 0，
+    不然「本週」會被當成上一個有完成的週，「近 6 週」也會跨過更長的時間（Codex 審 d442a48）。
+    一張完成卡都沒有時只有本期這一週。"""
+    first = min(week_of.values(), default=period.week_id)
+    weeks, current = [], period
+    while True:
+        weeks.append(current.week_id)
+        if current.week_id <= first:
+            return weeks[::-1]
+        current = period_ending(current.week_ending - timedelta(days=7))
+
+
+def _health(tree, done_leaves, week_of, weeks) -> list:
+    """逐週（舊到新）資料健康：完成卡片、其中補登幾張、照流程走幾張、沒填工時幾張。週序列連續，沒有完成卡的週是 0。"""
+    rows = {w: {"week": w, "completed": 0, "backfill": 0, "via_progress": 0, "unestimated": 0} for w in weeks}
+    for leaf in done_leaves:
+        row = rows[week_of[leaf["key"]]]
+        row["completed"] += 1
+        took = (parse_jira_time(leaf["resolved"]) - parse_jira_time(leaf["created"])).total_seconds()
+        row["backfill"] += took < BACKFILL_SECONDS
+        if leaf["progress_seen"] is None:
+            raise ValueError(f"{leaf['key']} 是完成的工作卡，snapshot 卻沒有狀態歷程（progress_seen）：snapshot 抓取不完整，重抓一次")
+        row["via_progress"] += leaf["progress_seen"]
+        row["unestimated"] += leaf["points"] is None
+    return [rows[w] for w in weeks]
+
+
+def _percent(part: int, whole: int):
+    """整數百分比；分母 0 是「這週沒有完成卡」，回 None，不是 0%。"""
+    return round(part / whole * 100) if whole else None
+
+
+def _kpis(health, period, projects: int, stalled: int, previous) -> dict:
+    """本週頁四個數字的本週與上週值（2026-10-28 鎖定 AC-2）。
+    照流程走與補登的上週值取同一份 health 序列的上一週；有完成的專案與停滯讀上一期 metrics。
+    上一期沒有檔是 None；上一期是 schema 7 以前算的，沒有 stalled 欄，停滯的上週值也是 None。"""
+    by_week = {h["week"]: h for h in health}
+    prev_week = period_containing(period.start - timedelta(seconds=1)).week_id
+
+    def ratio(field, week):
+        h = by_week.get(week)
+        return _percent(h[field], h["completed"]) if h else None
+
+    prev_totals = previous["totals"] if previous is not None else None
+    return {
+        "stalled": {"now": stalled, "prev": prev_totals.get("stalled") if prev_totals is not None else None},
+        "projects": {"now": projects, "prev": prev_totals["projects"] if prev_totals is not None else None},
+        "via_progress": {"now": ratio("via_progress", period.week_id), "prev": ratio("via_progress", prev_week)},
+        "backfill": {"now": ratio("backfill", period.week_id), "prev": ratio("backfill", prev_week)},
+    }
+
+
+def _weights(leaves: list) -> dict:
+    """一個人一段時間的 {label: 權重}。人內用實際工時；沒填的卡補這批有填的平均，全都沒填就每張算 1（用張數）。"""
+    known = [l["points"] for l in leaves if l["points"] is not None]
+    fill = sum(known) / len(known) if known else 1.0
+    by_label = {}
+    for leaf in leaves:
+        by_label[leaf["label"]] = by_label.get(leaf["label"], 0.0) + (leaf["points"] if leaf["points"] is not None else fill)
+    return by_label
+
+
+def _shares(leaves: list) -> dict:
+    """{label: 占比}，加總 1；工時全是 0 時改用張數，不除以 0。"""
+    weights = _weights(leaves)
+    total = sum(weights.values())
+    if not total:
+        weights = {}
+        for leaf in leaves:
+            weights[leaf["label"]] = weights.get(leaf["label"], 0.0) + 1
+        total = len(leaves)
+    return {label: value / total for label, value in weights.items()}
+
+
+def _allocation(done_leaves, week_of, weeks, owner_of, label_of) -> dict:
+    """投入比例：每人每週先換成 100%，再對當週有產出的人取平均（Swarmia 的做法），看比例不看小時。
+    前幾名 label 照最近 ALLOCATION_WINDOW 週的占比總和排，其餘併「其他」。"""
+    cells = {}
+    for leaf in done_leaves:
+        cells.setdefault((week_of[leaf["key"]], owner_of(leaf)), []).append({"label": label_of(leaf), "points": leaf["points"]})
+    per_week = {w: [] for w in weeks}
+    for (week, _), leaves in sorted(cells.items()):
+        per_week[week].append(_shares(leaves))
+    recent = {}
+    for week in weeks[-ALLOCATION_WINDOW:]:
+        for shares in per_week[week]:
+            for label, value in shares.items():
+                recent[label] = recent.get(label, 0.0) + value
+    top = [label for label, _ in sorted(recent.items(), key=lambda kv: (-kv[1], kv[0]))[:ALLOCATION_TOP]]
+    rows, has_other = [], False
+    for week in weeks:
+        people = per_week[week]
+        acc = {}
+        for shares in people:
+            for label, value in shares.items():
+                key = label if label in top else OTHER_LABEL
+                acc[key] = acc.get(key, 0.0) + value / len(people)
+        has_other = has_other or OTHER_LABEL in acc
+        rows.append({"week": week, "people": len(people), "shares": {k: round(v, 4) for k, v in sorted(acc.items())}})  # 沒人產出的週 shares 是 {}
+    return {"labels": top + ([OTHER_LABEL] if has_other else []), "weeks": rows}
+
+
+def _person_views(people, done_leaves, week_of, weeks, tree, label_of, period) -> None:
+    """人卡要的數字，直接加在 people 每一列（2026-10-28 鎖定 AC-4）：trend 逐週完成數（只跟自己比）；
+    recent 最近 ALLOCATION_WINDOW 週的完成、補登與前三個 label；shares 累計投入比例；in_progress.ages 進行中的卡進入目前狀態幾天。"""
+    recent_weeks = set(weeks[-ALLOCATION_WINDOW:])
+    mine = {}
+    for leaf in done_leaves:
+        mine.setdefault(tree.owner_of(leaf), []).append(leaf)
+    for person in people:
+        leaves = mine.get(person["name"], [])
+        person["trend"] = [{"week": w, "completed": sum(1 for l in leaves if week_of[l["key"]] == w)} for w in weeks]
+        recent = [l for l in leaves if week_of[l["key"]] in recent_weeks]
+        counts = {}
+        for leaf in recent:
+            counts[label_of(leaf)] = counts.get(label_of(leaf), 0) + 1
+        person["recent"] = {
+            "weeks": len(recent_weeks),
+            "completed": len(recent),
+            "backfill": sum(1 for l in recent if (parse_jira_time(l["resolved"]) - parse_jira_time(l["created"])).total_seconds() < BACKFILL_SECONDS),
+            "labels": [[label, n] for label, n in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[:3]],
+        }
+        shares = _shares([{"label": label_of(l), "points": l["points"]} for l in leaves]) if leaves else {}
+        person["shares"] = [[label, round(v, 4)] for label, v in sorted(shares.items(), key=lambda kv: (-kv[1], kv[0]))]
+        ages = {}
+        for key in person["in_progress"]["keys"]:
+            since = tree.by_key[key]["status_since"]
+            if since is None:
+                raise ValueError(f"{key} 是進行中的卡，snapshot 卻沒有進入目前狀態的時間（status_since）：snapshot 抓取不完整，重抓一次")
+            # 期間結束後才進入目前狀態的卡（抓取比期間結束晚幾分鐘），算 0 天
+            ages[key] = max(0, (period.end_exclusive - datetime.fromisoformat(since)).days)
+        person["in_progress"]["ages"] = ages
+
+
+def _idle_days(tree, group_of, row, period) -> int:
+    """專案底下的卡（不含 epic 自己與 Kick off）最後一次更新到本期結束幾天；底下沒有卡就看 epic 自己。
+    updated 是抓取當下的值，抓取比期間結束晚幾分鐘，晚於期間結束的算 0 天。"""
+    members = [i for i in tree.work if group_of[i["key"]] == row["id"]]
+    if members:
+        last = max(parse_jira_time(i["updated"]) for i in members)
+    else:
+        last = parse_jira_time(tree.by_key[row["key"]]["updated"])
+    return max(0, (period.end_exclusive - last).days)
 
 
 def _dedupe(checks: list) -> list:

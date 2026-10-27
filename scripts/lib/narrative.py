@@ -59,10 +59,18 @@ def _numbers_in(value, out: set):
             _numbers_in(v, out)
 
 
+# 頁面專用的管理訊號詞（2026-10-28 鎖定 AC-7：新指標不進 narrative）。數字白名單分不出數字的來源：停滯數剛好
+# 等於完成數時「停滯 2 個專案」也會過（Codex 審 6b0527a），所以從用詞擋，不從數字擋。
+PAGE_ONLY_TERMS = ("停滯", "補登", "照流程走", "投入比例")
+NARRATIVE_TOTALS = ("projects", "completed", "hours", "tokens", "unestimated_completed")
+
+
 def allowed_numbers(metrics: dict) -> set:
-    """程式算好的本週數字。cumulative、epics[].progress、migrated、in_progress、labels 的累計與 epic 數刻意不收。"""
+    """程式算好的本週數字。cumulative、epics[].progress、migrated、in_progress、labels 的累計與 epic 數刻意不收。
+    totals 只收原本的五欄：schema 7 加的 stalled 與 kpis、health、allocation 是管理訊號與推導值，不進白名單
+    （2026-10-28 鎖定 AC-7；Codex 審 70a636d 抓到 totals 整包放行會連 stalled 一起放）。"""
     out = set()
-    _numbers_in(metrics["totals"], out)
+    _numbers_in({k: metrics["totals"][k] for k in NARRATIVE_TOTALS}, out)
     for epic in metrics["epics"]:
         if epic["active"]:
             _numbers_in(epic["week"], out)
@@ -135,6 +143,9 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
         for key in ISSUE_KEY.findall(text):
             if key not in snapshot_keys:
                 errors.append(f"{where} 引用了不存在或已排除的卡號 {key}")
+        for term in PAGE_ONLY_TERMS:
+            if term in text:
+                errors.append(f"{where} 寫了「{term}」：這是本週頁的管理訊號，不寫進本週重點與專案結果")
         for quantity in chinese_quantities(text):
             errors.append(f"{where} 用了中文數字「{quantity}」，數量一律寫阿拉伯數字")
         for number in NUMBER.findall(ISSUE_KEY.sub(" ", text)):
