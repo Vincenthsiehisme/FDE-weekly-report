@@ -193,6 +193,21 @@ class NewSignalsStayOutTest(unittest.TestCase):
         self.assertNotIn(987654, allowed_numbers(m))
         self.assertIn(METRICS["totals"]["completed"], allowed_numbers(m))
 
+    def test_signal_words_are_refused_even_when_the_number_collides(self):
+        # 停滯數剛好等於完成數：數字白名單會放行，要靠用詞擋（Codex 審 6b0527a）
+        m = dict(METRICS, totals=dict(METRICS["totals"], stalled=METRICS["totals"]["completed"]))
+        n = METRICS["totals"]["completed"]
+        keys = {i["key"] for i in ISSUES}
+        ok = {"highlights": [], "epic_results": {}}
+        names = [name for _, name in __import__("lib.narrative", fromlist=["x"]).highlight_projects(m)]
+        ok["highlights"] = [f"[{name}] 完成 {n} 張" for name in names]
+        ok["epic_results"] = {e["id"]: f"完成 {n} 張" for e in m["epics"] if e["active"]}
+        validate(ok, m, keys)
+        for word in ("停滯", "補登", "照流程走", "投入比例"):
+            bad = dict(ok, epic_results={k: f"{word} {n} 個" for k in ok["epic_results"]})
+            with self.assertRaisesRegex(NarrativeError, f"寫了「{word}」"):
+                validate(bad, m, keys)
+
 
 if __name__ == "__main__":
     unittest.main()

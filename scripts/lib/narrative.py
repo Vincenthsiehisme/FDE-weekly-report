@@ -59,6 +59,9 @@ def _numbers_in(value, out: set):
             _numbers_in(v, out)
 
 
+# 頁面專用的管理訊號詞（2026-10-28 鎖定 AC-7：新指標不進 narrative）。數字白名單分不出數字的來源：停滯數剛好
+# 等於完成數時「停滯 2 個專案」也會過（Codex 審 6b0527a），所以從用詞擋，不從數字擋。
+PAGE_ONLY_TERMS = ("停滯", "補登", "照流程走", "投入比例")
 NARRATIVE_TOTALS = ("projects", "completed", "hours", "tokens", "unestimated_completed")
 
 
@@ -140,6 +143,9 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
         for key in ISSUE_KEY.findall(text):
             if key not in snapshot_keys:
                 errors.append(f"{where} 引用了不存在或已排除的卡號 {key}")
+        for term in PAGE_ONLY_TERMS:
+            if term in text:
+                errors.append(f"{where} 寫了「{term}」：這是頁面四個數字的管理訊號，不寫進本週重點與專案結果")
         for quantity in chinese_quantities(text):
             errors.append(f"{where} 用了中文數字「{quantity}」，數量一律寫阿拉伯數字")
         for number in NUMBER.findall(ISSUE_KEY.sub(" ", text)):
