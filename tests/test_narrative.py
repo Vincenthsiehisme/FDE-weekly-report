@@ -3,7 +3,7 @@ from datetime import date
 
 from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 from lib.metrics import compute
-from lib.narrative import NarrativeError, allowed_numbers, validate
+from lib.narrative import NarrativeError, allowed_numbers, highlight_projects, validate
 from lib.period import period_ending
 
 ISSUES = [
@@ -199,7 +199,7 @@ class NewSignalsStayOutTest(unittest.TestCase):
         n = METRICS["totals"]["completed"]
         keys = {i["key"] for i in ISSUES}
         ok = {"highlights": [], "epic_results": {}}
-        names = [name for _, name in __import__("lib.narrative", fromlist=["x"]).highlight_projects(m)]
+        names = [name for _, name in highlight_projects(m)]
         ok["highlights"] = [f"[{name}] 完成 {n} 張" for name in names]
         ok["epic_results"] = {e["id"]: f"完成 {n} 張" for e in m["epics"] if e["active"]}
         validate(ok, m, keys)
@@ -207,6 +207,17 @@ class NewSignalsStayOutTest(unittest.TestCase):
             bad = dict(ok, epic_results={k: f"{word} {n} 個" for k in ok["epic_results"]})
             with self.assertRaisesRegex(NarrativeError, f"寫了「{word}」"):
                 validate(bad, m, keys)
+
+    def test_signal_words_in_the_project_name_prefix_pass_but_not_after_it(self):
+        # highlights 只驗「[專案名]」之後 AI 寫的部分：專案名含這些詞照常通過，寫在後面才擋（fable 降級審查 8c05d2c）
+        issues = [issue("CS-1", level=1, status="doing", summary="補登工具停滯排查"),
+                  issue("CS-2", level=0, parent="CS-1", status="done", points=1.0, resolved=IN_WEEK, assignee="Alice")]
+        m = compute(snapshot(issues), period_ending(date(2026, 9, 22)), None, {}, [], cumulative_tokens=None, excluded={},
+                    token_source=False, previous=None)
+        keys = {i["key"] for i in issues}
+        validate({"highlights": ["[補登工具停滯排查] 完成 CS-2"], "epic_results": {"CS-1": "完成 CS-2"}}, m, keys)
+        with self.assertRaisesRegex(NarrativeError, r"highlights\[0\] 寫了「投入比例」"):
+            validate({"highlights": ["[補登工具停滯排查] 完成 CS-2 投入比例報表"], "epic_results": {"CS-1": "完成 CS-2"}}, m, keys)
 
 
 if __name__ == "__main__":

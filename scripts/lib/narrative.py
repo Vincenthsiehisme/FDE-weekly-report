@@ -145,7 +145,7 @@ def validate(narrative: dict, metrics: dict, snapshot_keys: set) -> None:
                 errors.append(f"{where} 引用了不存在或已排除的卡號 {key}")
         for term in PAGE_ONLY_TERMS:
             if term in text:
-                errors.append(f"{where} 寫了「{term}」：這是頁面四個數字的管理訊號，不寫進本週重點與專案結果")
+                errors.append(f"{where} 寫了「{term}」：這是本週頁的管理訊號，不寫進本週重點與專案結果")
         for quantity in chinese_quantities(text):
             errors.append(f"{where} 用了中文數字「{quantity}」，數量一律寫阿拉伯數字")
         for number in NUMBER.findall(ISSUE_KEY.sub(" ", text)):
