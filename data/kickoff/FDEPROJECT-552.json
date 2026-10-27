@@ -11,7 +11,7 @@
     "objective": "員工在 Copilot、Claude Code 等 AI 工具裡，用本人 SERP 帳號查留言中心、公佈欄、簽核單、出勤與假單，確認後可送出補出勤與簽核人設定，不用一頁頁開 SERP",
     "why": "SERP 常用資訊分散在 tourerp、am、hcm 多個子站，每次都要登入、找選單；AI 工具已經在用，接上 MCP 一句話就能查完。實驗性質，Jin 順便做的，先驗證可行性與安全範圍"
   },
-  "last_seen_at": "2026-10-28T00:07:23.982424+08:00",
+  "last_seen_at": "2026-10-28T05:35:50.965938+08:00",
   "last_seen_key": "FDEPROJECT-553",
   "locked_at": "2026-10-21T00:00:31.859357+08:00",
   "problems": [],
