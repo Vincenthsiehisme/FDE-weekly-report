@@ -737,6 +737,8 @@ class StepInTest(unittest.TestCase):
         for title in ("專案地圖", "力氣花在哪", "產出", "資料健康"):
             self.assertIn(f"<h4>{title}</h4>", viz)
         self.assertEqual(viz.count("<svg"), 4)
+        # 地圖 x 軸最右的「100%」置中在 x=580，右邊留 20 才不超出 600 寬的 viewBox（fable 審 06bbba4）
+        self.assertIn('<text x="580.0" y="248" text-anchor="middle" class="t-axis">100%</text>', viz)
         # 停滯的點標名字（去掉 [單位] 前綴）與負責人的第一個字
         self.assertIn(">很久沒動的專案 · Bea</text>", viz)
         # 投入比例：門市一個 label，兩人各 100% → 100%，數字直接寫在條上
