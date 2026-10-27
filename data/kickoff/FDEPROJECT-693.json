@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-693",
+  "kickoff_key": "FDEPROJECT-694",
+  "last_seen": {
+    "after": "每次公告都有盤點表與處理紀錄（換版留回滾映像）；閒置服務關閉；同仁服務放 .7、同仁可自行部署",
+    "before": "漏洞修補與主機整理散在行政作業；閒置服務仍在跑；同仁服務還在數據部主機、沒有我方主機帳號",
+    "decision": null,
+    "evidence": "各次盤點表與換版紀錄；.7 騰出空間的前後數字；同仁帳號三台試登成功；搬遷所需 SERP 單的送出紀錄",
+    "next_milestone": "數據部主機收回前，確認同仁服務搬遷時程並送出防火牆與網路單",
+    "objective": "FDE 經手主機（.9 p-ot-backstage、.7 p-ai-dify、.24 p-other-difyline，及共用跳板 .125）的漏洞修補、閒置服務清理、服務搬回自有主機，集中在一個專案追蹤",
+    "why": "10/22 起連續有 eMudhra 憑證外洩、LiteLLM 投毒、Node TLS、Brotli 等公告要盤點與修補；數據部 10/28～29 收回主機，同仁服務要搬回我們自己的三台。原本掛的 FDEPROJECT-119 行政作業已結案"
+  },
+  "last_seen_at": "2026-10-28T00:07:23.982424+08:00",
+  "last_seen_key": "FDEPROJECT-694",
+  "locked_at": "2026-10-28T00:07:23.982424+08:00",
+  "problems": [],
+  "sections": {
+    "after": "每次公告都有盤點表與處理紀錄（換版留回滾映像）；閒置服務關閉；同仁服務放 .7、同仁可自行部署",
+    "before": "漏洞修補與主機整理散在行政作業；閒置服務仍在跑；同仁服務還在數據部主機、沒有我方主機帳號",
+    "decision": null,
+    "evidence": "各次盤點表與換版紀錄；.7 騰出空間的前後數字；同仁帳號三台試登成功；搬遷所需 SERP 單的送出紀錄",
+    "next_milestone": "數據部主機收回前，確認同仁服務搬遷時程並送出防火牆與網路單",
+    "objective": "FDE 經手主機（.9 p-ot-backstage、.7 p-ai-dify、.24 p-other-difyline，及共用跳板 .125）的漏洞修補、閒置服務清理、服務搬回自有主機，集中在一個專案追蹤",
+    "why": "10/22 起連續有 eMudhra 憑證外洩、LiteLLM 投毒、Node TLS、Brotli 等公告要盤點與修補；數據部 10/28～29 收回主機，同仁服務要搬回我們自己的三台。原本掛的 FDEPROJECT-119 行政作業已結案"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-697",
+  "kickoff_key": "FDEPROJECT-698",
+  "last_seen": {
+    "after": "每天自動匯入 SERP 班表，店長在「今日班表」頁調整，派單照班表進行，找不到人就進待確認",
+    "before": "Chatwoot 收件匣靠人工指派；班表只在 SERP，而且臨時請假不會反映",
+    "decision": null,
+    "evidence": "測試站每日匯入紀錄（板橋 8 人 × 14 天）、店長調整紀錄、派單後指派正確率",
+    "next_milestone": "第一階段（匯入＋今日班表頁）上正式站由 Jin 決定時間，之後做第二階段派單",
+    "objective": "LINE 客人訊息進 Chatwoot 時，依 SERP 班表加店長當日調整，自動派給當班門市同仁",
+    "why": "全省導入後訊息量變大，人工指派會漏派、晚回；門市分前台與後勤，要照班表才派得對"
+  },
+  "last_seen_at": "2026-10-28T00:07:23.982424+08:00",
+  "last_seen_key": "FDEPROJECT-698",
+  "locked_at": "2026-10-28T00:07:23.982424+08:00",
+  "problems": [],
+  "sections": {
+    "after": "每天自動匯入 SERP 班表，店長在「今日班表」頁調整，派單照班表進行，找不到人就進待確認",
+    "before": "Chatwoot 收件匣靠人工指派；班表只在 SERP，而且臨時請假不會反映",
+    "decision": null,
+    "evidence": "測試站每日匯入紀錄（板橋 8 人 × 14 天）、店長調整紀錄、派單後指派正確率",
+    "next_milestone": "第一階段（匯入＋今日班表頁）上正式站由 Jin 決定時間，之後做第二階段派單",
+    "objective": "LINE 客人訊息進 Chatwoot 時，依 SERP 班表加店長當日調整，自動派給當班門市同仁",
+    "why": "全省導入後訊息量變大，人工指派會漏派、晚回；門市分前台與後勤，要照班表才派得對"
+  }
+}
