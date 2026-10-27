@@ -381,7 +381,7 @@ def _map_svg(metrics) -> str:
     rows = [e for e in metrics["epics"] if e["key"] and e["status"] != "Done"]
     if not rows:
         return '<p class="muted">沒有未結案的專案。</p>'
-    w, h, left, top, right, bottom = 600, 260, 36, 10, 12, 32
+    w, h, left, top, right, bottom = 600, 260, 36, 10, 20, 32  # 右邊留 20：x 軸「100%」置中在最右，不超出 viewBox
     maxd = max([30] + [e["idle_days"] for e in rows])
 
     def x(p):
@@ -545,18 +545,19 @@ def _spark(trend: list) -> str:
     slot = SPARK_DENSE_SLOT if dense else SPARK_SLOT
     every = -(-len(trend) // SPARK_LABELED) if dense else 1
     top = max((t["completed"] for t in trend), default=0) or 1
-    w, h, base, tall = n * slot, 50, 36, 22
+    pad = 4  # 頭尾各留 4px：第一根的週次、最後一根的三位數張數置中時不被裁掉（fable 審 26350ed）
+    w, h, base, tall = n * slot + 2 * pad, 50, 36, 22
     bw = slot - 4
     out = []
     for i, t in enumerate(trend):
         last = i == len(trend) - 1
-        x = i * slot + 2
+        x = pad + i * slot + 2
         hb = max(t["completed"] / top * tall, 0.5)
         out.append(f'<rect x="{x:.1f}" y="{base - hb:.1f}" width="{bw:.1f}" height="{hb:.1f}" rx="1.5" '
                    f'class="{"bar-wk" if last else "bar-before"}"><title>{_short_week(t["week"])} {t["completed"]} 張</title></rect>')
         if not dense or last:
             out.append(f'<text x="{x + bw / 2:.1f}" y="{base - hb - 3:.1f}" text-anchor="middle" class="t-val">{t["completed"]}</text>')
-        if last or (len(trend) - 1 - i) % every == 0:
+        if (len(trend) - 1 - i) % every == 0:  # 從最新一週往回數，最新一週一定標
             out.append(f'<text x="{x + bw / 2:.1f}" y="{h - 2}" text-anchor="middle">{_short_week(t["week"])}</text>')
     return (f'<svg class="spark" viewBox="0 0 {w} {h}" width="{w}" height="{h}" role="img" '
             f'aria-label="近 {len(trend)} 週完成張數">{"".join(out)}</svg>')

@@ -435,7 +435,7 @@ class BreakpointTest(unittest.TestCase):
 
     def test_old_snapshot_without_moved_in_is_refused(self):
         old = snapshot(self.issues())
-        old["schema"] = 2  # schema 2 有搬入時間、沒有建立時間：一樣不收，叫人重抓
+        old["schema"] = 2  # schema 2 有搬入時間、沒有狀態歷程（progress_seen、status_since）：一樣不收，叫人重抓
         with self.assertRaisesRegex(ValueError, "prepare --week-ending 2026-09-22"):
             compute(old, PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
 

@@ -786,8 +786,8 @@ class StepInTest(unittest.TestCase):
         widths = [float(w) for w in re.findall(r'<rect x="[^"]+" y="[^"]+" width="([^"]+)"', svg)]
         self.assertEqual(len(widths), 40)
         self.assertGreater(min(widths), 0)
-        # 超過 12 週改窄格：每週 14px，週次每 4 根標一次（含最新一週），張數只標最新一週
-        self.assertIn('viewBox="0 0 560 50" width="560"', svg)
+        # 超過 12 週改窄格：每週 14px 加頭尾各 4px，週次每 4 根標一次（含最新一週），張數只標最新一週
+        self.assertIn('viewBox="0 0 568 50" width="568"', svg)
         self.assertEqual(len(re.findall(r">W\d\d</text>", svg)), 10)
         self.assertEqual(svg.count('class="t-val"'), 1)
 
@@ -795,7 +795,11 @@ class StepInTest(unittest.TestCase):
         # 2026-10-28 第二輪：右上小長條看不出是哪幾週、幾張，每根底下標週次、頂端標張數
         from lib.render import _spark
         svg = _spark([{"week": "2026-W43", "completed": 5}, {"week": "2026-W44", "completed": 0}])
-        self.assertIn('viewBox="0 0 56 50"', svg)
+        self.assertIn('viewBox="0 0 64 50"', svg)
+        # 窄格 13 週時第一根也標週次：置中後不超出左邊，中心 x 至少 9（10px 字的「W30」約 17px 寬；fable 審 26350ed）
+        dense = _spark([{"week": f"2026-W{30 + i}", "completed": 1} for i in range(13)])
+        first = float(re.search(r'<text x="([\d.]+)" y="48"[^>]*>W30<', dense).group(1))
+        self.assertGreaterEqual(first, 9)
         self.assertEqual(re.findall(r">(W\d\d)</text>", svg), ["W43", "W44"])
         self.assertEqual(re.findall(r'class="t-val">(\d+)</text>', svg), ["5", "0"])
 
