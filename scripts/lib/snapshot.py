@@ -19,7 +19,7 @@ EPIC_LEVEL = 1  # issuetype.hierarchyLevel：epic 1、一般卡 0、子任務 -1
 # 「照流程走」只認這個狀態名（2026-10-28 鎖定 AC-1：結案前曾進「進行中」；審核中不算）
 PROGRESS_STATUS = "進行中"
 # 3：每張卡多了 created；完成與進行中的工作卡多了 progress_seen（曾進「進行中」）與 status_since（進入目前狀態的時間），
-#    metrics 用來算補登、照流程走與進行中卡放了幾天（團隊績效評估 AC-1）
+#    metrics 用來算照流程走與進行中卡放了幾天（團隊績效評估 AC-1；補登 2026-10-28 拿掉，created 照存）
 # 2：完成的工作卡多了 moved_in（從其他專案搬進 FDEPROJECT／CS 的時間），metrics 用它判斷搬入前已完成（改組前）
 SCHEMA = 3
 

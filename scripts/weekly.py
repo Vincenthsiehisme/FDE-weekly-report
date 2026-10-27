@@ -138,7 +138,7 @@ def excluded_view(snapshot: dict, *, fresh_fetch: bool) -> tuple:
 
 
 def load_previous(period):
-    """上一期的 metrics：本週頁四個數字的上週值從這裡讀。沒有檔是合法的（第一期，或上一期沒產出），
+    """上一期的 metrics：本週頁三個數字的上週值從這裡讀。沒有檔是合法的（第一期，或上一期沒產出），
     回 None，頁面不顯示差值；有檔卻讀壞了照常失敗。"""
     path = week_dir(period_ending(period.week_ending - timedelta(days=7)).week_id) / "metrics.json"
     return read_json(path) if path.is_file() else None

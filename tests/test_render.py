@@ -152,7 +152,7 @@ class PeopleTest(unittest.TestCase):
         names = re.findall(r'<article class="pcard"><h4>(.*?)</h4>', cards)
         # Carol 本週沒有完成、手上有進行中；Dan 上週完成，在近 4 週裡；未指派最後；照名字排，不照張數或工時
         self.assertEqual(names, ["Alice", "Carol", "Dan", "未指派"])
-        self.assertIn("近 2 週完成（只跟自己比）· 本週 0 張", cards[cards.index("<h4>Dan</h4>"):])
+        self.assertIn("近 2 週完成張數（只跟自己比，深色＝本週）· 本週 0 張", cards[cards.index("<h4>Dan</h4>"):])
 
     def test_overview_has_no_people_table_and_team_tab_has_everyone_with_work(self):
         html = page(metrics=metrics_for(self.ISSUES))
@@ -179,8 +179,23 @@ class PeopleTest(unittest.TestCase):
         self.assertNotIn("本週完成", team)
         self.assertNotIn('browse/CS-2"', team)
         self.assertIn("累計 1 張 · 累計工時 1.5h", team)
-        self.assertIn("負責過：", team)
         self.assertIn("累計投入比例：未分類 100%", team)
+
+    def test_team_card_lists_open_projects_one_per_line_and_folds_closed_ones(self):
+        # 2026-10-28 第二輪：「負責過」一整段太密，拆成負責中逐列、已結案收合
+        issues = self.ISSUES + [issue("CS-30", level=1, status="done", resolved=IN_WEEK, assignee="Alice", summary="收掉的專案"),
+                                issue("CS-31", level=0, parent="CS-30", status="done", points=1.0, resolved=IN_WEEK, assignee="Alice"),
+                                issue("CS-40", level=1, status="doing", assignee="Alice", summary="還在做的專案")]
+        narrative = {"highlights": ["完成 CS-2"], "epic_results": {"CS-1": "完成", "CS-30": "完成"}}
+        team = panel(page(metrics=metrics_for(issues), narrative=narrative), "team")
+        alice = team[team.index("<h3>Alice</h3>"):]
+        alice = alice[:alice.index("</article>")]
+        self.assertNotIn("負責過", team)
+        self.assertIn('<p class="sub">負責中 1 個</p>', alice)
+        self.assertIn('<details><summary>已結案 1 個</summary><ul class="owned"><li><span class="key"><a href="https://example.atlassian.net/browse/CS-30">CS-30</a></span> 收掉的專案</li></ul></details>', alice)
+        self.assertIn('<ul class="owned"><li><span class="key"><a href="https://example.atlassian.net/browse/CS-40">CS-40</a></span> 還在做的專案</li></ul>', alice)
+        self.assertLess(alice.index("負責中"), alice.index("已結案"))
+        self.assertIn('<div class="tcards">', team)
 
     def test_people_column_on_the_overview_replaces_the_staffing_table(self):
         html = page(metrics=metrics_for(self.ISSUES))
@@ -321,8 +336,9 @@ class WordingTest(unittest.TestCase):
         glossary = html[html.index('<section id="glossary"'):html.index("</section>", html.index('<section id="glossary"'))]
         self.assertIn("2026/09/16（三） 00:00 到 2026/09/22（二） 23:59（UTC+8）", glossary)
         for term in ("本週", "累計", "完成卡片", "實際工時", "累計工時", "未填工時", "人", "進度", "label", "Done／On Track", "資料檢查",
-                     "停滯", "補登", "照流程走", "投入比例"):
+                     "停滯", "照流程走", "投入比例"):
             self.assertIn(f"<dt>{term}</dt>", glossary)
+        self.assertNotIn("<dt>補登</dt>", glossary)
         self.assertNotIn("<dt>專案投入</dt>", glossary)
         self.assertNotIn("交付", html)
 
@@ -692,16 +708,21 @@ class StepInTest(unittest.TestCase):
                     previous=previous)
         return render(m, self.NARRATIVE, ["2026-W39"], in_reports_dir=False)
 
-    def test_four_numbers_with_last_week(self):
+    def test_three_numbers_with_last_week(self):
         week = panel(self.html(previous={"totals": {"projects": 3, "stalled": 0}}), "week")
         kpis = week[week.index('class="kpis wk-kpis"'):week.index('class="viz"')]
-        # 停滯是主數字、唯一用警示色、連到清單；照流程走 50%、補登 50%；上週沒有完成卡，比例的上週值寫明沒有
+        # 停滯是主數字、唯一用警示色、連到清單；照流程走 50%；上週沒有完成卡，比例的上週值寫明沒有；補登 2026-10-28 拿掉
         self.assertIn('<li class="lead"><span>停滯專案</span><strong class=alert>1</strong><small>上週 0，多 1</small>', kpis)
         self.assertIn('<a href="#step-in">看是哪幾個</a>', kpis)
         self.assertIn('<span>有完成的專案</span><strong>1</strong><small>上週 3，少 2</small>', kpis)
         self.assertIn('<span>照流程走</span><strong>50%</strong><small>沒有上週的值</small>', kpis)
-        self.assertIn('<span>補登</span><strong>50%</strong><small>沒有上週的值</small>', kpis)
+        self.assertIn('style="--kpis:3"', kpis)
+        self.assertEqual(kpis.count("<li"), 3)
         self.assertEqual(kpis.count("class=alert"), 1)
+
+    def test_backfill_is_gone_from_every_tab(self):
+        # 2026-10-28 使用者裁補登不算：數字、圖、原因清單、人卡、名詞定義都沒有
+        self.assertNotIn("補登", self.html())
 
     def test_percent_change_is_in_points(self):
         from lib.render import _delta
@@ -713,19 +734,23 @@ class StepInTest(unittest.TestCase):
     def test_four_charts_are_inline_svg_with_their_numbers_written(self):
         week = panel(self.html(), "week")
         viz = week[week.index('class="viz"'):week.index('id="step-in"')]
-        for title in ("專案地圖", "力氣花在哪", "產出與補登", "資料健康"):
+        for title in ("專案地圖", "力氣花在哪", "產出", "資料健康"):
             self.assertIn(f"<h4>{title}</h4>", viz)
         self.assertEqual(viz.count("<svg"), 4)
+        # 地圖 x 軸最右的「100%」置中在 x=580，右邊留 20 才不超出 600 寬的 viewBox（fable 審 06bbba4）
+        self.assertIn('<text x="580.0" y="248" text-anchor="middle" class="t-axis">100%</text>', viz)
         # 停滯的點標名字（去掉 [單位] 前綴）與負責人的第一個字
         self.assertIn(">很久沒動的專案 · Bea</text>", viz)
         # 投入比例：門市一個 label，兩人各 100% → 100%，數字直接寫在條上
-        self.assertIn('<text x="44.0" y="13" class="t-in">100%</text>', viz)
+        self.assertIn('<text x="44.0" y="16" class="t-in">100%</text>', viz)
         self.assertIn('<p class="legend swatches"><span><i class="s1"></i>門市</span></p>', viz)
-        # 產出：本週 2 張、其中 1 張補登（斜線）；資料健康：照流程走與補登各 50%
-        self.assertIn("W39 補登 1 張", viz)
+        # 產出：本週 2 張；資料健康：照流程走 50%
+        self.assertIn("<title>W39 完成 2 張</title>", viz)
         self.assertIn("W39 照流程走 1/2 張", viz)
+        self.assertIn('class="t-val">50%</text>', viz)
+        self.assertNotIn("hatch", viz)
 
-    def test_step_in_list_has_four_reasons_and_opens_the_first_three(self):
+    def test_step_in_list_has_three_reasons_and_opens_those_with_items(self):
         week = panel(self.html(), "week")
         step = week[week.index('id="step-in"'):week.index("<h3>人</h3>")]
         self.assertEqual(step.count('<details class="cause" open>'), 3)
@@ -734,8 +759,7 @@ class StepInTest(unittest.TestCase):
         self.assertIn('<b class="cnt alert">1</b> 張卡放在進行中超過 14 天', step)
         self.assertIn("放很久的卡 <span class=\"muted\">· amy · 20 天</span>", step)
         self.assertIn("門市客服：<span class=\"muted\">要不要買授權</span>", step)
-        self.assertIn('<details class="cause"><summary><b class="cnt">1</b> 張卡本週是補登</summary>', step)
-        self.assertIn("Zed <span class=\"muted\">· 1 張裡 1 張補登</span>", step)
+        self.assertEqual(step.count('<details class="cause"'), 3)
 
     def test_people_are_in_name_order_and_only_compared_with_themselves(self):
         html = self.html()
@@ -743,7 +767,7 @@ class StepInTest(unittest.TestCase):
         cards = week[week.index("<h3>人</h3>"):week.index('class="proj-list"')]
         # Zed 本週 9h、amy 1.5h：照名字（不分大小寫）排，不照工時或張數
         self.assertEqual(re.findall(r'<article class="pcard"><h4>(.*?)</h4>', cards), ["amy", "Zed"])
-        self.assertIn("近 1 週完成（只跟自己比）· 本週 1 張", cards)
+        self.assertIn("近 1 週完成張數（只跟自己比，深色＝本週）· 本週 1 張", cards)
         self.assertIn('放很久的卡 <span class="alert">20 天</span>', cards)
         self.assertIn("近 1 週落在：門市 1 張", cards)
         team = panel(html, "team")
@@ -764,13 +788,29 @@ class StepInTest(unittest.TestCase):
         widths = [float(w) for w in re.findall(r'<rect x="[^"]+" y="[^"]+" width="([^"]+)"', svg)]
         self.assertEqual(len(widths), 40)
         self.assertGreater(min(widths), 0)
-        self.assertIn('viewBox="0 0 200 26" width="200"', svg)
+        # 超過 12 週改窄格：每週 14px 加頭尾各 4px，週次每 4 根標一次（含最新一週），張數只標最新一週
+        self.assertIn('viewBox="0 0 568 50" width="568"', svg)
+        self.assertEqual(len(re.findall(r">W\d\d</text>", svg)), 10)
+        self.assertEqual(svg.count('class="t-val"'), 1)
+
+    def test_short_trend_labels_every_week_and_count(self):
+        # 2026-10-28 第二輪：右上小長條看不出是哪幾週、幾張，每根底下標週次、頂端標張數
+        from lib.render import _spark
+        svg = _spark([{"week": "2026-W43", "completed": 5}, {"week": "2026-W44", "completed": 0}])
+        self.assertIn('viewBox="0 0 64 50"', svg)
+        # 窄格 13 週時第一根也標週次：置中後不超出左邊，中心 x 至少 9（10px 字的「W30」約 17px 寬；fable 審 26350ed）
+        dense = _spark([{"week": f"2026-W{30 + i}", "completed": 1} for i in range(13)])
+        first = float(re.search(r'<text x="([\d.]+)" y="48"[^>]*>W30<', dense).group(1))
+        self.assertGreaterEqual(first, 9)
+        self.assertEqual(re.findall(r">(W\d\d)</text>", svg), ["W43", "W44"])
+        self.assertEqual(re.findall(r'class="t-val">(\d+)</text>', svg), ["5", "0"])
 
     def test_series_colors_have_light_and_dark_steps(self):
         html = self.html()
         self.assertIn("--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;", html)
         self.assertIn("--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;", html)
-        self.assertIn(".viz,.pcards{grid-template-columns:minmax(0,1fr)}", html[html.index("@media (max-width:640px)"):])
+        self.assertIn(".viz,.pcards,.tcards{grid-template-columns:minmax(0,1fr)}", html[html.index("@media (max-width:640px)"):])
+        self.assertIn("main{max-width:1280px;", html)
 
 
 if __name__ == "__main__":

@@ -435,7 +435,7 @@ class BreakpointTest(unittest.TestCase):
 
     def test_old_snapshot_without_moved_in_is_refused(self):
         old = snapshot(self.issues())
-        old["schema"] = 2  # schema 2 有搬入時間、沒有建立時間：一樣不收，叫人重抓
+        old["schema"] = 2  # schema 2 有搬入時間、沒有狀態歷程（progress_seen、status_since）：一樣不收，叫人重抓
         with self.assertRaisesRegex(ValueError, "prepare --week-ending 2026-09-22"):
             compute(old, PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
 
@@ -595,27 +595,27 @@ if __name__ == "__main__":
 
 
 class FlowHealthTest(unittest.TestCase):
-    """團隊績效評估 AC-1：補登、照流程走、停滯、投入比例、人卡的數字。期望值寫死。"""
+    """團隊績效評估 AC-1：照流程走、停滯、投入比例、人卡的數字。期望值寫死。補登 2026-10-28 拿掉，schema 8 不再有這欄。"""
 
     def epics(self):
         return [issue("CS-1", level=1, status="doing", assignee="Owner", labels=["甲"]),
                 issue("CS-20", level=1, status="doing", assignee="Owner", labels=["乙"])]
 
-    def test_backfill_and_via_progress_per_week(self):
+    def test_via_progress_per_week_and_no_backfill(self):
         issues = self.epics() + [
-            # 建立 5 分鐘後就結案：補登
+            # 建立 5 分鐘後就結案：以前算補登，2026-10-28 起不算，也不留欄位
             issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A", created="2026-09-18T03:55:00.000+0800"),
             # 前一天建、待過進行中
             issue("CS-3", parent="CS-1", points=None, resolved=IN_WEEK, assignee="A", progress_seen=True),
-            # 上週：補登但待過進行中（兩個旗標各自算）
             issue("CS-4", parent="CS-1", points=2.0, resolved=LAST_WEEK, assignee="B", created="2026-09-10T03:59:30.000+0800", progress_seen=True),
         ]
         m = run(issues)
+        self.assertEqual(m["schema"], 8)
         self.assertEqual(m["health"], [
-            {"week": "2026-W38", "completed": 1, "backfill": 1, "via_progress": 1, "unestimated": 0},
-            {"week": "2026-W39", "completed": 2, "backfill": 1, "via_progress": 1, "unestimated": 1},
+            {"week": "2026-W38", "completed": 1, "via_progress": 1, "unestimated": 0},
+            {"week": "2026-W39", "completed": 2, "via_progress": 1, "unestimated": 1},
         ])
-        self.assertEqual(m["kpis"]["backfill"], {"now": 50, "prev": 100})
+        self.assertEqual(sorted(m["kpis"]), ["projects", "stalled", "via_progress"])
         self.assertEqual(m["kpis"]["via_progress"], {"now": 50, "prev": 100})
 
     def test_done_card_without_history_fails_loudly(self):
@@ -638,7 +638,7 @@ class FlowHealthTest(unittest.TestCase):
                       previous={"totals": {"projects": 4, "stalled": 2}})
         self.assertEqual(new["kpis"]["stalled"]["prev"], 2)
         # 這一週沒有上週的完成卡：上週比例是 None，不是 0%
-        self.assertIsNone(new["kpis"]["backfill"]["prev"])
+        self.assertIsNone(new["kpis"]["via_progress"]["prev"])
 
     def test_stalled_is_open_epic_whose_cards_have_not_moved_for_14_days(self):
         issues = self.epics() + [
@@ -713,19 +713,19 @@ class FlowHealthTest(unittest.TestCase):
         ]
         m = run(issues)
         self.assertEqual([h["week"] for h in m["health"]], ["2026-W36", "2026-W37", "2026-W38", "2026-W39"])
-        self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "backfill": 0, "via_progress": 0, "unestimated": 0})
+        self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "via_progress": 0, "unestimated": 0})
         self.assertEqual(m["kpis"]["via_progress"], {"now": None, "prev": 100})
         self.assertEqual(m["allocation"]["weeks"][-1], {"week": "2026-W39", "people": 0, "shares": {}})
         a = m["people"][0]
         self.assertEqual([t["completed"] for t in a["trend"]], [1, 0, 1, 0])
         self.assertEqual((a["recent"]["weeks"], a["recent"]["completed"]), (4, 2))
         html = render(m, {"highlights": [], "epic_results": {}}, ["2026-W39"], in_reports_dir=False)
-        self.assertIn("近 4 週完成（只跟自己比）· 本週 0 張", html)
+        self.assertIn("近 4 週完成張數（只跟自己比，深色＝本週）· 本週 0 張", html)
 
     def test_no_completion_at_all_is_one_empty_week(self):
         m = run(self.epics())
         self.assertEqual([h["week"] for h in m["health"]], ["2026-W39"])
-        self.assertEqual(m["kpis"]["backfill"], {"now": None, "prev": None})
+        self.assertEqual(m["kpis"]["via_progress"], {"now": None, "prev": None})
 
     def test_person_views(self):
         issues = self.epics() + [
@@ -737,6 +737,6 @@ class FlowHealthTest(unittest.TestCase):
         ]
         a = {p["name"]: p for p in run(issues)["people"]}["A"]
         self.assertEqual(a["trend"], [{"week": "2026-W38", "completed": 1}, {"week": "2026-W39", "completed": 2}])
-        self.assertEqual(a["recent"], {"weeks": 2, "completed": 3, "backfill": 1, "labels": [["甲", 2], ["乙", 1]]})
+        self.assertEqual(a["recent"], {"weeks": 2, "completed": 3, "labels": [["甲", 2], ["乙", 1]]})
         self.assertEqual(a["shares"], [["乙", 0.6], ["甲", 0.4]])
         self.assertEqual(a["in_progress"]["ages"], {"CS-4": 21, "CS-5": 0})

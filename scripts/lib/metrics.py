@@ -26,7 +26,8 @@
   同一張卡也列在 config/excluded.json 的 cards 時以排除清單為準（照常列資料檢查，不進改組前清單）
   （2026-09-30 使用者裁：Squad 8 移轉的卡集中在陳勁佑）。
 - 團隊績效評估（2026-10-28 使用者鎖定，plan 在 vault 的 jira-weekly-report · 團隊績效評估）：
-  補登＝卡片建立後 10 分鐘內就結案；照流程走＝結案前待過「進行中」；兩者都只看累計完成卡片那批葉節點，逐週算。
+  照流程走＝結案前待過「進行中」，只看累計完成卡片那批葉節點，逐週算。
+  補登（建立後 10 分鐘內結案）2026-10-28 使用者裁不算（schema 8 拿掉），snapshot 仍存 created。
   停滯＝epic 未結案、底下的卡 14 天沒有任何更新（含只改 label 的更新）。
   投入比例＝每人每週先換成 100% 再平均，人內用實際工時當權重、沒填的卡補這人這週的平均，整週都沒填就用張數；
   只在人內換算，不跨人比小時（每人填工時的粒度不同）。
@@ -47,16 +48,16 @@ UNASSIGNED_OWNER = "未指派"
 UNLABELED = "未分類"
 STALE_DAYS = 7
 STALL_DAYS = 14
-BACKFILL_SECONDS = 600
 ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（7 色過 dataviz validate_palette 亮暗）
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
+# 8：拿掉補登（health、kpis、人的 recent 都少 backfill；2026-10-28 使用者裁不算）；
 # 7：snapshot 3 的建立時間與狀態歷程算出 health（逐週補登、照流程走）、kpis（本週與上週）、allocation（投入比例）；
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 7
-SNAPSHOT_SCHEMA = 3  # snapshot 要有 moved_in 才判斷得了改組前，要有 created、progress_seen、status_since 才算得了補登與照流程走
+SCHEMA = 8
+SNAPSHOT_SCHEMA = 3  # snapshot 要有 moved_in 才判斷得了改組前，要有 progress_seen、status_since 才算得了照流程走與進行中卡的天數
 
 
 def _round(value: float) -> float:
@@ -282,7 +283,7 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
     if cumulative_tokens is not None and not token_source:
         raise ValueError("累計有 Token 資料，token_source 卻是 False：呼叫端沒把 data/tokens/ 的狀態接上")
     if snapshot.get("schema") != SNAPSHOT_SCHEMA:
-        raise ValueError(f"snapshot 的 schema 是 {snapshot.get('schema')}，需要 {SNAPSHOT_SCHEMA}（有搬入時間、建立時間與狀態歷程才算得了改組前與補登）："
+        raise ValueError(f"snapshot 的 schema 是 {snapshot.get('schema')}，需要 {SNAPSHOT_SCHEMA}（有搬入時間與狀態歷程才算得了改組前與照流程走）："
                          f"用 weekly.py prepare --week-ending {period.week_ending.isoformat()} 重抓一次 Jira")
     checks = list(extra_checks)
     tree = _Tree(snapshot["issues"], checks)
@@ -737,13 +738,11 @@ def _week_span(week_of: dict, period) -> list:
 
 
 def _health(tree, done_leaves, week_of, weeks) -> list:
-    """逐週（舊到新）資料健康：完成卡片、其中補登幾張、照流程走幾張、沒填工時幾張。週序列連續，沒有完成卡的週是 0。"""
-    rows = {w: {"week": w, "completed": 0, "backfill": 0, "via_progress": 0, "unestimated": 0} for w in weeks}
+    """逐週（舊到新）資料健康：完成卡片、照流程走幾張、沒填工時幾張。週序列連續，沒有完成卡的週是 0。"""
+    rows = {w: {"week": w, "completed": 0, "via_progress": 0, "unestimated": 0} for w in weeks}
     for leaf in done_leaves:
         row = rows[week_of[leaf["key"]]]
         row["completed"] += 1
-        took = (parse_jira_time(leaf["resolved"]) - parse_jira_time(leaf["created"])).total_seconds()
-        row["backfill"] += took < BACKFILL_SECONDS
         if leaf["progress_seen"] is None:
             raise ValueError(f"{leaf['key']} 是完成的工作卡，snapshot 卻沒有狀態歷程（progress_seen）：snapshot 抓取不完整，重抓一次")
         row["via_progress"] += leaf["progress_seen"]
@@ -757,8 +756,8 @@ def _percent(part: int, whole: int):
 
 
 def _kpis(health, period, projects: int, stalled: int, previous) -> dict:
-    """本週頁四個數字的本週與上週值（2026-10-28 鎖定 AC-2）。
-    照流程走與補登的上週值取同一份 health 序列的上一週；有完成的專案與停滯讀上一期 metrics。
+    """本週頁三個數字的本週與上週值（2026-10-28 鎖定 AC-2；同日補登拿掉，四個變三個）。
+    照流程走的上週值取同一份 health 序列的上一週；有完成的專案與停滯讀上一期 metrics。
     上一期沒有檔是 None；上一期是 schema 7 以前算的，沒有 stalled 欄，停滯的上週值也是 None。"""
     by_week = {h["week"]: h for h in health}
     prev_week = period_containing(period.start - timedelta(seconds=1)).week_id
@@ -772,7 +771,6 @@ def _kpis(health, period, projects: int, stalled: int, previous) -> dict:
         "stalled": {"now": stalled, "prev": prev_totals.get("stalled") if prev_totals is not None else None},
         "projects": {"now": projects, "prev": prev_totals["projects"] if prev_totals is not None else None},
         "via_progress": {"now": ratio("via_progress", period.week_id), "prev": ratio("via_progress", prev_week)},
-        "backfill": {"now": ratio("backfill", period.week_id), "prev": ratio("backfill", prev_week)},
     }
 
 
@@ -828,7 +826,7 @@ def _allocation(done_leaves, week_of, weeks, owner_of, label_of) -> dict:
 
 def _person_views(people, done_leaves, week_of, weeks, tree, label_of, period) -> None:
     """人卡要的數字，直接加在 people 每一列（2026-10-28 鎖定 AC-4）：trend 逐週完成數（只跟自己比）；
-    recent 最近 ALLOCATION_WINDOW 週的完成、補登與前三個 label；shares 累計投入比例；in_progress.ages 進行中的卡進入目前狀態幾天。"""
+    recent 最近 ALLOCATION_WINDOW 週的完成數與前三個 label；shares 累計投入比例；in_progress.ages 進行中的卡進入目前狀態幾天。"""
     recent_weeks = set(weeks[-ALLOCATION_WINDOW:])
     mine = {}
     for leaf in done_leaves:
@@ -843,7 +841,6 @@ def _person_views(people, done_leaves, week_of, weeks, tree, label_of, period) -
         person["recent"] = {
             "weeks": len(recent_weeks),
             "completed": len(recent),
-            "backfill": sum(1 for l in recent if (parse_jira_time(l["resolved"]) - parse_jira_time(l["created"])).total_seconds() < BACKFILL_SECONDS),
             "labels": [[label, n] for label, n in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[:3]],
         }
         shares = _shares([{"label": label_of(l), "points": l["points"]} for l in leaves]) if leaves else {}

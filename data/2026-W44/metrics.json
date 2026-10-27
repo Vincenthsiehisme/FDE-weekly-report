@@ -11673,42 +11673,36 @@
   "generated_at": "2026-10-28T06:41:51.795743+08:00",
   "health": [
     {
-      "backfill": 4,
       "completed": 8,
       "unestimated": 0,
       "via_progress": 0,
       "week": "2026-W39"
     },
     {
-      "backfill": 16,
       "completed": 36,
       "unestimated": 0,
       "via_progress": 12,
       "week": "2026-W40"
     },
     {
-      "backfill": 99,
       "completed": 140,
       "unestimated": 0,
       "via_progress": 14,
       "week": "2026-W41"
     },
     {
-      "backfill": 63,
       "completed": 88,
       "unestimated": 6,
       "via_progress": 14,
       "week": "2026-W42"
     },
     {
-      "backfill": 113,
       "completed": 152,
       "unestimated": 7,
       "via_progress": 20,
       "week": "2026-W43"
     },
     {
-      "backfill": 78,
       "completed": 100,
       "unestimated": 7,
       "via_progress": 8,
@@ -12043,10 +12037,6 @@
     }
   ],
   "kpis": {
-    "backfill": {
-      "now": 78,
-      "prev": 74
-    },
     "projects": {
       "now": 21,
       "prev": 27
@@ -13450,7 +13440,6 @@
       },
       "name": "陳勁佑 Jincoco",
       "recent": {
-        "backfill": 261,
         "completed": 293,
         "labels": [
           [
@@ -13644,7 +13633,6 @@
       },
       "name": "Shira",
       "recent": {
-        "backfill": 31,
         "completed": 40,
         "labels": [
           [
@@ -13755,7 +13743,6 @@
       },
       "name": "Vivian",
       "recent": {
-        "backfill": 4,
         "completed": 23,
         "labels": [
           [
@@ -13961,7 +13948,6 @@
       },
       "name": "Vincent Hsieh",
       "recent": {
-        "backfill": 40,
         "completed": 83,
         "labels": [
           [
@@ -14078,7 +14064,6 @@
       },
       "name": "Jerry Huang",
       "recent": {
-        "backfill": 3,
         "completed": 11,
         "labels": [
           [
@@ -14177,7 +14162,6 @@
       },
       "name": "王碩緯",
       "recent": {
-        "backfill": 11,
         "completed": 25,
         "labels": [
           [
@@ -14291,7 +14275,6 @@
       },
       "name": "hubertwang",
       "recent": {
-        "backfill": 3,
         "completed": 4,
         "labels": [
           [
@@ -14358,7 +14341,6 @@
       },
       "name": "未指派",
       "recent": {
-        "backfill": 0,
         "completed": 1,
         "labels": [
           [
@@ -14414,7 +14396,7 @@
     "week": "2026-W44",
     "week_ending": "2026-10-27"
   },
-  "schema": 7,
+  "schema": 8,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {
