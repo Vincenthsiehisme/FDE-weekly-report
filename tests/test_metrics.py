@@ -4,6 +4,7 @@ from datetime import date
 from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 from lib.metrics import UNASSIGNED_EPIC, UNLABELED, compute, drop_excluded_epics, kickoff_by_epic
 from lib.period import period_ending
+from lib.render import render
 
 PERIOD = period_ending(date(2026, 9, 22))
 
@@ -703,6 +704,28 @@ class FlowHealthTest(unittest.TestCase):
         with mock.patch.object(metrics_module, "ALLOCATION_TOP", 1):
             alloc = run(issues)["allocation"]
         self.assertEqual(alloc["labels"], ["新", "其他"])
+
+    def test_weeks_without_any_completion_are_zero_rows_not_skipped(self):
+        # W36 與 W38 各一張、W37 與本週 W39 全隊零張：序列連續，本週是 0，不是把 W38 當本週（Codex 審 d442a48）
+        issues = self.epics() + [
+            issue("CS-2", parent="CS-1", points=1.0, resolved="2026-08-27T04:00:00.000+0800", assignee="A"),
+            issue("CS-3", parent="CS-1", points=1.0, resolved=LAST_WEEK, assignee="A", progress_seen=True),
+        ]
+        m = run(issues)
+        self.assertEqual([h["week"] for h in m["health"]], ["2026-W36", "2026-W37", "2026-W38", "2026-W39"])
+        self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "backfill": 0, "via_progress": 0, "unestimated": 0})
+        self.assertEqual(m["kpis"]["via_progress"], {"now": None, "prev": 100})
+        self.assertEqual(m["allocation"]["weeks"][-1], {"week": "2026-W39", "people": 0, "shares": {}})
+        a = m["people"][0]
+        self.assertEqual([t["completed"] for t in a["trend"]], [1, 0, 1, 0])
+        self.assertEqual((a["recent"]["weeks"], a["recent"]["completed"]), (4, 2))
+        html = render(m, {"highlights": [], "epic_results": {}}, ["2026-W39"], in_reports_dir=False)
+        self.assertIn("近 4 週完成（只跟自己比）· 本週 0 張", html)
+
+    def test_no_completion_at_all_is_one_empty_week(self):
+        m = run(self.epics())
+        self.assertEqual([h["week"] for h in m["health"]], ["2026-W39"])
+        self.assertEqual(m["kpis"]["backfill"], {"now": None, "prev": None})
 
     def test_person_views(self):
         issues = self.epics() + [

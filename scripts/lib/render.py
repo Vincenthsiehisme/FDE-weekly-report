@@ -455,7 +455,7 @@ def _output_svg(metrics) -> str:
     if not rows:
         return '<p class="muted">還沒有完成的卡。</p>'
     w, h, base, bw = 470, 170, 140, 44
-    top = max(r["completed"] for r in rows)
+    top = max(r["completed"] for r in rows) or 1  # 近幾週全是 0 張時長條都是 0 高，不除以 0
     step = (w - 20) / len(rows)
     out = [f'<svg viewBox="0 0 {w} {h}" role="img" aria-label="近 {len(rows)} 週完成卡片與補登">',
            '<defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'
@@ -487,10 +487,11 @@ def _health_svg(metrics) -> str:
         out.append(f'<text x="0" y="{y0 + 30}" class="t-axis">{name}</text>')
         for i, r in enumerate(rows):
             v = r[field] / r["completed"] if r["completed"] else 0
+            shown = f"{v:.0%}" if r["completed"] else "—"  # 那週沒有完成卡：比例不存在，不是 0%
             x = 70 + i * step
             out.append(f'<rect x="{x + 6:.1f}" y="{y0 + 44 - 40 * v:.1f}" width="{step - 12:.1f}" height="{40 * v:.1f}" rx="2" class="{cls}">'
                        f'<title>{_short_week(r["week"])} {name} {r[field]}/{r["completed"]} 張</title></rect>')
-            out.append(f'<text x="{x + step / 2:.1f}" y="{y0 + 44 - 40 * v - 3:.1f}" text-anchor="middle" class="t-val">{v:.0%}</text>')
+            out.append(f'<text x="{x + step / 2:.1f}" y="{y0 + 44 - 40 * v - 3:.1f}" text-anchor="middle" class="t-val">{shown}</text>')
         out.append(f'<line x1="70" x2="{w}" y1="{y0 + 44}" y2="{y0 + 44}" class="axis"/>')
     for i, r in enumerate(rows):
         out.append(f'<text x="{70 + i * step + step / 2:.1f}" y="146" text-anchor="middle" class="t-axis">{_short_week(r["week"])}</text>')
@@ -575,13 +576,14 @@ def _week_people(metrics, page) -> str:
         if not p["recent"]["completed"] and not p["in_progress"]["count"]:
             continue
         trend = p["trend"][-TREND_WEEKS:]
+        this_week = next(t["completed"] for t in p["trend"] if t["week"] == metrics["period"]["week"])
         mine = owned.get(p["name"], [])
         epics = "、".join(esc(s) for s in mine[:3]) + (f" 等 {len(mine)} 個" if len(mine) > 3 else "") or "無"
         recent = p["recent"]
         labels = "、".join(f"{esc(l)} {n} 張" for l, n in recent["labels"]) or "無"
         bf = f'{recent["completed"]} 張裡 {recent["backfill"]} 張補登' if recent["completed"] else f'近 {recent["weeks"]} 週沒有完成'
         cards.append(f'<article class="pcard"><h4>{esc(p["name"])}</h4>'
-                     f'<div class="prow"><span>近 {len(trend)} 週完成（只跟自己比）· 本週 {trend[-1]["completed"] if trend else 0} 張</span>{_spark(trend)}</div>'
+                     f'<div class="prow"><span>近 {len(trend)} 週完成（只跟自己比）· 本週 {this_week} 張</span>{_spark(trend)}</div>'
                      f'<div class="prow"><span>負責：{epics}</span></div>'
                      f'<div class="prow"><span>近 {recent["weeks"]} 週落在：{labels}</span><span>{bf}</span></div>'
                      f'{_doing_list(p, doing, page, 4)}</article>')

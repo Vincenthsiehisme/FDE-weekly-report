@@ -36,7 +36,7 @@ from __future__ import annotations
 from datetime import datetime, timedelta
 
 from .kickoff import SECTIONS
-from .period import period_containing
+from .period import period_containing, period_ending
 from .snapshot import EPIC_LEVEL, KICKOFF_TYPE, issue_sort_key, parse_jira_time
 
 SECTION_LABELS = dict(SECTIONS)
@@ -495,7 +495,7 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
     labels = _label_rows(cumulative["epics"], week_leaves, cumulative_leaves, label_of)
 
     week_of = {row["key"]: row["week"] for row in cumulative["completed"]}
-    weeks = sorted(set(week_of.values()))
+    weeks = _week_span(week_of, period)
     health = _health(tree, cumulative_leaves, week_of, weeks)
     allocation = _allocation(cumulative_leaves, week_of, weeks, tree.owner_of, label_of)
     _person_views(people, cumulative_leaves, week_of, weeks, tree, label_of, period)
@@ -723,8 +723,21 @@ def _staffing(tree, group_of, week_done, cumulative_done) -> list:
     return rows
 
 
+def _week_span(week_of: dict, period) -> list:
+    """從第一張完成卡那週到本期，一週不漏（舊到新）：全隊沒有完成卡的週也要有一列、數字是 0，
+    不然「本週」會被當成上一個有完成的週，「近 6 週」也會跨過更長的時間（Codex 審 d442a48）。
+    一張完成卡都沒有時只有本期這一週。"""
+    first = min(week_of.values(), default=period.week_id)
+    weeks, current = [], period
+    while True:
+        weeks.append(current.week_id)
+        if current.week_id <= first:
+            return weeks[::-1]
+        current = period_ending(current.week_ending - timedelta(days=7))
+
+
 def _health(tree, done_leaves, week_of, weeks) -> list:
-    """逐週（舊到新）資料健康：完成卡片、其中補登幾張、照流程走幾張、沒填工時幾張。只有有完成卡的週才有一列。"""
+    """逐週（舊到新）資料健康：完成卡片、其中補登幾張、照流程走幾張、沒填工時幾張。週序列連續，沒有完成卡的週是 0。"""
     rows = {w: {"week": w, "completed": 0, "backfill": 0, "via_progress": 0, "unestimated": 0} for w in weeks}
     for leaf in done_leaves:
         row = rows[week_of[leaf["key"]]]
@@ -809,7 +822,7 @@ def _allocation(done_leaves, week_of, weeks, owner_of, label_of) -> dict:
                 key = label if label in top else OTHER_LABEL
                 acc[key] = acc.get(key, 0.0) + value / len(people)
         has_other = has_other or OTHER_LABEL in acc
-        rows.append({"week": week, "people": len(people), "shares": {k: round(v, 4) for k, v in sorted(acc.items())}})
+        rows.append({"week": week, "people": len(people), "shares": {k: round(v, 4) for k, v in sorted(acc.items())}})  # 沒人產出的週 shares 是 {}
     return {"labels": top + ([OTHER_LABEL] if has_other else []), "weeks": rows}
 
 
