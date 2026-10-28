@@ -2,12 +2,14 @@
 
 規則（決策正本在 vault 的 jira-weekly-report 專案 index）：
 - 當週完成：狀態類別 done，且 resolutiondate 落在報告期間內。
-- Hours = Story point estimate，只加葉節點。有子卡的卡自己的點數不算，epic 與 Kick off 卡不算。
+- Hours = Story point estimate，只加葉節點。有子卡的卡自己的點數不算，epic、Kick off 與 Deliverable 卡不算。
   理由：父卡與子卡都有值，兩邊都加會灌水（CS-16 自己 5.0，子任務合計 7.5）。
   這個欄位由執行人完工後回填實際花費時數（2026-09-30 使用者確認），頁面叫「實際工時」。
 - 完成卡片也只數葉節點，跟工時同一批卡：有子卡的父卡不算張數，張數與工時都計在子卡（2026-10-07 使用者裁，
   原本父卡與子卡各算一張，累計 185 張對 176 個交付，頁面上兩個數字對不上）。交付不再算（同日使用者裁）。
 - 專案以 epic 分組，不在任何 epic 底下的卡歸「未歸屬 epic」。
+- Kick off（epic 的目標）與 Deliverable（epic 的交付說明）是說明卡，不是工作卡：完成張數、工時、進度、人、label、
+  照流程走、停滯、進行中都不算它們（2026-10-29 使用者裁：週報要排除 Deliverable）。
 - label：專案的 label 取 epic 的 label；不在 epic 底下的卡用自己的 label；不是恰好一個 label 歸「未分類」。
   epic 不是恰好一個 label、或底下卡片的 label 跟 epic 不同，列資料檢查（2026-10-07 使用者裁：Jira 上已補齊，
   以 epic 為準；原本的 config/units.json 白名單退場）。
@@ -38,9 +40,11 @@ from datetime import datetime, timedelta
 
 from .kickoff import SECTIONS
 from .period import period_containing, period_ending
-from .snapshot import EPIC_LEVEL, KICKOFF_TYPE, issue_sort_key, parse_jira_time
+from .snapshot import DELIVERABLE_TYPE, EPIC_LEVEL, KICKOFF_TYPE, issue_sort_key, parse_jira_time
 
 SECTION_LABELS = dict(SECTIONS)
+# 說明卡的類型：在 epic 底下，但不是工作，所有數字都不算
+NOT_WORK_TYPES = (KICKOFF_TYPE, DELIVERABLE_TYPE)
 
 UNASSIGNED_EPIC = "_unassigned"
 UNASSIGNED_EPIC_LABEL = "未歸屬 epic"
@@ -75,7 +79,7 @@ class _Tree:
                 checks.append(_check("unsupported_level", issue["key"], f"階層 {issue['level']} 高於 epic，不列入計算"))
         self.epics = [i for i in issues if i["level"] == EPIC_LEVEL]
         self.kickoffs = [i for i in issues if i["type"] == KICKOFF_TYPE]
-        self.work = [i for i in issues if i["level"] < EPIC_LEVEL and i["type"] != KICKOFF_TYPE]
+        self.work = [i for i in issues if i["level"] < EPIC_LEVEL and i["type"] not in NOT_WORK_TYPES]
         work_keys = {i["key"] for i in self.work}
         self.children = {k: [] for k in work_keys}
         for item in self.work:
@@ -157,7 +161,7 @@ def _progress(group_leaves: list, is_done) -> dict:
 
 
 def drop_excluded_epics(issues: list, excluded_epics: dict, period, *, allow_missing: bool) -> tuple:
-    """回傳 (留下的卡, checks)。excluded_epics 是 {epic 卡號: 理由}，epic 本身與底下所有卡（一般卡、子任務、Kick off）都移出。
+    """回傳 (留下的卡, checks)。excluded_epics 是 {epic 卡號: 理由}，epic 本身與底下所有卡（一般卡、子任務、Kick off、Deliverable）都移出。
     要在 Kick off 鎖定與 compute 之前呼叫：只在 compute 裡扣掉的話，Kick off 照樣會被鎖定、epic 照樣列進資料檢查。
     本期有一般卡完成的 epic 在資料檢查列一行帶理由，讓人知道有完成卡被拿掉；沒有就不列，不每週重複。
     allow_missing 只在 prepare 剛抓完 Jira 時為 False：那時找不到就是卡號打錯或 epic 不見了；
@@ -204,7 +208,7 @@ def drop_excluded_epics(issues: list, excluded_epics: dict, period, *, allow_mis
             dropped.setdefault(root, []).append(item)
     checks = []
     for epic in sorted(dropped, key=issue_sort_key):
-        done = [i for i in dropped[epic] if i["level"] < EPIC_LEVEL and i["type"] != KICKOFF_TYPE and _done(i)
+        done = [i for i in dropped[epic] if i["level"] < EPIC_LEVEL and i["type"] not in NOT_WORK_TYPES and _done(i)
                 and i["resolved"] and period.contains(parse_jira_time(i["resolved"]))]
         if done:
             checks.append(_check("excluded_epic", epic, f"依 config/excluded.json 整個 epic 不列入週報，本週完成的 {len(done)} 張不算：{excluded_epics[epic]}"))
@@ -296,11 +300,11 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
             return False
         return period.contains(parse_jira_time(item["resolved"]))
 
-    # 完成集合只從一般工作卡算：epic、Kick off 列進排除清單不會有任何作用，看起來卻像排除了，所以直接失敗。
+    # 完成集合只從一般工作卡算：epic、Kick off、Deliverable 列進排除清單不會有任何作用，看起來卻像排除了，所以直接失敗。
     # 卡號不在 snapshot 放行：重算舊期時那張卡可能還不存在。
     not_work = sorted((k for k in excluded if k in tree.by_key and k not in tree.work_keys), key=issue_sort_key)
     if not_work:
-        raise ValueError(f"config/excluded.json 只能列一般工作卡，這些是 epic 或 Kick off 卡：{'、'.join(not_work)}")
+        raise ValueError(f"config/excluded.json 只能列一般工作卡，這些是 epic、Kick off 或 Deliverable 卡：{'、'.join(not_work)}")
     raw_week_done = {i["key"] for i in tree.work if completed_this_week(i)}
     # 排除只在這裡接一次：本週與累計的完成集合都扣掉，下游的張數、工時、進度、人、label 都從這兩個集合算
     for key in sorted(raw_week_done & set(excluded), key=issue_sort_key):
@@ -856,7 +860,7 @@ def _person_views(people, done_leaves, week_of, weeks, tree, label_of, period) -
 
 
 def _idle_days(tree, group_of, row, period) -> int:
-    """專案底下的卡（不含 epic 自己與 Kick off）最後一次更新到本期結束幾天；底下沒有卡就看 epic 自己。
+    """專案底下的卡（不含 epic 自己、Kick off 與 Deliverable）最後一次更新到本期結束幾天；底下沒有卡就看 epic 自己。
     updated 是抓取當下的值，抓取比期間結束晚幾分鐘，晚於期間結束的算 0 天。"""
     members = [i for i in tree.work if group_of[i["key"]] == row["id"]]
     if members:

@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 
 PROJECTS = ("FDEPROJECT", "CS")
 KICKOFF_TYPE = "Kick off"
+# epic 交付時的成效說明卡（2026-10-29 FDEPROJECT 新增的類型）。跟 Kick off 一樣是說明卡、不是工作，metrics 不算它
+DELIVERABLE_TYPE = "Deliverable"
 POINTS_FIELD = "customfield_10016"  # Story point estimate，兩個專案共用同一個欄位
 FIELDS = [
     "summary", "issuetype", "status", "parent", "assignee", "labels",
