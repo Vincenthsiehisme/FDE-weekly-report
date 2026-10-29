@@ -54,8 +54,9 @@ DOING = {"status": {"name": "進行中", "statusCategory": {"key": "indeterminat
 class FakeClient:
     site = "example.atlassian.net"
 
-    def __init__(self, all_issues, kickoffs, verify_error=None, histories=None):
+    def __init__(self, all_issues, kickoffs, verify_error=None, histories=None, deliverables=None):
         self.all_issues, self.kickoffs, self.verify_error = all_issues, kickoffs, verify_error
+        self.deliverables = deliverables or []
         self.histories = histories or {}
         self.searched = False
         self.changelog_ids = None
@@ -75,6 +76,8 @@ class FakeClient:
 
     def search(self, jql, fields):
         self.searched = True
+        if "Deliverable" in jql:
+            return self.deliverables
         return self.kickoffs if "Kick off" in jql else self.all_issues
 
 
@@ -197,7 +200,7 @@ class MovedInTest(unittest.TestCase):
         self.assertIsNone(moved["CS-4"])
         # 只查完成的工作卡：epic 與未完成的卡不查
         self.assertEqual(sorted(client.changelog_ids), sorted(issue_id(k) for k in ("CS-2", "CS-3", "CS-4")))
-        self.assertEqual(snap["schema"], 3)
+        self.assertEqual(snap["schema"], 4)
 
     def test_move_from_a_project_with_no_cards_is_still_internal(self):
         # 查到的卡全是 CS，FDEPROJECT 一張都沒有；從 FDEPROJECT 搬過來仍不算外部搬入

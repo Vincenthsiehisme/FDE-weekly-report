@@ -38,6 +38,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta
 
+from . import deliverable as deliverable_lib
 from .kickoff import SECTIONS
 from .period import period_containing, period_ending
 from .snapshot import DELIVERABLE_TYPE, EPIC_LEVEL, KICKOFF_TYPE, issue_sort_key, parse_jira_time
@@ -55,13 +56,14 @@ STALL_DAYS = 14
 ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（7 色過 dataviz validate_palette 亮暗）
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
+# 9：多了 deliverables（頁籤「成效說明」的已完成 Deliverable 卡；snapshot 3 沒抓是 null）；
 # 8：拿掉補登（health、kpis、人的 recent 都少 backfill；2026-10-28 使用者裁不算）；
 # 7：snapshot 3 的建立時間與狀態歷程算出 health（逐週補登、照流程走）、kpis（本週與上週）、allocation（投入比例）；
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 8
-SNAPSHOT_SCHEMA = 3  # snapshot 要有 moved_in 才判斷得了改組前，要有 progress_seen、status_since 才算得了照流程走與進行中卡的天數
+SCHEMA = 9
+SNAPSHOT_SCHEMAS = (3, 4)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓
 
 
 def _round(value: float) -> float:
@@ -286,11 +288,15 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
         raise ValueError("這一期有 Token 資料，累計 Token 卻是 None：累計應包含這一期")
     if cumulative_tokens is not None and not token_source:
         raise ValueError("累計有 Token 資料，token_source 卻是 False：呼叫端沒把 data/tokens/ 的狀態接上")
-    if snapshot.get("schema") != SNAPSHOT_SCHEMA:
-        raise ValueError(f"snapshot 的 schema 是 {snapshot.get('schema')}，需要 {SNAPSHOT_SCHEMA}（有搬入時間與狀態歷程才算得了改組前與照流程走）："
+    if snapshot.get("schema") not in SNAPSHOT_SCHEMAS:
+        raise ValueError(f"snapshot 的 schema 是 {snapshot.get('schema')}，需要 {'、'.join(map(str, SNAPSHOT_SCHEMAS))}（有搬入時間與狀態歷程才算得了改組前與照流程走）："
                          f"用 weekly.py prepare --week-ending {period.week_ending.isoformat()} 重抓一次 Jira")
     checks = list(extra_checks)
     tree = _Tree(snapshot["issues"], checks)
+    deliverables = None
+    if snapshot["schema"] >= 4:
+        deliverables, deliverable_checks = deliverable_lib.views(snapshot["issues"])
+        checks += deliverable_checks
 
     def completed_this_week(item: dict) -> bool:
         if not _done(item):
@@ -537,6 +543,7 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
         "cumulative": cumulative,
         "people": people,
         "staffing": staffing,
+        "deliverables": deliverables,
         "migrated": {
             "week": [migrated_row(k) for k in sorted(raw_week_done & migrated, key=issue_sort_key)],
             "cumulative": [migrated_row(k) for k in sorted(done_by_end & migrated, key=issue_sort_key)],
