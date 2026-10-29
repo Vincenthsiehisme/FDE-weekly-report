@@ -1,13 +1,13 @@
 """把 metrics 與 narrative 排成靜態 HTML。
 
 版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者原本是主管（2026-10-28 改成團隊負責人本人，見下），
-分三個頁籤：總覽（2026-10-07 由「持續累積」改名）、本週（預設）、團隊。vault 的週報範本只當資訊清單，不照它的節次排。
+分四個頁籤：總覽（2026-10-07 由「持續累積」改名）、本週（預設）、團隊、成效說明（2026-10-29 加）。vault 的週報範本只當資訊清單，不照它的節次排。
 總覽依序是資源（多一格 epic 數）、依 label、團隊、專案列表、完成；專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開）；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
 Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都沒有時整欄不顯示、資源區只留一行說明，
 有檔但沒記錄的卡顯示「—」，不顯示 0。目標日不顯示（2026-10-06 使用者裁：不是當前重點；metrics 仍帶 due）。
 工時是實際花費時數（2026-09-30 使用者確認：Story point estimate 由執行人完工後回填），頁面一律叫「實際工時」；
 頁尾的名詞定義是每個詞的口徑正本，改算法時同一次改那裡。
-頁籤靠少量 JS 切換，沒有 JS 時三個頁籤全部攤開。
+頁籤靠少量 JS 切換，沒有 JS 時四個頁籤全部攤開。
 視覺化改版（2026-10-07 使用者裁，plan 在 vault 的 jira-weekly-report · 視覺化改版）：本週頁的專案是一張一覽表，
 不是一張張卡；進度條分三段（之前完成｜本週完成｜未完成），總覽與本週同一條；依 label 是橫條；團隊表的完成卡片畫長條、
 工時只給數字（每人填工時的粒度不同，畫成長度比的是填法）；完成清單預設收合；專案投入併成總覽的「人」欄；
@@ -25,7 +25,7 @@ from __future__ import annotations
 import html
 from datetime import datetime, timedelta
 
-from .metrics import SCHEMA, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER
+from .metrics import SCHEMA, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER, UNLABELED
 from .period import TZ
 from .snapshot import parse_jira_time
 
@@ -47,7 +47,7 @@ KICKOFF_FIELDS = (
     ("next_milestone", "下個里程碑"),
 )
 # 總覽的 id 留 cumulative：網址 #cumulative 已經發出去過，改名不改連結
-TABS = (("cumulative", "總覽"), ("week", "本週"), ("team", "團隊"))
+TABS = (("cumulative", "總覽"), ("week", "本週"), ("team", "團隊"), ("delivered", "成效說明"))  # 成效說明 2026-10-29 加
 # 總覽專案展開後的效益說明：Kick off 鎖定的目標五段（2026-10-07 使用者裁），下個里程碑留在本週頁
 BENEFIT_FIELDS = KICKOFF_FIELDS[:5]
 DEFAULT_TAB = "week"
@@ -753,6 +753,82 @@ def _team_panel(metrics, page) -> str:
   <h3>人</h3>{people}"""
 
 
+
+def _links(values: list) -> str:
+    """Code、Env：只把 https:// 開頭的做成連結，其餘照原文。"""
+    return "；".join(f'<a href="{esc(v)}">{esc(v[len("https://"):])}</a>' if v.startswith("https://") else esc(v) for v in values)
+
+
+def _dv_outcome(card: dict) -> str:
+    if not (card["metric"] and card["base"] and card["now"]):
+        return '<div class="dv-outcome missing">成效未填</div>'
+    more = f' <span class="dv-more">另 {len(card["other"])} 項，見完整說明</span>' if card["other"] else ""
+    return (f'<div class="dv-outcome"><small>{esc(card["metric"].replace(chr(10), " "))}</small>'
+            f'<strong>{esc(card["base"])} → {esc(card["now"])}</strong>{more}</div>')
+
+
+def _dv_card(card: dict, page) -> str:
+    """成效說明一張卡：版型照原型 B（vault 的 jira-weekly-report · 成效說明原型B.html，2026-10-29 鎖定）。"""
+    items = []
+
+    def add(label, body):
+        items.append(f"<div><dt>{label}</dt><dd>{body}</dd></div>")
+
+    def bullets(values):
+        return "<ul>" + "".join(f"<li>{esc(v)}</li>" for v in values) + "</ul>"
+
+    if card["features"]:
+        add("交付功能", bullets(card["features"]))
+    if card["metric"] and card["base"] and card["now"]:
+        main = (f'{esc(card["metric"].replace(chr(10), " "))}：{esc(card["base"])}（{esc(fmt_date(card["base_date"]) if card["base_date"] else "日期未填")}）'
+                f' → {esc(card["now"])}（{esc(fmt_date(card["now_date"]) if card["now_date"] else "日期未填")}）')
+        source = f'<br><span class="muted">來源：{esc(card["source"])}</span>' if card["source"] else ""
+        add("成效", main + source + "".join(f"<br>{esc(o)}" for o in card["other"]))
+    if card["acceptance"]:
+        add("驗收", "<ul>" + "".join(
+            f'<li>{esc(a["condition"])}'
+            + (f' → <b class="{"bad" if a["result"] == "未通過" else ""}">{esc(a["result"])}</b>' if a["result"] else "")
+            + (f'<span class="muted">，{esc(a["where"])}</span>' if a["where"] else "") + "</li>"
+            for a in card["acceptance"]) + "</ul>")
+    if card["not_done"]:
+        add("沒做的", bullets(card["not_done"]))
+    if card["attachments"]:
+        add("畫面", f'{esc("、".join(card["attachments"]))}<br><span class="muted">圖在 Jira 卡 {page.issue(card["key"])} 的附件</span>')
+    if card["code"]:
+        add("程式碼", _links(card["code"]))
+    if card["env"]:
+        add("開發環境", _links(card["env"]))
+    if card["versions"]:
+        add("版本", "、".join(esc(v["name"]) + (f'（{esc(fmt_date(v["release_date"]))}）' if v["release_date"] else "") for v in card["versions"]))
+    if card["acceptance"]:
+        acc = f'驗收 {card["passed"]}/{len(card["acceptance"])} 通過' + (f'，<span class="bad">{card["failed"]} 未通過</span>' if card["failed"] else "")
+    else:
+        acc = "驗收未填"
+    delivered = esc(card["delivered"]) if card["delivered"] else '<span class="muted">交付了什麼未填</span>'
+    details = f'<details><summary>完整說明</summary><dl>{"".join(items)}</dl></details>' if items else ""
+    return (f'<article class="dv-card"><div class="dv-top"><span class="dv-title"><b>{page.issue(card["epic"])}</b> {esc(card["epic_summary"])}</span>'
+            f'<span class="dv-label">{esc(card["label"] or UNLABELED)}</span></div>'
+            f'<p class="dv-delivered">{delivered}</p>{_dv_outcome(card)}'
+            f'<p class="dv-meta">{acc}，{esc(fmt_date(card["done"]))} 交付 · Deliverable {page.issue(card["key"])}</p>{details}</article>')
+
+
+def _delivered_panel(metrics, page) -> str:
+    """成效說明：已完成的 Deliverable，依完成那一期分段、新的在上，一排兩張卡（2026-10-29 鎖定 AC-3）。"""
+    cards = metrics["deliverables"]
+    if cards is None:
+        return '<p class="note">這一期的資料沒有抓 Deliverable，成效說明從之後重抓的週報開始有。</p>'
+    if not cards:
+        return '<p class="dv-empty">還沒有已交付的專案。epic 完成、Deliverable 卡填好後，下一期週報會列在這裡。</p>'
+    weeks = {}
+    for card in cards:
+        weeks.setdefault(card["week"], []).append(card)
+    sections = "".join(
+        f'<h3>{esc(week)} 交付 <span class="muted">{len(group)}</span></h3>'
+        f'<div class="dv-cards">{"".join(_dv_card(c, page) for c in group)}</div>'
+        for week, group in sorted(weeks.items(), reverse=True))
+    return f'<p class="note">依交付週排，新的在上；內容取自各 epic 的 Deliverable 卡，共 {len(cards)} 個專案。</p>{sections}'
+
+
 def _checks(metrics, page) -> str:
     checks = metrics["checks"]
     if not checks:
@@ -854,6 +930,7 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
         "cumulative": _cumulative_panel(metrics, page),
         "week": _week_panel(metrics, narrative, page),
         "team": _team_panel(metrics, page),
+        "delivered": _delivered_panel(metrics, page),
     }
     return f"""<!doctype html>
 <html lang="zh-Hant">
@@ -1004,6 +1081,27 @@ div.proj>.proj-head,.proj.head{padding-left:16px}
 .done-group{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin:0 0 8px}
 .done-group>summary{font-size:14px;font-weight:600}
 .done-group .list{margin-top:6px}
+.dv-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+.dv-card:has(details[open]){grid-column:1/-1}
+.dv-card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.dv-top{display:flex;align-items:baseline;gap:8px;font-size:14px}
+.dv-title{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dv-label{display:inline-block;padding:1px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--track-bg);color:var(--track-fg)}
+.dv-delivered{margin:6px 0 10px;font-size:15px}
+.dv-outcome{margin:0 0 8px;min-height:62px}
+.dv-outcome small{display:block;color:var(--muted);font-size:12px}
+.dv-outcome strong{font-size:22px;font-variant-numeric:tabular-nums;line-height:1.3}
+.dv-more{color:var(--muted);font-size:12px}
+.dv-outcome.missing{display:flex;align-items:center;padding:0 12px;border:1px dashed var(--warn-fg);border-radius:8px;background:var(--warn-bg);color:var(--warn-fg);font-weight:600}
+.dv-meta{font-size:13px;color:var(--muted);margin:auto 0 0}
+.dv-card details{margin-top:8px;font-size:14px}
+.dv-card details summary{color:var(--muted)}
+.dv-card dl{margin:6px 0 0;border-top:1px solid var(--line);padding-top:6px}
+.dv-card dl div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;padding:2px 0}
+.dv-card dt{color:var(--muted);font-size:13px}.dv-card dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.dv-card ul{margin:0;padding-left:18px}
+.dv-card .bad{color:var(--warn-fg);font-weight:600}
+.dv-empty{margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--muted)}
 .kickoff{margin:8px 0;padding:8px 12px;background:var(--soft);border-radius:8px;font-size:14px}
 .kickoff div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;padding:2px 0}
 .kickoff dt{color:var(--muted);font-size:13px}.kickoff dd{margin:0;min-width:0;overflow-wrap:anywhere}
@@ -1102,6 +1200,7 @@ details[open]>summary::before{content:"▾"}
 .proj-list{margin-top:24px}
 .proj-list>summary{font-weight:600;font-size:15px}
 @media (max-width:640px){
+  .dv-cards{grid-template-columns:minmax(0,1fr)}
   h1{font-size:22px}
   .viz,.pcards,.tcards{grid-template-columns:minmax(0,1fr)}
   .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}

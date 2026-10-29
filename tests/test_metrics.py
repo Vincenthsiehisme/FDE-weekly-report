@@ -637,7 +637,7 @@ class FlowHealthTest(unittest.TestCase):
             issue("CS-4", parent="CS-1", points=2.0, resolved=LAST_WEEK, assignee="B", created="2026-09-10T03:59:30.000+0800", progress_seen=True),
         ]
         m = run(issues)
-        self.assertEqual(m["schema"], 8)
+        self.assertEqual(m["schema"], 9)
         self.assertEqual(m["health"], [
             {"week": "2026-W38", "completed": 1, "via_progress": 1, "unestimated": 0},
             {"week": "2026-W39", "completed": 2, "via_progress": 1, "unestimated": 1},

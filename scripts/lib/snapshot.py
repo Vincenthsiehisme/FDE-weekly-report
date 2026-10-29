@@ -20,10 +20,11 @@ FIELDS = [
 EPIC_LEVEL = 1  # issuetype.hierarchyLevel：epic 1、一般卡 0、子任務 -1
 # 「照流程走」只認這個狀態名（2026-10-28 鎖定 AC-1：結案前曾進「進行中」；審核中不算）
 PROGRESS_STATUS = "進行中"
+# 4：Deliverable 卡多了 deliverable（自訂欄位、描述、附件檔名、修正版本，lib/deliverable.py 的 normalize），頁籤「成效說明」用
 # 3：每張卡多了 created；完成與進行中的工作卡多了 progress_seen（曾進「進行中」）與 status_since（進入目前狀態的時間），
 #    metrics 用來算照流程走與進行中卡放了幾天（團隊績效評估 AC-1；補登 2026-10-28 拿掉，created 照存）
 # 2：完成的工作卡多了 moved_in（從其他專案搬進 FDEPROJECT／CS 的時間），metrics 用它判斷搬入前已完成（改組前）
-SCHEMA = 3
+SCHEMA = 4
 
 
 def _required(fields: dict, name: str, key: str):
@@ -123,6 +124,12 @@ def fetch_snapshot(client, period, fetched_at: datetime) -> dict:
         if raw["key"] not in by_key:
             raise ValueError(f"Kick off 卡 {raw['key']} 不在全量查詢結果裡，兩次查詢之間資料有變，重跑一次")
         by_key[raw["key"]]["description"] = raw["fields"].get("description")
+    # Deliverable 跟 Kick off 一樣另查一次：自訂欄位與描述只在這種卡上要。延遲 import：deliverable.py 也 import 這支
+    from . import deliverable
+    for raw in client.search(f'{scope} AND issuetype = "{DELIVERABLE_TYPE}" ORDER BY key', FIELDS + deliverable.FETCH_FIELDS):
+        if raw["key"] not in by_key:
+            raise ValueError(f"Deliverable 卡 {raw['key']} 不在全量查詢結果裡，兩次查詢之間資料有變，重跑一次")
+        by_key[raw["key"]]["deliverable"] = deliverable.normalize(raw["fields"])
 
     counts = {p: 0 for p in PROJECTS}
     for issue in issues:
