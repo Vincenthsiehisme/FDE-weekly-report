@@ -590,6 +590,33 @@ class KickoffByEpicTest(unittest.TestCase):
         self.assertEqual(run(issues)["totals"]["hours"], 4.5)
 
 
+class DeliverableTest(unittest.TestCase):
+    """Deliverable 是 epic 的交付說明卡，跟 Kick off 一樣不是工作卡（2026-10-29 使用者裁：週報要排除 Deliverable）。"""
+
+    def deliverables(self):
+        return [
+            # 本週完成、有點數、有指派、剛更新：算進去的話張數、工時、人、照流程走、停滯天數都會變
+            issue("CS-40", level=0, parent="CS-1", type_="Deliverable", status="done", points=3.0, resolved=IN_WEEK,
+                  assignee="Writer", labels=["其他組"], updated="2026-09-22T10:00:00.000+0800", progress_seen=True),
+            # 進行中：算進去的話會出現在進行中清單
+            issue("CS-41", level=0, parent="CS-9", type_="Deliverable", status="doing", assignee="Writer"),
+        ]
+
+    def test_deliverable_cards_change_no_number(self):
+        self.assertEqual(run(base_issues() + self.deliverables()), run(base_issues()))
+
+    def test_deliverable_in_the_excluded_list_is_an_error(self):
+        with self.assertRaisesRegex(ValueError, "CS-40"):
+            run(base_issues() + self.deliverables(), excluded={"CS-40": "誤列"})
+
+    def test_deliverable_under_an_excluded_epic_is_not_counted_as_dropped_work(self):
+        issues = base_issues() + self.deliverables()
+        _, checks = drop_excluded_epics(issues, {"CS-1": "行政作業"}, PERIOD, allow_missing=False)
+        # 被整棵排除的 epic 底下本週完成幾張工作卡，有沒有 Deliverable CS-40 都一樣
+        _, without = drop_excluded_epics(base_issues(), {"CS-1": "行政作業"}, PERIOD, allow_missing=False)
+        self.assertEqual(checks, without)
+
+
 if __name__ == "__main__":
     unittest.main()
 
