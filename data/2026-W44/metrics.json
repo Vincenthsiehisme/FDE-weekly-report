@@ -9325,6 +9325,7 @@
       }
     ]
   },
+  "deliverables": null,
   "epics": [
     {
       "active": false,
@@ -9333,6 +9334,7 @@
       "idle_days": 0,
       "key": "CS-25",
       "kickoff": {
+        "idle_days": 20,
         "key": "CS-26",
         "locked_at": "2026-09-30T04:06:18.003769+08:00",
         "modified_at": [],
@@ -9374,6 +9376,7 @@
       "idle_days": 13,
       "key": "FDEPROJECT-140",
       "kickoff": {
+        "idle_days": 6,
         "key": "FDEPROJECT-131",
         "locked_at": "2026-10-07T00:00:32.067130+08:00",
         "modified_at": [],
@@ -9415,6 +9418,7 @@
       "idle_days": 15,
       "key": "FDEPROJECT-271",
       "kickoff": {
+        "idle_days": 22,
         "key": "FDEPROJECT-272",
         "locked_at": "2026-10-07T00:00:32.067130+08:00",
         "modified_at": [],
@@ -9456,6 +9460,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-286",
       "kickoff": {
+        "idle_days": 20,
         "key": "FDEPROJECT-287",
         "locked_at": "2026-10-07T00:00:32.067130+08:00",
         "modified_at": [],
@@ -9544,6 +9549,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-309",
       "kickoff": {
+        "idle_days": 12,
         "key": "FDEPROJECT-269",
         "locked_at": "2026-10-07T00:00:32.067130+08:00",
         "modified_at": [],
@@ -9609,6 +9615,7 @@
       "idle_days": 14,
       "key": "FDEPROJECT-312",
       "kickoff": {
+        "idle_days": 21,
         "key": "FDEPROJECT-310",
         "locked_at": "2026-10-07T00:00:32.067130+08:00",
         "modified_at": [],
@@ -9650,6 +9657,7 @@
       "idle_days": 7,
       "key": "FDEPROJECT-325",
       "kickoff": {
+        "idle_days": 15,
         "key": "FDEPROJECT-326",
         "locked_at": "2026-10-07T11:32:36.626963+08:00",
         "modified_at": [],
@@ -9691,6 +9699,7 @@
       "idle_days": 7,
       "key": "FDEPROJECT-332",
       "kickoff": {
+        "idle_days": 12,
         "key": "FDEPROJECT-333",
         "locked_at": "2026-10-14T00:00:32.099355+08:00",
         "modified_at": [],
@@ -9732,6 +9741,7 @@
       "idle_days": 15,
       "key": "FDEPROJECT-391",
       "kickoff": {
+        "idle_days": 15,
         "key": "FDEPROJECT-392",
         "locked_at": "2026-10-14T00:00:32.099355+08:00",
         "modified_at": [],
@@ -9773,6 +9783,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-399",
       "kickoff": {
+        "idle_days": 12,
         "key": "FDEPROJECT-400",
         "locked_at": "2026-10-14T00:00:32.099355+08:00",
         "modified_at": [],
@@ -9834,6 +9845,7 @@
       "idle_days": 5,
       "key": "FDEPROJECT-406",
       "kickoff": {
+        "idle_days": 8,
         "key": "FDEPROJECT-407",
         "locked_at": "2026-10-14T00:00:32.099355+08:00",
         "modified_at": [],
@@ -9886,6 +9898,7 @@
       "idle_days": 14,
       "key": "FDEPROJECT-415",
       "kickoff": {
+        "idle_days": 12,
         "key": "FDEPROJECT-416",
         "locked_at": "2026-10-14T00:00:32.099355+08:00",
         "modified_at": [],
@@ -9927,6 +9940,7 @@
       "idle_days": 7,
       "key": "FDEPROJECT-419",
       "kickoff": {
+        "idle_days": 6,
         "key": "FDEPROJECT-417",
         "locked_at": "2026-10-14T00:00:32.099355+08:00",
         "modified_at": [],
@@ -9968,6 +9982,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-423",
       "kickoff": {
+        "idle_days": 14,
         "key": "FDEPROJECT-424",
         "locked_at": "2026-10-14T00:00:32.099355+08:00",
         "modified_at": [],
@@ -10110,6 +10125,7 @@
       "idle_days": 13,
       "key": "FDEPROJECT-441",
       "kickoff": {
+        "idle_days": 14,
         "key": "FDEPROJECT-442",
         "locked_at": "2026-10-14T00:00:32.099355+08:00",
         "modified_at": [],
@@ -10151,6 +10167,7 @@
       "idle_days": 5,
       "key": "FDEPROJECT-455",
       "kickoff": {
+        "idle_days": 12,
         "key": "FDEPROJECT-456",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10221,6 +10238,7 @@
       "idle_days": 6,
       "key": "FDEPROJECT-463",
       "kickoff": {
+        "idle_days": 13,
         "key": "FDEPROJECT-270",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10262,6 +10280,7 @@
       "idle_days": 8,
       "key": "FDEPROJECT-497",
       "kickoff": {
+        "idle_days": 8,
         "key": "FDEPROJECT-498",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10303,6 +10322,7 @@
       "idle_days": 11,
       "key": "FDEPROJECT-509",
       "kickoff": {
+        "idle_days": 8,
         "key": "FDEPROJECT-510",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10344,6 +10364,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-525",
       "kickoff": {
+        "idle_days": 11,
         "key": "FDEPROJECT-526",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10397,6 +10418,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-538",
       "kickoff": {
+        "idle_days": 8,
         "key": "FDEPROJECT-539",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10458,6 +10480,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-552",
       "kickoff": {
+        "idle_days": 8,
         "key": "FDEPROJECT-553",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10546,6 +10569,7 @@
       "idle_days": 7,
       "key": "FDEPROJECT-575",
       "kickoff": {
+        "idle_days": 8,
         "key": "FDEPROJECT-550",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10587,6 +10611,7 @@
       "idle_days": 7,
       "key": "FDEPROJECT-585",
       "kickoff": {
+        "idle_days": 7,
         "key": "FDEPROJECT-586",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10628,6 +10653,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-602",
       "kickoff": {
+        "idle_days": 7,
         "key": "FDEPROJECT-603",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10788,6 +10814,7 @@
       "idle_days": 5,
       "key": "FDEPROJECT-626",
       "kickoff": {
+        "idle_days": 7,
         "key": "FDEPROJECT-627",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10876,6 +10903,7 @@
       "idle_days": 5,
       "key": "FDEPROJECT-628",
       "kickoff": {
+        "idle_days": 7,
         "key": "FDEPROJECT-629",
         "locked_at": "2026-10-21T00:00:31.859357+08:00",
         "modified_at": [],
@@ -10946,6 +10974,7 @@
       "idle_days": 6,
       "key": "FDEPROJECT-645",
       "kickoff": {
+        "idle_days": 6,
         "key": "FDEPROJECT-646",
         "locked_at": "2026-10-28T00:07:23.982424+08:00",
         "modified_at": [],
@@ -11016,6 +11045,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-652",
       "kickoff": {
+        "idle_days": 6,
         "key": "FDEPROJECT-601",
         "locked_at": "2026-10-28T00:07:23.982424+08:00",
         "modified_at": [],
@@ -11095,6 +11125,7 @@
       "idle_days": 5,
       "key": "FDEPROJECT-653",
       "kickoff": {
+        "idle_days": 6,
         "key": "FDEPROJECT-651",
         "locked_at": "2026-10-28T00:07:23.982424+08:00",
         "modified_at": [],
@@ -11201,6 +11232,7 @@
       "idle_days": 5,
       "key": "FDEPROJECT-677",
       "kickoff": {
+        "idle_days": 5,
         "key": "FDEPROJECT-678",
         "locked_at": "2026-10-28T00:07:23.982424+08:00",
         "modified_at": [],
@@ -11271,6 +11303,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-693",
       "kickoff": {
+        "idle_days": 0,
         "key": "FDEPROJECT-694",
         "locked_at": "2026-10-28T00:07:23.982424+08:00",
         "modified_at": [],
@@ -11395,6 +11428,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-695",
       "kickoff": {
+        "idle_days": 0,
         "key": "FDEPROJECT-696",
         "locked_at": "2026-10-28T00:07:23.982424+08:00",
         "modified_at": [],
@@ -11492,6 +11526,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-697",
       "kickoff": {
+        "idle_days": 0,
         "key": "FDEPROJECT-698",
         "locked_at": "2026-10-28T00:07:23.982424+08:00",
         "modified_at": [],
@@ -11571,6 +11606,7 @@
       "idle_days": 0,
       "key": "FDEPROJECT-738",
       "kickoff": {
+        "idle_days": 0,
         "key": "FDEPROJECT-739",
         "locked_at": "2026-10-28T00:07:23.982424+08:00",
         "modified_at": [],
@@ -11674,36 +11710,48 @@
   "health": [
     {
       "completed": 8,
+      "hours": 9.5,
+      "hours_per_card": 1.2,
       "unestimated": 0,
       "via_progress": 0,
       "week": "2026-W39"
     },
     {
       "completed": 36,
+      "hours": 22.75,
+      "hours_per_card": 0.6,
       "unestimated": 0,
       "via_progress": 12,
       "week": "2026-W40"
     },
     {
       "completed": 140,
+      "hours": 113.75,
+      "hours_per_card": 0.8,
       "unestimated": 0,
       "via_progress": 14,
       "week": "2026-W41"
     },
     {
       "completed": 88,
+      "hours": 71.05,
+      "hours_per_card": 0.9,
       "unestimated": 6,
       "via_progress": 14,
       "week": "2026-W42"
     },
     {
       "completed": 152,
+      "hours": 177.1,
+      "hours_per_card": 1.2,
       "unestimated": 7,
       "via_progress": 20,
       "week": "2026-W43"
     },
     {
       "completed": 100,
+      "hours": 96.5,
+      "hours_per_card": 1.0,
       "unestimated": 7,
       "via_progress": 8,
       "week": "2026-W44"
@@ -11714,6 +11762,7 @@
       "current_state": "進行中，子任務 2/11 完成",
       "group": "CS-25",
       "hours": null,
+      "idle_days": 0,
       "key": "CS-29",
       "leaf": false,
       "next": "CS-31 VM 飯店整合資料庫設計（Schema v0）",
@@ -11727,6 +11776,7 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": 10.0,
+      "idle_days": 2,
       "key": "CS-31",
       "leaf": true,
       "next": null,
@@ -11740,6 +11790,7 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": 11.0,
+      "idle_days": 3,
       "key": "CS-32",
       "leaf": true,
       "next": null,
@@ -11753,6 +11804,7 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": 12.0,
+      "idle_days": 0,
       "key": "CS-33",
       "leaf": true,
       "next": null,
@@ -11766,6 +11818,7 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": 3.5,
+      "idle_days": 2,
       "key": "CS-34",
       "leaf": true,
       "next": null,
@@ -11779,6 +11832,7 @@
       "current_state": "進行中，14 天未更新",
       "group": "CS-25",
       "hours": 5.0,
+      "idle_days": 14,
       "key": "CS-35",
       "leaf": true,
       "next": null,
@@ -11792,6 +11846,7 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": null,
+      "idle_days": 0,
       "key": "CS-36",
       "leaf": true,
       "next": null,
@@ -11805,6 +11860,7 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": null,
+      "idle_days": 0,
       "key": "CS-37",
       "leaf": true,
       "next": null,
@@ -11818,6 +11874,7 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": null,
+      "idle_days": 0,
       "key": "CS-38",
       "leaf": true,
       "next": null,
@@ -11831,6 +11888,7 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": null,
+      "idle_days": 0,
       "key": "CS-39",
       "leaf": true,
       "next": null,
@@ -11844,6 +11902,7 @@
       "current_state": "進行中，子任務 3/4 完成，12 天未更新",
       "group": "FDEPROJECT-309",
       "hours": null,
+      "idle_days": 12,
       "key": "FDEPROJECT-307",
       "leaf": false,
       "next": "FDEPROJECT-363 Trace / Debug 資料補強",
@@ -11857,6 +11916,7 @@
       "current_state": "審核中，子任務 8/10 完成，8 天未更新",
       "group": "FDEPROJECT-309",
       "hours": null,
+      "idle_days": 8,
       "key": "FDEPROJECT-308",
       "leaf": false,
       "next": "FDEPROJECT-502 執行工作管理、截圖及 Trace",
@@ -11870,6 +11930,7 @@
       "current_state": "進行中，12 天未更新",
       "group": "FDEPROJECT-309",
       "hours": 2.0,
+      "idle_days": 12,
       "key": "FDEPROJECT-363",
       "leaf": true,
       "next": null,
@@ -11883,6 +11944,7 @@
       "current_state": "進行中",
       "group": "FDEPROJECT-697",
       "hours": 1.0,
+      "idle_days": 0,
       "key": "FDEPROJECT-405",
       "leaf": true,
       "next": null,
@@ -11896,6 +11958,7 @@
       "current_state": "進行中，14 天未更新",
       "group": "FDEPROJECT-441",
       "hours": 0.5,
+      "idle_days": 14,
       "key": "FDEPROJECT-445",
       "leaf": true,
       "next": null,
@@ -11909,6 +11972,7 @@
       "current_state": "進行中，14 天未更新",
       "group": "FDEPROJECT-441",
       "hours": 1.0,
+      "idle_days": 14,
       "key": "FDEPROJECT-447",
       "leaf": true,
       "next": null,
@@ -11922,6 +11986,7 @@
       "current_state": "進行中，14 天未更新",
       "group": "FDEPROJECT-441",
       "hours": 1.0,
+      "idle_days": 14,
       "key": "FDEPROJECT-450",
       "leaf": true,
       "next": null,
@@ -11935,6 +12000,7 @@
       "current_state": "進行中，14 天未更新",
       "group": "FDEPROJECT-441",
       "hours": 1.0,
+      "idle_days": 14,
       "key": "FDEPROJECT-452",
       "leaf": true,
       "next": null,
@@ -11948,6 +12014,7 @@
       "current_state": "進行中，11 天未更新",
       "group": "FDEPROJECT-455",
       "hours": 1.0,
+      "idle_days": 11,
       "key": "FDEPROJECT-462",
       "leaf": true,
       "next": null,
@@ -11961,6 +12028,7 @@
       "current_state": "進行中，12 天未更新",
       "group": "FDEPROJECT-309",
       "hours": 3.0,
+      "idle_days": 12,
       "key": "FDEPROJECT-502",
       "leaf": true,
       "next": null,
@@ -11974,6 +12042,7 @@
       "current_state": "進行中，7 天未更新",
       "group": "FDEPROJECT-575",
       "hours": 2.0,
+      "idle_days": 7,
       "key": "FDEPROJECT-577",
       "leaf": true,
       "next": null,
@@ -11987,6 +12056,7 @@
       "current_state": "進行中",
       "group": "FDEPROJECT-286",
       "hours": 3.0,
+      "idle_days": 0,
       "key": "FDEPROJECT-643",
       "leaf": true,
       "next": null,
@@ -12000,6 +12070,7 @@
       "current_state": "進行中",
       "group": "FDEPROJECT-286",
       "hours": 3.0,
+      "idle_days": 0,
       "key": "FDEPROJECT-644",
       "leaf": true,
       "next": null,
@@ -12013,6 +12084,7 @@
       "current_state": "進行中，子任務 2/2 完成",
       "group": "FDEPROJECT-525",
       "hours": null,
+      "idle_days": 0,
       "key": "FDEPROJECT-661",
       "leaf": false,
       "next": null,
@@ -12026,6 +12098,7 @@
       "current_state": "進行中",
       "group": "FDEPROJECT-652",
       "hours": 3.0,
+      "idle_days": 0,
       "key": "FDEPROJECT-737",
       "leaf": true,
       "next": null,
@@ -14396,7 +14469,7 @@
     "week": "2026-W44",
     "week_ending": "2026-10-27"
   },
-  "schema": 8,
+  "schema": 10,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {
