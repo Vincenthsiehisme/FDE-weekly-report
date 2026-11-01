@@ -769,10 +769,10 @@ class StepInTest(unittest.TestCase):
         viz = week[week.index('class="viz"'):week.index('id="step-in"')]
         self.assertIn("<h4>本週完成 3 張，比上週多 2 張</h4>", viz)
         # 沒填的 CS-7 不算進平均（仍是 5.2h），寫在副標與柱子下
-        self.assertIn("<h4>本週一張卡平均 5.2h，上週 1.0h</h4>", viz)
+        self.assertIn("<h4>本週一張卡平均 5.2h，比上週多 4.2h</h4>", viz)
         self.assertIn("本週 1 張未填工時，不算進平均", viz)
         self.assertIn('class="t-axis">未填 1</text>', viz)
-        self.assertIn("<h4>本週力氣最多花在門市（100%），上週 100%</h4>", viz)
+        self.assertIn("<h4>本週力氣最多花在門市（100%），跟上週一樣</h4>", viz)
 
     def test_other_is_never_the_lead_of_the_allocation_title(self):
         # 「其他」是併起來的尾巴：70% 也不當主角，標題取有名字的最大一個
@@ -780,6 +780,28 @@ class StepInTest(unittest.TestCase):
         m = {"health": [{"week": "2026-W39", "completed": 2, "unestimated": 0, "hours_per_card": 1.0}],
              "allocation": {"labels": ["門市", "其他"], "weeks": [{"week": "2026-W39", "people": 2, "shares": {"門市": 0.3, "其他": 0.7}}]}}
         self.assertIn("<h4>本週力氣最多花在門市（30%）</h4>", _viz(m))
+
+    def test_allocation_title_direction_and_missing_weeks(self):
+        # Codex 審 c2325ed：上週沒人產出不是 0%；本週全落在「其他」不是沒有完成卡；差值寫百分點、有方向
+        from lib.render import _alloc_title
+        row = lambda people, shares: {"week": "2026-W39", "people": people, "shares": shares}
+        self.assertEqual(_alloc_title(row(2, {"門市": 0.3, "直售": 0.7}), row(1, {"門市": 0.5, "直售": 0.5})),
+                         "本週力氣最多花在直售（70%），比上週多 20 個百分點")
+        self.assertEqual(_alloc_title(row(2, {"直售": 0.4, "門市": 0.6}), row(1, {"門市": 0.75, "直售": 0.25})),
+                         "本週力氣最多花在門市（60%），比上週少 15 個百分點")
+        self.assertEqual(_alloc_title(row(2, {"門市": 1.0}), row(0, {})), "本週力氣最多花在門市（100%）")
+        self.assertEqual(_alloc_title(row(1, {"其他": 1.0}), None), "本週的力氣都落在近 4 週前 7 名以外的單位，併在「其他」")
+        self.assertEqual(_alloc_title(row(0, {}), row(1, {"門市": 1.0})), "本週沒有完成的卡，看不出力氣花在哪")
+
+    def test_hours_per_card_title_has_direction(self):
+        from lib.render import _viz
+        alloc = {"labels": [], "weeks": []}
+        health = lambda a, b: [{"week": "2026-W38", "completed": 1, "unestimated": 0, "hours_per_card": a},
+                               {"week": "2026-W39", "completed": 1, "unestimated": 0, "hours_per_card": b}]
+        self.assertIn("<h4>本週一張卡平均 1.0h，比上週少 0.2h</h4>", _viz({"health": health(1.2, 1.0), "allocation": alloc}))
+        self.assertIn("<h4>本週一張卡平均 1.0h，跟上週一樣</h4>", _viz({"health": health(1.0, 1.0), "allocation": alloc}))
+        # 上週整週沒填工時：沒有可比的值，不寫比較
+        self.assertIn("<h4>本週一張卡平均 1.0h</h4>", _viz({"health": health(None, 1.0), "allocation": alloc}))
 
     def test_bars_start_at_zero_and_a_week_without_filled_hours_has_no_bar(self):
         from lib.render import _bars

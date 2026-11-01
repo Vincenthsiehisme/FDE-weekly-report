@@ -27,7 +27,7 @@ from __future__ import annotations
 import html
 from datetime import datetime, timedelta
 
-from .metrics import OTHER_LABEL, SCHEMA, STALL_DAYS, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER, UNLABELED
+from .metrics import ALLOCATION_TOP, ALLOCATION_WINDOW, OTHER_LABEL, SCHEMA, STALL_DAYS, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER, UNLABELED
 from .period import TZ
 from .snapshot import issue_sort_key, parse_jira_time
 
@@ -448,6 +448,23 @@ def _chart(title: str, sub: str, body: str, wide=False) -> str:
     return f'<div class="viz-panel{" wide" if wide else ""}"><h4>{esc(title)}</h4><p class="note">{esc(sub)}</p>{body}</div>'
 
 
+def _alloc_title(now, prev) -> str:
+    """投入比例的觀察句。now、prev 是 allocation 的週列（沒有就是 None）。「其他」是併起來的尾巴，不當主角；
+    有人產出但全落在「其他」就照實說，不寫成沒有完成卡；上週沒有人產出時比例不存在，不寫成 0%（Codex 審 c2325ed）。
+    差值用顯示出來的整數百分比算，寫「個百分點」。"""
+    if now is None or not now["people"]:
+        return "本週沒有完成的卡，看不出力氣花在哪"
+    named = [k for k in now["shares"] if k != OTHER_LABEL]
+    if not named:
+        return f"本週的力氣都落在近 {ALLOCATION_WINDOW} 週前 {ALLOCATION_TOP} 名以外的單位，併在「{OTHER_LABEL}」"
+    lead = max(named, key=lambda k: (now["shares"][k], k))
+    pct = round(now["shares"][lead] * 100)
+    title = f"本週力氣最多花在{lead}（{pct}%）"
+    if prev is None or not prev["people"]:
+        return title
+    return title + _compare(pct, round(prev["shares"].get(lead, 0) * 100), " 個百分點")
+
+
 def _viz(metrics) -> str:
     """三張圖（2026-11-02 使用者裁，取代 2026-10-28 的四格圖：專案地圖、資料健康拿掉，產出加單卡工時）。
     張數與單卡工時單位不同，分兩張週次對齊的圖，不疊雙軸；單卡工時是平均（實際工時 ÷ 有填的張數），
@@ -469,21 +486,15 @@ def _viz(metrics) -> str:
     if per is None:
         per_title = "本週沒有填了工時的完成卡"
     else:
-        per_title = f"本週一張卡平均 {_hours1(per)}" + (f"，上週 {_hours1(last)}" if last is not None else "")
+        # 差值用顯示出來的一位小數算，讀者自己減得出同一個數
+        per_title = f"本週一張卡平均 {_hours1(per)}" + _compare(per, last, "h", fmt=lambda d: f"{d:.1f}")
     unfilled = f'；本週 {now["unestimated"]} 張{UNFILLED}，不算進平均' if now["unestimated"] else ""
     per_card = _chart(per_title, f"有填工時的完成卡：實際工時加總 ÷ 張數{unfilled} · {span}",
                       _bars(rows, lambda r: r["hours_per_card"], lambda r: DASH if r["hours_per_card"] is None else _hours1(r["hours_per_card"]),
                             lambda r: f'未填 {r["unestimated"]}' if r["unestimated"] else "", f"{span}單卡平均實際工時"))
 
     alloc = metrics["allocation"]["weeks"][-TREND_WEEKS:]
-    cur = alloc[-1]["shares"] if alloc else {}
-    before = alloc[-2]["shares"] if len(alloc) > 1 else None
-    named = [k for k in cur if k != OTHER_LABEL]  # 「其他」是併起來的尾巴，不當主角
-    if named:
-        lead = max(named, key=lambda k: (cur[k], k))
-        alloc_title = f"本週力氣最多花在{lead}（{cur[lead]:.0%}）" + (f"，上週 {before.get(lead, 0):.0%}" if before is not None else "")
-    else:
-        alloc_title = "本週沒有完成的卡，看不出力氣花在哪"
+    alloc_title = _alloc_title(alloc[-1] if alloc else None, alloc[-2] if len(alloc) > 1 else None)
     allocation = _chart(alloc_title, f"全隊的力氣：每人每週先換成 100% 再平均，不比小時 · 近 {len(alloc)} 週", _alloc_svg(metrics), wide=True)
     return f'<div class="viz">{count}{per_card}{allocation}</div>'
 
