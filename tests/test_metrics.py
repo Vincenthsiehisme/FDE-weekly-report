@@ -637,10 +637,11 @@ class FlowHealthTest(unittest.TestCase):
             issue("CS-4", parent="CS-1", points=2.0, resolved=LAST_WEEK, assignee="B", created="2026-09-10T03:59:30.000+0800", progress_seen=True),
         ]
         m = run(issues)
-        self.assertEqual(m["schema"], 9)
+        self.assertEqual(m["schema"], 10)
+        # 單卡工時只除有填的張數：W39 CS-2 1h、CS-3 沒填 → 1.0h，不是 0.5h（2026-11-02 本週頁一圖一訊息 AC-1）
         self.assertEqual(m["health"], [
-            {"week": "2026-W38", "completed": 1, "via_progress": 1, "unestimated": 0},
-            {"week": "2026-W39", "completed": 2, "via_progress": 1, "unestimated": 1},
+            {"week": "2026-W38", "completed": 1, "via_progress": 1, "unestimated": 0, "hours": 2.0, "hours_per_card": 2.0},
+            {"week": "2026-W39", "completed": 2, "via_progress": 1, "unestimated": 1, "hours": 1.0, "hours_per_card": 1.0},
         ])
         self.assertEqual(sorted(m["kpis"]), ["projects", "stalled", "via_progress"])
         self.assertEqual(m["kpis"]["via_progress"], {"now": 50, "prev": 100})
@@ -682,6 +683,38 @@ class FlowHealthTest(unittest.TestCase):
         self.assertEqual(got, {"CS-1": (1, False), "CS-20": (14, True), "CS-30": (52, True), "CS-40": (0, False)})
         self.assertEqual(m["totals"]["stalled"], 2)
         self.assertEqual(m["kpis"]["stalled"]["now"], 2)
+
+    def test_hours_per_card_rounds_and_a_week_with_only_unfilled_cards_is_none(self):
+        issues = self.epics() + [
+            issue("CS-2", parent="CS-1", points=0.25, resolved=IN_WEEK, assignee="A"),
+            issue("CS-3", parent="CS-1", points=0.5, resolved=IN_WEEK, assignee="A"),
+            issue("CS-5", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="B"),
+            issue("CS-4", parent="CS-1", points=None, resolved=LAST_WEEK, assignee="B"),
+        ]
+        h = run(issues)["health"]
+        self.assertEqual((h[-1]["hours"], h[-1]["hours_per_card"]), (1.75, 0.6))  # 1.75 ÷ 3 = 0.583
+        self.assertEqual((h[-2]["unestimated"], h[-2]["hours_per_card"]), (1, None))
+
+    def test_idle_days_of_in_progress_cards_and_kickoff_use_last_update(self):
+        # 卡：進入進行中很久（09-01）但 09-21 才更新 → 沒動 1 天；另一張 09-02 10:00 起沒更新 → 20 天；晚於期間結束 → 0
+        issues = self.epics() + [
+            issue("CS-2", parent="CS-1", status="doing", assignee="A", updated="2026-09-21T10:00:00.000+0800",
+                  status_since="2026-09-01T10:00:00+08:00"),
+            issue("CS-3", parent="CS-1", status="doing", assignee="A", updated="2026-09-02T10:00:00.000+0800"),
+            issue("CS-21", parent="CS-20", status="doing", assignee="B", updated="2026-09-23T00:05:00.000+0800"),
+            issue("CS-9", parent="CS-1", type_="Kick off", status="done", updated="2026-09-12T10:00:00.000+0800"),
+        ]
+        state = {"kickoff_key": "CS-9", "locked_at": "2026-09-12T10:00:00+08:00", "changes": [],
+                 "sections": {"objective": None, "why": None, "before": None, "after": None, "evidence": None,
+                              "decision": "要不要買", "next_milestone": None}}
+        m = run(issues, states={"CS-1": state, "CS-20": dict(state, kickoff_key="CS-99")})
+        self.assertEqual({r["key"]: r["idle_days"] for r in m["in_progress"]}, {"CS-2": 1, "CS-3": 20, "CS-21": 0})
+        # 人的 ages 照舊是進入目前狀態幾天，metrics 留著，頁面不用
+        self.assertEqual(next(p for p in m["people"] if p["name"] == "A")["in_progress"]["ages"]["CS-2"], 21)
+        epics = {e["key"]: e for e in m["epics"]}
+        self.assertEqual(epics["CS-1"]["kickoff"]["idle_days"], 10)
+        # 這一期 epic 底下沒有 Kick off 卡：不知道寫了幾天，是 None，不是 0
+        self.assertIsNone(epics["CS-20"]["kickoff"]["idle_days"])
 
     def test_done_epic_is_never_stalled(self):
         issues = [issue("CS-1", level=1, status="done", resolved=IN_WEEK, labels=["甲"]),
@@ -740,7 +773,8 @@ class FlowHealthTest(unittest.TestCase):
         ]
         m = run(issues)
         self.assertEqual([h["week"] for h in m["health"]], ["2026-W36", "2026-W37", "2026-W38", "2026-W39"])
-        self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "via_progress": 0, "unestimated": 0})
+        # 沒有完成卡的週：單卡工時是 None（不存在），不是 0h
+        self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "via_progress": 0, "unestimated": 0, "hours": 0.0, "hours_per_card": None})
         self.assertEqual(m["kpis"]["via_progress"], {"now": None, "prev": 100})
         self.assertEqual(m["allocation"]["weeks"][-1], {"week": "2026-W39", "people": 0, "shares": {}})
         a = m["people"][0]

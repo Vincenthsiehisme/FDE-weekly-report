@@ -56,13 +56,15 @@ STALL_DAYS = 14
 ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（7 色過 dataviz validate_palette 亮暗）
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
+# 10：health 逐週多了 hours、hours_per_card（單卡平均工時）；進行中的卡多了 idle_days；週頁 epic 的 kickoff 多了 idle_days
+#     （2026-11-02 本週頁一圖一訊息：出手區三個條件同一個時鐘）。via_progress、人的 in_progress.ages 留著，頁面不再用；
 # 9：多了 deliverables（頁籤「成效說明」的已完成 Deliverable 卡；snapshot 3 沒抓是 null）；
 # 8：拿掉補登（health、kpis、人的 recent 都少 backfill；2026-10-28 使用者裁不算）；
 # 7：snapshot 3 的建立時間與狀態歷程算出 health（逐週補登、照流程走）、kpis（本週與上週）、allocation（投入比例）；
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 9
+SCHEMA = 10
 SNAPSHOT_SCHEMAS = (3, 4)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓
 
 
@@ -403,6 +405,7 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
                 checks.append(_check("kickoff_missing", epic["key"], "這個 epic 沒有 Kick off 卡，專案卡上不會有目標、Before／After 與下個里程碑"))
             else:
                 kickoff = _kickoff_view(state)
+                kickoff["idle_days"] = _kickoff_idle_days(tree, epic["key"], period)
                 for problem in state.get("problems", []):
                     checks.append(_check("kickoff_format", state["kickoff_key"], problem))
                 for change in state["changes"]:
@@ -487,6 +490,8 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
         upcoming = next((k for k in kids if not _done(k)), None)
         in_progress.append({
             "key": item["key"],
+            # 最後一次更新到本期結束；抓取比期間結束晚幾分鐘，晚於期間結束的算 0 天（跟 epic 的 idle_days 同一個時鐘）
+            "idle_days": max(0, idle),
             "group": group_of[item["key"]],
             "root": tree.root_of(item)["key"],
             "leaf": not kids,
@@ -749,8 +754,9 @@ def _week_span(week_of: dict, period) -> list:
 
 
 def _health(tree, done_leaves, week_of, weeks) -> list:
-    """逐週（舊到新）資料健康：完成卡片、照流程走幾張、沒填工時幾張。週序列連續，沒有完成卡的週是 0。"""
-    rows = {w: {"week": w, "completed": 0, "via_progress": 0, "unestimated": 0} for w in weeks}
+    """逐週（舊到新）：完成卡片、照流程走幾張、沒填工時幾張、有填的工時加總與單卡平均工時。週序列連續，沒有完成卡的週是 0。
+    單卡平均只除有填工時的張數，沒填的不當 0h 拉低平均；整週都沒填（或沒有完成卡）是 None，不是 0h。"""
+    rows = {w: {"week": w, "completed": 0, "via_progress": 0, "unestimated": 0, "hours": 0.0} for w in weeks}
     for leaf in done_leaves:
         row = rows[week_of[leaf["key"]]]
         row["completed"] += 1
@@ -758,6 +764,11 @@ def _health(tree, done_leaves, week_of, weeks) -> list:
             raise ValueError(f"{leaf['key']} 是完成的工作卡，snapshot 卻沒有狀態歷程（progress_seen）：snapshot 抓取不完整，重抓一次")
         row["via_progress"] += leaf["progress_seen"]
         row["unestimated"] += leaf["points"] is None
+        row["hours"] += leaf["points"] or 0
+    for row in rows.values():
+        filled = row["completed"] - row["unestimated"]
+        row["hours"] = _round(row["hours"])
+        row["hours_per_card"] = round(row["hours"] / filled, 1) if filled else None
     return [rows[w] for w in weeks]
 
 
@@ -864,6 +875,15 @@ def _person_views(people, done_leaves, week_of, weeks, tree, label_of, period) -
             # 期間結束後才進入目前狀態的卡（抓取比期間結束晚幾分鐘），算 0 天
             ages[key] = max(0, (period.end_exclusive - datetime.fromisoformat(since)).days)
         person["in_progress"]["ages"] = ages
+
+
+def _kickoff_idle_days(tree, epic_key: str, period):
+    """這一期 epic 底下那張 Kick off 卡（跟 kickoff_by_epic 一樣取卡號最小的）最後一次更新到本期結束幾天：
+    出手區「需要決定」附寫了幾天，需要決定段就是從這張卡讀的。這一期找不到卡（被刪或移出 epic）是 None。"""
+    card = min((k for k in tree.kickoffs if k["parent"] == epic_key), key=lambda i: issue_sort_key(i["key"]), default=None)
+    if card is None:
+        return None
+    return max(0, (period.end_exclusive - parse_jira_time(card["updated"])).days)
 
 
 def _idle_days(tree, group_of, row, period) -> int:
