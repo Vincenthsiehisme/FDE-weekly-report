@@ -11,6 +11,7 @@ from __future__ import annotations
 from datetime import date, timedelta
 
 HOURS_PER_DAY = 8
+DAYS_PER_WEEK = 5  # 一個人週＝5 個可運用人日：消化速率的分母（2026-11-02 改算 epic）
 
 
 def parse_calendar(data: dict, where: str) -> dict:
