@@ -123,7 +123,7 @@ class KickoffTest(unittest.TestCase):
         self.assertNotIn("<dt>目標</dt>", week)
         self.assertNotIn('class="kickoff"', week)
         self.assertNotIn("要不要買授權", overview)
-        self.assertIn("要不要買授權", week[week.index('id="step-in"'):week.index("<h3>人</h3>")])
+        self.assertIn("要不要買授權", week[week.index('id="step-in"'):week.index('class="proj-list"')])
         self.assertNotIn("要不要買授權", week[week.index('class="proj-list"'):])
 
     def test_modified_kickoff_is_only_in_the_data_checks(self):
@@ -148,7 +148,7 @@ class PeopleTest(unittest.TestCase):
 
     def test_week_person_cards_are_in_name_order_with_in_progress_and_recent_work(self):
         week = panel(page(metrics=metrics_for(self.ISSUES)), "week")
-        cards = week[week.index("<h3>人</h3>"):week.index('class="proj-list"')]
+        cards = week[week.index("<h3>團隊投入狀況</h3>"):week.index('id="step-in"')]
         names = re.findall(r'<article class="pcard"><div class="phead"><h4>(.*?)</h4>', cards)
         # Carol 本週沒有完成、手上有進行中；Dan 上週完成，在近 4 週裡；照名字排，不照張數或工時；
         # 「未指派」不出人卡（2026-11-02 本週頁產值與探索 AC-4），那些卡在出手區與專案一覽
@@ -337,8 +337,9 @@ class WordingTest(unittest.TestCase):
         glossary = html[html.index('<section id="glossary"'):html.index("</section>", html.index('<section id="glossary"'))]
         self.assertIn("2026/09/16（三） 00:00 到 2026/09/22（二） 23:59（UTC+8）", glossary)
         for term in ("本週", "累計", "完成卡片", "實際工時", "累計工時", "未填工時", "人", "進度", "label", "Done／On Track", "資料檢查",
-                     "沒動", "停滯", "可運用人日", "新 epic", "卡都做完，epic 沒關", "投入比例"):
+                     "沒動", "停滯", "可運用人日", "探索人力占比", "卡都做完，epic 沒關", "投入比例"):
             self.assertIn(f"<dt>{term}</dt>", glossary)
+        self.assertNotIn("<dt>新 epic</dt>", glossary)  # 2026-11-02 探索改算 Kick off，頁面不再用新 epic
         self.assertNotIn("<dt>補登</dt>", glossary)
         self.assertNotIn("<dt>專案投入</dt>", glossary)
         self.assertNotIn("交付", html)
@@ -419,7 +420,7 @@ class NothingDroppedTest(unittest.TestCase):
         html = page(metrics=m, narrative={"highlights": ["完成"], "epic_results": {e["id"]: "完成" for e in m["epics"] if e["active"]}})
         week = panel(html, "week")
         projects = week[week.index('class="proj-list"'):]
-        people = week[week.index("<h3>人</h3>"):week.index('class="proj-list"')]
+        people = week[week.index("<h3>團隊投入狀況</h3>"):week.index('id="step-in"')]
         cumulative = panel(html, "cumulative")
         done_section = cumulative[cumulative.index("<h3>完成</h3>"):]
         team = panel(html, "team")
@@ -612,9 +613,10 @@ class WeekTableTest(unittest.TestCase):
         return week[week.index('class="proj-list"'):]
 
     def test_week_tab_order_and_the_table_is_collapsed_at_the_end(self):
-        # 2026-10-28 鎖定 AC-2、AC-3（2026-11-02 數字與圖改一圖一訊息）：數字 → 圖 → 這週要你出手的地方 → 人卡 → 專案一覽（收合）；本週重點不獨立列
+        # 2026-10-28 鎖定 AC-2、AC-3（2026-11-02 數字與圖改一圖一訊息；同日使用者要求人卡與出手區對調、改名）：
+        # 數字 → 圖 → 團隊投入狀況 → 需要關注 → 專案一覽（收合）；本週重點不獨立列
         week = panel(page(metrics=metrics_for(self.ISSUES), narrative=self.NARRATIVE), "week")
-        marks = ['class="kpis wk-kpis"', 'class="viz"', '<h3 id="step-in">', "<h3>人</h3>", '<details class="proj-list"><summary>專案一覽（']
+        marks = ['class="kpis wk-kpis"', 'class="viz"', "<h3>團隊投入狀況</h3>", '<h3 id="step-in">', '<details class="proj-list"><summary>專案一覽（']
         positions = [week.index(m) for m in marks]
         self.assertEqual(positions, sorted(positions))
         self.assertNotIn('class="highlights"', week)
@@ -723,15 +725,15 @@ class StepInTest(unittest.TestCase):
 
     def step(self, html):
         week = panel(html, "week")
-        return week[week.index('id="step-in"'):week.index("<h3>人</h3>")]
+        return week[week.index('id="step-in"'):week.index('class="proj-list"')]
 
     def test_three_numbers_lead_with_the_rolling_rate(self):
         week = panel(self.html(previous={"totals": {"projects": 3, "stalled": 0}}), "week")
         kpis = week[week.index('class="kpis wk-kpis"'):week.index('class="viz"')]
         # 2026-11-02 照審查改：消化速率是主數字；測試的 compute 沒給名單，算不出就寫明，不猜
         self.assertIn('<li class="lead"><span>過去四週平均消化速度（epic／人週）</span><strong>—</strong><small>沒有成員名單，算不出可運用人日</small>', kpis)
-        # 探索人力占比：本週 CS-1 第一次有完成卡，兩人都 100% 探索；上週沒有完成卡
-        self.assertIn('<span>探索人力占比</span><strong>100%</strong><small>沒有上週的值</small>', kpis)
+        # 探索人力占比：本週沒有完成的 Kick off，兩人都 0% 探索（2026-11-02 改算 Kick off）；上週沒有完成卡
+        self.assertIn('<span>探索人力占比</span><strong>0%</strong><small>沒有上週的值</small>', kpis)
         self.assertIn('<span>停滯專案</span><strong class=alert>1</strong><small>上週 0，多 1</small>', kpis)
         self.assertIn('<a href="#step-in">看是哪幾個</a>', kpis)
         self.assertIn('style="--kpis:3"', kpis)
@@ -751,7 +753,7 @@ class StepInTest(unittest.TestCase):
         # 資料不到 4 週：不把 1～3 週的值標成滾動 4 週（Codex 審 ab4aff4）
         short = _week_kpis({"health": rows[:3], "kpis": {"stalled": {"now": 0, "prev": None}}})
         self.assertIn('<strong>—</strong><small>資料還不到 4 週（目前 3 週）</small>', short)
-        self.assertIn('<strong>49%</strong><small>上週 68%，少 19 個百分點</small><small class="hint">5／7 人有完成卡；這些人的時間，投到這週第一次有完成卡的 epic', html)
+        self.assertIn('<strong>49%</strong><small>上週 68%，少 19 個百分點</small><small class="hint">5／7 人有完成卡；這些人的時間，投到 Kick off 卡的比例', html)
         # 有完成卡的人數不同：不寫差值，寫上週的值與人數（2026-11-02 消化速度口徑修正）
         rows[3]["explore_people"] = 6
         html = _week_kpis({"health": rows, "kpis": {"stalled": {"now": 4, "prev": None}}})
@@ -786,7 +788,7 @@ class StepInTest(unittest.TestCase):
         viz = week[week.index('class="viz"'):week.index('id="step-in"')]
         self.assertEqual(viz.count('<div class="viz-panel'), 2)
         self.assertIn("<h4>沒有成員名單，算不出可運用人日</h4>", viz)
-        self.assertIn("<h4>本週有產出的人把 100% 的時間投到探索</h4>", viz)
+        self.assertIn("<h4>本週有產出的人把 0% 的時間投到探索</h4>", viz)
         # 沒有名單：只寫幾個人，不寫「／None」（fable 審 80d905f）
         self.assertIn("2 人有完成卡；這些人的時間", week)
         self.assertNotIn("／None", week)
@@ -803,7 +805,7 @@ class StepInTest(unittest.TestCase):
         html = _output_chart(rows)
         self.assertIn("<h4>本週完成 2 個 epic，0.36 個／可運用人週；過去四週平均 0.45</h4>", html)
         self.assertIn("完成 epic ÷ 可運用 5.6 人週（名單 7 人的工作日合計 28 人日 ÷ 5，已扣國定假日，請假不扣）；"
-                      "epic 底下的卡都做完（不等 epic 在 Jira 關掉）或 epic 已結案就算完成，算在最後一張卡做完那週。", html)
+                      "epic 在 Jira 結案才算完成，算在最後一張卡做完那週。", html)
         self.assertNotIn("不算進來", html)
         self.assertIn('class="t-val">0.36</text>', html)
         self.assertIn('class="t-axis">4 週 0.45</text>', html)
@@ -838,7 +840,7 @@ class StepInTest(unittest.TestCase):
         from lib.render import _time_chart
         row = lambda w, share, n: {"week": w, "explore_share": share, "explore_people": n, "roster": 7}
         html = _time_chart([row("2026-W42", None, 0), row("2026-W43", 0.6762, 6), row("2026-W44", 0.4868, 5)])  # 3 週歷史全畫
-        self.assertIn("<h4>本週有產出的人把 49% 的時間投到探索；上週 6 人、本週 5 人有完成卡，不直接比</h4>", html)
+        self.assertIn("<h4>本週有產出的人把 49% 的時間投到探索</h4>", html)
         same = _time_chart([row("2026-W43", 0.6762, 5), row("2026-W44", 0.4868, 5)])
         self.assertIn("<h4>本週有產出的人把 49% 的時間投到探索，比上週少 19 個百分點</h4>", same)
         self.assertIn('class="t-val">49%</text>', html)
@@ -888,7 +890,7 @@ class StepInTest(unittest.TestCase):
 
     def test_step_in_is_one_row_per_project_on_one_clock(self):
         step = self.step(self.html())
-        self.assertTrue(step.startswith('id="step-in">這週要你出手的地方：2 個專案</h3>'))
+        self.assertTrue(step.startswith('id="step-in">需要關注：2 個專案</h3>'))
         self.assertIn("其中專案沒動 1 個、卡沒動 1 張、需要決定 1 個、「卡都做完，epic 沒關」0 個；依幾天沒動排，久的在上。", step)
         self.assertIn("前三個條件用同一個時鐘：最後一次更新到本期結束，14 天為界。", step)
         names = re.findall(r'<div class="si"><span class="name"><span class="key"><a [^>]*>(CS-\d+)</a>', step)
@@ -907,7 +909,7 @@ class StepInTest(unittest.TestCase):
         issues = self.ISSUES + [issue("CS-30", level=0, status="doing", assignee="amy", summary="沒有 epic 的卡",
                                       updated="2026-09-01T10:00:00.000+0800")]
         step = self.step(self.html(issues=issues))
-        self.assertIn("這週要你出手的地方：3 個專案", step)
+        self.assertIn("需要關注：3 個專案", step)
         self.assertIn('<div class="si"><span class="name">未歸屬 epic</span>', step)
         self.assertIn("沒有 epic 的卡 <span class=\"muted\">· amy · 21 天</span>", step)
 
@@ -928,7 +930,7 @@ class StepInTest(unittest.TestCase):
     def test_people_are_in_name_order_and_only_compared_with_themselves(self):
         html = self.html()
         week = panel(html, "week")
-        cards = week[week.index("<h3>人</h3>"):week.index('class="proj-list"')]
+        cards = week[week.index("<h3>團隊投入狀況</h3>"):week.index('id="step-in"')]
         # Zed 本週 9h、amy 1.5h：照名字（不分大小寫）排，不照工時或張數
         self.assertEqual(re.findall(r'<article class="pcard"><div class="phead"><h4>(.*?)</h4>', cards), ["amy", "Zed"])
         self.assertIn("本週 1 張 · 近 1 週只跟自己比，深色＝本週", cards)

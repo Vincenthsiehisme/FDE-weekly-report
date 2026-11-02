@@ -45,7 +45,7 @@ from .period import TZ, period_containing, period_ending
 from .snapshot import DELIVERABLE_TYPE, EPIC_LEVEL, KICKOFF_TYPE, issue_sort_key, parse_jira_time
 
 SECTION_LABELS = dict(SECTIONS)
-# 說明卡的類型：在 epic 底下，但不是工作，所有數字都不算
+# 說明卡的類型：在 epic 底下，但不是工作，所有數字都不算（唯一例外：有填工時的 Kick off 就是探索人力占比的探索，見 _explore）
 NOT_WORK_TYPES = (KICKOFF_TYPE, DELIVERABLE_TYPE)
 
 UNASSIGNED_EPIC = "_unassigned"
@@ -58,6 +58,9 @@ ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
 CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近幾週（跟本週頁的圖同一段），不然資料檢查會一路變長
+# 15：health 的 explore_share、explore_people 改算 Kick off：探索是這週完成、有填工時的 Kick off 卡，
+#     完成工作卡（含 Spike）都算開發（2026-11-02 使用者裁，取代「這週第一次有完成卡的 epic」；epics_new 這些新 epic 同期數字照留，頁面不用）；
+#     epics_done 只算本期結束前在 Jira Done 的 epic，卡都做完、epic 沒關的不再算；週次照舊取最後一張完成卡（同日使用者裁「Done 才算，算最後卡週」）；
 # 14：health 的 epics_closed 改名 epics_done：卡全部做完或 epic 已結案就算完成，週次取最後一張完成卡，不看 epic 結案時間
 #     （集中結案是行政動作）；拿掉資料檢查 epic_closed_outside_weeks（週次來自卡，一定在週序列裡）（2026-11-02 消化速度口徑修正）；
 # 13：累計專案（cumulative.epics）多了 closed_week（結案那一期）、idle_days 與 stalled（未結案才有，跟週頁 epic 同一個時鐘），
@@ -75,7 +78,7 @@ CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近�
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 14
+SCHEMA = 15
 SNAPSHOT_SCHEMAS = (3, 4)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓
 
 
@@ -526,7 +529,7 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
     weeks = _week_span(week_of, period)
     health = _health(tree, cumulative_leaves, week_of, weeks)
     _explore(health, tree, cumulative_leaves, week_of, group_of)
-    _epics_done(health, tree, leaves, cumulative_leaves, week_of, group_of, period, checks)
+    _epics_done(health, tree, cumulative_leaves, week_of, group_of, period, checks)
     _capacity(health, tree, cumulative_leaves, week_of, period, team, calendar, checks)
     allocation = _allocation(cumulative_leaves, week_of, weeks, tree.owner_of, label_of)
     _person_views(people, cumulative_leaves, week_of, weeks, tree, label_of, period)
@@ -806,7 +809,7 @@ def _week_periods(weeks: list, period) -> dict:
 
 def _explore(health, tree, done_leaves, week_of, group_of) -> None:
     """探索的同期數字，加在 health 每一列：epics_active 這週有完成卡的 epic 數（不含未歸屬 epic）、epics_new 其中第一次有完成卡的、
-    new_hours_share 新 epic 的工時占這週有填工時的比例（沒有填工時是 None）、explore_share 探索人力占比（這週沒人產出是 None）、explore_people 算占比的人數（不含未指派）、
+    new_hours_share 新 epic 的工時占這週有填工時的比例（沒有填工時是 None）、explore_share 探索人力占比（Kick off 工時，這週沒人產出是 None）、explore_people 算占比的人數（不含未指派）、
     new_same_day 新 epic 裡建立當天就有完成卡的
     （量到的可能是開卡補登，不是探索，頁面寫出來讓讀者自己判斷；fable 審 2026-11-02）。
     epic 的第一張完成卡取結案時間最早的那張，週次用它在 week_of 的週，跟 health 同一個來源。"""
@@ -822,15 +825,24 @@ def _explore(health, tree, done_leaves, week_of, group_of) -> None:
         h.update(epics_active=0, epics_new=0, new_same_day=0, explore_share=None, explore_people=0)
     by_week = {h["week"]: h for h in health}
     # 探索人力占比（2026-11-02 使用者裁「照審查改」：人的時間是資源，開發跟探索都是投入）：每個有產出的人一週先換成 100%
-    # （人內用自己填的工時當權重，同投入比例），切成探索（新 epic）與開發（其餘，含未歸屬 epic），再對有產出的人平均
+    # （人內用自己填的工時當權重，同投入比例），切成探索與開發，再對有產出的人平均。
+    # 探索＝這週完成、有填工時的 Kick off 卡，完成工作卡（含 Spike）都算開發（同日使用者先選「Kick off＋Spike」，看過副標後裁只算 Kick off；
+    # 取代「新 epic 第一週」：小 epic 一週做完、事後補開的 epic 整個算成探索）。Kick off 沒填工時不算：沒填的卡會補成這人這週的平均，
+    # 51 張 Kick off 只有 3 張有填，補了等於憑空生出探索。Kick off 工時只進這裡，完成張數與實際工時照舊不算說明卡。
     # 未指派不是一個人：它的卡不進探索人力占比，也不算進 explore_people（Codex 審 ab4aff4）
     cells = {}
     for leaf in done_leaves:
-        week, gid, owner = week_of[leaf["key"]], group_of[leaf["key"]], tree.owner_of(leaf)
+        week, owner = week_of[leaf["key"]], tree.owner_of(leaf)
         if owner == UNASSIGNED_OWNER:
             continue
-        kind = "探索" if gid != UNASSIGNED_EPIC and first[gid][1] == week else "開發"
-        cells.setdefault((week, owner), []).append({"label": kind, "points": leaf["points"]})
+        cells.setdefault((week, owner), []).append({"label": "開發", "points": leaf["points"]})
+    for card in tree.kickoffs:
+        if not _done(card) or card["points"] is None or not card["resolved"]:
+            continue
+        week, owner = period_containing(parse_jira_time(card["resolved"])).week_id, tree.owner_of(card)
+        if week not in by_week or owner == UNASSIGNED_OWNER:  # 週序列外（第一張工作卡之前、期末之後）不算
+            continue
+        cells.setdefault((week, owner), []).append({"label": "探索", "points": card["points"]})
     per_week = {}
     for (week, _), leaves in cells.items():
         per_week.setdefault(week, []).append(_shares(leaves).get("探索", 0.0))
@@ -855,21 +867,19 @@ def _explore(health, tree, done_leaves, week_of, group_of) -> None:
         h["new_hours_share"] = round(new_hours.get(h["week"], 0.0) / total, 4) if total else None
 
 
-def _epics_done(health, tree, leaves, done_leaves, week_of, group_of, period, checks) -> None:
+def _epics_done(health, tree, done_leaves, week_of, group_of, period, checks) -> None:
     """epics_done 加在 health 每一列：這週完成的 epic 數（2026-11-02 使用者裁「改算 epic」，同日改看最後一張卡：
-    jira-weekly-report · 消化速度口徑修正）。epic 底下至少一張算進累計的完成工作卡，而且底下算進進度的卡全部做完、
-    或 epic 在本期結束前已在 Jira 結案，就算完成；週次一律取底下最後一張完成卡的那一週，不看 epic 的結案時間：
-    W41、W42、W44 都有好幾個 epic 在同一兩分鐘內被結案，結案時間是去 Jira 關 epic 的行政動作，不是做完的時間。
-    卡都做完、epic 沒關的照算（出手區仍列它，提醒去關）。結案但卡沒全做完的也算（改組前、排除的卡留在進度分母，
-    例 FDEPROJECT-71），週次一樣取最後一張完成卡。排除的 epic 在 compute 之前已經整棵移掉。
-    算不進去、要人知道的兩種列進資料檢查：完成卻沒有結案時間（只有卡全做完才算得到）；
+    jira-weekly-report · 消化速度口徑修正；同日再裁「Done 才算，算最後卡週」：jira-weekly-report · 探索改算 Kick off 與 Spike）。
+    epic 在本期結束前已在 Jira 結案（Done），而且底下至少一張算進累計的完成工作卡，就算完成；卡都做完、epic 沒關的不算
+    （W44 有 7 個沒關的 epic 期末後又補開卡，卡做完就算會把還在做的專案算成完成）。週次一律取底下最後一張完成卡的那一週，
+    不看 epic 的結案時間：W41、W42、W44 都有好幾個 epic 在同一兩分鐘內被結案，結案時間是去 Jira 關 epic 的行政動作，不是做完的時間。
+    代價：epic 晚幾週才關，回頭看當初那週的數字會變多。結案但卡沒全做完的也算（改組前、排除的卡留在進度分母，例 FDEPROJECT-71）。
+    排除的 epic 在 compute 之前已經整棵移掉。
+    算不進去、要人知道的兩種列進資料檢查：完成卻沒有結案時間；
     結案在近 CAPACITY_CHECK_WEEKS 週、底下沒有完成工作卡（沒有工作被消化，可能是改組或取消，W42 FDEPROJECT-245）。"""
-    done_keys = {leaf["key"] for leaf in done_leaves}
-    by_group, all_by_group = {}, {}
+    by_group = {}
     for leaf in done_leaves:
         by_group.setdefault(group_of[leaf["key"]], []).append(leaf)
-    for leaf in leaves:
-        all_by_group.setdefault(group_of[leaf["key"]], []).append(leaf)
     by_week = {h["week"]: h for h in health}
     recent = {h["week"] for h in health[-CAPACITY_CHECK_WEEKS:]}
     for h in health:
@@ -879,7 +889,7 @@ def _epics_done(health, tree, leaves, done_leaves, week_of, group_of, period, ch
         if _done(epic):
             if not epic["resolved"]:
                 checks.append(_check("epic_done_without_resolution", epic["key"],
-                                     "epic 狀態是完成但沒有完成時間（resolutiondate），只有底下的卡全部做完才算進消化速度"))
+                                     "epic 狀態是完成但沒有完成時間（resolutiondate），消化速度算不到它"))
             else:
                 closed = parse_jira_time(epic["resolved"]) < period.end_exclusive
         mine = by_group.get(epic["key"], [])
@@ -890,8 +900,7 @@ def _epics_done(health, tree, leaves, done_leaves, week_of, group_of, period, ch
                     checks.append(_check("epic_closed_without_work", epic["key"],
                                          f"epic 在 {week} 結案，底下沒有算進累計的完成工作卡（沒有卡，或只剩改組前、排除的卡），消化速度不算它"))
             continue
-        full = all(leaf["key"] in done_keys for leaf in all_by_group[epic["key"]])
-        if not (full or closed):
+        if not closed:
             continue
         last = max(mine, key=lambda leaf: (parse_jira_time(leaf["resolved"]), issue_sort_key(leaf["key"])))
         by_week[week_of[last["key"]]]["epics_done"] += 1
