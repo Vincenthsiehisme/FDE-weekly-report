@@ -193,9 +193,11 @@ details[open]>summary::before{content:"▾"}
 .wk-kpis strong.alert,.alert{color:var(--alert)}
 .wk-kpis small.hint{margin-top:2px}
 .viz{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0 0}
-.viz-panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.viz-panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0;display:flex;flex-direction:column}
 .viz-panel.wide{grid-column:1/-1}
 .viz-panel h4{margin:0;font-size:16px}.viz-panel .note{margin:2px 0 8px}.viz-panel .legend{margin:0 0 6px}
+/* 同一列兩張圖的標題與副標行數不同時，圖例與圖一起貼齊卡片底部，基線對齊（2026-11-02 使用者） */
+.viz-panel .note+*{margin-top:auto}
 .viz svg{display:block;width:100%;height:auto}
 .viz text{font-size:12px;fill:var(--muted)}
 .spark text{font-size:10px;fill:var(--muted)}
