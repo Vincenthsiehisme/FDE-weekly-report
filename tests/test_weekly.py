@@ -77,6 +77,58 @@ class AtomicWriteTest(unittest.TestCase):
         self.assertEqual(json.loads((self.root / "data" / "2026-W39" / "metrics.json").read_text())["totals"]["hours"], 1.0)
 
 
+
+class KickoffHoursTest(AtomicWriteTest):
+    """kickoff-hours：只把 snapshot 裡 Kick off 的工時換成 Jira 現值，範圍與狀態留在那一期（2026-11-02 W44 重抓混入期末後狀態）。"""
+
+    def _snap(self):
+        snap = snapshot([
+            issue("CS-1", level=1, status="doing"),
+            dict(issue("CS-2", level=0, parent="CS-1", type_="Kick off", status="done", resolved=IN_WEEK, assignee="Alice"), description=None),
+            dict(issue("CS-4", level=0, parent="CS-1", type_="Kick off", status="review", points=0.1, assignee="Alice"), description=None),
+            issue("CS-3", level=0, parent="CS-1", status="done", points=3.0, resolved=IN_WEEK, assignee="Alice"),
+        ])
+        snap["period"] = {"week": "2026-W39", "week_ending": "2026-09-22", "start": "", "end_exclusive": ""}
+        return snap
+
+    def client(self, points):
+        c = mock.Mock()
+        c.search.return_value = [{"key": k, "fields": {"customfield_10016": v}} for k, v in points.items()]
+        return c
+
+    def test_only_kickoff_points_change(self):
+        snap = self._snap()
+        now = weekly.datetime(2026, 11, 2, 15, 0, tzinfo=weekly.TZ)
+        # Jira 現在多了期末後建立的卡也不會進來：只查 snapshot 裡已有的 Kick off 卡號
+        client = self.client({"CS-2": 1.0, "CS-4": 0.1})
+        new, changed = weekly.refresh_kickoff_hours(snap, client, now)
+        self.assertEqual(changed, [("CS-2", None, 1.0)])
+        self.assertIn("key in (CS-2, CS-4)", client.search.call_args[0][0])
+        self.assertEqual([i["key"] for i in new["issues"]], [i["key"] for i in snap["issues"]])
+        for before, after in zip(snap["issues"], new["issues"]):
+            self.assertEqual({k: v for k, v in after.items() if k != "points"}, {k: v for k, v in before.items() if k != "points"})
+        self.assertEqual(new["fetched_at"], snap["fetched_at"])
+        self.assertEqual(new["kickoff_points_fetched_at"], now.isoformat())
+        self.assertIsNone(snap["issues"][1]["points"])  # 原 snapshot 不被改到
+
+    def test_kickoff_missing_in_jira_fails(self):
+        with self.assertRaisesRegex(ValueError, "CS-4"):
+            weekly.refresh_kickoff_hours(self._snap(), self.client({"CS-2": 1.0}), weekly.datetime.now(weekly.TZ))
+
+    def test_command_rewrites_snapshot_and_metrics_with_the_new_hours(self):
+        path = self.root / "data" / "2026-W39"
+        path.mkdir(parents=True)
+        (path / "snapshot.json").write_text(json.dumps(self._snap(), ensure_ascii=False), encoding="utf-8")
+        with mock.patch.object(weekly, "load_credentials"), mock.patch.object(weekly, "JiraClient", return_value=self.client({"CS-2": 1.0, "CS-4": 0.1})), \
+                mock.patch("sys.stderr", new_callable=io.StringIO):
+            weekly.main(["kickoff-hours", "2026-W39"])
+        metrics = json.loads((path / "metrics.json").read_text(encoding="utf-8"))
+        # Alice：一般卡 3h、Kick off 1h → 探索 25%；實際工時不算 Kick off
+        self.assertEqual(metrics["health"][-1]["explore_share"], 0.25)
+        self.assertEqual(metrics["totals"]["hours"], 3.0)
+        saved = json.loads((path / "snapshot.json").read_text(encoding="utf-8"))
+        self.assertEqual(next(i for i in saved["issues"] if i["key"] == "CS-2")["points"], 1.0)
+
 if __name__ == "__main__":
     unittest.main()
 

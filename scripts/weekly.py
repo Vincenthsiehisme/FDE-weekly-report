@@ -4,6 +4,8 @@
   prepare [--week-ending YYYY-MM-DD] [--wait-for-period-end]
                                       抓 Jira、存 snapshot、算 metrics，最後一行印出這期的 week id
   metrics <week>                      只從既有 snapshot 重算 metrics（不打 Jira）
+  kickoff-hours <week>                只把既有 snapshot 裡 Kick off 卡的工時換成 Jira 現值，再重算 metrics；
+                                      卡的範圍、狀態、結案時間都留在那一期抓的樣子
   finalize <week>                     驗證 narrative.json，通過才產出 site/ 底下的 HTML
 
 任何一步失敗都以非 0 結束，不產出部分結果。
@@ -28,7 +30,7 @@ from lib.metrics import compute, drop_excluded_epics, kickoff_by_epic  # noqa: E
 from lib.narrative import validate  # noqa: E402
 from lib.period import TZ, period_ending, period_for, period_from_dict, wait_for_end  # noqa: E402
 from lib.render import render  # noqa: E402
-from lib.snapshot import EPIC_LEVEL, fetch_snapshot, issue_sort_key  # noqa: E402
+from lib.snapshot import EPIC_LEVEL, KICKOFF_TYPE, POINTS_FIELD, fetch_snapshot, issue_sort_key  # noqa: E402
 
 DATA = ROOT / "data"
 SITE = ROOT / "site"
@@ -226,6 +228,40 @@ def cmd_prepare(args) -> None:
     print(period.week_id)
 
 
+def refresh_kickoff_hours(snapshot: dict, client, now: datetime) -> tuple:
+    """回傳 (新 snapshot, [(卡號, 舊值, 新值)])：只把 snapshot 裡已有的 Kick off 卡工時換成 Jira 現值。
+    Kick off 工時常在結案後才回填（2026-11-02 一次補了 47 張），整期重抓會把期末後的卡、狀態、更新時間一起帶進來
+    （PR #36 的 W44：epic 多 10 個、停滯 4→2），所以只動這一欄：不加卡、不改狀態與結案時間，fetched_at 照舊，
+    另記 kickoff_points_fetched_at。snapshot 裡的 Kick off 在 Jira 找不到（刪除或搬走）就失敗，不留舊值假裝更新過。"""
+    keys = sorted((i["key"] for i in snapshot["issues"] if i["type"] == KICKOFF_TYPE), key=issue_sort_key)
+    if not keys:
+        raise ValueError(f"{snapshot['period']['week']} 的 snapshot 裡沒有 Kick off 卡")
+    found = {raw["key"]: raw["fields"].get(POINTS_FIELD) for raw in client.search(f"key in ({', '.join(keys)}) ORDER BY key", [POINTS_FIELD])}
+    missing = [k for k in keys if k not in found]
+    if missing:
+        raise ValueError(f"Jira 查不到這些 Kick off 卡：{'、'.join(missing)}（刪除或搬到別的專案），工時沒有更新")
+    changed, issues = [], []
+    for item in snapshot["issues"]:
+        if item["type"] == KICKOFF_TYPE and found[item["key"]] != item["points"]:
+            changed.append((item["key"], item["points"], found[item["key"]]))
+            item = dict(item, points=found[item["key"]])
+        issues.append(item)
+    return dict(snapshot, issues=issues, kickoff_points_fetched_at=now.isoformat()), changed
+
+
+def cmd_kickoff_hours(args) -> None:
+    snapshot = read_json(week_dir(args.week) / "snapshot.json")
+    if snapshot["period"]["week"] != args.week:
+        raise ValueError(f"snapshot 的期間是 {snapshot['period']['week']}，不是 {args.week}")
+    client = JiraClient(load_credentials())
+    client.verify()
+    snapshot, changed = refresh_kickoff_hours(snapshot, client, datetime.now(TZ))
+    metrics = publish_week(snapshot, fresh_fetch=False)
+    for key, old, new in changed:
+        print(f"{key}：{old} → {new}", file=sys.stderr)
+    print(f"{args.week}：{len(changed)} 張 Kick off 工時更新；本週完成 {metrics['totals']['completed']} 張", file=sys.stderr)
+
+
 def cmd_metrics(args) -> None:
     snapshot = read_json(week_dir(args.week) / "snapshot.json")
     if snapshot["period"]["week"] != args.week:
@@ -288,6 +324,9 @@ def main(argv=None) -> int:
     p = sub.add_parser("metrics")
     p.add_argument("week")
     p.set_defaults(func=cmd_metrics)
+    p = sub.add_parser("kickoff-hours")
+    p.add_argument("week")
+    p.set_defaults(func=cmd_kickoff_hours)
     p = sub.add_parser("finalize")
     p.add_argument("week")
     p.set_defaults(func=cmd_finalize)
