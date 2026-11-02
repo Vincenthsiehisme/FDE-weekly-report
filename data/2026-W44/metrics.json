@@ -2,19 +2,19 @@
   "allocation": {
     "labels": [
       "東北亞",
-      "門市",
-      "入境",
+      "國旅",
       "直售",
+      "門市",
       "客製國旅",
-      "LiLi",
-      "歐洲團產TP",
+      "未分類",
+      "雄獅",
       "其他"
     ],
     "weeks": [
       {
         "people": 1,
         "shares": {
-          "歐洲團產TP": 1.0
+          "其他": 1.0
         },
         "week": "2026-W39"
       },
@@ -29,10 +29,8 @@
       {
         "people": 7,
         "shares": {
-          "入境": 0.2857,
-          "其他": 0.0337,
+          "其他": 0.4623,
           "東北亞": 0.2857,
-          "歐洲團產TP": 0.1429,
           "直售": 0.1203,
           "門市": 0.1317
         },
@@ -41,12 +39,9 @@
       {
         "people": 7,
         "shares": {
-          "LiLi": 0.0833,
-          "入境": 0.1429,
-          "其他": 0.0025,
+          "其他": 0.3716,
           "客製國旅": 0.1429,
           "東北亞": 0.2857,
-          "歐洲團產TP": 0.1429,
           "直售": 0.0989,
           "門市": 0.1009
         },
@@ -55,25 +50,27 @@
       {
         "people": 7,
         "shares": {
-          "LiLi": 0.2024,
-          "入境": 0.0136,
-          "其他": 0.3064,
+          "其他": 0.3741,
+          "國旅": 0.1293,
           "客製國旅": 0.1429,
           "東北亞": 0.1667,
           "直售": 0.0536,
-          "門市": 0.1144
+          "門市": 0.1144,
+          "雄獅": 0.0191
         },
         "week": "2026-W43"
       },
       {
         "people": 5,
         "shares": {
-          "LiLi": 0.0364,
-          "其他": 0.3253,
+          "其他": 0.0364,
+          "國旅": 0.2,
           "客製國旅": 0.12,
+          "未分類": 0.08,
           "東北亞": 0.2,
           "直售": 0.1668,
-          "門市": 0.1516
+          "門市": 0.1516,
+          "雄獅": 0.0453
         },
         "week": "2026-W44"
       }
@@ -149,6 +146,26 @@
       "key": "FDEPROJECT-693",
       "kind": "label_mismatch",
       "message": "底下 9 張卡的 label 跟 epic 的「雄獅」不同，頁面以 epic 為準：FDEPROJECT-723、FDEPROJECT-724、FDEPROJECT-725、FDEPROJECT-726、FDEPROJECT-727、FDEPROJECT-728、FDEPROJECT-729、FDEPROJECT-730、FDEPROJECT-731"
+    },
+    {
+      "key": null,
+      "kind": "hours_over_capacity",
+      "message": "2026-W41 陳勁佑 Jincoco 的實際工時 60.75h，超過當週可運用 40h（5 個工作日 × 8h），可能填錯"
+    },
+    {
+      "key": null,
+      "kind": "hours_over_capacity",
+      "message": "2026-W42 陳勁佑 Jincoco 的實際工時 36.5h，超過當週可運用 32h（4 個工作日 × 8h），可能填錯"
+    },
+    {
+      "key": null,
+      "kind": "hours_over_capacity",
+      "message": "2026-W43 Shira 的實際工時 63.5h，超過當週可運用 40h（5 個工作日 × 8h），可能填錯"
+    },
+    {
+      "key": null,
+      "kind": "hours_over_capacity",
+      "message": "2026-W43 陳勁佑 Jincoco 的實際工時 50h，超過當週可運用 40h（5 個工作日 × 8h），可能填錯"
     }
   ],
   "completed": [
@@ -11709,49 +11726,103 @@
   "generated_at": "2026-10-28T06:41:51.795743+08:00",
   "health": [
     {
+      "cards_per_person_day": 0.89,
       "completed": 8,
+      "epics_active": 1,
+      "epics_new": 1,
+      "explore_share": 1.0,
       "hours": 9.5,
       "hours_per_card": 1.2,
+      "median_cards": 0,
+      "new_hours_share": 1.0,
+      "new_same_day": 0,
+      "person_days": 9,
+      "roster": 3,
       "unestimated": 0,
       "via_progress": 0,
       "week": "2026-W39"
     },
     {
+      "cards_per_person_day": 4.0,
       "completed": 36,
+      "epics_active": 4,
+      "epics_new": 4,
+      "explore_share": 1.0,
       "hours": 22.75,
       "hours_per_card": 0.6,
+      "median_cards": 16,
+      "new_hours_share": 1.0,
+      "new_same_day": 3,
+      "person_days": 9,
+      "roster": 3,
       "unestimated": 0,
       "via_progress": 12,
       "week": "2026-W40"
     },
     {
+      "cards_per_person_day": 4.52,
       "completed": 140,
+      "epics_active": 15,
+      "epics_new": 12,
+      "explore_share": 0.7165,
       "hours": 113.75,
       "hours_per_card": 0.8,
+      "median_cards": 4,
+      "new_hours_share": 0.4914,
+      "new_same_day": 9,
+      "person_days": 31,
+      "roster": 7,
       "unestimated": 0,
       "via_progress": 14,
       "week": "2026-W41"
     },
     {
+      "cards_per_person_day": 3.14,
       "completed": 88,
+      "epics_active": 16,
+      "epics_new": 9,
+      "explore_share": 0.3079,
       "hours": 71.05,
       "hours_per_card": 0.9,
+      "median_cards": 4,
+      "new_hours_share": 0.2365,
+      "new_same_day": 5,
+      "person_days": 28,
+      "roster": 7,
       "unestimated": 6,
       "via_progress": 14,
       "week": "2026-W42"
     },
     {
+      "cards_per_person_day": 4.34,
       "completed": 152,
+      "epics_active": 28,
+      "epics_new": 16,
+      "explore_share": 0.6762,
       "hours": 177.1,
       "hours_per_card": 1.2,
+      "median_cards": 10,
+      "new_hours_share": 0.5723,
+      "new_same_day": 8,
+      "person_days": 35,
+      "roster": 7,
       "unestimated": 7,
       "via_progress": 20,
       "week": "2026-W43"
     },
     {
+      "cards_per_person_day": 3.57,
       "completed": 100,
+      "epics_active": 20,
+      "epics_new": 6,
+      "explore_share": 0.4868,
       "hours": 96.5,
       "hours_per_card": 1.0,
+      "median_cards": 10,
+      "new_hours_share": 0.4819,
+      "new_same_day": 5,
+      "person_days": 28,
+      "roster": 7,
       "unestimated": 7,
       "via_progress": 8,
       "week": "2026-W44"
@@ -14469,7 +14540,7 @@
     "week": "2026-W44",
     "week_ending": "2026-10-27"
   },
-  "schema": 10,
+  "schema": 11,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {
