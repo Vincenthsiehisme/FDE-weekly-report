@@ -148,6 +148,11 @@
       "message": "底下 9 張卡的 label 跟 epic 的「雄獅」不同，頁面以 epic 為準：FDEPROJECT-723、FDEPROJECT-724、FDEPROJECT-725、FDEPROJECT-726、FDEPROJECT-727、FDEPROJECT-728、FDEPROJECT-729、FDEPROJECT-730、FDEPROJECT-731"
     },
     {
+      "key": "FDEPROJECT-245",
+      "kind": "epic_closed_without_work",
+      "message": "epic 在 2026-W42 結案，底下沒有算進累計的完成工作卡（沒有卡，或只剩改組前、排除的卡），消化速度不算它"
+    },
+    {
       "key": null,
       "kind": "hours_over_capacity",
       "message": "2026-W41 陳勁佑 Jincoco 的實際工時 60.75h，超過當週可運用 40h（5 個工作日 × 8h），可能填錯"
