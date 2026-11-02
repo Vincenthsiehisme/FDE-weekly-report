@@ -778,10 +778,23 @@ class StepInTest(unittest.TestCase):
         self.assertEqual(html.count(">4 週 "), 4)  # W41～W44：W41 往回 4 週是 W38～W41
         self.assertIn('class="t-axis">4 週 2.5</text>', html)  # (30+60+90+120) ÷ 120
 
+    def test_both_charts_read_weeks_hidden_before_the_window_through_viz(self):
+        # 走正式的 _viz：7 週歷史只畫最後 6 週；畫面外的 W38 名單 3 人、W39 起 7 人 → 兩張圖第一根都要有分界，
+        # 第一個滾動值（W41）要算進 W38（Codex 審 84a886d）
+        from lib.render import _viz
+        health = [{"week": f"2026-W{38 + i}", "completed": 30 * (i + 1), "unestimated": 0, "roster": 3 if i == 0 else 7,
+                   "person_days": 30, "cards_per_person_day": round(30 * (i + 1) / 30, 2), "median_cards": 4,
+                   "explore_share": 0.5, "explore_people": 7} for i in range(7)]
+        html = _viz({"health": health, "checks": []}, None)
+        self.assertNotIn(">W38<", html)
+        self.assertEqual(html.count(">名單 3→7 人</text>"), 2)
+        self.assertEqual(html.count(">4 週 "), 4)
+        self.assertIn('class="t-axis">4 週 2.5</text>', html)  # W41：(30+60+90+120) ÷ 120，含畫面外的 W38
+
     def test_time_chart_splits_each_week_into_explore_and_develop(self):
         from lib.render import _time_chart
         row = lambda w, share, n: {"week": w, "explore_share": share, "explore_people": n, "roster": 7}
-        html = _time_chart([row("2026-W42", None, 0), row("2026-W43", 0.6762, 6), row("2026-W44", 0.4868, 5)])
+        html = _time_chart([row("2026-W42", None, 0), row("2026-W43", 0.6762, 6), row("2026-W44", 0.4868, 5)])  # 3 週歷史全畫
         self.assertIn("<h4>本週有產出的人把 49% 的時間投到探索，比上週少 19 個百分點</h4>", html)
         self.assertIn('class="t-val">49%</text>', html)
         self.assertIn('class="t-val">—</text>', html)  # 沒人產出的週：不存在，不是 0%

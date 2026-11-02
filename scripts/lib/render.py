@@ -441,10 +441,15 @@ def _chart(title: str, sub: str, body: str, wide=False) -> str:
     return f'<div class="viz-panel{" wide" if wide else ""}"><h4>{esc(title)}</h4><p class="note">{esc(sub)}</p>{body}</div>'
 
 
-def _roster_dividers(rows: list) -> dict:
-    """名單人數跟前一週不同的那一根畫分界：「名單 3→7 人」。"""
-    return {i: f'名單 {rows[i - 1]["roster"]}→{rows[i]["roster"]} 人'
-            for i in range(1, len(rows)) if rows[i]["roster"] is not None and rows[i - 1]["roster"] != rows[i]["roster"]}
+def _roster_dividers(history: list, offset: int) -> dict:
+    """畫面上的第 i 根（history[offset + i]）名單人數跟前一週不同就畫分界：「名單 3→7 人」。前一週在畫面外也比
+    （Codex 審 84a886d：畫面第一根之前那週被切掉時，分界跟著不見，跨名單口徑的滾動值看起來可以直接比）。"""
+    out = {}
+    for i in range(len(history) - offset):
+        j = offset + i
+        if j and history[j]["roster"] is not None and history[j - 1]["roster"] != history[j]["roster"]:
+            out[i] = f'名單 {history[j - 1]["roster"]}→{history[j]["roster"]} 人'
+    return out
 
 
 def _output_chart(history: list) -> str:
@@ -464,13 +469,17 @@ def _output_chart(history: list) -> str:
     sub = (f"全隊完成 {now['completed']} 張 ÷ 可運用 {now['person_days']} 人日（名單 {now['roster']} 人 × 工作日，已扣國定假日、未扣請假，"
            f"一天 {capacity_lib.HOURS_PER_DAY}h）{median}。單週會被結卡集中在哪天拉動，看滾動值；卡切得越細張數越多 · {span}")
     body = _bars(rows, lambda r: r["cards_per_person_day"], lambda r: DASH if r["cards_per_person_day"] is None else f'{r["cards_per_person_day"]:.1f}',
-                 lambda r: f'4 週 {rolling[r["week"]]:.1f}' if rolling[r["week"]] is not None else "", f"{span}每可運用人日完成張數", _roster_dividers(rows))
+                 lambda r: f'4 週 {rolling[r["week"]]:.1f}' if rolling[r["week"]] is not None else "", f"{span}每可運用人日完成張數",
+                 _roster_dividers(history, offset))
     return _chart(title, sub, body)
 
 
-def _time_chart(rows: list) -> str:
-    """時間怎麼分：每週一根 100% 柱，下面深色是探索、上面淺色是開發，探索的百分比寫在柱頂，柱下是算占比的人數（不含未指派）。
+def _time_chart(history: list) -> str:
+    """時間怎麼分：每週一根 100% 柱，畫最近 TREND_WEEKS 週，下面深色是探索、上面淺色是開發，探索的百分比寫在柱頂，
+    柱下是算占比的人數（不含未指派）；名單分界跟消化速率圖一樣看畫面外的前一週。
     只陳述同期數字，不寫成探索多所以速率低（fable 審 2026-11-02）。"""
+    rows = history[-TREND_WEEKS:]
+    offset = len(history) - len(rows)
     now, prev = rows[-1], (rows[-2] if len(rows) > 1 else None)
     span = f"近 {len(rows)} 週"
     pct = lambda r: None if r is None or r["explore_share"] is None else round(r["explore_share"] * 100)
@@ -482,7 +491,7 @@ def _time_chart(rows: list) -> str:
     step = (w - 20) / len(rows)
     bw = min(56, step - 16)
     out = [f'<svg viewBox="0 0 {w} {h}" role="img" aria-label="{span}探索與開發的時間占比">']
-    for i, text in _roster_dividers(rows).items():
+    for i, text in _roster_dividers(history, offset).items():
         x = 10 + i * step
         out.append(f'<line x1="{x:.1f}" x2="{x:.1f}" y1="12" y2="{base}" class="divider"/><text x="{x + 4:.1f}" y="22" class="t-axis">{esc(text)}</text>')
     for i, r in enumerate(rows):
@@ -530,10 +539,11 @@ def _viz(metrics, page) -> str:
     """兩張圖（2026-11-02 使用者裁「照審查改」，取代同日的四張）：消化速率、時間怎麼分；圖下資料品質一行。
     投入比例與未結案 epic 狀態圖移出本週頁（前者是「各單位分到幾個人」、一人全在某單位就是 1/人數，會誤導；
     後者的 100% 待結案併進出手區）。plan：jira-weekly-report · 本週頁產值與探索。"""
-    rows = metrics["health"][-TREND_WEEKS:]
-    if not rows:
+    history = metrics["health"]
+    if not history:
         return '<p class="muted">還沒有完成的卡。</p>'
-    return f'<div class="viz">{_output_chart(metrics["health"])}{_time_chart(rows)}</div>' + _quality_line(metrics)
+    # 兩張圖都收完整歷史、自己切最後 TREND_WEEKS 週：滾動值與名單分界要看畫面外的週
+    return f'<div class="viz">{_output_chart(history)}{_time_chart(history)}</div>' + _quality_line(metrics)
 
 
 STEP_IN_RULE = (f"前三個條件用同一個時鐘：最後一次更新到本期結束，{IDLE_DAYS} 天為界。專案沒動＝底下的卡都沒更新；"
