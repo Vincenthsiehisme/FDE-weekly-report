@@ -7563,10 +7563,12 @@
     ],
     "epics": [
       {
+        "closed_week": null,
         "completed": 12,
         "due": null,
         "hours": 16.0,
         "id": "CS-25",
+        "idle_days": 0,
         "key": "CS-25",
         "kickoff": {
           "key": "CS-26",
@@ -7592,15 +7594,18 @@
           "total_points": 57.5,
           "unestimated_cards": 4
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "歐洲地接社-房產品資料彙整",
         "tokens": null
       },
       {
+        "closed_week": "2026-W42",
         "completed": 80,
         "due": null,
         "hours": 63.25,
         "id": "FDEPROJECT-71",
+        "idle_days": null,
         "key": "FDEPROJECT-71",
         "kickoff": {
           "key": "FDEPROJECT-108",
@@ -7626,15 +7631,18 @@
           "total_points": 82.75,
           "unestimated_cards": 30
         },
+        "stalled": false,
         "status": "Done",
         "summary": "門市 AI 客服 階段一：PoC",
         "tokens": null
       },
       {
+        "closed_week": "2026-W42",
         "completed": 5,
         "due": null,
         "hours": 2.0,
         "id": "FDEPROJECT-72",
+        "idle_days": null,
         "key": "FDEPROJECT-72",
         "kickoff": {
           "key": "FDEPROJECT-331",
@@ -7660,15 +7668,18 @@
           "total_points": 10.5,
           "unestimated_cards": 5
         },
+        "stalled": false,
         "status": "Done",
         "summary": "Dify 平台與維運 階段一：建置與穩定運作",
         "tokens": null
       },
       {
+        "closed_week": "2026-W42",
         "completed": 10,
         "due": null,
         "hours": 4.75,
         "id": "FDEPROJECT-73",
+        "idle_days": null,
         "key": "FDEPROJECT-73",
         "kickoff": {
           "key": "FDEPROJECT-109",
@@ -7694,15 +7705,18 @@
           "total_points": 17.0,
           "unestimated_cards": 1
         },
+        "stalled": false,
         "status": "Done",
         "summary": "AI Lab H3 影音",
         "tokens": null
       },
       {
+        "closed_week": "2026-W40",
         "completed": 9,
         "due": null,
         "hours": 4.5,
         "id": "FDEPROJECT-78",
+        "idle_days": null,
         "key": "FDEPROJECT-78",
         "kickoff": {
           "key": "FDEPROJECT-76",
@@ -7728,15 +7742,18 @@
           "total_points": 4.5,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "培訓課程網站",
         "tokens": null
       },
       {
+        "closed_week": "2026-W43",
         "completed": 11,
         "due": null,
         "hours": 5.0,
         "id": "FDEPROJECT-79",
+        "idle_days": null,
         "key": "FDEPROJECT-79",
         "kickoff": {
           "key": "FDEPROJECT-77",
@@ -7762,15 +7779,18 @@
           "total_points": 5.0,
           "unestimated_cards": 1
         },
+        "stalled": false,
         "status": "Done",
         "summary": "MeetPilot 團隊會議記錄",
         "tokens": null
       },
       {
+        "closed_week": "2026-W41",
         "completed": 4,
         "due": null,
         "hours": 3.35,
         "id": "FDEPROJECT-110",
+        "idle_days": null,
         "key": "FDEPROJECT-110",
         "kickoff": {
           "key": "FDEPROJECT-111",
@@ -7798,15 +7818,18 @@
           "total_points": 7.1,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 11,
         "due": null,
         "hours": 19.0,
         "id": "FDEPROJECT-140",
+        "idle_days": 13,
         "key": "FDEPROJECT-140",
         "kickoff": {
           "key": "FDEPROJECT-131",
@@ -7832,15 +7855,18 @@
           "total_points": 23.5,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "入境成本單",
         "tokens": null
       },
       {
+        "closed_week": "2026-W41",
         "completed": 7,
         "due": null,
         "hours": 1.4,
         "id": "FDEPROJECT-164",
+        "idle_days": null,
         "key": "FDEPROJECT-164",
         "kickoff": {
           "key": "FDEPROJECT-165",
@@ -7866,15 +7892,18 @@
           "total_points": 1.4,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "SERP Q 信箱紅點彙整（我的團單）",
         "tokens": null
       },
       {
+        "closed_week": "2026-W41",
         "completed": 6,
         "due": null,
         "hours": 1.2,
         "id": "FDEPROJECT-173",
+        "idle_days": null,
         "key": "FDEPROJECT-173",
         "kickoff": {
           "key": "FDEPROJECT-174",
@@ -7900,15 +7929,18 @@
           "total_points": 1.2,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "SERP Q催收",
         "tokens": null
       },
       {
+        "closed_week": "2026-W43",
         "completed": 2,
         "due": null,
         "hours": 1.0,
         "id": "FDEPROJECT-183",
+        "idle_days": null,
         "key": "FDEPROJECT-183",
         "kickoff": {
           "key": "FDEPROJECT-358",
@@ -7934,15 +7966,18 @@
           "total_points": 1.0,
           "unestimated_cards": 1
         },
+        "stalled": false,
         "status": "Done",
         "summary": "LiLi 自建系統需求盤點表",
         "tokens": null
       },
       {
+        "closed_week": "2026-W41",
         "completed": 6,
         "due": null,
         "hours": 0.6,
         "id": "FDEPROJECT-184",
+        "idle_days": null,
         "key": "FDEPROJECT-184",
         "kickoff": {
           "key": "FDEPROJECT-185",
@@ -7968,15 +8003,18 @@
           "total_points": 0.6,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "SERP Q 信箱追蹤時限（我的團單）",
         "tokens": null
       },
       {
+        "closed_week": "2026-W43",
         "completed": 2,
         "due": null,
         "hours": 1.75,
         "id": "FDEPROJECT-190",
+        "idle_days": null,
         "key": "FDEPROJECT-190",
         "kickoff": {
           "key": "FDEPROJECT-191",
@@ -8004,15 +8042,18 @@
           "total_points": 1.75,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "EVOX 通話分析 階段一：痛點分析與現況盤點",
         "tokens": null
       },
       {
+        "closed_week": "2026-W41",
         "completed": 6,
         "due": null,
         "hours": 4.7,
         "id": "FDEPROJECT-237",
+        "idle_days": null,
         "key": "FDEPROJECT-237",
         "kickoff": {
           "key": "FDEPROJECT-238",
@@ -8038,15 +8079,18 @@
           "total_points": 4.7,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "標準團名一鍵帶入 SERP 銷售團體",
         "tokens": null
       },
       {
+        "closed_week": "2026-W42",
         "completed": 0,
         "due": "2026-10-16",
         "hours": 0.0,
         "id": "FDEPROJECT-245",
+        "idle_days": null,
         "key": "FDEPROJECT-245",
         "kickoff": {
           "key": "FDEPROJECT-246",
@@ -8072,15 +8116,18 @@
           "total_points": 0.0,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "(廢棄)[入境]客戶需求單 GAI 自動化 POC",
         "tokens": null
       },
       {
+        "closed_week": "2026-W41",
         "completed": 6,
         "due": null,
         "hours": 3.0,
         "id": "FDEPROJECT-247",
+        "idle_days": null,
         "key": "FDEPROJECT-247",
         "kickoff": {
           "key": "FDEPROJECT-248",
@@ -8106,15 +8153,18 @@
           "total_points": 3.0,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "刷卡失敗原因一鍵彙整（業務查詢刷卡單）",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 12,
         "due": null,
         "hours": 4.0,
         "id": "FDEPROJECT-271",
+        "idle_days": 15,
         "key": "FDEPROJECT-271",
         "kickoff": {
           "key": "FDEPROJECT-272",
@@ -8140,15 +8190,18 @@
           "total_points": 4.5,
           "unestimated_cards": 0
         },
+        "stalled": true,
         "status": "On Track",
         "summary": "旅展人員執勤紀錄",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 18,
         "due": "2026-10-30",
         "hours": 66.75,
         "id": "FDEPROJECT-286",
+        "idle_days": 0,
         "key": "FDEPROJECT-286",
         "kickoff": {
           "key": "FDEPROJECT-287",
@@ -8174,15 +8227,18 @@
           "total_points": 90.75,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[東北亞]團體機票票價查詢插件 MVP",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 17,
         "due": null,
         "hours": 22.0,
         "id": "FDEPROJECT-309",
+        "idle_days": 0,
         "key": "FDEPROJECT-309",
         "kickoff": {
           "key": "FDEPROJECT-269",
@@ -8208,15 +8264,18 @@
           "total_points": 29.0,
           "unestimated_cards": 10
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[客製國旅]外部報名系統資料串接 SERP",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 5,
         "due": null,
         "hours": 18.0,
         "id": "FDEPROJECT-312",
+        "idle_days": 14,
         "key": "FDEPROJECT-312",
         "kickoff": {
           "key": "FDEPROJECT-310",
@@ -8242,15 +8301,18 @@
           "total_points": 18.0,
           "unestimated_cards": 0
         },
+        "stalled": true,
         "status": "On Track",
         "summary": "[東北亞]韓國線 SERP 旅客資料自動填入航空公司名單",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 57,
         "due": null,
         "hours": 32.5,
         "id": "FDEPROJECT-325",
+        "idle_days": 7,
         "key": "FDEPROJECT-325",
         "kickoff": {
           "key": "FDEPROJECT-326",
@@ -8276,15 +8338,18 @@
           "total_points": 32.5,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "門市 AI 客服 階段二：板橋門市試用",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 3,
         "due": null,
         "hours": 1.25,
         "id": "FDEPROJECT-332",
+        "idle_days": 7,
         "key": "FDEPROJECT-332",
         "kickoff": {
           "key": "FDEPROJECT-333",
@@ -8310,15 +8375,18 @@
           "total_points": 4.25,
           "unestimated_cards": 2
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "Dify 平台與維運 階段二：升級與優化",
         "tokens": null
       },
       {
+        "closed_week": "2026-W43",
         "completed": 7,
         "due": null,
         "hours": 1.3,
         "id": "FDEPROJECT-349",
+        "idle_days": null,
         "key": "FDEPROJECT-349",
         "kickoff": {
           "key": "FDEPROJECT-350",
@@ -8344,15 +8412,18 @@
           "total_points": 1.3,
           "unestimated_cards": 2
         },
+        "stalled": false,
         "status": "Done",
         "summary": "出境團旅客缺件清單（Checklist 英文姓名、護照資料）",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 0,
         "due": null,
         "hours": 0.0,
         "id": "FDEPROJECT-391",
+        "idle_days": 15,
         "key": "FDEPROJECT-391",
         "kickoff": {
           "key": "FDEPROJECT-392",
@@ -8378,15 +8449,18 @@
           "total_points": 0.0,
           "unestimated_cards": 0
         },
+        "stalled": true,
         "status": "On Track",
         "summary": "評估公司共用 agent 平台：Dify 擴大使用或自建",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 5,
         "due": null,
         "hours": 3.25,
         "id": "FDEPROJECT-399",
+        "idle_days": 0,
         "key": "FDEPROJECT-399",
         "kickoff": {
           "key": "FDEPROJECT-400",
@@ -8412,15 +8486,18 @@
           "total_points": 3.25,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "串接板橋門市號碼機取號與叫號到 LINE",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 9,
         "due": null,
         "hours": 3.75,
         "id": "FDEPROJECT-406",
+        "idle_days": 5,
         "key": "FDEPROJECT-406",
         "kickoff": {
           "key": "FDEPROJECT-407",
@@ -8446,15 +8523,18 @@
           "total_points": 4.5,
           "unestimated_cards": 5
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "EVOX 通話分析 階段三：來電原因分析與成交歸因",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 0,
         "due": null,
         "hours": 0.0,
         "id": "FDEPROJECT-415",
+        "idle_days": 14,
         "key": "FDEPROJECT-415",
         "kickoff": {
           "key": "FDEPROJECT-416",
@@ -8480,15 +8560,18 @@
           "total_points": 0.0,
           "unestimated_cards": 0
         },
+        "stalled": true,
         "status": "On Track",
         "summary": "[入境]需求單自動派單",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 5,
         "due": null,
         "hours": 20.0,
         "id": "FDEPROJECT-419",
+        "idle_days": 7,
         "key": "FDEPROJECT-419",
         "kickoff": {
           "key": "FDEPROJECT-417",
@@ -8514,15 +8597,18 @@
           "total_points": 24.0,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[票務]國際機票百寶箱 AI 問答",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 30,
         "due": null,
         "hours": 19.25,
         "id": "FDEPROJECT-423",
+        "idle_days": 0,
         "key": "FDEPROJECT-423",
         "kickoff": {
           "key": "FDEPROJECT-424",
@@ -8548,15 +8634,18 @@
           "total_points": 21.5,
           "unestimated_cards": 2
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "門市 AI 客服 階段三：全省門市導入",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 5,
         "due": null,
         "hours": 3.5,
         "id": "FDEPROJECT-441",
+        "idle_days": 13,
         "key": "FDEPROJECT-441",
         "kickoff": {
           "key": "FDEPROJECT-442",
@@ -8582,15 +8671,18 @@
           "total_points": 8.0,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "LiLi FAQ 線下維運（wise 只放結果）",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 10,
         "due": null,
         "hours": 20.5,
         "id": "FDEPROJECT-455",
+        "idle_days": 5,
         "key": "FDEPROJECT-455",
         "kickoff": {
           "key": "FDEPROJECT-456",
@@ -8616,15 +8708,18 @@
           "total_points": 21.5,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[東北亞]分房表 FINAL 一鍵產生",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 9,
         "due": null,
         "hours": 9.5,
         "id": "FDEPROJECT-463",
+        "idle_days": 6,
         "key": "FDEPROJECT-463",
         "kickoff": {
           "key": "FDEPROJECT-270",
@@ -8650,15 +8745,18 @@
           "total_points": 9.5,
           "unestimated_cards": 1
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[客製國旅]自SERP進行付款連結批次發送機制",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 13,
         "due": null,
         "hours": 8.0,
         "id": "FDEPROJECT-497",
+        "idle_days": 8,
         "key": "FDEPROJECT-497",
         "kickoff": {
           "key": "FDEPROJECT-498",
@@ -8684,15 +8782,18 @@
           "total_points": 8.0,
           "unestimated_cards": 1
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "EVOX 通話分析 階段二：自動化上線與每日排程",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 7,
         "due": null,
         "hours": 4.5,
         "id": "FDEPROJECT-509",
+        "idle_days": 11,
         "key": "FDEPROJECT-509",
         "kickoff": {
           "key": "FDEPROJECT-510",
@@ -8718,15 +8819,18 @@
           "total_points": 4.5,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "Dify 與 Chatwoot CRM 整合評估",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 9,
         "due": null,
         "hours": 22.5,
         "id": "FDEPROJECT-525",
+        "idle_days": 0,
         "key": "FDEPROJECT-525",
         "kickoff": {
           "key": "FDEPROJECT-526",
@@ -8752,15 +8856,18 @@
           "total_points": 22.5,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[東北亞]手配書一鍵產生",
         "tokens": null
       },
       {
+        "closed_week": "2026-W43",
         "completed": 2,
         "due": null,
         "hours": 1.1,
         "id": "FDEPROJECT-534",
+        "idle_days": null,
         "key": "FDEPROJECT-534",
         "kickoff": {
           "key": "FDEPROJECT-535",
@@ -8786,15 +8893,18 @@
           "total_points": 1.1,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "LiLi 客服側窗插件",
         "tokens": null
       },
       {
+        "closed_week": "2026-W44",
         "completed": 5,
         "due": null,
         "hours": 2.5,
         "id": "FDEPROJECT-538",
+        "idle_days": null,
         "key": "FDEPROJECT-538",
         "kickoff": {
           "key": "FDEPROJECT-539",
@@ -8820,15 +8930,18 @@
           "total_points": 2.5,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "LiLi 客服側窗插件：接線中查詢",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 18,
         "due": null,
         "hours": 9.25,
         "id": "FDEPROJECT-552",
+        "idle_days": 0,
         "key": "FDEPROJECT-552",
         "kickoff": {
           "key": "FDEPROJECT-553",
@@ -8854,15 +8967,18 @@
           "total_points": 9.25,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "建置 SERP 內網 MCP：員工在 AI 工具用本人帳號查辦 SERP",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 1,
         "due": null,
         "hours": 4.0,
         "id": "FDEPROJECT-575",
+        "idle_days": 7,
         "key": "FDEPROJECT-575",
         "kickoff": {
           "key": "FDEPROJECT-550",
@@ -8888,15 +9004,18 @@
           "total_points": 6.0,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[東北亞]線控團體批次加價／減價：一次調整多團售價",
         "tokens": null
       },
       {
+        "closed_week": "2026-W44",
         "completed": 3,
         "due": null,
         "hours": 0.0,
         "id": "FDEPROJECT-585",
+        "idle_days": null,
         "key": "FDEPROJECT-585",
         "kickoff": {
           "key": "FDEPROJECT-586",
@@ -8922,15 +9041,18 @@
           "total_points": 0.0,
           "unestimated_cards": 3
         },
+        "stalled": false,
         "status": "Done",
         "summary": "LINE 會議助手 bot 標準化",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 23,
         "due": null,
         "hours": 11.75,
         "id": "FDEPROJECT-602",
+        "idle_days": 0,
         "key": "FDEPROJECT-602",
         "kickoff": {
           "key": "FDEPROJECT-603",
@@ -8956,15 +9078,18 @@
           "total_points": 11.75,
           "unestimated_cards": 1
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "門市 LINE OA 資料歸戶（需求單 26100566）",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 19,
         "due": null,
         "hours": 10.25,
         "id": "FDEPROJECT-626",
+        "idle_days": 5,
         "key": "FDEPROJECT-626",
         "kickoff": {
           "key": "FDEPROJECT-627",
@@ -8990,15 +9115,18 @@
           "total_points": 10.25,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "Chatwoot LINE 群發與卡片（取代 OA Manager 群發）",
         "tokens": null
       },
       {
+        "closed_week": "2026-W44",
         "completed": 7,
         "due": null,
         "hours": 3.5,
         "id": "FDEPROJECT-628",
+        "idle_days": null,
         "key": "FDEPROJECT-628",
         "kickoff": {
           "key": "FDEPROJECT-629",
@@ -9024,15 +9152,18 @@
           "total_points": 3.5,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "Done",
         "summary": "一張訂單替每位旅客批次產生付款連結（產生刷卡付款連結）",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 3,
         "due": null,
         "hours": 9.0,
         "id": "FDEPROJECT-645",
+        "idle_days": 6,
         "key": "FDEPROJECT-645",
         "kickoff": {
           "key": "FDEPROJECT-646",
@@ -9058,15 +9189,18 @@
           "total_points": 9.0,
           "unestimated_cards": 1
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[東北亞]房產大表與集客表一鍵產生",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 4,
         "due": null,
         "hours": 25.0,
         "id": "FDEPROJECT-652",
+        "idle_days": 0,
         "key": "FDEPROJECT-652",
         "kickoff": {
           "key": "FDEPROJECT-601",
@@ -9092,15 +9226,18 @@
           "total_points": 28.0,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[客製國旅]規劃團體成本支單審核流程優化",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 7,
         "due": null,
         "hours": 3.0,
         "id": "FDEPROJECT-653",
+        "idle_days": 5,
         "key": "FDEPROJECT-653",
         "kickoff": {
           "key": "FDEPROJECT-651",
@@ -9126,15 +9263,18 @@
           "total_points": 3.0,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "[國旅]SERP航班時刻自動比對與異動更新",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 7,
         "due": null,
         "hours": 6.0,
         "id": "FDEPROJECT-677",
+        "idle_days": 5,
         "key": "FDEPROJECT-677",
         "kickoff": {
           "key": "FDEPROJECT-678",
@@ -9160,15 +9300,18 @@
           "total_points": 6.0,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "門市 LINE 客人業務歸屬：官網下單業績回到門市業務",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 9,
         "due": null,
         "hours": 4.75,
         "id": "FDEPROJECT-693",
+        "idle_days": 0,
         "key": "FDEPROJECT-693",
         "kickoff": {
           "key": "FDEPROJECT-694",
@@ -9194,15 +9337,18 @@
           "total_points": 4.75,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "FDE 自有主機維運與資安修補",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 8,
         "due": null,
         "hours": 3.75,
         "id": "FDEPROJECT-695",
+        "idle_days": 0,
         "key": "FDEPROJECT-695",
         "kickoff": {
           "key": "FDEPROJECT-696",
@@ -9228,15 +9374,18 @@
           "total_points": 3.75,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "門市 LINE 訊息漏收排查：前端連線逾時與 F5 擋字元",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 4,
         "due": null,
         "hours": 1.75,
         "id": "FDEPROJECT-697",
+        "idle_days": 0,
         "key": "FDEPROJECT-697",
         "kickoff": {
           "key": "FDEPROJECT-698",
@@ -9262,15 +9411,18 @@
           "total_points": 2.75,
           "unestimated_cards": 0
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "Chatwoot 依門市班表派單（板橋先試）",
         "tokens": null
       },
       {
+        "closed_week": null,
         "completed": 6,
         "due": null,
         "hours": 3.0,
         "id": "FDEPROJECT-738",
+        "idle_days": 0,
         "key": "FDEPROJECT-738",
         "kickoff": {
           "key": "FDEPROJECT-739",
@@ -9296,6 +9448,7 @@
           "total_points": 3.0,
           "unestimated_cards": 2
         },
+        "stalled": false,
         "status": "On Track",
         "summary": "開銷退單前檢核會被會計退件的地方，SERP 銷退表單一鍵帶入（銷退檢核）",
         "tokens": null
@@ -14546,7 +14699,7 @@
     "week": "2026-W44",
     "week_ending": "2026-10-27"
   },
-  "schema": 11,
+  "schema": 12,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {
