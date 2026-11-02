@@ -58,6 +58,8 @@ ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
 CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近幾週（跟本週頁的圖同一段），不然資料檢查會一路變長
+# 13：累計專案（cumulative.epics）多了 closed_week（結案那一期）、idle_days 與 stalled（未結案才有，跟週頁 epic 同一個時鐘），
+#     總覽專案列表段內依狀態排要用；週頁 epics 用抓取當下的狀態篩，期末後才結案的 epic 累計算未結案、週頁卻沒有（2026-11-02 總覽優化）；
 # 12：消化速率改以 epic 結案為完成單位（2026-11-02 使用者裁「改算 epic」）：health 逐週多了 epics_closed（這週結案、底下有完成工作卡的 epic 數）、
 #     epics_per_person_week（÷ 可運用人週）；拿掉 cards_per_person_day、median_cards（頁面不再用，卡片速率要看就 completed ÷ person_days）；
 # 11：health 逐週多了 explore_share（探索人力占比）、explore_people、roster、person_days、cards_per_person_day、median_cards（config/team.json × config/holidays.json 的可運用人日）
@@ -71,7 +73,7 @@ CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近�
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 12
+SCHEMA = 13
 SNAPSHOT_SCHEMAS = (3, 4)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓
 
 
@@ -584,6 +586,9 @@ def _cumulative(tree, period, groups, group_of, group_label, leaves, done, kicko
         group_done_leaves = [i for i in group_leaves if i["key"] in done]
         if epic is None and not group_done_leaves:
             continue
+        settled = bool(epic) and done_by_end(epic)
+        # 未結案的 epic 才有幾天沒動；已結案的有結案週。未歸屬 epic 兩個都沒有
+        idle = _idle_days(tree, group_of, {"id": group_id, "key": epic["key"]}, period) if epic and not settled else None
         epic_rows.append({
             "id": group_id,
             "key": epic["key"] if epic else None,
@@ -598,6 +603,9 @@ def _cumulative(tree, period, groups, group_of, group_label, leaves, done, kicko
             "hours": _round(sum(i["points"] or 0 for i in group_done_leaves)),
             "tokens": _token_sum(([epic["key"]] if epic else []) + [i["key"] for i in members], tokens),
             "kickoff": _kickoff_view(kickoff_states.get(epic["key"])) if epic else None,
+            "closed_week": period_containing(parse_jira_time(epic["resolved"])).week_id if settled else None,
+            "idle_days": idle,
+            "stalled": idle is not None and idle >= STALL_DAYS,
         })
 
     completed = []

@@ -2,7 +2,7 @@
 import unittest
 from datetime import date, datetime
 
-from helpers import IN_WEEK, issue, snapshot
+from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 from lib import deliverable
 from lib.metrics import compute
 from lib.period import TZ, period_ending
@@ -157,6 +157,19 @@ class MetricsAndPageTest(unittest.TestCase):
         m = run(epics())
         self.assertEqual(m["deliverables"], [])
         self.assertIn("還沒有已交付的專案。epic 完成、Deliverable 卡填好後，下一期週報會列在這裡。", self.page(m))
+
+    def test_closed_epic_on_the_overview_links_to_the_delivered_tab(self):
+        # 總覽優化 AC-2（2026-11-02）：已結案列有已完成的 Deliverable 才多一個連結，點了切到成效說明頁籤（hashchange）
+        issues = [issue("CS-1", level=1, status="done", resolved=LAST_WEEK, summary="批次付款連結", labels=["直售"]),
+                  issue("CS-2", parent="CS-1", points=1.0, resolved=LAST_WEEK, assignee="A"),
+                  issue("CS-9", level=1, status="done", resolved=LAST_WEEK, summary="另一個專案", labels=["直售"]),
+                  issue("CS-10", parent="CS-9", points=1.0, resolved=LAST_WEEK, assignee="A"),
+                  card("CS-50")]
+        html = self.page(run(issues))
+        overview = html[html.index('id="cumulative"'):html.index('id="week"')]
+        row = lambda name: overview[overview.index(name):][:overview[overview.index(name):].index("</div></div>")]
+        self.assertIn('<span class="dv" data-label="成效說明"><a href="#delivered">成效說明 ›</a></span>', row("批次付款連結"))
+        self.assertIn('<span class="dv" data-label="成效說明"></span>', row("另一個專案"))
 
     def test_fourth_tab_with_card_and_jira_links(self):
         m = run(epics() + [card("CS-50")])

@@ -207,7 +207,7 @@ class PeopleTest(unittest.TestCase):
         self.assertIn("<h3>人</h3>", team)
         # CS-1 累計：Alice 與上週的 Dan，另有未指派的 CS-3；名字照在這個專案的工時排，多的在前
         # CS-1 沒有 Kick off：不可展開的列（總覽 UI 盤點 U6）
-        row = overview[overview.rindex('<div class="proj">', 0, overview.index('alert(1)&lt;/script&gt; <span class="pill')):]
+        row = overview[overview.rindex('<div class="proj">', 0, overview.index('alert(1)&lt;/script&gt;')):]
         row = row[:row.index("</div></div>")]
         self.assertIn('<span class="people" data-label="人">2 <small>Dan、Alice</small><small>另有未指派</small></span>', row)
         self.assertIn('<span class="people">人</span>', overview)
@@ -445,7 +445,7 @@ class CumulativeTest(unittest.TestCase):
         html = page(metrics=metrics_for(issues))
         self.assertNotIn("已結案專案", panel(html, "week"))
         self.assertIn("已結案專案", panel(html, "cumulative"))
-        self.assertIn("<summary>2026-W38", panel(html, "cumulative"))
+        self.assertIn("<summary><span>2026-W38</span>", panel(html, "cumulative"))
 
 
 
@@ -471,9 +471,9 @@ class OverviewTest(unittest.TestCase):
     def test_projects_are_grouped_by_label_with_unassigned_last(self):
         o = self.overview()
         projects = o[o.index("<h3>專案列表</h3>"):o.index("<h3>完成</h3>")]
-        heads = ["<h4>直售 <span class=\"muted\">· 1 個專案 · 累計工時 3.5h</span></h4>",
-                 "<h4>門市 <span class=\"muted\">· 1 個專案 · 累計工時 1.5h</span></h4>",
-                 "<h4>未分類 <span class=\"muted\">· 1 個專案 · 累計工時 0h</span></h4>",
+        heads = ["<h4>直售 <span class=\"muted\">· 已結案 1 · 累計工時 3.5h</span></h4>",
+                 "<h4>門市 <span class=\"muted\">· 進行中 1 · 累計工時 1.5h</span></h4>",
+                 "<h4>未分類 <span class=\"muted\">· 進行中 1 · 累計工時 0h</span></h4>",
                  "<h4>未歸屬 epic"]
         for h in heads:
             self.assertIn(h, projects)
@@ -491,10 +491,13 @@ class OverviewTest(unittest.TestCase):
         self.assertIn('<div class="bar" role="img" aria-label="1/2 張完成，本週 1 張"><span style="width:0%"></span>'
                       '<span class=wk style=width:50%></span></div><span class="num">1/2</span>', row)
         self.assertIn('<span class="num" data-label="累計工時">1.5h</span>', row)
-        # 已結案的直售專案本週沒有專案列，本週段是 0、不畫
-        settled = o[o.index("已結案的直售專案"):o.index("門市客服")]
-        self.assertIn('<div class="bar" role="img" aria-label="1/1 張完成"><span style="width:100%"></span></div><span class="num">1/1</span>', settled)
-        self.assertIn('<span class="people" data-label="人">1 <small>Bob</small></span>', settled)
+        # 已結案的直售專案收在段尾的「已結案」裡，只列結案週與累計工時，不畫進度條（2026-11-02 總覽優化，版型乙）
+        settled = o[o.rindex('<details class="closed">', 0, o.index("已結案的直售專案")):o.index("門市客服")]
+        self.assertIn('<details class="closed"><summary>已結案 1 個</summary>', settled)
+        self.assertIn('<span class="cw" data-label="結案週">W38 結案</span><span class="dv" data-label="成效說明"></span>'
+                      '<span class="num" data-label="累計工時">3h</span>', settled)
+        self.assertNotIn('class="bar"', settled)
+        self.assertIn('<span class="idle" data-label="幾天沒動">2 天</span>', row)
         self.assertIn("<dt>目標</dt><dd>少打字</dd>", row)
         self.assertIn("<dt>Before</dt><dd>手打</dd>", row)
         self.assertNotIn("M2", row)          # 下個里程碑不在效益說明
@@ -557,7 +560,8 @@ class OverviewLayoutTest(unittest.TestCase):
         html = self.html()
         o, week = panel(html, "cumulative"), panel(html, "week")
         self.assertIn('<ul class="kpis" style="--kpis:3">', o)
-        self.assertIn('<li><span>epic 數</span><strong class="">3</strong></li>', o)
+        # 結案數一定跟進行中、100% 待結案併列（2026-11-02 總覽優化 AC-3）
+        self.assertIn('<li><span>epic 數</span><strong class="">3</strong><small>進行中 2 · 100% 待結案 0 · 已結案 1</small></li>', o)
         self.assertEqual(o.count('<div class="proj"><div class="proj-head">') + o.count('<details class="proj">'), 4)  # 3 個 epic＋未歸屬 epic 一列
         self.assertNotIn("epic 數</span>", week)
 
@@ -572,13 +576,13 @@ class OverviewLayoutTest(unittest.TestCase):
         o = panel(self.html(), "cumulative")
         done = o[o.index("<h3>完成</h3>"):]
         # 本週：門市客服 CS-2 1.5h、CS-12 2h；沒有 epic 的 CS-7 0.5h。上週的 CS-11 是父卡，不是完成卡片，不列也不算
-        self.assertIn('<details class="done-group"><summary>2026-W39 <span class="muted">· 3 張 · 4h</span></summary>', done)
+        self.assertIn('<details class="wrow"><summary><span>2026-W39</span><span>—</span><span>3 張</span><span>4h</span></summary>', done)
         self.assertIn('<li><details><summary><span>CS-1 門市客服</span><span class="nums">2 張 · 3.5h</span></summary>', done)
         self.assertNotIn("上週的父卡", done)
         # 專案順序照 cumulative.epics（卡號序，未歸屬 epic 最後）；週標題與本週頁的完成同一種樣式，預設收合
         w39 = done[:done.index("2026-W38")]
         self.assertLess(w39.index("CS-1 門市客服"), w39.index("沒有 epic 的卡"))
-        self.assertNotIn('<details class="done-group" open', done)
+        self.assertNotIn('<details class="wrow" open', done)
 
     def test_one_disclosure_marker_for_the_whole_page(self):
         html = self.html()
@@ -975,5 +979,102 @@ class StepInTest(unittest.TestCase):
         self.assertIn("main{max-width:1280px;", html)
 
 
+class OverviewStatusTest(unittest.TestCase):
+    """總覽優化（2026-11-02 使用者裁版型乙）：label 分段不動，段內依狀態排；epic 數併列三種狀態；名單人數變的週標分界。"""
+    OLD = "2026-09-01T10:00:00.000+0800"
+    ISSUES = [
+        # 門市：進行中兩個（久沒動的在上）、100% 待結案兩個（其中一個也久沒動）、已結案兩個（新的在上）
+        issue("CS-1", level=1, status="doing", labels=("門市",), summary="最近有動"),
+        issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A", labels=("門市",)),
+        issue("CS-3", parent="CS-1", status="todo", labels=("門市",)),
+        issue("CS-10", level=1, status="doing", labels=("門市",), summary="很久沒動"),
+        issue("CS-11", parent="CS-10", status="todo", labels=("門市",), updated=OLD),
+        issue("CS-20", level=1, status="doing", labels=("門市",), summary="做完沒結近期"),
+        issue("CS-21", parent="CS-20", points=1.0, resolved=IN_WEEK, assignee="A", labels=("門市",)),
+        issue("CS-30", level=1, status="doing", labels=("門市",), summary="做完沒結很久"),
+        issue("CS-31", parent="CS-30", points=1.0, resolved=LAST_WEEK, assignee="A", labels=("門市",), updated=OLD),
+        issue("CS-40", level=1, status="done", resolved=LAST_WEEK, labels=("門市",), summary="上週結案"),
+        issue("CS-41", parent="CS-40", points=2.0, resolved=LAST_WEEK, assignee="A", labels=("門市",)),
+        issue("CS-50", level=1, status="done", resolved=IN_WEEK, labels=("門市",), summary="本週結案"),
+        issue("CS-51", parent="CS-50", points=2.0, resolved=IN_WEEK, assignee="A", labels=("門市",)),
+    ]
+
+    def metrics(self):
+        return metrics_for(self.ISSUES)
+
+    def overview(self, m=None):
+        m = m or self.metrics()
+        return panel(render(m, {"highlights": ["完成"], "epic_results": {e["id"]: "完成" for e in m["epics"]}},
+                            ["2026-W39"], in_reports_dir=False), "cumulative")
+
+    def test_rows_in_a_label_go_open_by_idle_then_fully_done_then_closed(self):
+        o = self.overview()
+        order = [o.index(t) for t in ("很久沒動", "最近有動", "做完沒結很久", "做完沒結近期", "本週結案", "上週結案")]
+        self.assertEqual(order, sorted(order))
+        self.assertIn('<h4>門市 <span class="muted">· 進行中 2（1 個久沒動）、100% 待結案 2（1 個久沒動）、已結案 2 · 累計工時 7h</span></h4>', o)
+        self.assertIn("做完沒結很久 <span class=\"tag warn\">100% 待結案</span>", o)
+        self.assertNotIn("最近有動 <span class=\"tag", o)
+        self.assertIn('<span class="idle" data-label="幾天沒動"><b class="alert">21 天</b></span>', o)
+        # 久沒動分開數：進行中 1 個，100% 待結案裡 1 個，不混成 2 個（冷讀 2026-11-02）
+        self.assertIn("全部 100% 待結案 2 個；進行中 14 天以上沒動 1 個，100% 待結案裡也 14 天以上沒動的 1 個。", o)
+        closed = o[o.index('<details class="closed">'):]
+        self.assertIn("<summary>已結案 2 個</summary>", closed)
+        self.assertIn('<span class="cw" data-label="結案週">W39 結案</span>', closed)
+        self.assertNotIn('<details class="closed" open', o)
+
+    def test_epic_count_always_shows_the_three_states_side_by_side(self):
+        self.assertIn('<li><span>epic 數</span><strong class="">6</strong><small>進行中 2 · 100% 待結案 2 · 已結案 2</small></li>', self.overview())
+
+    def test_missing_state_fields_fail_instead_of_showing_a_dash(self):
+        for key, field in (("CS-10", "idle_days"), ("CS-40", "closed_week")):
+            m = self.metrics()
+            next(e for e in m["cumulative"]["epics"] if e["key"] == key)[field] = None
+            with self.assertRaises(ValueError, msg=key):
+                self.overview(m)
+
+    def test_roster_change_is_marked_in_the_note_labels_and_completed_weeks(self):
+        m = self.metrics()
+        o = self.overview(m)
+        self.assertNotIn("名單", o[:o.index("<h3>完成</h3>")])   # 沒有名單資料就不畫分界
+        for h, size, people in zip(m["health"], (3, 7), (1, 5)):
+            h["roster"], h["explore_people"] = size, people
+        o = self.overview(m)
+        self.assertIn('<b class="era">W39 起名單 3→7 人</b>：W38 名單 3 人、有完成卡的 1 人，累計數字含這 1 週。', o)
+        self.assertIn('<p class="legend">累計跨過名單人數變動（W39 起 3→7 人），前後的週人數不同。</p>', o)
+        done = o[o.index("<h3>完成</h3>"):]
+        line = '<div class="era-line"><span>名單 3→7 人（W39 起）</span></div>'
+        self.assertLess(done.index("<span>2026-W39</span>"), done.index(line))
+        self.assertLess(done.index(line), done.index("<span>2026-W38</span>"))
+        self.assertIn("<span>7 人</span><span>", done)
+
+    def test_roster_change_in_a_week_without_completions_still_draws_the_line(self):
+        # 名單變動那週沒有完成卡：cumulative.weeks 沒有那一列，線照位置畫在前後兩列之間（fable 審 2026-11-02）
+        m = self.metrics()
+        h39 = m["health"][-1]
+        # W37 再舊一列：少了上界，W39、W40 的線會在 W37 上方再畫一次
+        m["health"] = [dict(m["health"][0], week="2026-W37", roster=3), dict(m["health"][0], roster=3),
+                       dict(h39, week="2026-W39", roster=9), dict(h39, week="2026-W40", roster=11)]
+        m["cumulative"]["weeks"] = [dict(m["cumulative"]["weeks"][0], week="2026-W40"), m["cumulative"]["weeks"][1],
+                                    dict(m["cumulative"]["weeks"][1], week="2026-W37")]
+        for r in m["cumulative"]["completed"]:
+            if r["week"] == "2026-W39":
+                r["week"] = "2026-W40"
+        done = self.overview(m)
+        done = done[done.index("<h3>完成</h3>"):]
+        # 兩次變動都畫：W40 起 9→11 在上、W39 起 3→9 在下，都落在 W40 與 W38 兩列之間
+        newer = '<div class="era-line"><span>名單 9→11 人（W40 起）</span></div>'
+        line = '<div class="era-line"><span>名單 3→9 人（W39 起）</span></div>'
+        self.assertLess(done.index("<span>2026-W40</span>"), done.index(newer))
+        self.assertLess(done.index(newer), done.index(line))
+        self.assertLess(done.index(line), done.index("<span>2026-W38</span>"))
+        self.assertEqual((done.count(newer), done.count(line)), (1, 1))   # 一次變動只畫一條，不在更舊的列上方重複
+        self.assertIn("累計跨過名單人數變動（W39 起 3→9 人、W40 起 9→11 人）", self.overview(m))
+
+    def test_label_bars_end_on_one_line(self):
+        # 右側數字欄固定寬，底軌右端對齊，同樣工時畫出同樣長（冷讀 2026-11-02）
+        self.assertIn(".lrow .num{flex:none;width:200px;text-align:right;", page())
+
+
 if __name__ == "__main__":
     unittest.main()
+
