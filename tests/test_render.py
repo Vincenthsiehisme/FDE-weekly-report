@@ -771,6 +771,12 @@ class StepInTest(unittest.TestCase):
         self.assertNotIn('class="divider"', html)
         rows[0]["roster"] = 3
         self.assertIn(">名單 3→7 人</text>", _output_chart(rows))
+        # 7 週歷史只畫最後 6 週：畫面第一根（第 2 週）之前已有 1 週，不到 4 週；第 4 根起就有滾動值，要用完整歷史算
+        long = [row(f"2026-W{38 + i}", 30 * (i + 1), 7, 30, 4) for i in range(7)]
+        html = _output_chart(long)
+        self.assertNotIn(">W38<", html)
+        self.assertEqual(html.count(">4 週 "), 4)  # W41～W44：W41 往回 4 週是 W38～W41
+        self.assertIn('class="t-axis">4 週 2.5</text>', html)  # (30+60+90+120) ÷ 120
 
     def test_time_chart_splits_each_week_into_explore_and_develop(self):
         from lib.render import _time_chart

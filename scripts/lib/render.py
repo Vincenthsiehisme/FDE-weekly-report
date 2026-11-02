@@ -447,14 +447,17 @@ def _roster_dividers(rows: list) -> dict:
             for i in range(1, len(rows)) if rows[i]["roster"] is not None and rows[i - 1]["roster"] != rows[i]["roster"]}
 
 
-def _output_chart(rows: list) -> str:
+def _output_chart(history: list) -> str:
     """消化速率：每可運用人日完成張數（2026-11-02 使用者要求用每人每週可運用時間、一天 8 小時看可運用總額；同日裁以消化速率為主軸）。
-    單週一根柱，柱下寫到那週為止的滾動 4 週；可運用只當分母，不跟回填的實際工時比。"""
+    單週一根柱，畫最近 TREND_WEEKS 週，柱下寫到那週為止的滾動 4 週；滾動值用完整的 history 算，畫面第一根之前的週也算進去
+    （Codex 審 70db523：只拿畫出來那 6 週算，前三根永遠沒有滾動值）。可運用只當分母，不跟回填的實際工時比。"""
+    rows = history[-TREND_WEEKS:]
     now = rows[-1]
     span = f"近 {len(rows)} 週"
     if now["person_days"] is None:
         return _chart("沒有成員名單，算不出可運用人日", f"本週完成 {now['completed']} 張；補 config/team.json 與 config/holidays.json 後重算", "")
-    rolling = {r["week"]: _rolling_rate(rows, i) for i, r in enumerate(rows)}
+    offset = len(history) - len(rows)
+    rolling = {r["week"]: _rolling_rate(history, offset + i) for i, r in enumerate(rows)}
     rate, r4 = now["cards_per_person_day"], rolling[now["week"]]
     title = (f"本週 {rate:.1f} 張／可運用人日" + (f"，滾動 4 週 {r4:.1f}" if r4 is not None else "") if rate is not None else "本週沒有可運用人日")
     median = f"；名單上每人完成中位 {now['median_cards']:g} 張" if now["median_cards"] is not None else ""
@@ -530,7 +533,7 @@ def _viz(metrics, page) -> str:
     rows = metrics["health"][-TREND_WEEKS:]
     if not rows:
         return '<p class="muted">還沒有完成的卡。</p>'
-    return f'<div class="viz">{_output_chart(rows)}{_time_chart(rows)}</div>' + _quality_line(metrics)
+    return f'<div class="viz">{_output_chart(metrics["health"])}{_time_chart(rows)}</div>' + _quality_line(metrics)
 
 
 STEP_IN_RULE = (f"前三個條件用同一個時鐘：最後一次更新到本期結束，{IDLE_DAYS} 天為界。專案沒動＝底下的卡都沒更新；"

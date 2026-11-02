@@ -858,6 +858,22 @@ class CapacityTest(unittest.TestCase):
         today = date.today()
         workdays(today, today + timedelta(days=14), cal)
 
+    def test_repo_holidays_match_the_official_calendars(self):
+        # 人事行政總處〈115年〉〈116年中華民國政府行政機關辦公日曆表〉的平日放假，逐日寫死：漏一天、填錯一天都要紅
+        # （Codex 審 70db523：只驗年份存在，刪光某年的假日照樣綠）
+        import json, pathlib
+        root = pathlib.Path(__file__).resolve().parent.parent
+        data = json.loads((root / "config" / "holidays.json").read_text(encoding="utf-8"))
+        official = {
+            2026: ["01-01", "02-16", "02-17", "02-18", "02-19", "02-20", "02-27", "04-03", "04-06", "05-01", "06-19",
+                   "09-25", "09-28", "10-09", "10-26", "12-25"],
+            2027: ["01-01", "02-04", "02-05", "02-08", "02-09", "02-10", "03-01", "04-05", "04-06", "04-30", "06-09",
+                   "09-15", "09-28", "10-11", "10-25", "12-24", "12-31"],
+        }
+        self.assertEqual(sorted(data["years"]), sorted(official))
+        self.assertEqual(sorted(data["off"]), sorted(f"{y}-{d}" for y, days in official.items() for d in days))
+        self.assertEqual(data["workdays"], {})  # 兩年都沒有週六補班
+
     def test_person_days_rate_and_median_count_members_without_cards_as_zero(self):
         issues = [issue("CS-1", level=1, status="doing", labels=["甲"])] + [
             issue(f"CS-{i}", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A") for i in range(2, 8)]
