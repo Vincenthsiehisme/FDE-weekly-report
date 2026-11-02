@@ -1,0 +1,40 @@
+{
+  "_說明": "FDE 成員名單，算可運用人日用：每人在 since～until（含）之間的工作日 × 8 小時。name 要跟 Jira 的 assignee 顯示名稱一字不差。until 是 null 代表還在。有完成卡卻不在名單上的人會列進資料檢查。人維護、走 PR。",
+  "members": [
+    {
+      "name": "Jerry Huang",
+      "since": "2026-10-01",
+      "until": null
+    },
+    {
+      "name": "Shira",
+      "since": "2026-10-01",
+      "until": null
+    },
+    {
+      "name": "Vincent Hsieh",
+      "since": "2026-09-18",
+      "until": null
+    },
+    {
+      "name": "Vivian",
+      "since": "2026-10-01",
+      "until": null
+    },
+    {
+      "name": "hubertwang",
+      "since": "2026-09-18",
+      "until": null
+    },
+    {
+      "name": "王碩緯",
+      "since": "2026-10-01",
+      "until": null
+    },
+    {
+      "name": "陳勁佑 Jincoco",
+      "since": "2026-09-18",
+      "until": null
+    }
+  ]
+}

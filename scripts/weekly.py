@@ -21,6 +21,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
+from lib import capacity as capacity_lib  # noqa: E402
 from lib import kickoff as kickoff_lib  # noqa: E402
 from lib.jira import JiraClient, load_credentials  # noqa: E402
 from lib.metrics import compute, drop_excluded_epics, kickoff_by_epic  # noqa: E402
@@ -32,6 +33,8 @@ from lib.snapshot import EPIC_LEVEL, fetch_snapshot, issue_sort_key  # noqa: E40
 DATA = ROOT / "data"
 SITE = ROOT / "site"
 EXCLUDED_FILE = ROOT / "config" / "excluded.json"
+TEAM_FILE = ROOT / "config" / "team.json"
+HOLIDAYS_FILE = ROOT / "config" / "holidays.json"
 CARD_KEY = re.compile(r"[A-Z][A-Z0-9_]*-[1-9][0-9]*")
 WEEK_ID = re.compile(r"\d{4}-W\d{2}")
 
@@ -51,6 +54,14 @@ def week_dir(week: str) -> Path:
     if not WEEK_ID.fullmatch(week):
         raise ValueError(f"week id 格式要像 2026-W39，收到 {week!r}")
     return DATA / week
+
+
+def load_capacity() -> tuple:
+    """回傳 (team, calendar)：config/team.json 的成員名單與 config/holidays.json 的國定假日，算可運用人日用。
+    兩個檔都必須存在、格式對；缺檔或格式錯直接失敗，不用「沒有名單」繼續算（可運用會靜靜變成 null）。"""
+    team = capacity_lib.parse_team(read_json(TEAM_FILE), str(TEAM_FILE.relative_to(ROOT)))
+    calendar = capacity_lib.parse_calendar(read_json(HOLIDAYS_FILE), str(HOLIDAYS_FILE.relative_to(ROOT)))
+    return team, calendar
 
 
 def load_excluded() -> tuple:
@@ -172,10 +183,11 @@ def compute_week(snapshot: dict, *, fresh_fetch: bool) -> tuple:
         states[epic] = state
     # Token 檔是另一個來源：被整棵排除的卡的 Token 也要拿掉，否則會算進總量、還被當成不明卡號列進資料檢查
     dropped = {i["key"] for i in snapshot["issues"]} - {i["key"] for i in issues}
+    team, calendar = load_capacity()
     metrics = compute(dict(snapshot, issues=issues), period, _without(load_tokens(period.week_id), dropped),
                       states, checks, excluded=excluded_cards,
                       cumulative_tokens=_without(load_cumulative_tokens(period.week_id), dropped),
-                      token_source=token_source_exists(), previous=load_previous(period))
+                      token_source=token_source_exists(), previous=load_previous(period), team=team, calendar=calendar)
     writes[week_dir(period.week_id) / "metrics.json"] = metrics
     return metrics, writes
 
