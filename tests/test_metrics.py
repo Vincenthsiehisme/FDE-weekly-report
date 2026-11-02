@@ -637,7 +637,7 @@ class FlowHealthTest(unittest.TestCase):
             issue("CS-4", parent="CS-1", points=2.0, resolved=LAST_WEEK, assignee="B", created="2026-09-10T03:59:30.000+0800", progress_seen=True),
         ]
         m = run(issues)
-        self.assertEqual(m["schema"], 14)
+        self.assertEqual(m["schema"], 15)
         # 單卡工時只除有填的張數：W39 CS-2 1h、CS-3 沒填 → 1.0h，不是 0.5h（2026-11-02 本週頁一圖一訊息 AC-1）
         keys = ("week", "completed", "via_progress", "unestimated", "hours", "hours_per_card")
         self.assertEqual([{k: h[k] for k in keys} for h in m["health"]], [
@@ -882,8 +882,9 @@ class CapacityTest(unittest.TestCase):
         h = self.run_with(issues, team)["health"][-1]
         self.assertEqual((h["roster"], h["person_days"], h["epics_done"], h["epics_per_person_week"]), (2, 7, 0, 0.0))
 
-    def test_epic_is_done_when_its_cards_are_all_done_counted_in_the_last_cards_week(self):
-        # 2026-11-02 消化速度口徑修正：卡全部做完或 epic 已結案就算完成，週次一律取最後一張完成卡，不看 epic 結案時間
+    def test_epic_is_done_when_closed_in_jira_counted_in_the_last_cards_week(self):
+        # 2026-11-02 消化速度口徑修正：週次一律取最後一張完成卡，不看 epic 結案時間；
+        # 同日使用者裁「Done 才算，算最後卡週」：epic 要在本期結束前於 Jira 結案才算完成，卡都做完、epic 沒關的不算
         after = "2026-09-25T04:00:00.000+0800"  # 本期結束之後
         issues = [
             issue("CS-1", level=1, resolved=IN_WEEK, labels=["甲"]),  # 結案、卡全做完：算 W39
@@ -891,12 +892,12 @@ class CapacityTest(unittest.TestCase):
             issue("CS-5", level=1, resolved=IN_WEEK, labels=["甲"]),  # 結案但底下沒有工作卡：沒有消化任何工作，不算、列資料檢查
             issue("CS-6", level=1, resolved=IN_WEEK, labels=["甲"]),  # 本週才集中結案，卡上週就做完：算 W38，不算 W39
             issue("CS-7", parent="CS-6", points=1.0, resolved=LAST_WEEK, assignee="A"),
-            issue("CS-8", level=1, status="doing", labels=["甲"]),  # 卡全做完、epic 沒關：照算 W39
+            issue("CS-8", level=1, status="doing", labels=["甲"]),  # 卡全做完、epic 沒關：不算（Jira 沒 Done）
             issue("CS-9", parent="CS-8", points=1.0, resolved=IN_WEEK, assignee="A"),
             issue("CS-10", level=1, status="doing", labels=["甲"]),  # 沒關、還有卡沒做：不算
             issue("CS-11", parent="CS-10", points=1.0, resolved=IN_WEEK, assignee="A"),
             issue("CS-15", parent="CS-10", status="todo"),
-            issue("CS-12", level=1, labels=["甲"]),  # 完成卻沒有結案時間：卡全做完照算，仍列資料檢查
+            issue("CS-12", level=1, labels=["甲"]),  # 完成卻沒有結案時間：算不到，列資料檢查
             issue("CS-13", parent="CS-12", points=1.0, resolved=IN_WEEK, assignee="A"),
             issue("CS-17", level=1, resolved=LAST_WEEK, labels=["甲"]),  # 上週結案但還有卡沒做（例：改組前的卡留在分母）：照算，週次取完成卡
             issue("CS-18", parent="CS-17", points=1.0, resolved=LAST_WEEK, assignee="A"),
@@ -915,14 +916,14 @@ class CapacityTest(unittest.TestCase):
         m = self.run_with(issues, team)
         self.assertEqual(m["health"][0]["week"], "2026-W32")
         w38, w39 = m["health"][-2:]
-        # W39：CS-1、CS-8、CS-12；W38：CS-6（最後一張卡 CS-7 在 W38）、CS-17
-        self.assertEqual((w39["epics_done"], w39["person_days"], w39["epics_per_person_week"]), (3, 7, 2.14))  # 3 ÷ (7 ÷ 5)
+        # W39：CS-1；W38：CS-6（最後一張卡 CS-7 在 W38）、CS-17；CS-8、CS-12 卡都做完但 Jira 沒結案，不算
+        self.assertEqual((w39["epics_done"], w39["person_days"], w39["epics_per_person_week"]), (1, 7, 0.71))  # 1 ÷ (7 ÷ 5)
         self.assertEqual((w38["epics_done"], w38["person_days"], w38["epics_per_person_week"]), (2, 5, 2.0))
-        self.assertEqual(sum(h["epics_done"] for h in m["health"]), 5)
+        self.assertEqual(sum(h["epics_done"] for h in m["health"]), 3)
         epic_checks = [(c["kind"], c["key"], c["message"]) for c in m["checks"] if c["kind"].startswith("epic_")]
         self.assertEqual(epic_checks, [
             ("epic_closed_without_work", "CS-5", "epic 在 2026-W39 結案，底下沒有算進累計的完成工作卡（沒有卡，或只剩改組前、排除的卡），消化速度不算它"),
-            ("epic_done_without_resolution", "CS-12", "epic 狀態是完成但沒有完成時間（resolutiondate），只有底下的卡全部做完才算進消化速度"),
+            ("epic_done_without_resolution", "CS-12", "epic 狀態是完成但沒有完成時間（resolutiondate），消化速度算不到它"),
         ])
 
     def test_epic_closed_before_its_last_card_counts_in_the_cards_week(self):
@@ -968,24 +969,36 @@ class CapacityTest(unittest.TestCase):
                          {"epics_active": 2, "epics_new": 1, "new_same_day": 1, "new_hours_share": 0.6})  # 3 ÷ (1 + 3 + 1)
         self.assertEqual((h[-2]["epics_active"], h[-2]["epics_new"], h[-2]["new_same_day"]), (1, 1, 0))
 
-    def test_explore_share_is_each_persons_week_at_100_percent_then_averaged(self):
+    def test_explore_share_counts_filled_kickoffs_only(self):
+        # 2026-11-02 使用者裁：探索是有填工時的 Kick off，完成工作卡（含 Spike）都算開發
         issues = [
             issue("CS-1", level=1, status="doing", labels=["甲"]),
+            # 上週 A 只做一般卡：新 epic 第一週也算開發（舊口徑會是 100%）
             issue("CS-2", parent="CS-1", points=1.0, resolved=LAST_WEEK, assignee="A"),
             issue("CS-10", level=1, status="doing", labels=["乙"]),
-            # A：舊 epic 3h、新 epic 1h → 探索 25%；B：只做新 epic、沒填工時 → 100%；平均 62.5%
+            # A：一般卡 3h、Kick off 1h → 探索 25%；A 另有一張沒填工時的 Kick off，不算（不補平均，不然憑空變探索）
             issue("CS-3", parent="CS-1", points=3.0, resolved=IN_WEEK, assignee="A"),
-            issue("CS-11", parent="CS-10", points=1.0, resolved=IN_WEEK, assignee="A"),
-            issue("CS-12", parent="CS-10", points=None, resolved=IN_WEEK, assignee="B"),
-            # 未歸屬 epic 算開發
+            issue("CS-11", parent="CS-10", points=1.0, resolved=IN_WEEK, assignee="A", type_="Kick off"),
+            issue("CS-14", parent="CS-10", points=None, resolved=IN_WEEK, assignee="A", type_="Kick off"),
+            # B：只有一張 Spike、沒填工時 → 0%（Spike 是工作卡，算開發）
+            issue("CS-12", parent="CS-10", points=None, resolved=IN_WEEK, assignee="B", type_="Spike"),
+            # C：未歸屬 epic 的一般卡 → 0%
             issue("CS-20", points=1.0, resolved=IN_WEEK, assignee="C"),
+            # D：只有一張填了 2h 的 Kick off → 100%，也算有產出的人
+            issue("CS-15", parent="CS-1", points=2.0, resolved=IN_WEEK, assignee="D", type_="Kick off"),
+            # E：Kick off 填了工時但還在審核中，不算（重開過的卡可能還留著結案時間）
+            issue("CS-16", parent="CS-1", status="review", points=2.0, resolved=IN_WEEK, assignee="E", type_="Kick off"),
             # 未指派不是一個人：不進占比、不算人數（Codex 審 ab4aff4）
-            issue("CS-13", parent="CS-10", points=1.0, resolved=IN_WEEK),
+            issue("CS-13", parent="CS-10", points=1.0, resolved=IN_WEEK, type_="Kick off"),
         ]
-        h = self.run_with(issues, None)["health"]
-        self.assertEqual(h[-1]["explore_share"], round((0.25 + 1.0 + 0.0) / 3, 4))
-        self.assertEqual(h[-1]["explore_people"], 3)
-        self.assertEqual(h[-2]["explore_share"], 1.0)
+        m = self.run_with(issues, None)
+        h = m["health"]
+        self.assertEqual(h[-1]["explore_share"], round((0.25 + 0.0 + 0.0 + 1.0) / 4, 4))
+        self.assertEqual(h[-1]["explore_people"], 4)
+        self.assertEqual(h[-2]["explore_share"], 0.0)
+        # Kick off 工時只進探索占比：完成張數與實際工時照舊不算說明卡
+        self.assertEqual(h[-1]["completed"], 3)
+        self.assertEqual(h[-1]["hours"], 4.0)
 
     def test_allocation_names_labels_with_a_share_this_week_first(self):
         # 近 4 週「舊」累計最多，但本週 0；ALLOCATION_TOP 1 時本週有份額的「新」要畫出名字

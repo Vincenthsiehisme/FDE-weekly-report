@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-789",
+  "kickoff_key": "FDEPROJECT-791",
+  "last_seen": {
+    "after": "新訊息依當班名單自動指派，找不到人就進待確認；店長在今日班表頁的調整即時生效",
+    "before": "Chatwoot 收件匣靠人工指派；班表已在 Chatwoot（階段一），但派單沒用到",
+    "decision": null,
+    "evidence": "板橋派單紀錄、派單後指派正確率、待確認比例",
+    "next_milestone": "板橋門市收件匣成員補齊、店長角色指定後，派單規則上測試站給門市試",
+    "objective": "LINE 客人訊息進 Chatwoot 時，依 SERP 班表加店長當日調整，自動派給當班門市同仁（板橋先試）",
+    "why": "全省導入後訊息量變大，人工指派會漏派、晚回；門市分前台與後勤，要照班表才派得對。階段一已把 31 間門市班表每天匯進 Chatwoot，可以直接拿來派單"
+  },
+  "last_seen_at": "2026-11-02T13:45:21.836350+08:00",
+  "last_seen_key": "FDEPROJECT-791",
+  "locked_at": "2026-11-02T13:45:21.836350+08:00",
+  "problems": [],
+  "sections": {
+    "after": "新訊息依當班名單自動指派，找不到人就進待確認；店長在今日班表頁的調整即時生效",
+    "before": "Chatwoot 收件匣靠人工指派；班表已在 Chatwoot（階段一），但派單沒用到",
+    "decision": null,
+    "evidence": "板橋派單紀錄、派單後指派正確率、待確認比例",
+    "next_milestone": "板橋門市收件匣成員補齊、店長角色指定後，派單規則上測試站給門市試",
+    "objective": "LINE 客人訊息進 Chatwoot 時，依 SERP 班表加店長當日調整，自動派給當班門市同仁（板橋先試）",
+    "why": "全省導入後訊息量變大，人工指派會漏派、晚回；門市分前台與後勤，要照班表才派得對。階段一已把 31 間門市班表每天匯進 Chatwoot，可以直接拿來派單"
+  }
+}

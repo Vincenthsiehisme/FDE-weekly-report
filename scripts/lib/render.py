@@ -15,7 +15,7 @@ Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都�
 工時只給數字（每人填工時的粒度不同，畫成長度比的是填法）；完成清單預設收合；專案投入併成總覽的「人」欄；
 Kick off 目標五段只在總覽展開看。圖都是 inline SVG 或純 CSS，沒有 JS 也顯示。
 團隊績效評估（2026-10-28 使用者鎖定，plan 在 vault 的 jira-weekly-report · 團隊績效評估）：讀者改成團隊負責人本人管理用。
-本週頁是數字、圖、這週要你出手的地方、人卡、收合的專案一覽（數字與圖的現況見下面 2026-11-02 那段）；本週重點不再獨立列。人一律照名字排、只跟自己比，三個頁籤都不放人與人並排的長條或表。
+本週頁是數字、圖、團隊投入狀況（人卡）、需要關注、收合的專案一覽（數字與圖的現況見下面 2026-11-02 那段）；本週重點不再獨立列。人一律照名字排、只跟自己比，三個頁籤都不放人與人並排的長條或表。
 同日第二輪：補登不算（metrics schema 8 拿掉）；改桌機寬版（主欄 1280px，第一屏以 1440×900 量），圖放大、人卡多欄、
 人卡的小長條每根標週次與張數，團隊頁「負責過」拆成負責中與已結案（收合）。
 本週頁一圖一訊息（2026-11-02 使用者裁，plan 在 vault 的 jira-weekly-report · 本週頁一圖一訊息）：專案地圖、資料健康與「照流程走」數字拿掉，
@@ -379,7 +379,7 @@ def _week_kpis(metrics) -> str:
 
     now = _rolling_rate(rows, len(rows) - 1) if rows else None
     prev = _rolling_rate(rows, len(rows) - 2) if len(rows) > 1 else None
-    label, hint = "過去四週平均消化速度（epic／人週）", "4 週完成 epic ÷ 4 週可運用人週，越高越好；epic 底下的卡都做完、或 epic 已結案才算完成"
+    label, hint = "過去四週平均消化速度（epic／人週）", "4 週完成 epic ÷ 4 週可運用人週，越高越好；epic 在 Jira 結案才算完成"
     if rows and rows[-1]["person_days"] is None:
         rate = tile("lead", label, DASH, "沒有成員名單，算不出可運用人日", "補 config/team.json")
     elif now is None:
@@ -407,7 +407,7 @@ def _explore_hint(r) -> str:
     """探索格的小字：幾個人算出來的，加上這些人的時間投到哪；這週沒人有完成卡就只講這件事。"""
     if not r["explore_people"]:
         return "本週沒有人有完成卡，看不出時間怎麼分"
-    return f"{_coverage(r)}；這些人的時間，投到這週第一次有完成卡的 epic"
+    return f"{_coverage(r)}；這些人的時間，投到 Kick off 卡的比例"
 
 
 def _same_people(now, prev) -> bool:
@@ -483,7 +483,7 @@ def _output_chart(history: list) -> str:
     """消化速度：每可運用人週完成幾個 epic（2026-11-02 使用者要求用每人每週可運用時間、一天 8 小時看可運用總額；同日裁以消化速率為主軸、
     改算 epic，再改看最後一張卡）。單週一根柱，畫最近 TREND_WEEKS 週，柱下寫到那週為止的四週值；四週值用完整的 history 算，畫面第一根之前的週也算進去
     （Codex 審 70db523：只拿畫出來那 6 週算，前三根永遠沒有四週值）。可運用只當分母，不跟回填的實際工時比。
-    完成＝epic 底下的卡都做完或 epic 已結案，週次取最後一張完成卡（同日消化速度口徑修正：集中結案不再拉動單週）。"""
+    完成＝epic 在 Jira 結案（同日使用者裁「Done 才算」），週次取最後一張完成卡（同日消化速度口徑修正：集中結案不再拉動單週）。"""
     rows = history[-TREND_WEEKS:]
     now = rows[-1]
     span = f"近 {len(rows)} 週"
@@ -496,7 +496,7 @@ def _output_chart(history: list) -> str:
              if rate is not None else "本週沒有可運用人日")
     weeks = now["person_days"] / capacity_lib.DAYS_PER_WEEK
     sub = (f"完成 epic ÷ 可運用 {weeks:g} 人週（名單 {now['roster']} 人的工作日合計 {now['person_days']} 人日 ÷ {capacity_lib.DAYS_PER_WEEK}，"
-           f"已扣國定假日，請假不扣）；epic 底下的卡都做完（不等 epic 在 Jira 關掉）或 epic 已結案就算完成，算在最後一張卡做完那週。"
+           f"已扣國定假日，請假不扣）；epic 在 Jira 結案才算完成，算在最後一張卡做完那週。"
            f"epic 大小不一，看四週值 · {span}")
     body = _bars(rows, lambda r: r["epics_per_person_week"], lambda r: DASH if r["epics_per_person_week"] is None else f'{r["epics_per_person_week"]:.2f}',
                  lambda r: f'4 週 {rolling[r["week"]]:.2f}' if rolling[r["week"]] is not None else "", f"{span}消化速度：每可運用人週完成 epic 數",
@@ -516,12 +516,8 @@ def _time_chart(history: list) -> str:
     if pct(now) is None:
         title = "本週沒有人有完成卡，看不出時間怎麼分"
     else:
-        if pct(prev) is None:
-            tail = ""
-        elif _same_people(now, prev):
-            tail = _compare(pct(now), pct(prev), " 個百分點")
-        else:
-            tail = f'；上週 {prev["explore_people"]} 人、本週 {now["explore_people"]} 人有完成卡，不直接比'
+        # 人數跟上週不同時標題不比、也不寫人數（2026-11-02 使用者：柱下已有 N／M 人，主數字旁也寫了）
+        tail = _compare(pct(now), pct(prev), " 個百分點") if pct(prev) is not None and _same_people(now, prev) else ""
         title = f"本週有產出的人把 {pct(now)}% 的時間投到探索" + tail
     w, h, base, tall = 600, 210, 170, 124
     step = (w - 20) / len(rows)
@@ -541,9 +537,9 @@ def _time_chart(history: list) -> str:
         out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 17}" text-anchor="middle" class="t-axis">{_short_week(r["week"])}</text>')
         out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 33}" text-anchor="middle" class="t-axis">{r["explore_people"]}{"／" + str(r["roster"]) if r["roster"] is not None else ""} 人</text>')
     out.append(f'<line x1="0" x2="{w}" y1="{base}" y2="{base}" class="axis"/></svg>')
-    # 副標只講怎麼分、怎麼算，細節（沒填工時怎麼補）在名詞定義（2026-11-02 使用者嫌繞口）
-    sub = ("探索是這週第一次有完成卡的 epic，其餘（含未歸屬 epic）算開發。"
-           f"先照每人自己填的工時算兩邊各占幾成，再把有完成卡的人平均；柱頂是探索占比 · {span}")
+    # 副標每句有主詞、白話，只講怎麼分、怎麼算，細節（沒填工時怎麼補）在名詞定義（2026-11-02 使用者要求；同日探索改算 Kick off＋Spike）
+    sub = ("這張圖看有完成卡的人，把多少時間花在探索。探索是 Kick off 卡的工時，其他完成的卡算開發。"
+           f"每個人先用自己填的工時算出探索占幾成，再把這些人平均，就是柱頂的數字 · {span}")
     legend = '<p class="legend"><i class="sw-week"></i>探索 <i class="sw-before"></i>開發</p>'
     return _chart(title, sub, legend + "".join(out))
 
@@ -589,7 +585,7 @@ STEP_IN_RULE = (f"前三個條件用同一個時鐘：最後一次更新到本�
 
 
 def _step_in(metrics, page) -> str:
-    """這週要你出手的地方（2026-11-02 使用者裁甲，取代 2026-10-28 三類原因各列一區）：一個專案一列，
+    """需要關注（2026-11-02 由「這週要你出手的地方」改名，同日使用者裁甲，取代 2026-10-28 三類原因各列一區）：一個專案一列，
     幾天沒動、沒動的卡、需要決定三欄並排，三個條件同一個時鐘；依幾天沒動排，久的在上。
     沒動的卡所屬的專案不在未結案專案裡（未歸屬 epic、epic 已結案）也自成一列，不會漏掉。"""
     epics = {e["id"]: e for e in metrics["epics"] if e["key"] and e["status"] != "Done"}
@@ -608,7 +604,7 @@ def _step_in(metrics, page) -> str:
         sort_idle = idle if idle is not None else max(r["idle_days"] for r in cards)
         rows.append((-sort_idle, e["key"] if e else cards[0]["project"], gid, e, cards, decision))
     if not rows:
-        return f'<h3 id="step-in">這週要你出手的地方</h3><p class="muted">沒有專案或卡 {IDLE_DAYS} 天沒動、沒有卡都做完卻沒關的 epic，Kick off 也沒寫需要決定。</p>'
+        return f'<h3 id="step-in">需要關注</h3><p class="muted">沒有專案或卡 {IDLE_DAYS} 天沒動、沒有卡都做完卻沒關的 epic，Kick off 也沒寫需要決定。</p>'
     rows.sort(key=lambda t: (t[0], t[3] is None, issue_sort_key(t[1]) if t[3] else (t[1],)))
     head = ('<div class="si head"><span>專案</span><span>負責人</span><span class="num">幾天沒動</span>'
             f'<span>進行中、{IDLE_DAYS} 天沒更新的卡</span><span>Kick off 寫的需要決定</span></div>')
@@ -637,7 +633,7 @@ def _step_in(metrics, page) -> str:
     ncards = sum(len(t[4]) for t in rows)
     ndec = sum(1 for t in rows if t[5])
     nfull = sum(1 for t in rows if t[3] is not None and _epic_state(t[3]) == "full")
-    return (f'<h3 id="step-in">這週要你出手的地方：{len(rows)} 個專案</h3>'
+    return (f'<h3 id="step-in">需要關注：{len(rows)} 個專案</h3>'
             f'<p class="note">其中專案沒動 {stalled} 個、卡沒動 {ncards} 張、需要決定 {ndec} 個、「{FULL_LABEL}」{nfull} 個；依幾天沒動排，久的在上。</p>'
             f'<p class="note">{esc(STEP_IN_RULE)}</p><div class="sis">{head}{"".join(body)}</div>')
 
@@ -758,15 +754,15 @@ def _week_people(metrics, page) -> str:
 
 
 def _week_panel(metrics, narrative, page) -> str:
-    """本週頁（2026-10-28 鎖定 AC-2、AC-3，2026-11-02 改一圖一訊息）：兩個數字 → 三張圖 → 這週要你出手的地方 → 人卡 → 專案一覽（收合）。
+    """本週頁（2026-10-28 鎖定 AC-2、AC-3，2026-11-02 改一圖一訊息）：兩個數字 → 兩張圖 → 團隊投入狀況（人卡）→ 需要關注 → 專案一覽（收合）；人卡與需要關注 2026-11-02 使用者要求對調、改名。
     本週重點 highlights 照舊由 routine 產生與驗證，頁面不再獨立列；每個專案的結果句在專案一覽展開看。"""
     rows = len(metrics["epics"])
     return f"""
   {_week_kpis(metrics)}
   {_viz(metrics, page)}
-  {_step_in(metrics, page)}
-  <h3>人</h3>
+  <h3>團隊投入狀況</h3>
   {_week_people(metrics, page)}
+  {_step_in(metrics, page)}
   <details class="proj-list"><summary>專案一覽（{rows} 列，點開）</summary>
   <p class="legend">進度條 <i class="sw-before"></i>之前完成 <i class="sw-week"></i>本週完成 <i class="sw-left"></i>未完成；點一列看本週結果與進行中的卡。</p>
   {_week_table(metrics, narrative, page)}
@@ -1143,23 +1139,25 @@ def _glossary(metrics) -> str:
                            "總覽專案列表的已結案收在每段最後，標 epic 在 Jira 完成的那一週（結案週）；"
                            "資源的已結案數只看 Jira 的 epic 狀態；消化速度的「完成」另外算進卡都做完、epic 沒關的，不算底下沒有完成工作卡的，兩個不是同一個數。"),
         ("沒動", f"最後一次更新到本週結束過了幾天（只改 label 也算更新）。專案看底下的卡（不算 Kick off），卡看它自己；"
-                 f"{IDLE_DAYS} 天以上列進「這週要你出手的地方」，人卡與總覽專案列表的幾天沒動標警示色。Kick off 的「需要決定」沒有沒動這回事，有寫就列，附 Kick off 卡寫了幾天。"),
+                 f"{IDLE_DAYS} 天以上列進「需要關注」，人卡與總覽專案列表的幾天沒動標警示色。Kick off 的「需要決定」沒有沒動這回事，有寫就列，附 Kick off 卡寫了幾天。"),
         ("停滯", f"epic 還沒完成，專案沒動 {IDLE_DAYS} 天以上；底下沒有卡就看 epic 自己。"),
         ("可運用人日", f"config/team.json 成員名單裡，每人在職期間的工作日加總；工作日是週一到週五扣掉 config/holidays.json 的國定假日"
                       f"（人事行政總處辦公日曆表），加上補班日，一天 {capacity_lib.HOURS_PER_DAY} 小時。請假不扣（使用者 2026-11-02 裁）。"
                       "只拿來當產出的分母，不跟實際工時比：實際工時是完工後回填，一人一週超過可運用時數的列進資料檢查，可能填錯。"),
-        ("新 epic", "這週第一次有完成卡的 epic（不含未歸屬 epic）。epic 建立當天就有完成卡的另外數出來，可能是事後一次開卡結卡；只陳述同期數字，不代表原因。"),
         (FULL_LABEL, "epic 底下算進進度的卡都完成了，但 epic 本身在 Jira 還沒結案（以前叫 100% 待結案）。"
                        "可能是做完忘了關（去 Jira 關掉 epic、補 Deliverable 卡），也可能還有工作沒開卡；資料上分不出來，要人看。"
-                       "消化速度把它算成完成（算在最後一張卡做完那週），但 Jira 上還是要關。列進「這週要你出手的地方」，人卡與總覽專案列表也會標出來。"),
-        ("消化速度", f"完成 epic 數 ÷ 可運用人週（可運用人日 ÷ {capacity_lib.DAYS_PER_WEEK}）。epic 底下算進進度的卡全部做完就算完成，"
-                     f"不等 epic 在 Jira 關掉（「{FULL_LABEL}」的也算）；epic 已結案但還有卡沒做完的也算。週次一律取底下最後一張完成卡做完的那週，"
-                     "不看 epic 的結案時間：去 Jira 集中關 epic 是行政動作，不是做完的時間。底下沒有任何完成工作卡的 epic 不算（近 6 週結案的列在資料檢查）。"
+                       "消化速度不算它，要在 Jira 關掉才算完成（2026-11-02 起）。列進「需要關注」，人卡與總覽專案列表也會標出來。"),
+        ("消化速度", f"完成 epic 數 ÷ 可運用人週（可運用人日 ÷ {capacity_lib.DAYS_PER_WEEK}）。epic 在本期結束前於 Jira 結案才算完成，"
+                     f"「{FULL_LABEL}」的不算（2026-11-02 起）；epic 已結案但還有卡沒做完的也算。週次一律取底下最後一張完成卡做完的那週，"
+                     "不看 epic 的結案時間：去 Jira 集中關 epic 是行政動作，不是做完的時間；epic 晚幾週才關，當初那週的數字會在之後的頁面變多。"
+                     "底下沒有任何完成工作卡的 epic 不算（近 6 週結案的列在資料檢查）。"
                      "本週頁的主數字是過去四週平均（4 週完成 epic 加總 ÷ 4 週可運用人週加總），跟上週的四週值比；上週值用這一期的資料重算，"
                      "epic 後來補開新卡、或重開，完成週會往後移，跟上週頁面寫的不同。總覽的「已結案」照舊看 Jira 的 epic 狀態，跟這裡的完成不是同一個數。"
                      "epic 大小不一，一個 epic 可能一天也可能兩個月。"),
-        ("探索人力占比", "每個有產出的人一週先把自己完成的卡換成 100%（用自己填的實際工時當權重，沒填的卡補他這週的平均，整週都沒填就用張數），"
-                       "切成探索（這週第一次有完成卡的 epic）與開發（其餘，含未歸屬 epic），再對有產出的人平均。只在人內換算，不拿小時跨人比。"
+        ("探索人力占比", "探索是這週完成、有填工時的 Kick off 卡；其他完成的卡（含 Spike）都算開發（2026-11-02 起，"
+                       "原本算的是「這週第一次有完成卡的 epic」）。每個有產出的人一週先把這些卡換成 100%（用自己填的實際工時當權重，"
+                       "沒填的工作卡補他這週的平均，整週都沒填就用張數；沒填工時的 Kick off 不算），再對有產出的人平均。只在人內換算，不拿小時跨人比。"
+                       "Kick off 的工時只算在這裡，完成張數與實際工時照舊不算 Kick off。"
                        "這週沒有完成卡的人工時看不到（完工才回填），不進平均，數字旁寫幾個人有完成卡；這週跟上週人數不同時不寫差值。"),
         ("投入比例", "團隊頁人卡的累計投入比例：這個人自己完成的卡，用自己填的實際工時當權重換成 100%，看落在哪些 label。"
                      f"人卡上 label 的顏色固定：畫出顏色的 label 最多 {ALLOCATION_TOP} 個，本週有份額的先排，再照近 {ALLOCATION_WINDOW} 週補滿，其餘是「其他」的灰。"),
