@@ -838,10 +838,11 @@ def _overview_projects(metrics, page) -> str:
         open_ = _by_idle([e for e in members if _overview_state(e) == "open"])
         full = _by_idle([e for e in members if _overview_state(e) == "full"])
         done = _by_closed([e for e in members if _overview_state(e) == "done"])
-        idle_n = sum(1 for e in open_ if e["stalled"])
+        def tally(name, rows):  # 各狀態個數，後面接其中幾個久沒動（AC-2：段標題寫各狀態個數與久沒動個數）
+            idle_n = sum(1 for e in rows if e["stalled"])
+            return (f"{name} {len(rows)}" + (f"（{idle_n} 個久沒動）" if idle_n else "")) if rows else ""
         counts = "、".join(filter(None, [
-            (f"進行中 {len(open_)}" + (f"（{idle_n} 個久沒動）" if idle_n else "")) if open_ else "",
-            f"100% 待結案 {len(full)}" if full else "",
+            tally("進行中", open_), tally("100% 待結案", full),
             f"已結案 {len(done)}" if done else ""]))
         body = ("".join(_overview_project(e, week_done, staffing, page) for e in open_)
                 + "".join(_overview_project(e, week_done, staffing, page, FULL_TAG) for e in full))
@@ -1105,7 +1106,8 @@ def _glossary(metrics) -> str:
         ("label", "專案的 label 取 epic 在 Jira 上的 label；不在 epic 底下的卡用自己的 label。"
                   "沒有 label、或有兩個以上 label 的歸「未分類」，並列進資料檢查。epic 數是總覽專案列表裡掛這個 label 的 epic。"),
         ("Done／On Track", "Done 是 epic 在 Jira 已完成；On Track 只表示 epic 還沒完成，不代表進度評估。"
-                           "總覽專案列表的已結案收在每段最後，標 epic 在 Jira 完成的那一週（結案週）。"),
+                           "總覽專案列表的已結案收在每段最後，標 epic 在 Jira 完成的那一週（結案週）；"
+                           "資源的已結案數含底下沒有完成工作卡的 epic，消化速度不算這種，所以兩個數可能差幾個（差的列在資料檢查）。"),
         ("沒動", f"最後一次更新到本週結束過了幾天（只改 label 也算更新）。專案看底下的卡（不算 Kick off），卡看它自己；"
                  f"{IDLE_DAYS} 天以上列進「這週要你出手的地方」，人卡與總覽專案列表的幾天沒動標警示色。Kick off 的「需要決定」沒有沒動這回事，有寫就列，附 Kick off 卡寫了幾天。"),
         ("停滯", f"epic 還沒完成，專案沒動 {IDLE_DAYS} 天以上；底下沒有卡就看 epic 自己。"),

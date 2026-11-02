@@ -1011,7 +1011,7 @@ class OverviewStatusTest(unittest.TestCase):
         o = self.overview()
         order = [o.index(t) for t in ("很久沒動", "最近有動", "做完沒結很久", "做完沒結近期", "本週結案", "上週結案")]
         self.assertEqual(order, sorted(order))
-        self.assertIn('<h4>門市 <span class="muted">· 進行中 2（1 個久沒動）、100% 待結案 2、已結案 2 · 累計工時 7h</span></h4>', o)
+        self.assertIn('<h4>門市 <span class="muted">· 進行中 2（1 個久沒動）、100% 待結案 2（1 個久沒動）、已結案 2 · 累計工時 7h</span></h4>', o)
         self.assertIn("做完沒結很久 <span class=\"tag warn\">100% 待結案</span>", o)
         self.assertNotIn("最近有動 <span class=\"tag", o)
         self.assertIn('<span class="idle" data-label="幾天沒動"><b class="alert">21 天</b></span>', o)
@@ -1051,9 +1051,11 @@ class OverviewStatusTest(unittest.TestCase):
         # 名單變動那週沒有完成卡：cumulative.weeks 沒有那一列，線照位置畫在前後兩列之間（fable 審 2026-11-02）
         m = self.metrics()
         h39 = m["health"][-1]
-        m["health"] = [dict(m["health"][0], roster=3), dict(h39, week="2026-W39", roster=9),
-                       dict(h39, week="2026-W40", roster=11)]
-        m["cumulative"]["weeks"] = [dict(m["cumulative"]["weeks"][0], week="2026-W40"), m["cumulative"]["weeks"][1]]
+        # W37 再舊一列：少了上界，W39、W40 的線會在 W37 上方再畫一次
+        m["health"] = [dict(m["health"][0], week="2026-W37", roster=3), dict(m["health"][0], roster=3),
+                       dict(h39, week="2026-W39", roster=9), dict(h39, week="2026-W40", roster=11)]
+        m["cumulative"]["weeks"] = [dict(m["cumulative"]["weeks"][0], week="2026-W40"), m["cumulative"]["weeks"][1],
+                                    dict(m["cumulative"]["weeks"][1], week="2026-W37")]
         for r in m["cumulative"]["completed"]:
             if r["week"] == "2026-W39":
                 r["week"] = "2026-W40"
@@ -1065,6 +1067,7 @@ class OverviewStatusTest(unittest.TestCase):
         self.assertLess(done.index("<span>2026-W40</span>"), done.index(newer))
         self.assertLess(done.index(newer), done.index(line))
         self.assertLess(done.index(line), done.index("<span>2026-W38</span>"))
+        self.assertEqual((done.count(newer), done.count(line)), (1, 1))   # 一次變動只畫一條，不在更舊的列上方重複
         self.assertIn("累計跨過名單人數變動（W39 起 3→9 人、W40 起 9→11 人）", self.overview(m))
 
     def test_label_bars_end_on_one_line(self):
