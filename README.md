@@ -91,6 +91,13 @@ python3 scripts/weekly.py finalize 2026-W39                   # 需要先有 nar
 python3 -m unittest discover -s tests -t tests                # 門檻測試
 ```
 
+已發布的舊週不要為了補欄位整期重抓：`prepare` 拿的是當下的 Jira 狀態，期末後建立的卡、狀態與更新時間都會混進那一週（epic 列、進行中、幾天沒動、停滯、進度分母）；只有完成卡、工時與消化速度看結案時間不受影響（2026-11-02 W44）。Kick off 工時事後回填時用 `kickoff-hours`：只把那一期 snapshot 裡 Kick off 卡的工時換成 Jira 現值、重算 metrics，卡的範圍與狀態不動，snapshot 另記 `kickoff_points_fetched_at`；之後照常 `finalize`。
+
+```bash
+python3 scripts/weekly.py kickoff-hours 2026-W44
+python3 scripts/weekly.py finalize 2026-W44
+```
+
 ## Vercel 設定
 
 Import 這個 repo，Framework Preset 選 Other，Output Directory 由 `vercel.json` 指定為 `site`，不需要 build command。只有 `site/` 會公開，`data/` 不會。
