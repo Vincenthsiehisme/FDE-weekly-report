@@ -637,7 +637,7 @@ class FlowHealthTest(unittest.TestCase):
             issue("CS-4", parent="CS-1", points=2.0, resolved=LAST_WEEK, assignee="B", created="2026-09-10T03:59:30.000+0800", progress_seen=True),
         ]
         m = run(issues)
-        self.assertEqual(m["schema"], 12)
+        self.assertEqual(m["schema"], 13)
         # 單卡工時只除有填的張數：W39 CS-2 1h、CS-3 沒填 → 1.0h，不是 0.5h（2026-11-02 本週頁一圖一訊息 AC-1）
         keys = ("week", "completed", "via_progress", "unestimated", "hours", "hours_per_card")
         self.assertEqual([{k: h[k] for k in keys} for h in m["health"]], [
@@ -779,7 +779,7 @@ class FlowHealthTest(unittest.TestCase):
         # 沒有完成卡的週：單卡工時是 None（不存在），不是 0h
         self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "via_progress": 0, "unestimated": 0, "hours": 0.0, "hours_per_card": None,
                                            "epics_active": 0, "epics_new": 0, "new_same_day": 0, "new_hours_share": None, "explore_share": None, "explore_people": 0,
-                                           "roster": None, "person_days": None, "cards_per_person_day": None, "median_cards": None})
+                                           "epics_closed": 0, "roster": None, "person_days": None, "epics_per_person_week": None})
         self.assertEqual(m["kpis"]["via_progress"], {"now": None, "prev": 100})
         self.assertEqual(m["allocation"]["weeks"][-1], {"week": "2026-W39", "people": 0, "shares": {}})
         a = m["people"][0]
@@ -874,13 +874,55 @@ class CapacityTest(unittest.TestCase):
         self.assertEqual(sorted(data["off"]), sorted(f"{y}-{d}" for y, days in official.items() for d in days))
         self.assertEqual(data["workdays"], {})  # 兩年都沒有週六補班
 
-    def test_person_days_rate_and_median_count_members_without_cards_as_zero(self):
+    def test_person_days_count_members_on_the_roster_that_week(self):
         issues = [issue("CS-1", level=1, status="doing", labels=["甲"])] + [
             issue(f"CS-{i}", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A") for i in range(2, 8)]
-        # A 整週在職 5 天、B 09-21 才進來 2 天、C 已離開：可運用 7 人日；6 張 ÷ 7；名單上 A 6 張、B 0 張 → 中位 3
+        # A 整週在職 5 天、B 09-21 才進來 2 天、C 已離開：可運用 7 人日；epic 沒結案，消化速度 0（不是 None：有可運用人日）
         team = self.team(("A", "2026-09-01", None), ("B", "2026-09-21", None), ("C", "2026-08-01", "2026-09-10"))
         h = self.run_with(issues, team)["health"][-1]
-        self.assertEqual((h["roster"], h["person_days"], h["cards_per_person_day"], h["median_cards"]), (2, 7, 0.86, 3.0))
+        self.assertEqual((h["roster"], h["person_days"], h["epics_closed"], h["epics_per_person_week"]), (2, 7, 0, 0.0))
+
+    def test_throughput_counts_closed_epics_with_work_per_person_week(self):
+        # 2026-11-02 使用者裁「改算 epic」：epic 卡本身結案才算完成，週次取結案時間；數卡不數 epic 的話本週會是 5
+        after = "2026-09-25T04:00:00.000+0800"  # 本期結束之後：補算舊的一期不能算進之後才結案的 epic
+        issues = [
+            issue("CS-1", level=1, resolved=IN_WEEK, labels=["甲"]),
+            *[issue(f"CS-{i}", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A") for i in (2, 3, 4)],
+            issue("CS-5", level=1, resolved=IN_WEEK, labels=["甲"]),  # 底下沒有工作卡：沒有消化任何工作，不算
+            issue("CS-6", level=1, resolved=LAST_WEEK, labels=["甲"]),
+            issue("CS-7", parent="CS-6", points=1.0, resolved=LAST_WEEK, assignee="A"),
+            issue("CS-8", level=1, status="doing", resolved=IN_WEEK, labels=["甲"]),  # 重開的 epic 留著結案時間，狀態沒完成：不算
+            issue("CS-9", parent="CS-8", points=1.0, resolved=IN_WEEK, assignee="A"),
+            issue("CS-10", level=1, resolved=after, labels=["甲"]),
+            issue("CS-11", parent="CS-10", points=1.0, resolved=IN_WEEK, assignee="A"),
+            issue("CS-12", level=1, labels=["甲"]),  # 完成卻沒有結案時間：不算，列資料檢查
+            issue("CS-13", parent="CS-12", points=1.0, resolved=IN_WEEK, assignee="A"),
+            # W32 結案、沒有工作卡：超過近 6 週，不再列資料檢查（不然清單一路變長）；CS-16 把週序列拉到 W32
+            issue("CS-14", level=1, resolved="2026-07-29T04:00:00.000+0800", labels=["甲"]),
+            issue("CS-16", parent="CS-6", points=1.0, resolved="2026-07-29T04:00:00.000+0800", assignee="A"),
+        ]
+        team = self.team(("A", "2026-09-01", None), ("B", "2026-09-21", None))
+        m = self.run_with(issues, team)
+        self.assertEqual(m["health"][0]["week"], "2026-W32")
+        w38, w39 = m["health"][-2:]
+        self.assertEqual((w39["completed"], w39["epics_closed"], w39["person_days"], w39["epics_per_person_week"]), (6, 1, 7, 0.71))  # 1 ÷ (7 ÷ 5)
+        self.assertEqual((w38["epics_closed"], w38["person_days"], w38["epics_per_person_week"]), (1, 5, 1.0))
+        # 算不進去的都看得到（fable 審 7a39417）：沒有工作卡的、沒有結案時間的；期末後結案的是之後的事，不列
+        epic_checks = [(c["kind"], c["key"], c["message"]) for c in m["checks"] if c["kind"].startswith("epic_")]
+        self.assertEqual(epic_checks, [
+            ("epic_closed_without_work", "CS-5", "epic 在 2026-W39 結案，底下沒有算進累計的完成工作卡（沒有卡，或只剩改組前、排除的卡），消化速度不算它"),
+            ("epic_done_without_resolution", "CS-12", "epic 狀態是完成但沒有完成時間（resolutiondate），消化速度沒算到它"),
+        ])
+
+    def test_epic_closed_before_the_first_completed_week_goes_to_data_checks(self):
+        # 結案在 W38、唯一的完成卡在 W39：週序列從 W39 起，W38 不在裡面，列進資料檢查，不算進任何一週
+        issues = [issue("CS-1", level=1, resolved=LAST_WEEK, labels=["甲"]),
+                  issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A")]
+        m = self.run_with(issues, self.team(("A", "2026-09-01", None)))
+        self.assertEqual([h["epics_closed"] for h in m["health"]], [0])
+        checks = [c for c in m["checks"] if c["kind"] == "epic_closed_outside_weeks"]
+        self.assertEqual([(c["key"], c["message"]) for c in checks],
+                         [("CS-1", "epic 結案在 2026-W38，早於全隊第一張完成卡那週，消化速度沒算到它")])
 
     def test_hours_over_capacity_and_strangers_go_to_data_checks(self):
         issues = [issue("CS-1", level=1, status="doing", labels=["甲"]),
@@ -949,7 +991,7 @@ class CapacityTest(unittest.TestCase):
 
 
 class CumulativeEpicStateTest(unittest.TestCase):
-    """總覽優化 AC-6（schema 12）：累計專案帶結案週、幾天沒動與停滯，跟週頁 epic 同一個時鐘。"""
+    """總覽優化 AC-6（schema 13，跟消化速度改算 epic 的 12 錯開）：累計專案帶結案週、幾天沒動與停滯，跟週頁 epic 同一個時鐘。"""
 
     def test_open_epics_get_idle_days_and_settled_ones_get_their_week(self):
         issues = [
