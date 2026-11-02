@@ -356,19 +356,20 @@ def _delta(now, prev, unit: str) -> str:
 
 
 def _rolling_rate(rows: list, end: int):
-    """到第 end 週為止（含）的過去四週平均消化速度：4 週結案 epic 加總 ÷ 4 週可運用人週加總（2026-11-02 使用者裁「改算 epic」）。
+    """到第 end 週為止（含）的過去四週平均消化速度：4 週完成 epic 加總 ÷ 4 週可運用人週加總（2026-11-02 使用者裁「改算 epic」，同日改看最後一張卡）。
     不足 4 週（資料開頭那幾週）或沒有可運用人日（沒給名單）是 None：少於 4 週的值不能標成 4 週（Codex 審 ab4aff4）。"""
     if end < 3:
         return None
     window = rows[end - 3:end + 1]
     days = sum(r["person_days"] or 0 for r in window)
-    return sum(r["epics_closed"] for r in window) / (days / capacity_lib.DAYS_PER_WEEK) if days else None
+    return sum(r["epics_done"] for r in window) / (days / capacity_lib.DAYS_PER_WEEK) if days else None
 
 
 def _week_kpis(metrics) -> str:
     """三個數字（2026-11-02 使用者裁「照審查改」：人的時間是資源，目標是消化的速率提高）：
-    過去四週平均消化速度（主數字，同日改算 epic 結案、標題直接寫四週）、探索人力占比、停滯專案（唯一用警示色、連到出手區）。
-    消化速度比的是上週那時的四週值，兩個窗口重疊三週，所以差值小、不被單週集中結案拉動。"""
+    過去四週平均消化速度（主數字，同日改算 epic、標題直接寫四週）、探索人力占比、停滯專案（唯一用警示色、連到出手區）。
+    消化速度比的是上週那時的四週值，兩個窗口重疊三週，所以差值小。探索人力占比只對這週有完成卡的人平均，
+    這週跟上週人數不同時不寫差值（2026-11-02 消化速度口徑修正：少掉的人偏探索或偏開發都會讓數字跳）。"""
     rows = metrics["health"]
     stalled = metrics["kpis"]["stalled"]
 
@@ -378,7 +379,7 @@ def _week_kpis(metrics) -> str:
 
     now = _rolling_rate(rows, len(rows) - 1) if rows else None
     prev = _rolling_rate(rows, len(rows) - 2) if len(rows) > 1 else None
-    label, hint = "過去四週平均消化速度（epic／人週）", "4 週結案 epic ÷ 4 週可運用人週，越高越好；epic 結案才算完成"
+    label, hint = "過去四週平均消化速度（epic／人週）", "4 週完成 epic ÷ 4 週可運用人週，越高越好；epic 底下的卡都做完才算完成"
     if rows and rows[-1]["person_days"] is None:
         rate = tile("lead", label, DASH, "沒有成員名單，算不出可運用人日", "補 config/team.json")
     elif now is None:
@@ -389,11 +390,29 @@ def _week_kpis(metrics) -> str:
         rate = tile("lead", label, f"{now:.2f}", delta, hint)  # 單位放標題：大字只放數字，375 寬才不會擠成三行
     share = lambda r: None if r is None or r["explore_share"] is None else round(r["explore_share"] * 100)
     e_now, e_prev = share(rows[-1] if rows else None), share(rows[-2] if len(rows) > 1 else None)
-    explore = tile("", "探索人力占比", DASH if e_now is None else f"{e_now}%", _delta(e_now, e_prev, "%"),
-                   "有產出的人的時間，投到這週第一次有完成卡的 epic")
+    explore = tile("", "探索人力占比", DASH if e_now is None else f"{e_now}%", _explore_delta(rows, e_now, e_prev),
+                   f"{_coverage(rows[-1]) + '；這些人' if rows else ''}的時間，投到這週第一次有完成卡的 epic")
     stall = tile("", "停滯專案", str(stalled["now"]), _delta(stalled["now"], stalled["prev"], ""),
                  f'{IDLE_DAYS} 天沒有卡更新 · <a href="#step-in">看是哪幾個</a>', warn=bool(stalled["now"]))
     return f'<ul class="kpis wk-kpis" style="--kpis:3">{rate}{explore}{stall}</ul>'
+
+
+def _coverage(r) -> str:
+    """探索人力占比是幾個人算出來的：「5／7 人有完成卡」，沒有名單只寫「5 人有完成卡」。"""
+    n = r["explore_people"]
+    return f'{n}／{r["roster"]} 人有完成卡' if r["roster"] is not None else f"{n} 人有完成卡"
+
+
+def _same_people(now, prev) -> bool:
+    """兩週有完成卡的人數一樣，探索占比才直接比（人數相同仍可能換了人，這裡只擋得住人數不同）。"""
+    return now is not None and prev is not None and now["explore_people"] == prev["explore_people"]
+
+
+def _explore_delta(rows, e_now, e_prev) -> str:
+    """探索人力占比的上週比較：人數相同照 _delta；人數不同寫上週的值與人數，不算差值。"""
+    if len(rows) < 2 or e_prev is None or _same_people(rows[-1], rows[-2]):
+        return _delta(e_now, e_prev, "%")
+    return f'上週 {e_prev}%（{rows[-2]["explore_people"]} 人），人數不同不直接比'
 
 
 def _short_week(week: str) -> str:
@@ -453,34 +472,34 @@ def _roster_dividers(history: list, offset: int) -> dict:
     return out
 
 
-def _output_chart(history: list, full: int) -> str:
+def _output_chart(history: list) -> str:
     """消化速度：每可運用人週結案幾個 epic（2026-11-02 使用者要求用每人每週可運用時間、一天 8 小時看可運用總額；同日裁以消化速率為主軸、
     改算 epic 結案）。單週一根柱，畫最近 TREND_WEEKS 週，柱下寫到那週為止的四週值；四週值用完整的 history 算，畫面第一根之前的週也算進去
     （Codex 審 70db523：只拿畫出來那 6 週算，前三根永遠沒有四週值）。可運用只當分母，不跟回填的實際工時比。
-    full 是現在「卡都做完，epic 沒關」（100% 待結案）的 epic 數（跟出手區同一個判斷），不算完成，寫在副標。"""
+    完成＝epic 底下的卡都做完或 epic 已結案，週次取最後一張完成卡（同日消化速度口徑修正：集中結案不再拉動單週）。"""
     rows = history[-TREND_WEEKS:]
     now = rows[-1]
     span = f"近 {len(rows)} 週"
     if now["person_days"] is None:
-        return _chart("沒有成員名單，算不出可運用人日", f"本週結案 {now['epics_closed']} 個 epic；補 config/team.json 與 config/holidays.json 後重算", "")
+        return _chart("沒有成員名單，算不出可運用人日", f"本週完成 {now['epics_done']} 個 epic；補 config/team.json 與 config/holidays.json 後重算", "")
     offset = len(history) - len(rows)
     rolling = {r["week"]: _rolling_rate(history, offset + i) for i, r in enumerate(rows)}
     rate, r4 = now["epics_per_person_week"], rolling[now["week"]]
-    title = (f"本週結案 {now['epics_closed']} 個 epic，{rate:.2f} 個／可運用人週" + (f"；過去四週平均 {r4:.2f}" if r4 is not None else "")
+    title = (f"本週完成 {now['epics_done']} 個 epic，{rate:.2f} 個／可運用人週" + (f"；過去四週平均 {r4:.2f}" if r4 is not None else "")
              if rate is not None else "本週沒有可運用人日")
     weeks = now["person_days"] / capacity_lib.DAYS_PER_WEEK
-    sub = (f"結案 epic ÷ 可運用 {weeks:g} 人週（名單 {now['roster']} 人的工作日合計 {now['person_days']} 人日 ÷ {capacity_lib.DAYS_PER_WEEK}，"
-           f"已扣國定假日、未扣請假）；另有 {full} 個 epic 底下的卡全完成、還沒結案，不算進來。"
-           f"epic 大小不一，單週會被集中結案拉動，看四週值 · {span}")
+    sub = (f"完成 epic ÷ 可運用 {weeks:g} 人週（名單 {now['roster']} 人的工作日合計 {now['person_days']} 人日 ÷ {capacity_lib.DAYS_PER_WEEK}，"
+           f"已扣國定假日，請假不扣）；epic 底下的卡都做完就算完成（不等 epic 在 Jira 關掉），算在最後一張卡做完那週。"
+           f"epic 大小不一，看四週值 · {span}")
     body = _bars(rows, lambda r: r["epics_per_person_week"], lambda r: DASH if r["epics_per_person_week"] is None else f'{r["epics_per_person_week"]:.2f}',
-                 lambda r: f'4 週 {rolling[r["week"]]:.2f}' if rolling[r["week"]] is not None else "", f"{span}消化速度：每可運用人週結案 epic 數",
+                 lambda r: f'4 週 {rolling[r["week"]]:.2f}' if rolling[r["week"]] is not None else "", f"{span}消化速度：每可運用人週完成 epic 數",
                  _roster_dividers(history, offset))
     return _chart(title, sub, body)
 
 
 def _time_chart(history: list) -> str:
     """時間怎麼分：每週一根 100% 柱，畫最近 TREND_WEEKS 週，下面深色是探索、上面淺色是開發，探索的百分比寫在柱頂，
-    柱下是算占比的人數（不含未指派）；名單分界跟消化速率圖一樣看畫面外的前一週。
+    柱下是算占比的人數對名單（不含未指派）；人數跟上週不同時標題不比（2026-11-02 消化速度口徑修正）；名單分界跟消化速度圖一樣看畫面外的前一週。
     只陳述同期數字，不寫成探索多所以速率低（fable 審 2026-11-02）。"""
     rows = history[-TREND_WEEKS:]
     offset = len(history) - len(rows)
@@ -490,7 +509,13 @@ def _time_chart(history: list) -> str:
     if pct(now) is None:
         title = "本週沒有人有完成卡，看不出時間怎麼分"
     else:
-        title = f"本週有產出的人把 {pct(now)}% 的時間投到探索" + (_compare(pct(now), pct(prev), " 個百分點") if pct(prev) is not None else "")
+        if pct(prev) is None:
+            tail = ""
+        elif _same_people(now, prev):
+            tail = _compare(pct(now), pct(prev), " 個百分點")
+        else:
+            tail = f'；上週 {prev["explore_people"]} 人、本週 {now["explore_people"]} 人有完成卡，不直接比'
+        title = f"本週有產出的人把 {pct(now)}% 的時間投到探索" + tail
     w, h, base, tall = 600, 210, 170, 124
     step = (w - 20) / len(rows)
     bw = min(56, step - 16)
@@ -507,7 +532,7 @@ def _time_chart(history: list) -> str:
             out.append(f'<rect x="{x:.1f}" y="{base - he:.1f}" width="{bw:.1f}" height="{he:.1f}" rx="2" class="bar-wk"><title>{_short_week(r["week"])} 探索 {p}%</title></rect>')
         out.append(f'<text x="{x + bw / 2:.1f}" y="{base - tall - 6:.1f}" text-anchor="middle" class="t-val">{DASH if p is None else f"{p}%"}</text>')
         out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 17}" text-anchor="middle" class="t-axis">{_short_week(r["week"])}</text>')
-        out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 33}" text-anchor="middle" class="t-axis">{r["explore_people"]} 人</text>')
+        out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 33}" text-anchor="middle" class="t-axis">{r["explore_people"]}{"／" + str(r["roster"]) if r["roster"] is not None else ""} 人</text>')
     out.append(f'<line x1="0" x2="{w}" y1="{base}" y2="{base}" class="axis"/></svg>')
     sub = ("每個有產出的人一週先換成 100%（用自己填的工時當權重），切成探索（這週第一次有完成卡的 epic）與開發（其餘，含未歸屬 epic），"
            f"再對有產出的人平均；柱頂是探索占比；只陳述同期數字 · {span}")
@@ -540,15 +565,14 @@ def _quality_line(metrics) -> str:
 
 
 def _viz(metrics, page) -> str:
-    """兩張圖（2026-11-02 使用者裁「照審查改」，取代同日的四張）：消化速率、時間怎麼分；圖下資料品質一行。
+    """兩張圖（2026-11-02 使用者裁「照審查改」，取代同日的四張）：消化速度、時間怎麼分；圖下資料品質一行。
     投入比例與未結案 epic 狀態圖移出本週頁（前者是「各單位分到幾個人」、一人全在某單位就是 1/人數，會誤導；
     後者的「卡都做完，epic 沒關」併進出手區）。plan：jira-weekly-report · 本週頁產值與探索。"""
     history = metrics["health"]
     if not history:
         return '<p class="muted">還沒有完成的卡。</p>'
     # 兩張圖都收完整歷史、自己切最後 TREND_WEEKS 週：滾動值與名單分界要看畫面外的週
-    full = sum(1 for e in metrics["epics"] if e["key"] and e["status"] != "Done" and _epic_state(e) == "full")
-    return f'<div class="viz">{_output_chart(history, full)}{_time_chart(history)}</div>' + _quality_line(metrics)
+    return f'<div class="viz">{_output_chart(history)}{_time_chart(history)}</div>' + _quality_line(metrics)
 
 
 STEP_IN_RULE = (f"前三個條件用同一個時鐘：最後一次更新到本期結束，{IDLE_DAYS} 天為界。專案沒動＝底下的卡都沒更新；"
@@ -1109,23 +1133,26 @@ def _glossary(metrics) -> str:
                   "沒有 label、或有兩個以上 label 的歸「未分類」，並列進資料檢查。epic 數是總覽專案列表裡掛這個 label 的 epic。"),
         ("Done／On Track", "Done 是 epic 在 Jira 已完成；On Track 只表示 epic 還沒完成，不代表進度評估。"
                            "總覽專案列表的已結案收在每段最後，標 epic 在 Jira 完成的那一週（結案週）；"
-                           "資源的已結案數含底下沒有完成工作卡的 epic，消化速度不算這種，所以兩個數可能差幾個（差的列在資料檢查）。"),
+                           "資源的已結案數只看 Jira 的 epic 狀態；消化速度的「完成」另外算進卡都做完、epic 沒關的，不算底下沒有完成工作卡的，兩個數不會一樣。"),
         ("沒動", f"最後一次更新到本週結束過了幾天（只改 label 也算更新）。專案看底下的卡（不算 Kick off），卡看它自己；"
                  f"{IDLE_DAYS} 天以上列進「這週要你出手的地方」，人卡與總覽專案列表的幾天沒動標警示色。Kick off 的「需要決定」沒有沒動這回事，有寫就列，附 Kick off 卡寫了幾天。"),
         ("停滯", f"epic 還沒完成，專案沒動 {IDLE_DAYS} 天以上；底下沒有卡就看 epic 自己。"),
         ("可運用人日", f"config/team.json 成員名單裡，每人在職期間的工作日加總；工作日是週一到週五扣掉 config/holidays.json 的國定假日"
-                      f"（人事行政總處辦公日曆表），加上補班日，一天 {capacity_lib.HOURS_PER_DAY} 小時。請假還沒有資料來源，沒扣。"
+                      f"（人事行政總處辦公日曆表），加上補班日，一天 {capacity_lib.HOURS_PER_DAY} 小時。請假不扣（使用者 2026-11-02 裁）。"
                       "只拿來當產出的分母，不跟實際工時比：實際工時是完工後回填，一人一週超過可運用時數的列進資料檢查，可能填錯。"),
         ("新 epic", "這週第一次有完成卡的 epic（不含未歸屬 epic）。epic 建立當天就有完成卡的另外數出來，可能是事後一次開卡結卡；只陳述同期數字，不代表原因。"),
         (FULL_LABEL, "epic 底下算進進度的卡都完成了，但 epic 本身在 Jira 還沒結案（以前叫 100% 待結案）。"
                        "可能是做完忘了關（去 Jira 關掉 epic、補 Deliverable 卡），也可能還有工作沒開卡；資料上分不出來，要人看。"
-                       "消化速度只算結案的 epic，這種不算。列進「這週要你出手的地方」，人卡與總覽專案列表也會標出來。"),
-        ("消化速度", f"結案 epic 數 ÷ 可運用人週（可運用人日 ÷ {capacity_lib.DAYS_PER_WEEK}）。epic 卡本身結案才算完成，週次取結案時間；"
-                     f"底下沒有任何完成工作卡的 epic 不算（列在資料檢查），「{FULL_LABEL}」的也不算。本週頁的主數字是過去四週平均（4 週結案 epic 加總 ÷ 4 週可運用人週加總），"
-                     "跟上週的四週值比；上週值用這一期的資料重算，epic 重開再結案時會跟上週頁面寫的不同。單週值會被集中結案拉動。"
+                       "消化速度把它算成完成（算在最後一張卡做完那週），但 Jira 上還是要關。列進「這週要你出手的地方」，人卡與總覽專案列表也會標出來。"),
+        ("消化速度", f"完成 epic 數 ÷ 可運用人週（可運用人日 ÷ {capacity_lib.DAYS_PER_WEEK}）。epic 底下算進進度的卡全部做完就算完成，"
+                     f"不等 epic 在 Jira 關掉（「{FULL_LABEL}」的也算）；epic 已結案但還有卡沒做完的也算。週次一律取底下最後一張完成卡做完的那週，"
+                     "不看 epic 的結案時間：去 Jira 集中關 epic 是行政動作，不是做完的時間。底下沒有任何完成工作卡的 epic 不算（結案的列在資料檢查）。"
+                     "本週頁的主數字是過去四週平均（4 週完成 epic 加總 ÷ 4 週可運用人週加總），跟上週的四週值比；上週值用這一期的資料重算，"
+                     "epic 後來補開新卡、或重開，完成週會往後移，跟上週頁面寫的不同。總覽的「已結案」照舊看 Jira 的 epic 狀態，跟這裡的完成不是同一個數。"
                      "epic 大小不一，一個 epic 可能一天也可能兩個月。"),
         ("探索人力占比", "每個有產出的人一週先把自己完成的卡換成 100%（用自己填的實際工時當權重，沒填的卡補他這週的平均，整週都沒填就用張數），"
-                       "切成探索（這週第一次有完成卡的 epic）與開發（其餘，含未歸屬 epic），再對有產出的人平均。只在人內換算，不拿小時跨人比。"),
+                       "切成探索（這週第一次有完成卡的 epic）與開發（其餘，含未歸屬 epic），再對有產出的人平均。只在人內換算，不拿小時跨人比。"
+                       "這週沒有完成卡的人工時看不到（完工才回填），不進平均，數字旁寫幾個人有完成卡；這週跟上週人數不同時不寫差值。"),
         ("投入比例", "團隊頁人卡的累計投入比例：這個人自己完成的卡，用自己填的實際工時當權重換成 100%，看落在哪些 label。"
                      f"人卡上 label 的顏色固定：畫出顏色的 label 最多 {ALLOCATION_TOP} 個，本週有份額的先排，再照近 {ALLOCATION_WINDOW} 週補滿，其餘是「其他」的灰。"),
         ("不列入的卡", "config/excluded.json 列的卡不算完成卡片、實際工時，也不算進度裡的完成；列的 epic 連同底下所有卡整個不列入週報。"),
