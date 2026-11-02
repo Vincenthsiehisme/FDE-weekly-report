@@ -27,7 +27,8 @@ from __future__ import annotations
 import html
 from datetime import datetime, timedelta
 
-from .metrics import ALLOCATION_TOP, ALLOCATION_WINDOW, OTHER_LABEL, SCHEMA, STALL_DAYS, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER, UNLABELED
+from . import capacity as capacity_lib
+from .metrics import ALLOCATION_TOP, ALLOCATION_WINDOW, CAPACITY_CHECK_WEEKS, OTHER_LABEL, SCHEMA, STALL_DAYS, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER, UNLABELED
 from .period import TZ
 from .snapshot import issue_sort_key, parse_jira_time
 
@@ -354,31 +355,48 @@ def _delta(now, prev, unit: str) -> str:
     return f'上週 {prev}{unit}，{"多" if now > prev else "少"} {abs(now - prev)}{step}'
 
 
-def _week_kpis(metrics) -> str:
-    """兩個數字：停滯是主數字、唯一用警示色、連到下方清單；有完成的專案用一般字色。
-    2026-10-28 鎖定時是三個，2026-11-02 使用者裁「照流程走」跟資料健康一起拿掉（plan：jira-weekly-report · 本週頁一圖一訊息）。"""
-    k = metrics["kpis"]
+def _rolling_rate(rows: list, end: int):
+    """到第 end 週為止（含）的滾動 4 週消化速率：4 週完成張數加總 ÷ 4 週可運用人日加總。
+    不足 4 週（資料開頭那幾週）或沒有可運用人日（沒給名單）是 None：少於 4 週的值不能標成 4 週（Codex 審 ab4aff4）。"""
+    if end < 3:
+        return None
+    window = rows[end - 3:end + 1]
+    days = sum(r["person_days"] or 0 for r in window)
+    return sum(r["completed"] for r in window) / days if days else None
 
-    def tile(cls, label, value, delta, hint, warn=False):
-        shown = DASH if value is None else str(value)
+
+def _week_kpis(metrics) -> str:
+    """三個數字（2026-11-02 使用者裁「照審查改」：人的時間是資源，目標是消化卡片的速率提高）：
+    消化速率（滾動 4 週，主數字）、探索人力占比、停滯專案（唯一用警示色、連到出手區）。
+    消化速率比的是上週那時的滾動值，兩個窗口重疊三週，所以差值小、不被單週結卡集中的那天拉動。"""
+    rows = metrics["health"]
+    stalled = metrics["kpis"]["stalled"]
+
+    def tile(cls, label, shown, delta, hint, warn=False):
         return (f'<li class="{cls}"><span>{esc(label)}</span><strong{" class=alert" if warn else ""}>{esc(shown)}</strong>'
                 f'<small>{esc(delta)}</small><small class="hint">{hint}</small></li>')
 
-    stalled = k["stalled"]["now"]
-    return ('<ul class="kpis wk-kpis" style="--kpis:2">'
-            + tile("lead", "停滯專案", stalled, _delta(stalled, k["stalled"]["prev"], ""),
-                   f'{IDLE_DAYS} 天沒有卡更新 · <a href="#step-in">看是哪幾個</a>', warn=bool(stalled))
-            + tile("", "有完成的專案", k["projects"]["now"], _delta(k["projects"]["now"], k["projects"]["prev"], ""), "本週至少完成一張卡")
-            + "</ul>")
+    now = _rolling_rate(rows, len(rows) - 1) if rows else None
+    prev = _rolling_rate(rows, len(rows) - 2) if len(rows) > 1 else None
+    if rows and rows[-1]["person_days"] is None:
+        rate = tile("lead", "消化速率", DASH, "沒有成員名單，算不出可運用人日", "補 config/team.json")
+    elif now is None:
+        rate = tile("lead", "消化速率", DASH, f"資料還不到 4 週（目前 {len(rows)} 週）", "滾動 4 週：完成張數 ÷ 可運用人日，越高越好")
+    else:
+        delta = "沒有上週的值" if prev is None else (
+            f"上週 {prev:.1f}，" + ("持平" if round(now, 1) == round(prev, 1) else f'{"多" if now > prev else "少"} {abs(round(now, 1) - round(prev, 1)):.1f}'))
+        rate = tile("lead", "消化速率", f"{now:.1f} 張／人日", delta, "滾動 4 週：完成張數 ÷ 可運用人日，越高越好")
+    share = lambda r: None if r is None or r["explore_share"] is None else round(r["explore_share"] * 100)
+    e_now, e_prev = share(rows[-1] if rows else None), share(rows[-2] if len(rows) > 1 else None)
+    explore = tile("", "探索人力占比", DASH if e_now is None else f"{e_now}%", _delta(e_now, e_prev, "%"),
+                   "有產出的人的時間，投到這週第一次有完成卡的 epic")
+    stall = tile("", "停滯專案", str(stalled["now"]), _delta(stalled["now"], stalled["prev"], ""),
+                 f'{IDLE_DAYS} 天沒有卡更新 · <a href="#step-in">看是哪幾個</a>', warn=bool(stalled["now"]))
+    return f'<ul class="kpis wk-kpis" style="--kpis:3">{rate}{explore}{stall}</ul>'
 
 
 def _short_week(week: str) -> str:
     return "W" + week.split("-W")[1]
-
-
-def _hours1(value) -> str:
-    """單卡平均工時固定一位小數：1.0h 不寫成 1h，同一張圖的數字位數一致。"""
-    return f"{value:.1f}h"
 
 
 def _compare(now, prev, unit: str, fmt=str) -> str:
@@ -390,14 +408,19 @@ def _compare(now, prev, unit: str, fmt=str) -> str:
     return f'，比上週{"多" if now > prev else "少"} {fmt(abs(now - prev))}{unit}'
 
 
-def _bars(rows: list, value, label, note, aria: str) -> str:
+def _bars(rows: list, value, label, note, aria: str, dividers=None) -> str:
     """一週一根直條、從 0 起，最新一週深色、其餘淺色，值寫在頂端、週次寫在底下；note(row) 是週次下第二行小字（沒有就空字串）。
-    值是 None 的週不畫條，頂端寫「—」：那週沒有可算的卡，不是 0。"""
-    w, h, base, tall = 600, 210, 170, 130
+    值是 None 的週不畫條，頂端寫「—」：那週沒有可算的卡，不是 0。dividers 是 {索引: 字}，在那一根左邊畫虛線分界並寫字
+    （名單人數變了的地方，跨過去比較要小心；fable 審 2026-11-02）。"""
+    w, h, base, tall = 600, 210, 170, 124
     top = max((value(r) or 0) for r in rows) or 1  # 近幾週全是 0 時條都是 0 高，不除以 0
     step = (w - 20) / len(rows)
     bw = min(56, step - 16)
     out = [f'<svg viewBox="0 0 {w} {h}" role="img" aria-label="{esc(aria)}">']
+    for i, text in (dividers or {}).items():
+        x = 10 + i * step
+        out.append(f'<line x1="{x:.1f}" x2="{x:.1f}" y1="12" y2="{base}" class="divider"/>'
+                   f'<text x="{x + 4:.1f}" y="22" class="t-axis">{esc(text)}</text>')
     for i, r in enumerate(rows):
         v = value(r)
         x = 10 + i * step + (step - bw) / 2
@@ -413,94 +436,119 @@ def _bars(rows: list, value, label, note, aria: str) -> str:
     return "".join(out)
 
 
-def _alloc_svg(metrics) -> str:
-    """投入比例：每週一條 100% 橫條，每人每週先換成 100% 再平均（metrics 算）。滿版，所以 viewBox 寬 1200，字不會被放大；
-    4% 以上的段直接寫百分比，其餘看圖例與滑鼠提示。"""
-    alloc = metrics["allocation"]
-    weeks = alloc["weeks"][-TREND_WEEKS:]
-    if not weeks:
-        return '<p class="muted">還沒有完成的卡。</p>'
-    names = alloc["labels"]
-    w, rowh, gap, left, right = 1200, 22, 8, 44, 8
-    span = w - left - right
-    out = [f'<svg viewBox="0 0 {w} {len(weeks) * (rowh + gap)}" role="img" aria-label="近 {len(weeks)} 週投入比例">']
-    for i, row in enumerate(weeks):
-        top = i * (rowh + gap)
-        out.append(f'<text x="0" y="{top + 15}" class="t-axis">{_short_week(row["week"])}</text>')
-        cursor = left
-        for j, name in enumerate(names):
-            share = row["shares"].get(name, 0)
-            if share <= 0:
-                continue
-            series = f"s{j + 1}" if j < SERIES else "s-other"
-            out.append(f'<rect x="{cursor:.1f}" y="{top}" width="{max(span * share - 2, 1):.1f}" height="{rowh}" rx="2" class="{series}">'
-                       f'<title>{_short_week(row["week"])} {esc(name)} {share:.0%}（{row["people"]} 人）</title></rect>')
-            if share >= 0.04:
-                out.append(f'<text x="{cursor + 5:.1f}" y="{top + 15}" class="t-in">{share:.0%}</text>')
-            cursor += span * share
-    out.append("</svg>")
-    legend = "".join(f'<span><i class="{f"s{j + 1}" if j < SERIES else "s-other"}"></i>{esc(n)}</span>' for j, n in enumerate(names))
-    return f'<p class="legend swatches">{legend}</p>' + "".join(out)
-
-
 def _chart(title: str, sub: str, body: str, wide=False) -> str:
     """一圖一訊息：標題是這張圖的觀察（程式照數字組句，只陳述、不寫原因），副標寫指標、範圍、期間。"""
     return f'<div class="viz-panel{" wide" if wide else ""}"><h4>{esc(title)}</h4><p class="note">{esc(sub)}</p>{body}</div>'
 
 
-def _alloc_title(now, prev) -> str:
-    """投入比例的觀察句。now、prev 是 allocation 的週列（沒有就是 None）。「其他」是併起來的尾巴，不當主角；
-    有人產出但全落在「其他」就照實說，不寫成沒有完成卡；上週沒有人產出時比例不存在，不寫成 0%（Codex 審 c2325ed）。
-    差值用顯示出來的整數百分比算，寫「個百分點」。"""
-    if now is None or not now["people"]:
-        return "本週沒有完成的卡，看不出力氣花在哪"
-    named = [k for k in now["shares"] if k != OTHER_LABEL]
-    if not named:
-        return f"本週的力氣都落在近 {ALLOCATION_WINDOW} 週前 {ALLOCATION_TOP} 名以外的單位，併在「{OTHER_LABEL}」"
-    lead = max(named, key=lambda k: (now["shares"][k], k))
-    pct = round(now["shares"][lead] * 100)
-    title = f"本週力氣最多花在{lead}（{pct}%）"
-    if prev is None or not prev["people"]:
-        return title
-    return title + _compare(pct, round(prev["shares"].get(lead, 0) * 100), " 個百分點")
+def _roster_dividers(history: list, offset: int) -> dict:
+    """畫面上的第 i 根（history[offset + i]）名單人數跟前一週不同就畫分界：「名單 3→7 人」。前一週在畫面外也比
+    （Codex 審 84a886d：畫面第一根之前那週被切掉時，分界跟著不見，跨名單口徑的滾動值看起來可以直接比）。"""
+    out = {}
+    for i in range(len(history) - offset):
+        j = offset + i
+        if j and history[j]["roster"] is not None and history[j - 1]["roster"] != history[j]["roster"]:
+            out[i] = f'名單 {history[j - 1]["roster"]}→{history[j]["roster"]} 人'
+    return out
 
 
-def _viz(metrics) -> str:
-    """三張圖（2026-11-02 使用者裁，取代 2026-10-28 的四格圖：專案地圖、資料健康拿掉，產出加單卡工時）。
-    張數與單卡工時單位不同，分兩張週次對齊的圖，不疊雙軸；單卡工時是平均（實際工時 ÷ 有填的張數），
-    中位數每週都卡在 0.5h 看不出變化，不畫（plan：jira-weekly-report · 本週頁一圖一訊息）。"""
-    rows = metrics["health"][-TREND_WEEKS:]
-    if not rows:
-        return '<p class="muted">還沒有完成的卡。</p>'
+def _output_chart(history: list) -> str:
+    """消化速率：每可運用人日完成張數（2026-11-02 使用者要求用每人每週可運用時間、一天 8 小時看可運用總額；同日裁以消化速率為主軸）。
+    單週一根柱，畫最近 TREND_WEEKS 週，柱下寫到那週為止的滾動 4 週；滾動值用完整的 history 算，畫面第一根之前的週也算進去
+    （Codex 審 70db523：只拿畫出來那 6 週算，前三根永遠沒有滾動值）。可運用只當分母，不跟回填的實際工時比。"""
+    rows = history[-TREND_WEEKS:]
     now = rows[-1]
-    prev = rows[-2] if len(rows) > 1 else None
     span = f"近 {len(rows)} 週"
+    if now["person_days"] is None:
+        return _chart("沒有成員名單，算不出可運用人日", f"本週完成 {now['completed']} 張；補 config/team.json 與 config/holidays.json 後重算", "")
+    offset = len(history) - len(rows)
+    rolling = {r["week"]: _rolling_rate(history, offset + i) for i, r in enumerate(rows)}
+    rate, r4 = now["cards_per_person_day"], rolling[now["week"]]
+    title = (f"本週 {rate:.1f} 張／可運用人日" + (f"，滾動 4 週 {r4:.1f}" if r4 is not None else "") if rate is not None else "本週沒有可運用人日")
+    median = f"；名單上每人完成中位 {now['median_cards']:g} 張" if now["median_cards"] is not None else ""
+    sub = (f"全隊完成 {now['completed']} 張 ÷ 可運用 {now['person_days']} 人日（名單 {now['roster']} 人 × 工作日，已扣國定假日、未扣請假，"
+           f"一天 {capacity_lib.HOURS_PER_DAY}h）{median}。單週會被結卡集中在哪天拉動，看滾動值；卡切得越細張數越多 · {span}")
+    body = _bars(rows, lambda r: r["cards_per_person_day"], lambda r: DASH if r["cards_per_person_day"] is None else f'{r["cards_per_person_day"]:.1f}',
+                 lambda r: f'4 週 {rolling[r["week"]]:.1f}' if rolling[r["week"]] is not None else "", f"{span}每可運用人日完成張數",
+                 _roster_dividers(history, offset))
+    return _chart(title, sub, body)
 
-    count_title = f'本週完成 {now["completed"]} 張' + _compare(now["completed"], prev and prev["completed"], " 張")
-    count = _chart(count_title, f"全隊每週完成的卡片張數，只數沒有子卡的卡 · {span}",
-                   _bars(rows, lambda r: r["completed"], lambda r: str(r["completed"]),
-                         lambda r: "", f"{span}完成卡片張數"))
 
-    per = now["hours_per_card"]
-    last = prev["hours_per_card"] if prev else None
-    if per is None:
-        per_title = "本週沒有填了工時的完成卡"
+def _time_chart(history: list) -> str:
+    """時間怎麼分：每週一根 100% 柱，畫最近 TREND_WEEKS 週，下面深色是探索、上面淺色是開發，探索的百分比寫在柱頂，
+    柱下是算占比的人數（不含未指派）；名單分界跟消化速率圖一樣看畫面外的前一週。
+    只陳述同期數字，不寫成探索多所以速率低（fable 審 2026-11-02）。"""
+    rows = history[-TREND_WEEKS:]
+    offset = len(history) - len(rows)
+    now, prev = rows[-1], (rows[-2] if len(rows) > 1 else None)
+    span = f"近 {len(rows)} 週"
+    pct = lambda r: None if r is None or r["explore_share"] is None else round(r["explore_share"] * 100)
+    if pct(now) is None:
+        title = "本週沒有人有完成卡，看不出時間怎麼分"
     else:
-        # 差值用顯示出來的一位小數算，讀者自己減得出同一個數
-        per_title = f"本週一張卡平均 {_hours1(per)}" + _compare(per, last, "h", fmt=lambda d: f"{d:.1f}")
-    unfilled = f'；本週 {now["unestimated"]} 張{UNFILLED}，不算進平均' if now["unestimated"] else ""
-    per_card = _chart(per_title, f"有填工時的完成卡：實際工時加總 ÷ 張數{unfilled} · {span}",
-                      _bars(rows, lambda r: r["hours_per_card"], lambda r: DASH if r["hours_per_card"] is None else _hours1(r["hours_per_card"]),
-                            lambda r: f'未填 {r["unestimated"]}' if r["unestimated"] else "", f"{span}單卡平均實際工時"))
+        title = f"本週有產出的人把 {pct(now)}% 的時間投到探索" + (_compare(pct(now), pct(prev), " 個百分點") if pct(prev) is not None else "")
+    w, h, base, tall = 600, 210, 170, 124
+    step = (w - 20) / len(rows)
+    bw = min(56, step - 16)
+    out = [f'<svg viewBox="0 0 {w} {h}" role="img" aria-label="{span}探索與開發的時間占比">']
+    for i, text in _roster_dividers(history, offset).items():
+        x = 10 + i * step
+        out.append(f'<line x1="{x:.1f}" x2="{x:.1f}" y1="12" y2="{base}" class="divider"/><text x="{x + 4:.1f}" y="22" class="t-axis">{esc(text)}</text>')
+    for i, r in enumerate(rows):
+        x = 10 + i * step + (step - bw) / 2
+        p = pct(r)
+        if p is not None:
+            he = r["explore_share"] * tall
+            out.append(f'<rect x="{x:.1f}" y="{base - tall:.1f}" width="{bw:.1f}" height="{tall - he:.1f}" rx="2" class="bar-before"><title>{_short_week(r["week"])} 開發 {100 - p}%</title></rect>')
+            out.append(f'<rect x="{x:.1f}" y="{base - he:.1f}" width="{bw:.1f}" height="{he:.1f}" rx="2" class="bar-wk"><title>{_short_week(r["week"])} 探索 {p}%</title></rect>')
+        out.append(f'<text x="{x + bw / 2:.1f}" y="{base - tall - 6:.1f}" text-anchor="middle" class="t-val">{DASH if p is None else f"{p}%"}</text>')
+        out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 17}" text-anchor="middle" class="t-axis">{_short_week(r["week"])}</text>')
+        out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 33}" text-anchor="middle" class="t-axis">{r["explore_people"]} 人</text>')
+    out.append(f'<line x1="0" x2="{w}" y1="{base}" y2="{base}" class="axis"/></svg>')
+    sub = ("每個有產出的人一週先換成 100%（用自己填的工時當權重），切成探索（這週第一次有完成卡的 epic）與開發（其餘，含未歸屬 epic），"
+           f"再對有產出的人平均；柱頂是探索占比；只陳述同期數字 · {span}")
+    legend = '<p class="legend"><i class="sw-week"></i>探索 <i class="sw-before"></i>開發</p>'
+    return _chart(title, sub, legend + "".join(out))
 
-    alloc = metrics["allocation"]["weeks"][-TREND_WEEKS:]
-    alloc_title = _alloc_title(alloc[-1] if alloc else None, alloc[-2] if len(alloc) > 1 else None)
-    allocation = _chart(alloc_title, f"全隊的力氣：每人每週先換成 100% 再平均，不比小時 · 近 {len(alloc)} 週", _alloc_svg(metrics), wide=True)
-    return f'<div class="viz">{count}{per_card}{allocation}</div>'
+
+def _epic_state(e) -> str:
+    """未結案 epic 歸一類，依序判：底下的卡全完成（100% 待結案）→ 停滯 → 本週有完成卡（推進）→ 其他。"""
+    p = e["progress"]
+    if p["total_cards"] and p["done_cards"] == p["total_cards"]:
+        return "full"
+    if e["stalled"]:
+        return "stalled"
+    return "moving" if e["week"]["completed_count"] else "rest"
 
 
-STEP_IN_RULE = (f"三個條件用同一個時鐘：最後一次更新到本期結束，{IDLE_DAYS} 天為界。專案沒動＝底下的卡都沒更新；"
-                "卡沒動＝進行中、本身沒更新；需要決定＝Kick off 的「需要決定」有寫就列，附 Kick off 卡寫了幾天。")
+def _quality_line(metrics) -> str:
+    """單卡工時退出主圖後的資料品質一行（fable 審 2026-11-02：單卡平均是人員組成效應，不是快慢）。"""
+    now = metrics["health"][-1]
+    over = sum(1 for c in metrics["checks"] if c["kind"] == "hours_over_capacity")
+    strangers = sum(1 for c in metrics["checks"] if c["kind"] == "not_in_team")
+    parts = [f'本週完成 {now["completed"]} 張，有填工時 {now["completed"] - now["unestimated"]} 張' + (f'、{UNFILLED} {now["unestimated"]} 張' if now["unestimated"] else "")]
+    if over:
+        parts.append(f'近 {CAPACITY_CHECK_WEEKS} 週有 {over} 個人週的實際工時超過當週可運用，可能填錯')
+    if strangers:
+        parts.append(f'{strangers} 人有完成卡卻不在成員名單')
+    tail = '（見頁尾<a href="#checks">資料檢查</a>）' if over or strangers else ""
+    return f'<p class="quality">資料品質：{esc("；".join(parts))}{tail}</p>'
+
+
+def _viz(metrics, page) -> str:
+    """兩張圖（2026-11-02 使用者裁「照審查改」，取代同日的四張）：消化速率、時間怎麼分；圖下資料品質一行。
+    投入比例與未結案 epic 狀態圖移出本週頁（前者是「各單位分到幾個人」、一人全在某單位就是 1/人數，會誤導；
+    後者的 100% 待結案併進出手區）。plan：jira-weekly-report · 本週頁產值與探索。"""
+    history = metrics["health"]
+    if not history:
+        return '<p class="muted">還沒有完成的卡。</p>'
+    # 兩張圖都收完整歷史、自己切最後 TREND_WEEKS 週：滾動值與名單分界要看畫面外的週
+    return f'<div class="viz">{_output_chart(history)}{_time_chart(history)}</div>' + _quality_line(metrics)
+
+
+STEP_IN_RULE = (f"前三個條件用同一個時鐘：最後一次更新到本期結束，{IDLE_DAYS} 天為界。專案沒動＝底下的卡都沒更新；"
+                "卡沒動＝進行中、本身沒更新；需要決定＝Kick off 的「需要決定」有寫就列，附 Kick off 卡寫了幾天。"
+                "第四個是 100% 待結案＝底下算進進度的卡全部完成、epic 還沒結案。")
 
 
 def _step_in(metrics, page) -> str:
@@ -517,20 +565,20 @@ def _step_in(metrics, page) -> str:
         e = epics.get(gid)
         cards = sorted(idle_cards.get(gid, []), key=lambda r: (-r["idle_days"], r["key"]))
         decision = (e["kickoff"] or {}).get("sections", {}).get("decision") if e else None
-        if e is not None and not (e["stalled"] or cards or decision):
+        if e is not None and not (e["stalled"] or cards or decision or _epic_state(e) == "full"):
             continue
         idle = e["idle_days"] if e else None
         sort_idle = idle if idle is not None else max(r["idle_days"] for r in cards)
         rows.append((-sort_idle, e["key"] if e else cards[0]["project"], gid, e, cards, decision))
     if not rows:
-        return f'<h3 id="step-in">這週要你出手的地方</h3><p class="muted">沒有專案或卡 {IDLE_DAYS} 天沒動，Kick off 也沒寫需要決定。</p>'
+        return f'<h3 id="step-in">這週要你出手的地方</h3><p class="muted">沒有專案或卡 {IDLE_DAYS} 天沒動、沒有 100% 待結案的專案，Kick off 也沒寫需要決定。</p>'
     rows.sort(key=lambda t: (t[0], t[3] is None, issue_sort_key(t[1]) if t[3] else (t[1],)))
     head = ('<div class="si head"><span>專案</span><span>負責人</span><span class="num">幾天沒動</span>'
             f'<span>進行中、{IDLE_DAYS} 天沒更新的卡</span><span>Kick off 寫的需要決定</span></div>')
     body = []
     for _, _, gid, e, cards, decision in rows:
         if e is not None:
-            name = page.title(e["key"], e["summary"])
+            name = page.title(e["key"], e["summary"]) + (' <span class="tag warn">100% 待結案</span>' if _epic_state(e) == "full" else "")
             owner = esc(e["owner"] or UNASSIGNED_OWNER)
             idle = f'<b class="alert">{e["idle_days"]} 天</b>' if e["stalled"] else f'{e["idle_days"]} 天'
         else:
@@ -551,8 +599,9 @@ def _step_in(metrics, page) -> str:
     stalled = sum(1 for t in rows if t[3] is not None and t[3]["stalled"])
     ncards = sum(len(t[4]) for t in rows)
     ndec = sum(1 for t in rows if t[5])
+    nfull = sum(1 for t in rows if t[3] is not None and _epic_state(t[3]) == "full")
     return (f'<h3 id="step-in">這週要你出手的地方：{len(rows)} 個專案</h3>'
-            f'<p class="note">其中專案沒動 {stalled} 個、卡沒動 {ncards} 張、需要決定 {ndec} 個；依幾天沒動排，久的在上。</p>'
+            f'<p class="note">其中專案沒動 {stalled} 個、卡沒動 {ncards} 張、需要決定 {ndec} 個、100% 待結案 {nfull} 個；依幾天沒動排，久的在上。</p>'
             f'<p class="note">{esc(STEP_IN_RULE)}</p><div class="sis">{head}{"".join(body)}</div>')
 
 
@@ -603,28 +652,71 @@ def _doing_list(person: dict, doing: dict, page, limit) -> str:
     return f'<ul class="list-doing">{items or "<li class=muted>沒有進行中的卡</li>"}{more}</ul>'
 
 
+def _owned_states(epics: list) -> str:
+    """負責的未結案專案狀態小標籤：100% 待結案、停滯、需要決定，只寫有的（fable 審 2026-11-02：只列清單做不了判斷）。"""
+    full = sum(1 for e in epics if _epic_state(e) == "full")
+    stalled = sum(1 for e in epics if e["stalled"])
+    decision = sum(1 for e in epics if e["kickoff"] and e["kickoff"]["sections"].get("decision"))
+    tags = [(full, "100% 待結案"), (stalled, f"{IDLE_DAYS} 天以上沒動"), (decision, "需要決定")]
+    return "".join(f'<span class="tag warn">{label} {n}</span>' for n, label in tags if n)
+
+
+def _recent_mix(person: dict, colors: dict) -> str:
+    """近 4 週落在哪些 label：一條 100% 細條，顏色跟投入比例圖同一個 label 同一色，不在圖上的 label 用「其他」的灰；
+    下面寫名字與張數（前三名，其餘併「其他」）。"""
+    r = person["recent"]
+    if not r["completed"]:
+        return f'<p class="muted small">近 {r["weeks"]} 週沒有完成</p>'
+    segs = "".join(f'<i class="{colors.get(l, "s-other")}" style="width:{n / r["completed"] * 100:.1f}%" title="{esc(l)} {n} 張"></i>' for l, n in r["labels"])
+    chips = "".join(f'<span class="chip"><i class="{colors.get(l, "s-other")}"></i>{esc(l)} <b>{n}</b></span>' for l, n in r["labels"])
+    rest = r["completed"] - sum(n for _, n in r["labels"])
+    if rest:
+        segs += f'<i class="s-other" style="width:{rest / r["completed"] * 100:.1f}%" title="{OTHER_LABEL} {rest} 張"></i>'
+        chips += f'<span class="chip"><i class="s-other"></i>{OTHER_LABEL} <b>{rest}</b></span>'
+    return f'<div class="mix">{segs}</div><div class="chips">{chips}</div>'
+
+
+def _doing_folded(person: dict, doing: dict, page) -> str:
+    """進行中的卡收合，摘要寫張數與幾張 IDLE_DAYS 天以上沒更新；展開是 _doing_list 的全部清單。"""
+    keys = person["in_progress"]["keys"]
+    if not keys:
+        return '<p class="muted small doing-none">沒有進行中的卡</p>'
+    old = sum(1 for k in keys if doing[k]["idle_days"] >= IDLE_DAYS)
+    flag = f'，<span class="alert">{old} 張 {IDLE_DAYS} 天以上沒更新</span>' if old else ""
+    return f'<details class="doing-fold"><summary>進行中 {len(keys)} 張{flag}</summary>{_doing_list(person, doing, page, None)}</details>'
+
+
 def _week_people(metrics, page) -> str:
-    """本週頁人卡：負責的未結案專案、近 6 週完成小長條（只跟自己比）、近 4 週落在哪些 label、進行中的卡與天數。"""
+    """本週頁人卡（2026-11-02 使用者裁版型甲）：頂端名字、本週張數與近 6 週小長條（只跟自己比）；
+    下面左欄「負責」（狀態小標籤，清單超過 3 個收合）、右欄「近 4 週落在」（細條加張數）；進行中的卡收合。
+    「未指派」不出人卡，那些卡在出手區與專案一覽看得到。"""
     doing = {r["key"]: r for r in metrics["in_progress"]}
+    names = metrics["allocation"]["labels"]
+    colors = {n: (f"s{j + 1}" if j < SERIES else "s-other") for j, n in enumerate(names)}
     owned = {}
     for e in metrics["epics"]:
         if e["key"] and e["status"] != "Done":
-            owned.setdefault(e["owner"] or UNASSIGNED_OWNER, []).append(e["summary"])
+            owned.setdefault(e["owner"] or UNASSIGNED_OWNER, []).append(e)
     cards = []
     for p in _by_name(metrics["people"]):
-        if not p["recent"]["completed"] and not p["in_progress"]["count"]:
+        if p["name"] == UNASSIGNED_OWNER or (not p["recent"]["completed"] and not p["in_progress"]["count"]):
             continue
         trend = p["trend"][-TREND_WEEKS:]
         this_week = next(t["completed"] for t in p["trend"] if t["week"] == metrics["period"]["week"])
         mine = owned.get(p["name"], [])
-        epics = "、".join(esc(s) for s in mine[:3]) + (f" 等 {len(mine)} 個" if len(mine) > 3 else "") or "無"
-        recent = p["recent"]
-        labels = "、".join(f"{esc(l)} {n} 張" for l, n in recent["labels"]) or f'近 {recent["weeks"]} 週沒有完成'
-        cards.append(f'<article class="pcard"><h4>{esc(p["name"])}</h4>'
-                     f'<div class="trend"><span>近 {len(trend)} 週完成張數（只跟自己比，深色＝本週）· 本週 {this_week} 張</span>{_spark(trend)}</div>'
-                     f'<div class="prow"><span>負責：{epics}</span></div>'
-                     f'<div class="prow"><span>近 {recent["weeks"]} 週落在：{labels}</span></div>'
-                     f'{_doing_list(p, doing, page, 4)}</article>')
+        items = "".join(f'<li>{page.title(e["key"], e["summary"])}</li>' for e in mine)
+        if len(mine) > 3:
+            first = "".join(f'<li>{page.title(e["key"], e["summary"])}</li>' for e in mine[:3])
+            rest = "".join(f'<li>{page.title(e["key"], e["summary"])}</li>' for e in mine[3:])
+            listing = f'<ul class="owned">{first}</ul><details class="more"><summary>另 {len(mine) - 3} 個</summary><ul class="owned">{rest}</ul></details>'
+        else:
+            listing = f'<ul class="owned">{items}</ul>' if mine else '<p class="muted small">沒有負責中的專案</p>'
+        cards.append(f'<article class="pcard"><div class="phead"><h4>{esc(p["name"])}</h4>'
+                     f'<span class="muted small">本週 {this_week} 張 · 近 {len(trend)} 週只跟自己比，深色＝本週</span></div>{_spark(trend)}'
+                     f'<div class="pgrid"><div class="pblock"><h5>負責 <span class="muted">{len(mine)} 個未結案</span></h5>'
+                     f'<div class="tags">{_owned_states(mine)}</div>{listing}</div>'
+                     f'<div class="pblock"><h5>近 {p["recent"]["weeks"]} 週落在 <span class="muted">{p["recent"]["completed"]} 張</span></h5>{_recent_mix(p, colors)}</div></div>'
+                     f'{_doing_folded(p, doing, page)}</article>')
     return f'<div class="pcards">{"".join(cards)}</div>' if cards else '<p class="muted">這週沒有人有完成或進行中的卡。</p>'
 
 
@@ -634,7 +726,7 @@ def _week_panel(metrics, narrative, page) -> str:
     rows = len(metrics["epics"])
     return f"""
   {_week_kpis(metrics)}
-  {_viz(metrics)}
+  {_viz(metrics, page)}
   {_step_in(metrics, page)}
   <h3>人</h3>
   {_week_people(metrics, page)}
@@ -896,10 +988,17 @@ def _glossary(metrics) -> str:
         ("沒動", f"最後一次更新到本週結束過了幾天（只改 label 也算更新）。專案看底下的卡（不算 Kick off），卡看它自己；"
                  f"{IDLE_DAYS} 天以上列進「這週要你出手的地方」，人卡標警示色。Kick off 的「需要決定」沒有沒動這回事，有寫就列，附 Kick off 卡寫了幾天。"),
         ("停滯", f"epic 還沒完成，專案沒動 {IDLE_DAYS} 天以上；底下沒有卡就看 epic 自己。"),
-        ("單卡工時", "一週裡完成且有填實際工時的卡，實際工時加總 ÷ 張數，取一位小數。沒填工時的卡不算進平均（不當 0h），張數寫在柱子下。"
-                    "平均會受那週誰結的卡多影響：每人填工時的粒度不同。"),
-        ("投入比例", "每個人每週先把自己完成的卡換成 100%（用他自己填的實際工時當權重，沒填的卡補他這週的平均，"
-                     "整週都沒填就用張數），再對當週有產出的人取平均。只在人內換算，不拿小時跨人比。"),
+        ("可運用人日", f"config/team.json 成員名單裡，每人在職期間的工作日加總；工作日是週一到週五扣掉 config/holidays.json 的國定假日"
+                      f"（人事行政總處辦公日曆表），加上補班日，一天 {capacity_lib.HOURS_PER_DAY} 小時。請假還沒有資料來源，沒扣。"
+                      "只拿來當產出的分母，不跟實際工時比：實際工時是完工後回填，一人一週超過可運用時數的列進資料檢查，可能填錯。"),
+        ("新 epic", "這週第一次有完成卡的 epic（不含未歸屬 epic）。epic 建立當天就有完成卡的另外數出來，可能是事後一次開卡結卡；只陳述同期數字，不代表原因。"),
+        ("100% 待結案", "epic 還沒完成，但底下算進進度的卡全部完成了；列進「這週要你出手的地方」，人卡負責欄另外數。"),
+        ("消化速率", "完成卡片張數 ÷ 可運用人日。本週頁的主數字是滾動 4 週（4 週完成張數加總 ÷ 4 週可運用人日加總），跟上週那時的滾動值比；"
+                     "單週值會被結卡集中在哪一天拉動。卡切得越細張數越多，所以副標附名單上每人完成張數的中位數。"),
+        ("探索人力占比", "每個有產出的人一週先把自己完成的卡換成 100%（用自己填的實際工時當權重，沒填的卡補他這週的平均，整週都沒填就用張數），"
+                       "切成探索（這週第一次有完成卡的 epic）與開發（其餘，含未歸屬 epic），再對有產出的人平均。只在人內換算，不拿小時跨人比。"),
+        ("投入比例", "團隊頁人卡的累計投入比例：這個人自己完成的卡，用自己填的實際工時當權重換成 100%，看落在哪些 label。"
+                     f"人卡上 label 的顏色固定：畫出顏色的 label 最多 {ALLOCATION_TOP} 個，本週有份額的先排，再照近 {ALLOCATION_WINDOW} 週補滿，其餘是「其他」的灰。"),
         ("不列入的卡", "config/excluded.json 列的卡不算完成卡片、實際工時，也不算進度裡的完成；列的 epic 連同底下所有卡整個不列入週報。"),
         (BREAKPOINT_LABEL, "卡片在 Jira 結案的時間早於或等於它搬進本專案的時間，是改組前在別的專案完成的歷史：本週與累計都不算，"
                            f"只在「完成」清單最後的「{BREAKPOINT_LABEL}」分隔線之後灰字列出。搬進來之後才結案的照算。"),
@@ -1206,6 +1305,8 @@ details[open]>summary::before{content:"▾"}
 .viz text{font-size:12px;fill:var(--muted)}
 .spark text{font-size:10px;fill:var(--muted)}
 .viz .t-val,.spark .t-val{fill:var(--text)}.viz .t-in{fill:#fff;font-weight:600}.viz .axis{stroke:var(--line)}
+.viz .divider{stroke:var(--muted);stroke-dasharray:4 3}
+.quality{margin:8px 0 0;font-size:13px;color:var(--muted)}
 .s1{fill:var(--s1);background:var(--s1)}.s2{fill:var(--s2);background:var(--s2)}.s3{fill:var(--s3);background:var(--s3)}.s4{fill:var(--s4);background:var(--s4)}
 .s5{fill:var(--s5);background:var(--s5)}.s6{fill:var(--s6);background:var(--s6)}.s7{fill:var(--s7);background:var(--s7)}.s-other{fill:var(--s-other);background:var(--s-other)}
 .bar-wk{fill:var(--bar-week)}.bar-before{fill:var(--bar)}.bar-warn{fill:var(--alert)}
@@ -1218,9 +1319,23 @@ details[open]>summary::before{content:"▾"}
 .si .num{text-align:right;font-variant-numeric:tabular-nums}
 .si .dec{font-size:13px;overflow-wrap:anywhere}
 .si ul{margin:4px 0 0;padding-left:16px;font-size:13px}
-.pcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:12px}
+.pcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(520px,1fr));gap:12px}
 .pcard{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 14px;min-width:0}
 .pcard h4{margin:0 0 4px}
+.small{font-size:12px}
+.phead{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.pcard h5{margin:10px 0 4px;font-size:12px;font-weight:600}.pcard h5 .muted{font-weight:400}
+.pgrid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;border-top:1px solid var(--line);margin-top:6px}
+.pcard ul.owned{margin:4px 0 0;padding-left:16px;font-size:13px}.pcard .owned li{margin:2px 0;overflow-wrap:anywhere}
+.more{font-size:12px;margin:2px 0 0}.more summary{color:var(--muted)}
+.tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{display:inline-block;font-size:11px;padding:0 6px;border-radius:4px;background:var(--soft);color:var(--muted);white-space:nowrap}
+.tag.warn{background:var(--warn-bg);color:var(--warn-fg)}
+.mix{display:flex;height:8px;border-radius:4px;overflow:hidden;background:var(--soft);gap:2px}.mix i{display:block;height:100%}
+.chips{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:6px;font-size:12px}
+.chip{white-space:nowrap}.chip i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px;vertical-align:middle}.chip b{font-variant-numeric:tabular-nums}
+.doing-fold{margin-top:10px;border-top:1px solid var(--line);padding-top:6px;font-size:13px}.doing-fold summary{color:var(--muted)}
+.doing-none{margin:10px 0 0;border-top:1px solid var(--line);padding-top:6px}
 .prow{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;color:var(--muted);margin:2px 0}
 .spark{flex:none;display:block;max-width:100%;height:auto;margin-top:2px}
 .trend{font-size:12px;color:var(--muted);margin:4px 0 6px}
@@ -1237,6 +1352,7 @@ details[open]>summary::before{content:"▾"}
   .dv-cards{grid-template-columns:minmax(0,1fr)}
   h1{font-size:22px}
   .viz,.pcards,.tcards{grid-template-columns:minmax(0,1fr)}
+  .pgrid{grid-template-columns:minmax(0,1fr);gap:0}
   .si{grid-template-columns:minmax(0,1fr) auto;gap:2px 10px}.si.head{display:none}
   .si>[data-label]:nth-child(n+4){grid-column:1/-1}
   .si>[data-label]::before{content:attr(data-label) "：";color:var(--muted);font-size:12px}

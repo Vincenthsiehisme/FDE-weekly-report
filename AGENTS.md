@@ -33,7 +33,7 @@ python3 -m unittest discover -s tests -t tests
 | `data/kickoff/<epic>.json` | Kick off 鎖定狀態 |
 | `site/index.html`、`site/reports/<YYYY-Www>.html` | 產出的頁面 |
 
-人維護、走 PR 的設定：`config/excluded.json`（`cards` 不算完成的卡、`epics` 整棵不列入週報的 epic，每張寫理由）、`data/tokens/<YYYY-Www>.json`（Token 用量，來源待定）。
+人維護、走 PR 的設定：`config/team.json`（成員名單與起訖日，算可運用人日）、`config/holidays.json`（國定假日與補班日，照人事行政總處辦公日曆表，每年補新一年）、`config/excluded.json`（`cards` 不算完成的卡、`epics` 整棵不列入週報的 epic，每張寫理由）、`data/tokens/<YYYY-Www>.json`（Token 用量，來源待定）。
 
 ## 不能做的事
 

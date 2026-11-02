@@ -637,12 +637,15 @@ class FlowHealthTest(unittest.TestCase):
             issue("CS-4", parent="CS-1", points=2.0, resolved=LAST_WEEK, assignee="B", created="2026-09-10T03:59:30.000+0800", progress_seen=True),
         ]
         m = run(issues)
-        self.assertEqual(m["schema"], 10)
+        self.assertEqual(m["schema"], 11)
         # 單卡工時只除有填的張數：W39 CS-2 1h、CS-3 沒填 → 1.0h，不是 0.5h（2026-11-02 本週頁一圖一訊息 AC-1）
-        self.assertEqual(m["health"], [
+        keys = ("week", "completed", "via_progress", "unestimated", "hours", "hours_per_card")
+        self.assertEqual([{k: h[k] for k in keys} for h in m["health"]], [
             {"week": "2026-W38", "completed": 1, "via_progress": 1, "unestimated": 0, "hours": 2.0, "hours_per_card": 2.0},
             {"week": "2026-W39", "completed": 2, "via_progress": 1, "unestimated": 1, "hours": 1.0, "hours_per_card": 1.0},
         ])
+        # 沒給名單：可運用四欄是 None，不是 0
+        self.assertEqual({h["person_days"] for h in m["health"]}, {None})
         self.assertEqual(sorted(m["kpis"]), ["projects", "stalled", "via_progress"])
         self.assertEqual(m["kpis"]["via_progress"], {"now": 50, "prev": 100})
 
@@ -774,14 +777,16 @@ class FlowHealthTest(unittest.TestCase):
         m = run(issues)
         self.assertEqual([h["week"] for h in m["health"]], ["2026-W36", "2026-W37", "2026-W38", "2026-W39"])
         # 沒有完成卡的週：單卡工時是 None（不存在），不是 0h
-        self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "via_progress": 0, "unestimated": 0, "hours": 0.0, "hours_per_card": None})
+        self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "via_progress": 0, "unestimated": 0, "hours": 0.0, "hours_per_card": None,
+                                           "epics_active": 0, "epics_new": 0, "new_same_day": 0, "new_hours_share": None, "explore_share": None, "explore_people": 0,
+                                           "roster": None, "person_days": None, "cards_per_person_day": None, "median_cards": None})
         self.assertEqual(m["kpis"]["via_progress"], {"now": None, "prev": 100})
         self.assertEqual(m["allocation"]["weeks"][-1], {"week": "2026-W39", "people": 0, "shares": {}})
         a = m["people"][0]
         self.assertEqual([t["completed"] for t in a["trend"]], [1, 0, 1, 0])
         self.assertEqual((a["recent"]["weeks"], a["recent"]["completed"]), (4, 2))
         html = render(m, {"highlights": [], "epic_results": {}}, ["2026-W39"], in_reports_dir=False)
-        self.assertIn("近 4 週完成張數（只跟自己比，深色＝本週）· 本週 0 張", html)
+        self.assertIn("本週 0 張 · 近 4 週只跟自己比，深色＝本週", html)
 
     def test_no_completion_at_all_is_one_empty_week(self):
         m = run(self.epics())
@@ -801,3 +806,143 @@ class FlowHealthTest(unittest.TestCase):
         self.assertEqual(a["recent"], {"weeks": 2, "completed": 3, "labels": [["甲", 2], ["乙", 1]]})
         self.assertEqual(a["shares"], [["乙", 0.6], ["甲", 0.4]])
         self.assertEqual(a["in_progress"]["ages"], {"CS-4": 21, "CS-5": 0})
+
+
+class CapacityTest(unittest.TestCase):
+    """本週頁產值與探索（2026-11-02 鎖定 AC-1、AC-2）：可運用人日、探索、填錯檢查、投入比例排序。期望值寫死。"""
+
+    CALENDAR = {"years": [2026], "off": {"2026-09-18": "假的假日"}, "workdays": {"2026-09-19": "補班"}}
+
+    def team(self, *members):
+        from lib.capacity import parse_team
+        return parse_team({"members": [{"name": n, "since": s, "until": u} for n, s, u in members]}, "team.json")
+
+    def calendar(self):
+        from lib.capacity import parse_calendar
+        return parse_calendar(self.CALENDAR, "holidays.json")
+
+    def run_with(self, issues, team):
+        return compute(snapshot(issues), PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False,
+                       previous=None, team=team, calendar=self.calendar())
+
+    def test_workdays_skip_holidays_add_makeup_days_and_fail_on_a_missing_year(self):
+        from lib.capacity import workdays
+        cal = self.calendar()
+        # W39：09-16（三）～09-22（二）；09-18 放假、09-19（六）補班 → 三、四、六、一、二 5 天
+        days = workdays(date(2026, 9, 16), date(2026, 9, 22), cal)
+        self.assertEqual([d.isoformat() for d in days], ["2026-09-16", "2026-09-17", "2026-09-19", "2026-09-21", "2026-09-22"])
+        with self.assertRaisesRegex(ValueError, "沒有 2027 年"):
+            workdays(date(2026, 12, 30), date(2027, 1, 5), cal)
+
+    def test_team_file_errors_fail_loudly(self):
+        from lib.capacity import parse_calendar, parse_team
+        with self.assertRaisesRegex(ValueError, "出現兩次"):
+            parse_team({"members": [{"name": "A", "since": "2026-09-01", "until": None}] * 2}, "team.json")
+        with self.assertRaisesRegex(ValueError, "until 早於 since"):
+            parse_team({"members": [{"name": "A", "since": "2026-09-10", "until": "2026-09-01"}]}, "team.json")
+        with self.assertRaisesRegex(ValueError, "不在 years"):
+            parse_calendar({"years": [2026], "off": {"2025-12-31": "跨年"}, "workdays": {}}, "holidays.json")
+        # 同一天兩邊都填、填錯邊都要失敗，不能讓補班安靜蓋掉假日（Codex 審 ab4aff4）
+        with self.assertRaisesRegex(ValueError, "off 2026-09-19 是週末"):
+            parse_calendar({"years": [2026], "off": {"2026-09-19": "週六"}, "workdays": {}}, "holidays.json")
+        with self.assertRaisesRegex(ValueError, "workdays 2026-09-18 是平日"):
+            parse_calendar({"years": [2026], "off": {}, "workdays": {"2026-09-18": "週五"}}, "holidays.json")
+
+    def test_repo_calendar_covers_the_next_two_weeks(self):
+        # 正式的 holidays.json 要涵蓋今天起 14 天：跨年那期掃到沒列的年份 routine 會停，年底 CI 先紅提醒補下一年
+        import json, pathlib
+        from datetime import timedelta
+        from lib.capacity import parse_calendar, workdays
+        root = pathlib.Path(__file__).resolve().parent.parent
+        cal = parse_calendar(json.loads((root / "config" / "holidays.json").read_text(encoding="utf-8")), "holidays.json")
+        today = date.today()
+        workdays(today, today + timedelta(days=14), cal)
+
+    def test_repo_holidays_match_the_official_calendars(self):
+        # 人事行政總處〈115年〉〈116年中華民國政府行政機關辦公日曆表〉的平日放假，逐日寫死：漏一天、填錯一天都要紅
+        # （Codex 審 70db523：只驗年份存在，刪光某年的假日照樣綠）
+        import json, pathlib
+        root = pathlib.Path(__file__).resolve().parent.parent
+        data = json.loads((root / "config" / "holidays.json").read_text(encoding="utf-8"))
+        official = {
+            2026: ["01-01", "02-16", "02-17", "02-18", "02-19", "02-20", "02-27", "04-03", "04-06", "05-01", "06-19",
+                   "09-25", "09-28", "10-09", "10-26", "12-25"],
+            2027: ["01-01", "02-04", "02-05", "02-08", "02-09", "02-10", "03-01", "04-05", "04-06", "04-30", "06-09",
+                   "09-15", "09-28", "10-11", "10-25", "12-24", "12-31"],
+        }
+        self.assertEqual(sorted(data["years"]), sorted(official))
+        self.assertEqual(sorted(data["off"]), sorted(f"{y}-{d}" for y, days in official.items() for d in days))
+        self.assertEqual(data["workdays"], {})  # 兩年都沒有週六補班
+
+    def test_person_days_rate_and_median_count_members_without_cards_as_zero(self):
+        issues = [issue("CS-1", level=1, status="doing", labels=["甲"])] + [
+            issue(f"CS-{i}", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A") for i in range(2, 8)]
+        # A 整週在職 5 天、B 09-21 才進來 2 天、C 已離開：可運用 7 人日；6 張 ÷ 7；名單上 A 6 張、B 0 張 → 中位 3
+        team = self.team(("A", "2026-09-01", None), ("B", "2026-09-21", None), ("C", "2026-08-01", "2026-09-10"))
+        h = self.run_with(issues, team)["health"][-1]
+        self.assertEqual((h["roster"], h["person_days"], h["cards_per_person_day"], h["median_cards"]), (2, 7, 0.86, 3.0))
+
+    def test_hours_over_capacity_and_strangers_go_to_data_checks(self):
+        issues = [issue("CS-1", level=1, status="doing", labels=["甲"]),
+                  # A 這週 5 個工作日 = 40h，填了 41h → 列；B 不在名單 → 列；未指派不列
+                  issue("CS-2", parent="CS-1", points=30.0, resolved=IN_WEEK, assignee="A"),
+                  issue("CS-3", parent="CS-1", points=11.0, resolved=IN_WEEK, assignee="A"),
+                  issue("CS-4", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="B"),
+                  issue("CS-5", parent="CS-1", points=1.0, resolved=IN_WEEK)]
+        checks = self.run_with(issues, self.team(("A", "2026-09-01", None)))["checks"]
+        got = [(c["kind"], c["message"]) for c in checks if c["kind"] in ("hours_over_capacity", "not_in_team")]
+        self.assertEqual(got, [
+            ("hours_over_capacity", "2026-W39 A 的實際工時 41h，超過當週可運用 40h（5 個工作日 × 8h），可能填錯"),
+            ("not_in_team", "B 近 6 週有完成卡，卻不在 config/team.json：可運用人日沒算到他"),
+        ])
+        # 剛好 40h 不算超過
+        issues[2]["points"] = 10.0
+        self.assertFalse([c for c in self.run_with(issues, self.team(("A", "2026-09-01", None), ("B", "2026-09-01", None)))["checks"]
+                          if c["kind"] in ("hours_over_capacity", "not_in_team")])
+
+    def test_explore_counts_first_time_epics_and_their_hours_share(self):
+        issues = [
+            issue("CS-1", level=1, status="doing", labels=["甲"], created="2026-09-01T09:00:00.000+0800"),
+            issue("CS-2", parent="CS-1", points=1.0, resolved=LAST_WEEK, assignee="A"),
+            issue("CS-3", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A"),
+            # CS-10 這週第一次有完成卡，而且 epic 就是這天建的
+            issue("CS-10", level=1, status="doing", labels=["乙"], created="2026-09-18T01:00:00.000+0800"),
+            issue("CS-11", parent="CS-10", points=3.0, resolved=IN_WEEK, assignee="A"),
+            issue("CS-12", parent="CS-10", points=None, resolved=IN_WEEK, assignee="A"),
+            # 未歸屬 epic 不算 epic
+            issue("CS-20", points=1.0, resolved=IN_WEEK, assignee="A"),
+        ]
+        h = self.run_with(issues, None)["health"]
+        self.assertEqual({k: h[-1][k] for k in ("epics_active", "epics_new", "new_same_day", "new_hours_share")},
+                         {"epics_active": 2, "epics_new": 1, "new_same_day": 1, "new_hours_share": 0.6})  # 3 ÷ (1 + 3 + 1)
+        self.assertEqual((h[-2]["epics_active"], h[-2]["epics_new"], h[-2]["new_same_day"]), (1, 1, 0))
+
+    def test_explore_share_is_each_persons_week_at_100_percent_then_averaged(self):
+        issues = [
+            issue("CS-1", level=1, status="doing", labels=["甲"]),
+            issue("CS-2", parent="CS-1", points=1.0, resolved=LAST_WEEK, assignee="A"),
+            issue("CS-10", level=1, status="doing", labels=["乙"]),
+            # A：舊 epic 3h、新 epic 1h → 探索 25%；B：只做新 epic、沒填工時 → 100%；平均 62.5%
+            issue("CS-3", parent="CS-1", points=3.0, resolved=IN_WEEK, assignee="A"),
+            issue("CS-11", parent="CS-10", points=1.0, resolved=IN_WEEK, assignee="A"),
+            issue("CS-12", parent="CS-10", points=None, resolved=IN_WEEK, assignee="B"),
+            # 未歸屬 epic 算開發
+            issue("CS-20", points=1.0, resolved=IN_WEEK, assignee="C"),
+            # 未指派不是一個人：不進占比、不算人數（Codex 審 ab4aff4）
+            issue("CS-13", parent="CS-10", points=1.0, resolved=IN_WEEK),
+        ]
+        h = self.run_with(issues, None)["health"]
+        self.assertEqual(h[-1]["explore_share"], round((0.25 + 1.0 + 0.0) / 3, 4))
+        self.assertEqual(h[-1]["explore_people"], 3)
+        self.assertEqual(h[-2]["explore_share"], 1.0)
+
+    def test_allocation_names_labels_with_a_share_this_week_first(self):
+        # 近 4 週「舊」累計最多，但本週 0；ALLOCATION_TOP 1 時本週有份額的「新」要畫出名字
+        issues = [issue("CS-1", level=1, status="doing", labels=["舊"]), issue("CS-10", level=1, status="doing", labels=["新"])]
+        issues += [issue(f"CS-{i}", parent="CS-1", points=1.0, resolved=LAST_WEEK, assignee=f"P{i}") for i in range(2, 6)]
+        issues += [issue("CS-11", parent="CS-10", points=1.0, resolved=IN_WEEK, assignee="Q")]
+        from unittest import mock
+        import lib.metrics as metrics_module
+        with mock.patch.object(metrics_module, "ALLOCATION_TOP", 1):
+            alloc = run(issues)["allocation"]
+        self.assertEqual(alloc["labels"], ["新", "其他"])
