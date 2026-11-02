@@ -560,7 +560,7 @@ class OverviewLayoutTest(unittest.TestCase):
         html = self.html()
         o, week = panel(html, "cumulative"), panel(html, "week")
         self.assertIn('<ul class="kpis" style="--kpis:3">', o)
-        # 結案數一定跟進行中、卡都做完、epic 沒關併列（2026-11-02 總覽優化 AC-3）
+        # 結案數一定跟進行中、「卡都做完，epic 沒關」併列（2026-11-02 總覽優化 AC-3）
         self.assertIn('<li><span>epic 數</span><strong class="">3</strong><small>進行中 2 · 卡都做完，epic 沒關 0 · 已結案 1</small></li>', o)
         self.assertEqual(o.count('<div class="proj"><div class="proj-head">') + o.count('<details class="proj">'), 4)  # 3 個 epic＋未歸屬 epic 一列
         self.assertNotIn("epic 數</span>", week)
@@ -813,7 +813,7 @@ class StepInTest(unittest.TestCase):
         health = [{"week": f"2026-W{38 + i}", "completed": 30, "unestimated": 0, "roster": 3 if i == 0 else 7,
                    "person_days": 30, "epics_closed": i + 1, "epics_per_person_week": round((i + 1) / 6, 2),
                    "explore_share": 0.5, "explore_people": 7} for i in range(7)]
-        # 出手區同一個判斷：未結案、底下的卡全完成才算 卡都做完、epic 沒關；已結案的、卡沒做完的不算
+        # 出手區同一個判斷：未結案、底下的卡全完成才算 「卡都做完，epic 沒關」；已結案的、卡沒做完的不算
         epic = lambda key, status, done, total: {"key": key, "status": status, "stalled": False, "week": {"completed_count": 0},
                                                  "progress": {"done_cards": done, "total_cards": total}}
         epics = [epic("CS-1", "On Track", 3, 3), epic("CS-2", "Done", 3, 3), epic("CS-3", "On Track", 1, 3), epic(None, None, 2, 2)]
@@ -900,7 +900,7 @@ class StepInTest(unittest.TestCase):
         self.assertIn("沒有 epic 的卡 <span class=\"muted\">· amy · 21 天</span>", step)
 
     def test_fully_done_open_epic_is_a_fourth_reason_to_step_in(self):
-        # CS-20 底下只有一張卡、已完成，epic 還沒結案：列進出手區並標 卡都做完、epic 沒關
+        # CS-20 底下只有一張卡、已完成，epic 還沒結案：列進出手區並標 「卡都做完，epic 沒關」
         issues = [i for i in self.ISSUES if i["key"] != "CS-21"] + [issue("CS-21", level=0, parent="CS-20", status="done", points=1.0,
                                                                           resolved=LAST_WEEK, labels=("直售",))]
         step = self.step(self.html(issues=issues))
@@ -983,7 +983,7 @@ class OverviewStatusTest(unittest.TestCase):
     """總覽優化（2026-11-02 使用者裁版型乙）：label 分段不動，段內依狀態排；epic 數併列三種狀態；名單人數變的週標分界。"""
     OLD = "2026-09-01T10:00:00.000+0800"
     ISSUES = [
-        # 門市：進行中兩個（久沒動的在上）、卡都做完、epic 沒關兩個（其中一個也久沒動）、已結案兩個（新的在上）
+        # 門市：進行中兩個（久沒動的在上）、「卡都做完，epic 沒關」兩個（其中一個也久沒動）、已結案兩個（新的在上）
         issue("CS-1", level=1, status="doing", labels=("門市",), summary="最近有動"),
         issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A", labels=("門市",)),
         issue("CS-3", parent="CS-1", status="todo", labels=("門市",)),
@@ -1015,7 +1015,7 @@ class OverviewStatusTest(unittest.TestCase):
         self.assertIn("做完沒結很久 <span class=\"tag warn\">卡都做完，epic 沒關</span>", o)
         self.assertNotIn("最近有動 <span class=\"tag", o)
         self.assertIn('<span class="idle" data-label="幾天沒動"><b class="alert">21 天</b></span>', o)
-        # 久沒動分開數：進行中 1 個，卡都做完、epic 沒關裡 1 個，不混成 2 個（冷讀 2026-11-02）
+        # 久沒動分開數：進行中 1 個，「卡都做完，epic 沒關」裡 1 個，不混成 2 個（冷讀 2026-11-02）
         self.assertIn("全部「卡都做完，epic 沒關」2 個；進行中 14 天以上沒動 1 個，「卡都做完，epic 沒關」裡也 14 天以上沒動的 1 個。", o)
         closed = o[o.index('<details class="closed">'):]
         self.assertIn("<summary>已結案 2 個</summary>", closed)

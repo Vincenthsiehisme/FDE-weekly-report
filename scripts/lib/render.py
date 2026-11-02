@@ -3,7 +3,7 @@
 版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者原本是主管（2026-10-28 改成團隊負責人本人，見下），
 分四個頁籤：總覽（2026-10-07 由「持續累積」改名）、本週（預設）、團隊、成效說明（2026-10-29 加）。vault 的週報範本只當資訊清單，不照它的節次排。
 總覽依序是資源（多一格 epic 數）、依 label、專案列表、完成；專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開）；
-2026-11-02 總覽優化（plan 在 vault 的 jira-weekly-report · 總覽優化）：段內依狀態排（進行中依幾天沒動、卡都做完 epic 沒關、已結案收合標結案週），
+2026-11-02 總覽優化（plan 在 vault 的 jira-weekly-report · 總覽優化）：段內依狀態排（進行中依幾天沒動、「卡都做完，epic 沒關」、已結案收合標結案週），
 epic 數下面併列三種狀態，名單人數變的週標分界，完成清單一週一列摘要；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
 Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都沒有時整欄不顯示、資源區只留一行說明，
 有檔但沒記錄的卡顯示「—」，不顯示 0。目標日不顯示（2026-10-06 使用者裁：不是當前重點；metrics 仍帶 due）。
@@ -56,6 +56,8 @@ TABS = (("cumulative", "總覽"), ("week", "本週"), ("team", "團隊"), ("deli
 # 總覽專案展開後的效益說明：Kick off 鎖定的目標五段（2026-10-07 使用者裁），下個里程碑留在本週頁
 BENEFIT_FIELDS = KICKOFF_FIELDS[:5]
 DEFAULT_TAB = "week"
+# 底下的卡全完成、epic 還沒結案（狀態代號 full）。2026-11-02 使用者裁改白話，取代「100% 待結案」；頁面上這個稱呼只從這裡拿
+FULL_LABEL = "卡都做完，epic 沒關"
 
 
 def esc(value) -> str:
@@ -135,7 +137,7 @@ def _kpis(tiles: list) -> str:
 def _resources(totals: dict, prefix: str, hours_label: str, page, epics=None) -> str:
     """資源 KPI：工時、Token、完成卡片。Token 一個檔都沒有時不放 Token 格，也不留說明
     （2026-10-07 使用者裁，取代 2026-09-27「資源區留一行」：AI 用量整合已擱置，沒有可預期的接入日）。
-    epics 只有總覽給：專案列表裡的 epic，多一格 epic 數（2026-10-07 使用者要求），下面併列進行中、卡都做完 epic 沒關、已結案三個數
+    epics 只有總覽給：專案列表裡的 epic，多一格 epic 數（2026-10-07 使用者要求），下面併列進行中、「卡都做完，epic 沒關」、已結案三個數
     （2026-11-02 總覽優化 AC-3：結案數不單獨出現）。"""
     unfilled = f'{totals["unestimated_completed"]} 張完成卡{UNFILLED}' if totals["unestimated_completed"] else None
     tiles = [(hours_label, fmt_hours(totals["hours"]), unfilled, True)]
@@ -144,7 +146,7 @@ def _resources(totals: dict, prefix: str, hours_label: str, page, epics=None) ->
     tiles.append((f"{prefix}完成卡片", str(totals["completed"]), None, False))
     if epics is not None:
         n = {k: sum(1 for e in epics if _overview_state(e) == k) for k in ("open", "full", "done")}
-        tiles.append(("epic 數", str(len(epics)), f'進行中 {n["open"]} · 卡都做完，epic 沒關 {n["full"]} · 已結案 {n["done"]}', False))
+        tiles.append(("epic 數", str(len(epics)), f'進行中 {n["open"]} · {FULL_LABEL} {n["full"]} · 已結案 {n["done"]}', False))
     return _kpis(tiles)
 
 
@@ -540,7 +542,7 @@ def _quality_line(metrics) -> str:
 def _viz(metrics, page) -> str:
     """兩張圖（2026-11-02 使用者裁「照審查改」，取代同日的四張）：消化速率、時間怎麼分；圖下資料品質一行。
     投入比例與未結案 epic 狀態圖移出本週頁（前者是「各單位分到幾個人」、一人全在某單位就是 1/人數，會誤導；
-    後者的 「卡都做完，epic 沒關」併進出手區）。plan：jira-weekly-report · 本週頁產值與探索。"""
+    後者的「卡都做完，epic 沒關」併進出手區）。plan：jira-weekly-report · 本週頁產值與探索。"""
     history = metrics["health"]
     if not history:
         return '<p class="muted">還沒有完成的卡。</p>'
@@ -551,7 +553,7 @@ def _viz(metrics, page) -> str:
 
 STEP_IN_RULE = (f"前三個條件用同一個時鐘：最後一次更新到本期結束，{IDLE_DAYS} 天為界。專案沒動＝底下的卡都沒更新；"
                 "卡沒動＝進行中、本身沒更新；需要決定＝Kick off 的「需要決定」有寫就列，附 Kick off 卡寫了幾天。"
-                "第四個是「卡都做完，epic 沒關」＝底下算進進度的卡全部完成，epic 在 Jira 還沒結案。")
+                f"第四個是「{FULL_LABEL}」＝底下算進進度的卡全部完成，epic 在 Jira 還沒結案。")
 
 
 def _step_in(metrics, page) -> str:
@@ -604,7 +606,7 @@ def _step_in(metrics, page) -> str:
     ndec = sum(1 for t in rows if t[5])
     nfull = sum(1 for t in rows if t[3] is not None and _epic_state(t[3]) == "full")
     return (f'<h3 id="step-in">這週要你出手的地方：{len(rows)} 個專案</h3>'
-            f'<p class="note">其中專案沒動 {stalled} 個、卡沒動 {ncards} 張、需要決定 {ndec} 個、「卡都做完，epic 沒關」{nfull} 個；依幾天沒動排，久的在上。</p>'
+            f'<p class="note">其中專案沒動 {stalled} 個、卡沒動 {ncards} 張、需要決定 {ndec} 個、「{FULL_LABEL}」{nfull} 個；依幾天沒動排，久的在上。</p>'
             f'<p class="note">{esc(STEP_IN_RULE)}</p><div class="sis">{head}{"".join(body)}</div>')
 
 
@@ -660,7 +662,7 @@ def _owned_states(epics: list) -> str:
     full = sum(1 for e in epics if _epic_state(e) == "full")
     stalled = sum(1 for e in epics if e["stalled"])
     decision = sum(1 for e in epics if e["kickoff"] and e["kickoff"]["sections"].get("decision"))
-    tags = [(full, "卡都做完，epic 沒關"), (stalled, f"{IDLE_DAYS} 天以上沒動"), (decision, "需要決定")]
+    tags = [(full, FULL_LABEL), (stalled, f"{IDLE_DAYS} 天以上沒動"), (decision, "需要決定")]
     return "".join(f'<span class="tag warn">{label} {n}</span>' for n, label in tags if n)
 
 
@@ -769,8 +771,6 @@ def _idle_cell(e) -> str:
     return f'<span class="idle" data-label="幾天沒動">{days}</span>'
 
 
-# 2026-11-02 使用者裁改白話，取代「100% 待結案」（太像術語）；程式裡的狀態代號仍叫 full
-FULL_LABEL = "卡都做完，epic 沒關"
 FULL_TAG = f' <span class="tag warn">{FULL_LABEL}</span>'
 
 
@@ -820,7 +820,7 @@ def _by_closed(epics: list) -> list:
 def _overview_projects(metrics, page) -> str:
     """專案依 label 分段，段的順序跟 label 表一樣；未歸屬 epic 放最後一段。段首的工時取 label 表，兩處不會各算一次。
     段內依狀態排（2026-11-02 使用者裁版型乙，plan：jira-weekly-report · 總覽優化）：進行中依幾天沒動排、久的在上，
-    再列 「卡都做完，epic 沒關」（帶標籤，也依幾天沒動排），已結案收在段尾、新結案的在上。label 分段與區塊順序是 2026-10-07 鎖定的，不動。"""
+    再列「卡都做完，epic 沒關」（帶標籤，也依幾天沒動排），已結案收在段尾、新結案的在上。label 分段與區塊順序是 2026-10-07 鎖定的，不動。"""
     epics = metrics["cumulative"]["epics"]
     if not epics:
         return '<p class="muted">還沒有任何專案</p>'
@@ -830,8 +830,8 @@ def _overview_projects(metrics, page) -> str:
     keyed = [e for e in epics if e["key"]]
     full_all = [e for e in keyed if _overview_state(e) == "full"]
     idle_open = sum(1 for e in keyed if _overview_state(e) == "open" and e["stalled"])
-    sections = [f'<p class="note">每段先列進行中（久沒動的在上），再列「卡都做完，epic 沒關」，已結案收在段尾。全部「卡都做完，epic 沒關」{len(full_all)} 個；'
-                f'進行中 {IDLE_DAYS} 天以上沒動 {idle_open} 個，「卡都做完，epic 沒關」裡也 {IDLE_DAYS} 天以上沒動的 {sum(1 for e in full_all if e["stalled"])} 個。</p>',
+    sections = [f'<p class="note">每段先列進行中（久沒動的在上），再列「{FULL_LABEL}」，已結案收在段尾。全部「{FULL_LABEL}」{len(full_all)} 個；'
+                f'進行中 {IDLE_DAYS} 天以上沒動 {idle_open} 個，「{FULL_LABEL}」裡也 {IDLE_DAYS} 天以上沒動的 {sum(1 for e in full_all if e["stalled"])} 個。</p>',
                 _overview_table_head(page)]
     for row in metrics["labels"]:
         members = [e for e in keyed if e["label"] == row["label"]]
@@ -1117,11 +1117,11 @@ def _glossary(metrics) -> str:
                       f"（人事行政總處辦公日曆表），加上補班日，一天 {capacity_lib.HOURS_PER_DAY} 小時。請假還沒有資料來源，沒扣。"
                       "只拿來當產出的分母，不跟實際工時比：實際工時是完工後回填，一人一週超過可運用時數的列進資料檢查，可能填錯。"),
         ("新 epic", "這週第一次有完成卡的 epic（不含未歸屬 epic）。epic 建立當天就有完成卡的另外數出來，可能是事後一次開卡結卡；只陳述同期數字，不代表原因。"),
-        ("卡都做完，epic 沒關", "epic 底下算進進度的卡都完成了，但 epic 本身在 Jira 還沒結案（以前叫 100% 待結案）。"
+        (FULL_LABEL, "epic 底下算進進度的卡都完成了，但 epic 本身在 Jira 還沒結案（以前叫 100% 待結案）。"
                        "可能是做完忘了關（去 Jira 關掉 epic、補 Deliverable 卡），也可能還有工作沒開卡；資料上分不出來，要人看。"
                        "消化速度只算結案的 epic，這種不算。列進「這週要你出手的地方」，人卡與總覽專案列表也會標出來。"),
         ("消化速度", f"結案 epic 數 ÷ 可運用人週（可運用人日 ÷ {capacity_lib.DAYS_PER_WEEK}）。epic 卡本身結案才算完成，週次取結案時間；"
-                     "底下沒有任何完成工作卡的 epic 不算（列在資料檢查），「卡都做完，epic 沒關」的也不算。本週頁的主數字是過去四週平均（4 週結案 epic 加總 ÷ 4 週可運用人週加總），"
+                     f"底下沒有任何完成工作卡的 epic 不算（列在資料檢查），「{FULL_LABEL}」的也不算。本週頁的主數字是過去四週平均（4 週結案 epic 加總 ÷ 4 週可運用人週加總），"
                      "跟上週的四週值比；上週值用這一期的資料重算，epic 重開再結案時會跟上週頁面寫的不同。單週值會被集中結案拉動。"
                      "epic 大小不一，一個 epic 可能一天也可能兩個月。"),
         ("探索人力占比", "每個有產出的人一週先把自己完成的卡換成 100%（用自己填的實際工時當權重，沒填的卡補他這週的平均，整週都沒填就用張數），"
