@@ -336,7 +336,7 @@ class WordingTest(unittest.TestCase):
         glossary = html[html.index('<section id="glossary"'):html.index("</section>", html.index('<section id="glossary"'))]
         self.assertIn("2026/09/16（三） 00:00 到 2026/09/22（二） 23:59（UTC+8）", glossary)
         for term in ("本週", "累計", "完成卡片", "實際工時", "累計工時", "未填工時", "人", "進度", "label", "Done／On Track", "資料檢查",
-                     "停滯", "照流程走", "投入比例"):
+                     "沒動", "停滯", "單卡工時", "投入比例"):
             self.assertIn(f"<dt>{term}</dt>", glossary)
         self.assertNotIn("<dt>補登</dt>", glossary)
         self.assertNotIn("<dt>專案投入</dt>", glossary)
@@ -607,7 +607,7 @@ class WeekTableTest(unittest.TestCase):
         return week[week.index('class="proj-list"'):]
 
     def test_week_tab_order_and_the_table_is_collapsed_at_the_end(self):
-        # 2026-10-28 鎖定 AC-2、AC-3：四個數字 → 四格圖 → 這週要你出手的地方 → 人卡 → 專案一覽（收合）；本週重點不獨立列
+        # 2026-10-28 鎖定 AC-2、AC-3（2026-11-02 數字與圖改一圖一訊息）：數字 → 圖 → 這週要你出手的地方 → 人卡 → 專案一覽（收合）；本週重點不獨立列
         week = panel(page(metrics=metrics_for(self.ISSUES), narrative=self.NARRATIVE), "week")
         marks = ['class="kpis wk-kpis"', 'class="viz"', '<h3 id="step-in">', "<h3>人</h3>", '<details class="proj-list"><summary>專案一覽（']
         positions = [week.index(m) for m in marks]
@@ -685,44 +685,56 @@ class WeekTableTest(unittest.TestCase):
 
 
 class StepInTest(unittest.TestCase):
-    """團隊績效評估（2026-10-28 鎖定 AC-2～6）：四個數字、四格圖、這週要你出手的地方、人卡、不排名。期望值寫死。"""
+    """團隊績效評估（2026-10-28 鎖定）與本週頁一圖一訊息（2026-11-02 鎖定）：兩個數字、三張圖、出手區、人卡、不排名。期望值寫死。"""
     ISSUES = [
         issue("CS-1", level=1, status="doing", assignee="Owner", labels=("門市",), summary="門市客服"),
         # Zed 的工時比 amy 多：照名字排與照工時排的結果不同，排序測試才分得出來
         issue("CS-2", level=0, parent="CS-1", status="done", points=9.0, resolved=IN_WEEK, assignee="Zed", labels=("門市",),
-              created="2026-09-18T03:58:00.000+0800"),  # 補登
+              created="2026-09-18T03:58:00.000+0800"),
         issue("CS-3", level=0, parent="CS-1", status="done", points=1.5, resolved=IN_WEEK, assignee="amy", labels=("門市",), progress_seen=True),
-        # 進行中 20 天（09-02 10:00 到 09-23 00:00）：列進原因清單、標警示色
-        issue("CS-4", level=0, parent="CS-1", status="doing", assignee="amy", summary="放很久的卡", status_since="2026-09-02T10:00:00+08:00"),
+        # 進行中、09-02 10:00 起沒更新（到 09-23 00:00 是 20 天）：列進出手區、人卡標警示色
+        issue("CS-4", level=0, parent="CS-1", status="doing", assignee="amy", summary="放很久的卡", status_since="2026-09-02T10:00:00+08:00",
+              updated="2026-09-02T10:00:00.000+0800"),
+        # 進入進行中很久、但前一天才更新：同一個時鐘下不算沒動（2026-11-02 起）
+        issue("CS-5", level=0, parent="CS-1", status="doing", assignee="amy", summary="一直有在動的卡", status_since="2026-09-01T10:00:00+08:00",
+              updated="2026-09-21T10:00:00.000+0800"),
+        issue("CS-9", level=0, parent="CS-1", type_="Kick off", status="done", updated="2026-09-12T10:00:00.000+0800"),
         # 停滯：底下的卡 21 天沒動（09-01 10:00 到 09-23 00:00）
         issue("CS-10", level=1, status="doing", assignee="Bea Lin", labels=("直售",), summary="[直售]很久沒動的專案"),
         issue("CS-11", level=0, parent="CS-10", status="todo", labels=("直售",), updated="2026-09-01T10:00:00.000+0800"),
+        # 有在動、沒有卡沒動、沒有需要決定：不列
+        issue("CS-20", level=1, status="doing", assignee="Cy", labels=("直售",), summary="好好的專案"),
+        issue("CS-21", level=0, parent="CS-20", status="todo", labels=("直售",)),
     ]
     STATES = {"CS-1": {"kickoff_key": "CS-9", "locked_at": "2026-09-20T10:00:00+08:00", "changes": [],
                        "sections": {"objective": None, "why": None, "before": None, "after": None, "evidence": None,
                                     "decision": "要不要買授權", "next_milestone": None}}}
     NARRATIVE = {"highlights": ["完成"], "epic_results": {"CS-1": "完成"}}
 
-    def html(self, previous=None):
-        m = compute(snapshot(self.ISSUES), PERIOD, None, self.STATES, [], cumulative_tokens=None, excluded={}, token_source=False,
+    def html(self, previous=None, issues=None):
+        m = compute(snapshot(issues or self.ISSUES), PERIOD, None, self.STATES, [], cumulative_tokens=None, excluded={}, token_source=False,
                     previous=previous)
         return render(m, self.NARRATIVE, ["2026-W39"], in_reports_dir=False)
 
-    def test_three_numbers_with_last_week(self):
+    def step(self, html):
+        week = panel(html, "week")
+        return week[week.index('id="step-in"'):week.index("<h3>人</h3>")]
+
+    def test_two_numbers_with_last_week(self):
         week = panel(self.html(previous={"totals": {"projects": 3, "stalled": 0}}), "week")
         kpis = week[week.index('class="kpis wk-kpis"'):week.index('class="viz"')]
-        # 停滯是主數字、唯一用警示色、連到清單；照流程走 50%；上週沒有完成卡，比例的上週值寫明沒有；補登 2026-10-28 拿掉
+        # 停滯是主數字、唯一用警示色、連到清單；照流程走 2026-11-02 跟資料健康一起拿掉，補登 2026-10-28 拿掉
         self.assertIn('<li class="lead"><span>停滯專案</span><strong class=alert>1</strong><small>上週 0，多 1</small>', kpis)
         self.assertIn('<a href="#step-in">看是哪幾個</a>', kpis)
         self.assertIn('<span>有完成的專案</span><strong>1</strong><small>上週 3，少 2</small>', kpis)
-        self.assertIn('<span>照流程走</span><strong>50%</strong><small>沒有上週的值</small>', kpis)
-        self.assertIn('style="--kpis:3"', kpis)
-        self.assertEqual(kpis.count("<li"), 3)
+        self.assertIn('style="--kpis:2"', kpis)
+        self.assertEqual(kpis.count("<li"), 2)
         self.assertEqual(kpis.count("class=alert"), 1)
 
-    def test_backfill_is_gone_from_every_tab(self):
-        # 2026-10-28 使用者裁補登不算：數字、圖、原因清單、人卡、名詞定義都沒有
-        self.assertNotIn("補登", self.html())
+    def test_backfill_flow_map_and_health_are_gone_from_every_tab(self):
+        html = self.html()
+        for word in ("補登", "照流程走", "專案地圖", "資料健康"):
+            self.assertNotIn(word, html, word)
 
     def test_percent_change_is_in_points(self):
         from lib.render import _delta
@@ -731,35 +743,104 @@ class StepInTest(unittest.TestCase):
         self.assertEqual(_delta(2, 2, ""), "上週 2，持平")
         self.assertEqual(_delta(None, 40, "%"), "上週 40%")
 
-    def test_four_charts_are_inline_svg_with_their_numbers_written(self):
+    def test_three_charts_each_title_is_the_observation(self):
         week = panel(self.html(), "week")
         viz = week[week.index('class="viz"'):week.index('id="step-in"')]
-        for title in ("專案地圖", "力氣花在哪", "產出", "資料健康"):
-            self.assertIn(f"<h4>{title}</h4>", viz)
-        self.assertEqual(viz.count("<svg"), 4)
-        # 地圖 x 軸最右的「100%」置中在 x=580，右邊留 20 才不超出 600 寬的 viewBox（fable 審 06bbba4）
-        self.assertIn('<text x="580.0" y="248" text-anchor="middle" class="t-axis">100%</text>', viz)
-        # 停滯的點標名字（去掉 [單位] 前綴）與負責人的第一個字
-        self.assertIn(">很久沒動的專案 · Bea</text>", viz)
-        # 投入比例：門市一個 label，兩人各 100% → 100%，數字直接寫在條上
-        self.assertIn('<text x="44.0" y="16" class="t-in">100%</text>', viz)
+        self.assertEqual(viz.count("<svg"), 3)
+        # 只有一週資料：沒有上週就不寫比較
+        self.assertIn("<h4>本週完成 2 張</h4>", viz)
+        self.assertIn("全隊每週完成的卡片張數，只數沒有子卡的卡 · 近 1 週", viz)
+        self.assertIn("<title>W39 2</title>", viz)
+        # 單卡工時：(9 + 1.5) ÷ 2 = 5.25 → 5.2（一位小數，round 到偶數）
+        self.assertIn("<h4>本週一張卡平均 5.2h</h4>", viz)
+        self.assertIn('class="t-val">5.2h</text>', viz)
+        # 投入比例滿版：門市一個 label，兩人各 100% → 100%，數字直接寫在條上
+        self.assertIn("<h4>本週力氣最多花在門市（100%）</h4>", viz)
+        self.assertIn('<div class="viz-panel wide">', viz)
+        self.assertIn('<text x="49.0" y="15" class="t-in">100%</text>', viz)
         self.assertIn('<p class="legend swatches"><span><i class="s1"></i>門市</span></p>', viz)
-        # 產出：本週 2 張；資料健康：照流程走 50%
-        self.assertIn("<title>W39 完成 2 張</title>", viz)
-        self.assertIn("W39 照流程走 1/2 張", viz)
-        self.assertIn('class="t-val">50%</text>', viz)
-        self.assertNotIn("hatch", viz)
 
-    def test_step_in_list_has_three_reasons_and_opens_those_with_items(self):
-        week = panel(self.html(), "week")
-        step = week[week.index('id="step-in"'):week.index("<h3>人</h3>")]
-        self.assertEqual(step.count('<details class="cause" open>'), 3)
-        self.assertIn('<b class="cnt alert">1</b> 個專案停滯', step)
-        self.assertIn("[直售]很久沒動的專案 <span class=\"muted\">· Bea Lin · 21 天沒動 · 完成 0/1 張</span>", step)
-        self.assertIn('<b class="cnt alert">1</b> 張卡放在進行中超過 14 天', step)
-        self.assertIn("放很久的卡 <span class=\"muted\">· amy · 20 天</span>", step)
-        self.assertIn("門市客服：<span class=\"muted\">要不要買授權</span>", step)
-        self.assertEqual(step.count('<details class="cause"'), 3)
+    def test_titles_compare_with_last_week_and_unfilled_cards_are_written_under_the_bar(self):
+        issues = self.ISSUES + [
+            issue("CS-6", level=0, parent="CS-1", status="done", points=1.0, resolved=LAST_WEEK, assignee="amy", labels=("門市",)),
+            issue("CS-7", level=0, parent="CS-1", status="done", points=None, resolved=IN_WEEK, assignee="amy", labels=("門市",)),
+        ]
+        week = panel(self.html(issues=issues), "week")
+        viz = week[week.index('class="viz"'):week.index('id="step-in"')]
+        self.assertIn("<h4>本週完成 3 張，比上週多 2 張</h4>", viz)
+        # 沒填的 CS-7 不算進平均（仍是 5.2h），寫在副標與柱子下
+        self.assertIn("<h4>本週一張卡平均 5.2h，比上週多 4.2h</h4>", viz)
+        self.assertIn("本週 1 張未填工時，不算進平均", viz)
+        self.assertIn('class="t-axis">未填 1</text>', viz)
+        self.assertIn("<h4>本週力氣最多花在門市（100%），跟上週一樣</h4>", viz)
+
+    def test_other_is_never_the_lead_of_the_allocation_title(self):
+        # 「其他」是併起來的尾巴：70% 也不當主角，標題取有名字的最大一個
+        from lib.render import _viz
+        m = {"health": [{"week": "2026-W39", "completed": 2, "unestimated": 0, "hours_per_card": 1.0}],
+             "allocation": {"labels": ["門市", "其他"], "weeks": [{"week": "2026-W39", "people": 2, "shares": {"門市": 0.3, "其他": 0.7}}]}}
+        self.assertIn("<h4>本週力氣最多花在門市（30%）</h4>", _viz(m))
+
+    def test_allocation_title_direction_and_missing_weeks(self):
+        # Codex 審 c2325ed：上週沒人產出不是 0%；本週全落在「其他」不是沒有完成卡；差值寫百分點、有方向
+        from lib.render import _alloc_title
+        row = lambda people, shares: {"week": "2026-W39", "people": people, "shares": shares}
+        self.assertEqual(_alloc_title(row(2, {"門市": 0.3, "直售": 0.7}), row(1, {"門市": 0.5, "直售": 0.5})),
+                         "本週力氣最多花在直售（70%），比上週多 20 個百分點")
+        self.assertEqual(_alloc_title(row(2, {"直售": 0.4, "門市": 0.6}), row(1, {"門市": 0.75, "直售": 0.25})),
+                         "本週力氣最多花在門市（60%），比上週少 15 個百分點")
+        self.assertEqual(_alloc_title(row(2, {"門市": 1.0}), row(0, {})), "本週力氣最多花在門市（100%）")
+        self.assertEqual(_alloc_title(row(1, {"其他": 1.0}), None), "本週的力氣都落在近 4 週前 7 名以外的單位，併在「其他」")
+        self.assertEqual(_alloc_title(row(0, {}), row(1, {"門市": 1.0})), "本週沒有完成的卡，看不出力氣花在哪")
+
+    def test_hours_per_card_title_has_direction(self):
+        from lib.render import _viz
+        alloc = {"labels": [], "weeks": []}
+        health = lambda a, b: [{"week": "2026-W38", "completed": 1, "unestimated": 0, "hours_per_card": a},
+                               {"week": "2026-W39", "completed": 1, "unestimated": 0, "hours_per_card": b}]
+        self.assertIn("<h4>本週一張卡平均 1.0h，比上週少 0.2h</h4>", _viz({"health": health(1.2, 1.0), "allocation": alloc}))
+        self.assertIn("<h4>本週一張卡平均 1.0h，跟上週一樣</h4>", _viz({"health": health(1.0, 1.0), "allocation": alloc}))
+        # 上週整週沒填工時：沒有可比的值，不寫比較
+        self.assertIn("<h4>本週一張卡平均 1.0h</h4>", _viz({"health": health(None, 1.0), "allocation": alloc}))
+
+    def test_bars_start_at_zero_and_a_week_without_filled_hours_has_no_bar(self):
+        from lib.render import _bars
+        rows = [{"week": "2026-W38", "v": None}, {"week": "2026-W39", "v": 2.0}]
+        svg = _bars(rows, lambda r: r["v"], lambda r: "—" if r["v"] is None else f'{r["v"]}', lambda r: "", "x")
+        heights = re.findall(r'height="([\d.]+)" rx="2"', svg)
+        self.assertEqual(heights, ["0.0", "130.0"])
+        self.assertIn('class="t-val">—</text>', svg)
+
+    def test_step_in_is_one_row_per_project_on_one_clock(self):
+        step = self.step(self.html())
+        self.assertTrue(step.startswith('id="step-in">這週要你出手的地方：2 個專案</h3>'))
+        self.assertIn("其中專案沒動 1 個、卡沒動 1 張、需要決定 1 個；依幾天沒動排，久的在上。", step)
+        self.assertIn("三個條件用同一個時鐘：最後一次更新到本期結束，14 天為界。", step)
+        names = re.findall(r'<div class="si"><span class="name"><span class="key"><a [^>]*>(CS-\d+)</a>', step)
+        # 停滯 21 天的在上；好好的專案 CS-20 不列；進入進行中很久但有更新的 CS-5 不算沒動
+        self.assertEqual(names, ["CS-10", "CS-1"])
+        self.assertIn('<span class="num" data-label="幾天沒動"><b class="alert">21 天</b></span>', step)
+        # CS-1 最近一次有卡更新是 CS-5 的 09-21：專案 1 天沒動，但底下 CS-4 沒動 20 天、Kick off 寫了需要決定
+        self.assertIn('<span class="num" data-label="幾天沒動">1 天</span>', step)
+        self.assertIn('<details><summary>1 張</summary><ul><li><a href="https://example.atlassian.net/browse/CS-4">CS-4</a> 放很久的卡 '
+                      '<span class="muted">· amy · 20 天</span></li></ul></details>', step)
+        self.assertNotIn("一直有在動的卡", step)
+        self.assertIn('要不要買授權 <span class="muted">· 寫於 10 天前</span>', step)
+        self.assertNotIn("CS-20", step)
+
+    def test_idle_card_outside_any_open_project_still_gets_a_row(self):
+        issues = self.ISSUES + [issue("CS-30", level=0, status="doing", assignee="amy", summary="沒有 epic 的卡",
+                                      updated="2026-09-01T10:00:00.000+0800")]
+        step = self.step(self.html(issues=issues))
+        self.assertIn("這週要你出手的地方：3 個專案", step)
+        self.assertIn('<div class="si"><span class="name">未歸屬 epic</span>', step)
+        self.assertIn("沒有 epic 的卡 <span class=\"muted\">· amy · 21 天</span>", step)
+
+    def test_nothing_to_step_in_says_so(self):
+        issues = [i for i in self.ISSUES if i["key"] in ("CS-20", "CS-21")]
+        step = self.step(self.html(issues=issues))
+        self.assertIn("沒有專案或卡 14 天沒動，Kick off 也沒寫需要決定。", step)
+        self.assertNotIn('class="sis"', step)
 
     def test_people_are_in_name_order_and_only_compared_with_themselves(self):
         html = self.html()
@@ -768,7 +849,9 @@ class StepInTest(unittest.TestCase):
         # Zed 本週 9h、amy 1.5h：照名字（不分大小寫）排，不照工時或張數
         self.assertEqual(re.findall(r'<article class="pcard"><h4>(.*?)</h4>', cards), ["amy", "Zed"])
         self.assertIn("近 1 週完成張數（只跟自己比，深色＝本週）· 本週 1 張", cards)
-        self.assertIn('放很久的卡 <span class="alert">20 天</span>', cards)
+        # 人卡跟出手區同一個時鐘：幾天沒更新，不是進入進行中幾天
+        self.assertIn('放很久的卡 <span class="alert">20 天沒更新</span>', cards)
+        self.assertIn('一直有在動的卡 <span class="muted">1 天沒更新</span>', cards)
         self.assertIn("近 1 週落在：門市 1 張", cards)
         team = panel(html, "team")
         self.assertEqual(re.findall(r'<div class="card-head"><h3>(.*?)</h3>', team), ["amy", "Zed"])
