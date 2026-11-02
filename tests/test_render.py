@@ -736,10 +736,14 @@ class StepInTest(unittest.TestCase):
     def test_rolling_rate_tile_compares_with_last_weeks_rolling_value(self):
         from lib.render import _week_kpis
         row = lambda w, done, days, share: {"week": w, "completed": done, "person_days": days, "explore_share": share}
-        rows = [row("2026-W41", 140, 31, 0.7165), row("2026-W42", 88, 28, 0.3079), row("2026-W43", 152, 35, 0.6762), row("2026-W44", 100, 28, 0.4868)]
+        rows = [row("2026-W40", 36, 9, 1.0), row("2026-W41", 140, 31, 0.7165), row("2026-W42", 88, 28, 0.3079), row("2026-W43", 152, 35, 0.6762),
+                row("2026-W44", 100, 28, 0.4868)]
         html = _week_kpis({"health": rows, "kpis": {"stalled": {"now": 4, "prev": None}}})
-        # 滾動 4 週 480 ÷ 122 = 3.93；上週那時 380 ÷ 94 = 4.04；差值用一位小數算
+        # 滾動 4 週 480 ÷ 122 = 3.93；上週那時 416 ÷ 103 = 4.04；差值用一位小數算
         self.assertIn('<strong>3.9 張／人日</strong><small>上週 4.0，少 0.1</small>', html)
+        # 資料不到 4 週：不把 1～3 週的值標成滾動 4 週（Codex 審 ab4aff4）
+        short = _week_kpis({"health": rows[:3], "kpis": {"stalled": {"now": 0, "prev": None}}})
+        self.assertIn('<strong>—</strong><small>資料還不到 4 週（目前 3 週）</small>', short)
         self.assertIn('<strong>49%</strong><small>上週 68%，少 19 個百分點</small>', html)
 
     def test_two_charts_without_a_team_say_capacity_is_unknown(self):
@@ -762,15 +766,16 @@ class StepInTest(unittest.TestCase):
         self.assertIn("<h4>本週 3.6 張／可運用人日，滾動 4 週 3.9</h4>", html)
         self.assertIn("全隊完成 100 張 ÷ 可運用 28 人日（名單 7 人 × 工作日，已扣國定假日、未扣請假，一天 8h）；名單上每人完成中位 10 張", html)
         self.assertIn('class="t-axis">4 週 3.9</text>', html)
-        self.assertIn('class="t-axis">4 週 4.5</text>', html)  # W41 只有自己一週
+        self.assertEqual(html.count(">4 週 "), 1)  # 前三根不到 4 週，不標滾動值
+        self.assertIn("<h4>本週 3.6 張／可運用人日</h4>", _output_chart(rows[1:]))  # 只有 3 週：標題不寫滾動值
         self.assertNotIn('class="divider"', html)
         rows[0]["roster"] = 3
         self.assertIn(">名單 3→7 人</text>", _output_chart(rows))
 
     def test_time_chart_splits_each_week_into_explore_and_develop(self):
         from lib.render import _time_chart
-        row = lambda w, share: {"week": w, "explore_share": share, "roster": 7}
-        html = _time_chart([row("2026-W42", None), row("2026-W43", 0.6762), row("2026-W44", 0.4868)], {"2026-W43": 6, "2026-W44": 5})
+        row = lambda w, share, n: {"week": w, "explore_share": share, "explore_people": n, "roster": 7}
+        html = _time_chart([row("2026-W42", None, 0), row("2026-W43", 0.6762, 6), row("2026-W44", 0.4868, 5)])
         self.assertIn("<h4>本週有產出的人把 49% 的時間投到探索，比上週少 19 個百分點</h4>", html)
         self.assertIn('class="t-val">49%</text>', html)
         self.assertIn('class="t-val">—</text>', html)  # 沒人產出的週：不存在，不是 0%

@@ -59,7 +59,7 @@ ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
 CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近幾週（跟本週頁的圖同一段），不然資料檢查會一路變長
-# 11：health 逐週多了 explore_share（探索人力占比）、roster、person_days、cards_per_person_day、median_cards（config/team.json × config/holidays.json 的可運用人日）
+# 11：health 逐週多了 explore_share（探索人力占比）、explore_people、roster、person_days、cards_per_person_day、median_cards（config/team.json × config/holidays.json 的可運用人日）
 #     與 epics_active、epics_new、new_hours_share、new_same_day（探索同期陳述）；投入比例前幾名改本週有份額的 label 優先；
 #     近 CAPACITY_CHECK_WEEKS 週的人週工時超過可運用、有完成卡卻不在名單的人列進資料檢查（2026-11-02 本週頁產值與探索）；
 # 10：health 逐週多了 hours、hours_per_card（單卡平均工時）；進行中的卡多了 idle_days；週頁 epic 的 kickoff 多了 idle_days
@@ -794,7 +794,7 @@ def _week_periods(weeks: list, period) -> dict:
 
 def _explore(health, tree, done_leaves, week_of, group_of) -> None:
     """探索的同期數字，加在 health 每一列：epics_active 這週有完成卡的 epic 數（不含未歸屬 epic）、epics_new 其中第一次有完成卡的、
-    new_hours_share 新 epic 的工時占這週有填工時的比例（沒有填工時是 None）、explore_share 探索人力占比（這週沒人產出是 None）、
+    new_hours_share 新 epic 的工時占這週有填工時的比例（沒有填工時是 None）、explore_share 探索人力占比（這週沒人產出是 None）、explore_people 算占比的人數（不含未指派）、
     new_same_day 新 epic 裡建立當天就有完成卡的
     （量到的可能是開卡補登，不是探索，頁面寫出來讓讀者自己判斷；fable 審 2026-11-02）。
     epic 的第一張完成卡取結案時間最早的那張，週次用它在 week_of 的週，跟 health 同一個來源。"""
@@ -807,20 +807,23 @@ def _explore(health, tree, done_leaves, week_of, group_of) -> None:
         if gid not in first or moment < first[gid][0]:
             first[gid] = (moment, week_of[leaf["key"]])
     for h in health:
-        h.update(epics_active=0, epics_new=0, new_same_day=0, explore_share=None)
+        h.update(epics_active=0, epics_new=0, new_same_day=0, explore_share=None, explore_people=0)
     by_week = {h["week"]: h for h in health}
     # 探索人力占比（2026-11-02 使用者裁「照審查改」：人的時間是資源，開發跟探索都是投入）：每個有產出的人一週先換成 100%
     # （人內用自己填的工時當權重，同投入比例），切成探索（新 epic）與開發（其餘，含未歸屬 epic），再對有產出的人平均
+    # 未指派不是一個人：它的卡不進探索人力占比，也不算進 explore_people（Codex 審 ab4aff4）
     cells = {}
     for leaf in done_leaves:
-        week, gid = week_of[leaf["key"]], group_of[leaf["key"]]
+        week, gid, owner = week_of[leaf["key"]], group_of[leaf["key"]], tree.owner_of(leaf)
+        if owner == UNASSIGNED_OWNER:
+            continue
         kind = "探索" if gid != UNASSIGNED_EPIC and first[gid][1] == week else "開發"
-        cells.setdefault((week, tree.owner_of(leaf)), []).append({"label": kind, "points": leaf["points"]})
+        cells.setdefault((week, owner), []).append({"label": kind, "points": leaf["points"]})
     per_week = {}
     for (week, _), leaves in cells.items():
         per_week.setdefault(week, []).append(_shares(leaves).get("探索", 0.0))
     for week, shares in per_week.items():
-        by_week[week]["explore_share"] = round(sum(shares) / len(shares), 4)
+        by_week[week].update(explore_share=round(sum(shares) / len(shares), 4), explore_people=len(shares))
     active, new_hours, filled = {}, {}, {}
     for leaf in done_leaves:
         week, gid = week_of[leaf["key"]], group_of[leaf["key"]]

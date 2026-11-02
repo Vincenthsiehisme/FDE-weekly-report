@@ -1,6 +1,5 @@
 import io
 import json
-import shutil
 import tempfile
 import unittest
 from datetime import date
@@ -13,6 +12,18 @@ from lib.jira import CredentialError
 from lib.narrative import NarrativeError
 
 
+FIXTURE_TEAM = {"members": [{"name": "Alice", "since": "2026-09-01", "until": None}]}
+FIXTURE_HOLIDAYS = {"years": [2026], "off": {}, "workdays": {}}
+
+
+class RepoConfigTest(unittest.TestCase):
+    def test_repo_config_loads(self):
+        # repo 的正式 team.json、holidays.json 格式要對，routine 才不會在 metrics 那步停
+        team, calendar = weekly.load_capacity()
+        self.assertTrue(team)
+        self.assertIn(2026, calendar["years"])
+
+
 class AtomicWriteTest(unittest.TestCase):
     """算到一半失敗時，磁碟上不能留下這一期的任何新檔案（snapshot、metrics、Kick off 鎖定檔）。"""
 
@@ -21,9 +32,10 @@ class AtomicWriteTest(unittest.TestCase):
         root = Path(self.tmp.name)
         (root / "config").mkdir()
         (root / "config" / "excluded.json").write_text('{"cards": {}, "epics": {}}', encoding="utf-8")
-        # 名單與假日照 repo 的正式檔：可運用人日缺檔會讓 metrics 直接失敗（2026-11-02 本週頁產值與探索）
-        for name in ("team.json", "holidays.json"):
-            shutil.copy(weekly.ROOT / "config" / name, root / "config" / name)
+        # 名單與假日用固定的最小設定，不讀 repo 的正式檔：正式名單改了不該讓這些測試跟著壞（Codex 審 ab4aff4）；
+        # 缺檔會讓 metrics 直接失敗（2026-11-02 本週頁產值與探索），正式檔載不載得進來另有 test_repo_config_loads
+        (root / "config" / "team.json").write_text(json.dumps(FIXTURE_TEAM, ensure_ascii=False), encoding="utf-8")
+        (root / "config" / "holidays.json").write_text(json.dumps(FIXTURE_HOLIDAYS, ensure_ascii=False), encoding="utf-8")
         self.patches = [
             mock.patch.object(weekly, "ROOT", root),
             mock.patch.object(weekly, "DATA", root / "data"),

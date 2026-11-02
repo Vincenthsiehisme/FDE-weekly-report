@@ -778,7 +778,7 @@ class FlowHealthTest(unittest.TestCase):
         self.assertEqual([h["week"] for h in m["health"]], ["2026-W36", "2026-W37", "2026-W38", "2026-W39"])
         # 沒有完成卡的週：單卡工時是 None（不存在），不是 0h
         self.assertEqual(m["health"][-1], {"week": "2026-W39", "completed": 0, "via_progress": 0, "unestimated": 0, "hours": 0.0, "hours_per_card": None,
-                                           "epics_active": 0, "epics_new": 0, "new_same_day": 0, "new_hours_share": None, "explore_share": None,
+                                           "epics_active": 0, "epics_new": 0, "new_same_day": 0, "new_hours_share": None, "explore_share": None, "explore_people": 0,
                                            "roster": None, "person_days": None, "cards_per_person_day": None, "median_cards": None})
         self.assertEqual(m["kpis"]["via_progress"], {"now": None, "prev": 100})
         self.assertEqual(m["allocation"]["weeks"][-1], {"week": "2026-W39", "people": 0, "shares": {}})
@@ -842,6 +842,21 @@ class CapacityTest(unittest.TestCase):
             parse_team({"members": [{"name": "A", "since": "2026-09-10", "until": "2026-09-01"}]}, "team.json")
         with self.assertRaisesRegex(ValueError, "不在 years"):
             parse_calendar({"years": [2026], "off": {"2025-12-31": "跨年"}, "workdays": {}}, "holidays.json")
+        # 同一天兩邊都填、填錯邊都要失敗，不能讓補班安靜蓋掉假日（Codex 審 ab4aff4）
+        with self.assertRaisesRegex(ValueError, "off 2026-09-19 是週末"):
+            parse_calendar({"years": [2026], "off": {"2026-09-19": "週六"}, "workdays": {}}, "holidays.json")
+        with self.assertRaisesRegex(ValueError, "workdays 2026-09-18 是平日"):
+            parse_calendar({"years": [2026], "off": {}, "workdays": {"2026-09-18": "週五"}}, "holidays.json")
+
+    def test_repo_calendar_covers_the_next_two_weeks(self):
+        # 正式的 holidays.json 要涵蓋今天起 14 天：跨年那期掃到沒列的年份 routine 會停，年底 CI 先紅提醒補下一年
+        import json, pathlib
+        from datetime import timedelta
+        from lib.capacity import parse_calendar, workdays
+        root = pathlib.Path(__file__).resolve().parent.parent
+        cal = parse_calendar(json.loads((root / "config" / "holidays.json").read_text(encoding="utf-8")), "holidays.json")
+        today = date.today()
+        workdays(today, today + timedelta(days=14), cal)
 
     def test_person_days_rate_and_median_count_members_without_cards_as_zero(self):
         issues = [issue("CS-1", level=1, status="doing", labels=["甲"])] + [
@@ -897,9 +912,12 @@ class CapacityTest(unittest.TestCase):
             issue("CS-12", parent="CS-10", points=None, resolved=IN_WEEK, assignee="B"),
             # 未歸屬 epic 算開發
             issue("CS-20", points=1.0, resolved=IN_WEEK, assignee="C"),
+            # 未指派不是一個人：不進占比、不算人數（Codex 審 ab4aff4）
+            issue("CS-13", parent="CS-10", points=1.0, resolved=IN_WEEK),
         ]
         h = self.run_with(issues, None)["health"]
         self.assertEqual(h[-1]["explore_share"], round((0.25 + 1.0 + 0.0) / 3, 4))
+        self.assertEqual(h[-1]["explore_people"], 3)
         self.assertEqual(h[-2]["explore_share"], 1.0)
 
     def test_allocation_names_labels_with_a_share_this_week_first(self):

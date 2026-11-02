@@ -356,8 +356,11 @@ def _delta(now, prev, unit: str) -> str:
 
 
 def _rolling_rate(rows: list, end: int):
-    """到第 end 週為止（含）的滾動 4 週消化速率：4 週完成張數加總 ÷ 4 週可運用人日加總。沒有可運用人日（沒給名單）是 None。"""
-    window = rows[max(0, end - 3):end + 1]
+    """到第 end 週為止（含）的滾動 4 週消化速率：4 週完成張數加總 ÷ 4 週可運用人日加總。
+    不足 4 週（資料開頭那幾週）或沒有可運用人日（沒給名單）是 None：少於 4 週的值不能標成 4 週（Codex 審 ab4aff4）。"""
+    if end < 3:
+        return None
+    window = rows[end - 3:end + 1]
     days = sum(r["person_days"] or 0 for r in window)
     return sum(r["completed"] for r in window) / days if days else None
 
@@ -375,8 +378,10 @@ def _week_kpis(metrics) -> str:
 
     now = _rolling_rate(rows, len(rows) - 1) if rows else None
     prev = _rolling_rate(rows, len(rows) - 2) if len(rows) > 1 else None
-    if now is None:
+    if rows and rows[-1]["person_days"] is None:
         rate = tile("lead", "消化速率", DASH, "沒有成員名單，算不出可運用人日", "補 config/team.json")
+    elif now is None:
+        rate = tile("lead", "消化速率", DASH, f"資料還不到 4 週（目前 {len(rows)} 週）", "滾動 4 週：完成張數 ÷ 可運用人日，越高越好")
     else:
         delta = "沒有上週的值" if prev is None else (
             f"上週 {prev:.1f}，" + ("持平" if round(now, 1) == round(prev, 1) else f'{"多" if now > prev else "少"} {abs(round(now, 1) - round(prev, 1)):.1f}'))
@@ -451,7 +456,7 @@ def _output_chart(rows: list) -> str:
         return _chart("沒有成員名單，算不出可運用人日", f"本週完成 {now['completed']} 張；補 config/team.json 與 config/holidays.json 後重算", "")
     rolling = {r["week"]: _rolling_rate(rows, i) for i, r in enumerate(rows)}
     rate, r4 = now["cards_per_person_day"], rolling[now["week"]]
-    title = (f"本週 {rate:.1f} 張／可運用人日，滾動 4 週 {r4:.1f}" if rate is not None else "本週沒有可運用人日")
+    title = (f"本週 {rate:.1f} 張／可運用人日" + (f"，滾動 4 週 {r4:.1f}" if r4 is not None else "") if rate is not None else "本週沒有可運用人日")
     median = f"；名單上每人完成中位 {now['median_cards']:g} 張" if now["median_cards"] is not None else ""
     sub = (f"全隊完成 {now['completed']} 張 ÷ 可運用 {now['person_days']} 人日（名單 {now['roster']} 人 × 工作日，已扣國定假日、未扣請假，"
            f"一天 {capacity_lib.HOURS_PER_DAY}h）{median}。單週會被結卡集中在哪天拉動，看滾動值；卡切得越細張數越多 · {span}")
@@ -460,8 +465,8 @@ def _output_chart(rows: list) -> str:
     return _chart(title, sub, body)
 
 
-def _time_chart(rows: list, people: dict) -> str:
-    """時間怎麼分：每週一根 100% 柱，下面深色是探索、上面淺色是開發，探索的百分比寫在柱頂。people 是 {週次: 有產出的人數}。
+def _time_chart(rows: list) -> str:
+    """時間怎麼分：每週一根 100% 柱，下面深色是探索、上面淺色是開發，探索的百分比寫在柱頂，柱下是算占比的人數（不含未指派）。
     只陳述同期數字，不寫成探索多所以速率低（fable 審 2026-11-02）。"""
     now, prev = rows[-1], (rows[-2] if len(rows) > 1 else None)
     span = f"近 {len(rows)} 週"
@@ -486,7 +491,7 @@ def _time_chart(rows: list, people: dict) -> str:
             out.append(f'<rect x="{x:.1f}" y="{base - he:.1f}" width="{bw:.1f}" height="{he:.1f}" rx="2" class="bar-wk"><title>{_short_week(r["week"])} 探索 {p}%</title></rect>')
         out.append(f'<text x="{x + bw / 2:.1f}" y="{base - tall - 6:.1f}" text-anchor="middle" class="t-val">{DASH if p is None else f"{p}%"}</text>')
         out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 17}" text-anchor="middle" class="t-axis">{_short_week(r["week"])}</text>')
-        out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 33}" text-anchor="middle" class="t-axis">{people.get(r["week"], 0)} 人</text>')
+        out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 33}" text-anchor="middle" class="t-axis">{r["explore_people"]} 人</text>')
     out.append(f'<line x1="0" x2="{w}" y1="{base}" y2="{base}" class="axis"/></svg>')
     sub = ("每個有產出的人一週先換成 100%（用自己填的工時當權重），切成探索（這週第一次有完成卡的 epic）與開發（其餘，含未歸屬 epic），"
            f"再對有產出的人平均；柱頂是探索占比；只陳述同期數字 · {span}")
@@ -525,8 +530,7 @@ def _viz(metrics, page) -> str:
     rows = metrics["health"][-TREND_WEEKS:]
     if not rows:
         return '<p class="muted">還沒有完成的卡。</p>'
-    people = {w["week"]: w["people"] for w in metrics["allocation"]["weeks"]}
-    return f'<div class="viz">{_output_chart(rows)}{_time_chart(rows, people)}</div>' + _quality_line(metrics)
+    return f'<div class="viz">{_output_chart(rows)}{_time_chart(rows)}</div>' + _quality_line(metrics)
 
 
 STEP_IN_RULE = (f"前三個條件用同一個時鐘：最後一次更新到本期結束，{IDLE_DAYS} 天為界。專案沒動＝底下的卡都沒更新；"

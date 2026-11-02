@@ -33,8 +33,16 @@ def parse_calendar(data: dict, where: str) -> dict:
                 raise ValueError(f"{where} 的 {field} {text} 不在 years 列的年份裡")
             if not isinstance(name, str) or not name.strip():
                 raise ValueError(f"{where} 的 {field} {text} 沒有寫名稱")
+            # off 只收平日、workdays 只收週末：填反了會讓那天的算法跟沒填一樣，看起來卻有設定
+            if field == "off" and day.weekday() >= 5:
+                raise ValueError(f"{where} 的 off {text} 是週末，本來就不上班；只收平日放假")
+            if field == "workdays" and day.weekday() < 5:
+                raise ValueError(f"{where} 的 workdays {text} 是平日，本來就上班；只收週末補班")
             days.add(day)
         out[field] = days
+    both = out["off"] & out["workdays"]
+    if both:
+        raise ValueError(f"{where} 的 off 與 workdays 同時有 {'、'.join(sorted(d.isoformat() for d in both))}")
     return out
 
 
