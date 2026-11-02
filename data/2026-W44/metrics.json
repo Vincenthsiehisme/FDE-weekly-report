@@ -11886,7 +11886,7 @@
     {
       "completed": 8,
       "epics_active": 1,
-      "epics_closed": 0,
+      "epics_done": 0,
       "epics_new": 1,
       "epics_per_person_week": 0.0,
       "explore_people": 1,
@@ -11904,7 +11904,7 @@
     {
       "completed": 36,
       "epics_active": 4,
-      "epics_closed": 1,
+      "epics_done": 1,
       "epics_new": 4,
       "epics_per_person_week": 0.56,
       "explore_people": 2,
@@ -11922,9 +11922,9 @@
     {
       "completed": 140,
       "epics_active": 15,
-      "epics_closed": 6,
+      "epics_done": 8,
       "epics_new": 12,
-      "epics_per_person_week": 0.97,
+      "epics_per_person_week": 1.29,
       "explore_people": 7,
       "explore_share": 0.7165,
       "hours": 113.75,
@@ -11940,7 +11940,7 @@
     {
       "completed": 88,
       "epics_active": 16,
-      "epics_closed": 3,
+      "epics_done": 3,
       "epics_new": 9,
       "epics_per_person_week": 0.54,
       "explore_people": 7,
@@ -11958,9 +11958,9 @@
     {
       "completed": 152,
       "epics_active": 28,
-      "epics_closed": 5,
+      "epics_done": 8,
       "epics_new": 16,
-      "epics_per_person_week": 0.71,
+      "epics_per_person_week": 1.14,
       "explore_people": 6,
       "explore_share": 0.6222,
       "hours": 177.1,
@@ -11976,9 +11976,9 @@
     {
       "completed": 100,
       "epics_active": 20,
-      "epics_closed": 3,
+      "epics_done": 10,
       "epics_new": 6,
-      "epics_per_person_week": 0.54,
+      "epics_per_person_week": 1.79,
       "explore_people": 5,
       "explore_share": 0.4868,
       "hours": 96.5,
@@ -14704,7 +14704,7 @@
     "week": "2026-W44",
     "week_ending": "2026-10-27"
   },
-  "schema": 13,
+  "schema": 14,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {

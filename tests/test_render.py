@@ -739,10 +739,11 @@ class StepInTest(unittest.TestCase):
 
     def test_rolling_rate_tile_compares_with_last_weeks_rolling_value(self):
         from lib.render import _week_kpis
-        # W44 真資料（2026-11-02 觀察）：完成張數照舊在 completed，消化速度只看結案 epic
-        row = lambda w, done, epics, days, share: {"week": w, "completed": done, "epics_closed": epics, "person_days": days, "explore_share": share}
-        rows = [row("2026-W40", 36, 1, 9, 1.0), row("2026-W41", 140, 6, 31, 0.7165), row("2026-W42", 88, 3, 28, 0.3079),
-                row("2026-W43", 152, 5, 35, 0.6762), row("2026-W44", 100, 3, 28, 0.4868)]
+        # 手刻的 5 週（數列沿用 schema 13 時 W44 的結案數，只測四週值的算法）：完成張數照舊在 completed，消化速度看 epics_done
+        row = lambda w, done, epics, days, share, n: {"week": w, "completed": done, "epics_done": epics, "person_days": days,
+                                                      "explore_share": share, "explore_people": n, "roster": 7}
+        rows = [row("2026-W40", 36, 1, 9, 1.0, 2), row("2026-W41", 140, 6, 31, 0.7165, 7), row("2026-W42", 88, 3, 28, 0.3079, 7),
+                row("2026-W43", 152, 5, 35, 0.6762, 5), row("2026-W44", 100, 3, 28, 0.4868, 5)]
         html = _week_kpis({"health": rows, "kpis": {"stalled": {"now": 4, "prev": None}}})
         # 四週 17 個 ÷ (122 ÷ 5) = 0.70；上週那時 15 ÷ (103 ÷ 5) = 0.73；差值用兩位小數算（一位小數會寫成持平）
         self.assertIn('<span>過去四週平均消化速度（epic／人週）</span><strong>0.70</strong><small>上週 0.73，少 0.03</small>', html)
@@ -750,7 +751,16 @@ class StepInTest(unittest.TestCase):
         # 資料不到 4 週：不把 1～3 週的值標成滾動 4 週（Codex 審 ab4aff4）
         short = _week_kpis({"health": rows[:3], "kpis": {"stalled": {"now": 0, "prev": None}}})
         self.assertIn('<strong>—</strong><small>資料還不到 4 週（目前 3 週）</small>', short)
-        self.assertIn('<strong>49%</strong><small>上週 68%，少 19 個百分點</small>', html)
+        self.assertIn('<strong>49%</strong><small>上週 68%，少 19 個百分點</small><small class="hint">5／7 人有完成卡；這些人的時間，投到這週第一次有完成卡的 epic', html)
+        # 有完成卡的人數不同：不寫差值，寫上週的值與人數（2026-11-02 消化速度口徑修正）
+        rows[3]["explore_people"] = 6
+        html = _week_kpis({"health": rows, "kpis": {"stalled": {"now": 4, "prev": None}}})
+        self.assertIn('<strong>49%</strong><small>上週 68%（6 人），人數不同不直接比</small>', html)
+        self.assertNotIn("少 19 個百分點", html)
+        # 這週沒人有完成卡：小字只講這件事，不寫「0／7 人…這些人」
+        rows[-1].update(explore_share=None, explore_people=0)
+        html = _week_kpis({"health": rows, "kpis": {"stalled": {"now": 4, "prev": None}}})
+        self.assertIn('<small class="hint">本週沒有人有完成卡，看不出時間怎麼分</small>', html)
 
     def test_rate_tile_and_chart_read_computed_metrics_with_a_team(self):
         # 走正式路徑 compute(team, calendar) → render（fable 審 7a39417：手刻 dict 測不到欄位改名）
@@ -768,7 +778,7 @@ class StepInTest(unittest.TestCase):
         week = panel(render(m, {"highlights": [], "epic_results": {"CS-1": "結案。"}}, ["2026-W39"], in_reports_dir=False), "week")
         # W36～W39 四週各 5 人日＝4 人週，結案 2 個 → 0.50；上週那時不到 4 週
         self.assertIn('<span>過去四週平均消化速度（epic／人週）</span><strong>0.50</strong><small>沒有上週的值</small>', week)
-        self.assertIn("<h4>本週結案 1 個 epic，1.00 個／可運用人週；過去四週平均 0.50</h4>", week)
+        self.assertIn("<h4>本週完成 1 個 epic，1.00 個／可運用人週；過去四週平均 0.50</h4>", week)
         self.assertIn("名單 1 人的工作日合計 5 人日 ÷ 5", week)
 
     def test_two_charts_without_a_team_say_capacity_is_unknown(self):
@@ -777,6 +787,9 @@ class StepInTest(unittest.TestCase):
         self.assertEqual(viz.count('<div class="viz-panel'), 2)
         self.assertIn("<h4>沒有成員名單，算不出可運用人日</h4>", viz)
         self.assertIn("<h4>本週有產出的人把 100% 的時間投到探索</h4>", viz)
+        # 沒有名單：只寫幾個人，不寫「／None」（fable 審 80d905f）
+        self.assertIn("2 人有完成卡；這些人的時間", week)
+        self.assertNotIn("／None", week)
         self.assertIn('<p class="quality">資料品質：本週完成 2 張，有填工時 2 張</p>', week)
         # 投入比例與未結案 epic 狀態圖 2026-11-02 移出本週頁
         self.assertNotIn("力氣", week)
@@ -784,24 +797,25 @@ class StepInTest(unittest.TestCase):
 
     def test_output_chart_shows_rolling_values_under_the_bars(self):
         from lib.render import _output_chart
-        row = lambda w, epics, roster, days: {"week": w, "completed": 100, "epics_closed": epics, "roster": roster, "person_days": days,
+        row = lambda w, epics, roster, days: {"week": w, "completed": 100, "epics_done": epics, "roster": roster, "person_days": days,
                                               "epics_per_person_week": round(epics / (days / 5), 2)}
         rows = [row("2026-W41", 3, 7, 31), row("2026-W42", 4, 7, 28), row("2026-W43", 2, 7, 35), row("2026-W44", 2, 7, 28)]
-        html = _output_chart(rows, 12)
-        self.assertIn("<h4>本週結案 2 個 epic，0.36 個／可運用人週；過去四週平均 0.45</h4>", html)
-        self.assertIn("結案 epic ÷ 可運用 5.6 人週（名單 7 人的工作日合計 28 人日 ÷ 5，已扣國定假日、未扣請假）；"
-                      "另有 12 個 epic 底下的卡全完成、還沒結案，不算進來。", html)
+        html = _output_chart(rows)
+        self.assertIn("<h4>本週完成 2 個 epic，0.36 個／可運用人週；過去四週平均 0.45</h4>", html)
+        self.assertIn("完成 epic ÷ 可運用 5.6 人週（名單 7 人的工作日合計 28 人日 ÷ 5，已扣國定假日，請假不扣）；"
+                      "epic 底下的卡都做完（不等 epic 在 Jira 關掉）或 epic 已結案就算完成，算在最後一張卡做完那週。", html)
+        self.assertNotIn("不算進來", html)
         self.assertIn('class="t-val">0.36</text>', html)
         self.assertIn('class="t-axis">4 週 0.45</text>', html)
         self.assertEqual(html.count(">4 週 "), 1)  # 前三根不到 4 週，不標四週值
-        self.assertNotIn("張", html)  # 改算 epic：圖上不再出現張數
-        self.assertIn("<h4>本週結案 2 個 epic，0.36 個／可運用人週</h4>", _output_chart(rows[1:], 0))  # 只有 3 週：標題不寫四週值
+        self.assertNotRegex(html, r"\d+ 張")  # 改算 epic：圖上不再出現張數（副標的「最後一張卡」不是張數）
+        self.assertIn("<h4>本週完成 2 個 epic，0.36 個／可運用人週</h4>", _output_chart(rows[1:]))  # 只有 3 週：標題不寫四週值
         self.assertNotIn('class="divider"', html)
         rows[0]["roster"] = 3
-        self.assertIn(">名單 3→7 人</text>", _output_chart(rows, 0))
+        self.assertIn(">名單 3→7 人</text>", _output_chart(rows))
         # 7 週歷史只畫最後 6 週：畫面第一根（第 2 週）之前已有 1 週，不到 4 週；第 4 根起就有四週值，要用完整歷史算
         long = [row(f"2026-W{38 + i}", i + 1, 7, 30) for i in range(7)]
-        html = _output_chart(long, 0)
+        html = _output_chart(long)
         self.assertNotIn(">W38<", html)
         self.assertEqual(html.count(">4 週 "), 4)  # W41～W44：W41 往回 4 週是 W38～W41
         self.assertIn('class="t-axis">4 週 0.42</text>', html)  # (1+2+3+4) ÷ (120 ÷ 5)
@@ -811,27 +825,25 @@ class StepInTest(unittest.TestCase):
         # 第一個滾動值（W41）要算進 W38（Codex 審 84a886d）
         from lib.render import _viz
         health = [{"week": f"2026-W{38 + i}", "completed": 30, "unestimated": 0, "roster": 3 if i == 0 else 7,
-                   "person_days": 30, "epics_closed": i + 1, "epics_per_person_week": round((i + 1) / 6, 2),
+                   "person_days": 30, "epics_done": i + 1, "epics_per_person_week": round((i + 1) / 6, 2),
                    "explore_share": 0.5, "explore_people": 7} for i in range(7)]
-        # 出手區同一個判斷：未結案、底下的卡全完成才算 「卡都做完，epic 沒關」；已結案的、卡沒做完的不算
-        epic = lambda key, status, done, total: {"key": key, "status": status, "stalled": False, "week": {"completed_count": 0},
-                                                 "progress": {"done_cards": done, "total_cards": total}}
-        epics = [epic("CS-1", "On Track", 3, 3), epic("CS-2", "Done", 3, 3), epic("CS-3", "On Track", 1, 3), epic(None, None, 2, 2)]
-        html = _viz({"health": health, "checks": [], "epics": epics}, None)
+        html = _viz({"health": health, "checks": [], "epics": []}, None)
         self.assertNotIn(">W38<", html)
         self.assertEqual(html.count(">名單 3→7 人</text>"), 2)
         self.assertEqual(html.count(">4 週 "), 4)
         self.assertIn('class="t-axis">4 週 0.42</text>', html)  # W41：(1+2+3+4) ÷ (120 ÷ 5)，含畫面外的 W38
-        self.assertIn("另有 1 個 epic 底下的卡全完成、還沒結案", html)
+        self.assertIn("算在最後一張卡做完那週", html)
 
     def test_time_chart_splits_each_week_into_explore_and_develop(self):
         from lib.render import _time_chart
         row = lambda w, share, n: {"week": w, "explore_share": share, "explore_people": n, "roster": 7}
         html = _time_chart([row("2026-W42", None, 0), row("2026-W43", 0.6762, 6), row("2026-W44", 0.4868, 5)])  # 3 週歷史全畫
-        self.assertIn("<h4>本週有產出的人把 49% 的時間投到探索，比上週少 19 個百分點</h4>", html)
+        self.assertIn("<h4>本週有產出的人把 49% 的時間投到探索；上週 6 人、本週 5 人有完成卡，不直接比</h4>", html)
+        same = _time_chart([row("2026-W43", 0.6762, 5), row("2026-W44", 0.4868, 5)])
+        self.assertIn("<h4>本週有產出的人把 49% 的時間投到探索，比上週少 19 個百分點</h4>", same)
         self.assertIn('class="t-val">49%</text>', html)
         self.assertIn('class="t-val">—</text>', html)  # 沒人產出的週：不存在，不是 0%
-        self.assertIn('class="t-axis">5 人</text>', html)
+        self.assertIn('class="t-axis">5／7 人</text>', html)
         self.assertIn("<title>W44 開發 51%</title>", html)
 
     def test_retired_signals_stay_gone_from_every_tab(self):
