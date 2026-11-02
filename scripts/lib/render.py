@@ -2,7 +2,9 @@
 
 版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者原本是主管（2026-10-28 改成團隊負責人本人，見下），
 分四個頁籤：總覽（2026-10-07 由「持續累積」改名）、本週（預設）、團隊、成效說明（2026-10-29 加）。vault 的週報範本只當資訊清單，不照它的節次排。
-總覽依序是資源（多一格 epic 數）、依 label、團隊、專案列表、完成；專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開）；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
+總覽依序是資源（多一格 epic 數）、依 label、專案列表、完成；專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開）；
+2026-11-02 總覽優化（plan 在 vault 的 jira-weekly-report · 總覽優化）：段內依狀態排（進行中依幾天沒動、100% 待結案、已結案收合標結案週），
+epic 數下面併列三種狀態，名單人數變的週標分界，完成清單一週一列摘要；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
 Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都沒有時整欄不顯示、資源區只留一行說明，
 有檔但沒記錄的卡顯示「—」，不顯示 0。目標日不顯示（2026-10-06 使用者裁：不是當前重點；metrics 仍帶 due）。
 工時是實際花費時數（2026-09-30 使用者確認：Story point estimate 由執行人完工後回填），頁面一律叫「實際工時」；
@@ -133,14 +135,16 @@ def _kpis(tiles: list) -> str:
 def _resources(totals: dict, prefix: str, hours_label: str, page, epics=None) -> str:
     """資源 KPI：工時、Token、完成卡片。Token 一個檔都沒有時不放 Token 格，也不留說明
     （2026-10-07 使用者裁，取代 2026-09-27「資源區留一行」：AI 用量整合已擱置，沒有可預期的接入日）。
-    epics 只有總覽給：專案列表裡的 epic 數，多一格（2026-10-07 使用者要求）。"""
+    epics 只有總覽給：專案列表裡的 epic，多一格 epic 數（2026-10-07 使用者要求），下面併列進行中、100% 待結案、已結案三個數
+    （2026-11-02 總覽優化 AC-3：結案數不單獨出現）。"""
     unfilled = f'{totals["unestimated_completed"]} 張完成卡{UNFILLED}' if totals["unestimated_completed"] else None
     tiles = [(hours_label, fmt_hours(totals["hours"]), unfilled, True)]
     if page.tokens:
         tiles.append((f"{prefix} Token".strip(), fmt_tokens(totals["tokens"]), NO_TOKEN_SOURCE if totals["tokens"] is None else None, True))
     tiles.append((f"{prefix}完成卡片", str(totals["completed"]), None, False))
     if epics is not None:
-        tiles.append(("epic 數", str(epics), None, False))
+        n = {k: sum(1 for e in epics if _overview_state(e) == k) for k in ("open", "full", "done")}
+        tiles.append(("epic 數", str(len(epics)), f'進行中 {n["open"]} · 100% 待結案 {n["full"]} · 已結案 {n["done"]}', False))
     return _kpis(tiles)
 
 
@@ -284,12 +288,6 @@ def _week_table(metrics, narrative, page) -> str:
     if loose:
         sections.append(f'<h4>{esc(UNASSIGNED_EPIC_LABEL)}</h4><div class="projs">{"".join(_week_row(e, narrative, metrics, page) for e in loose)}</div>')
     return _week_table_head(page) + "".join(sections)
-
-
-def _done_group(title: str, count: int, hours, body: str) -> str:
-    """完成清單一個專案一組，預設收合（2026-10-07 使用者裁）：標題帶張數與工時，展開才看逐張。"""
-    nums = f"{count} 張" + (f" · {fmt_hours(hours)}" if hours is not None else "")
-    return f'<details class="done-group"><summary>{title} <span class="muted">· {esc(nums)}</span></summary>{body}</details>'
 
 
 BREAKPOINT_LABEL = "改組前"  # 2026-09-30 使用者定名；metrics 的欄位叫 migrated
@@ -739,7 +737,7 @@ def _week_panel(metrics, narrative, page) -> str:
 
 def _overview_table_head(page) -> str:
     return ('<div class="proj head"><span class="name">專案</span><span class="prog">進度（深色＝本週）</span>'
-            f'<span class="people">人</span><span class="num">累計工時</span>{TOKEN_HEAD if page.tokens else ""}</div>')
+            f'<span class="idle">幾天沒動</span><span class="people">人</span><span class="num">累計工時</span>{TOKEN_HEAD if page.tokens else ""}</div>')
 
 
 def _people_cell(scope: dict) -> str:
@@ -749,16 +747,36 @@ def _people_cell(scope: dict) -> str:
     return f'<span class="people" data-label="人">{scope["people_count"]}{f" <small>{names}</small>" if names else ""}{note}</span>'
 
 
-def _overview_project(e, week_done: dict, staffing: dict, page) -> str:
-    """總覽一個專案一列：名稱、狀態、三段進度條、人、累計工時；展開看 Kick off 目標五段，預設收合（2026-10-07 使用者裁）。
+def _overview_state(e) -> str:
+    """總覽專案的狀態：已結案 → done；底下算進進度的卡全完成 → full（100% 待結案，同 _epic_state）；其餘 → open。"""
+    if e["status"] == "Done":
+        return "done"
+    p = e["progress"]
+    return "full" if p["total_cards"] and p["done_cards"] == p["total_cards"] else "open"
+
+
+def _idle_cell(e) -> str:
+    """幾天沒動：跟本週頁出手區同一個時鐘（metrics 的 idle_days），停滯（IDLE_DAYS 天以上）標警示色。
+    未歸屬 epic 沒有這個值，留空（窄螢幕空格不顯示）；有卡號的缺值在 _by_idle 就擋下來。"""
+    if not e["key"]:
+        return '<span class="idle" data-label="幾天沒動"></span>'
+    days = f'<b class="alert">{e["idle_days"]} 天</b>' if e["stalled"] else f'{e["idle_days"]} 天'
+    return f'<span class="idle" data-label="幾天沒動">{days}</span>'
+
+
+FULL_TAG = ' <span class="tag warn">100% 待結案</span>'
+
+
+def _overview_project(e, week_done: dict, staffing: dict, page, tag: str = "") -> str:
+    """總覽一個未結案專案（或未歸屬 epic）一列：名稱、三段進度條、幾天沒動、人、累計工時；展開看 Kick off 目標五段，預設收合（2026-10-07 使用者裁）。
     用 <details>，沒有 JS 也能展開。Kick off 一段都沒填（含未歸屬 epic）就不給展開，點開只看到「未填」是空的承諾；
     缺 Kick off 卡仍列在資料檢查（2026-10-07 總覽 UI 盤點 U6）。
-    本週段取本週頁同一個 epic 的完成數；先前已結案的 epic 本週沒有專案列，就是 0。"""
+    本週段取本週頁同一個 epic 的完成數；本週沒有專案列的 epic 就是 0。"""
     token = f'<span class="num tok" data-label="Token">Token {esc(fmt_tokens(e["tokens"]))}</span>' if page.tokens else ""
     scope = staffing[e["id"]]["cumulative"] if e["id"] in staffing else {"people": [], "people_count": 0, "unassigned": False, "unestimated": 0}
     unfilled = f'<small>{scope["unestimated"]} 張{UNFILLED}</small>' if scope["unestimated"] else ""
-    head = (f'<span class="name">{page.title(e["key"], e["summary"])} {_pill(e["status"])}</span>'
-            f'{_progress_cell(e["progress"], week_done.get(e["id"], 0))}{_people_cell(scope)}'
+    head = (f'<span class="name">{page.title(e["key"], e["summary"])}{tag}</span>'
+            f'{_progress_cell(e["progress"], week_done.get(e["id"], 0))}{_idle_cell(e)}{_people_cell(scope)}'
             f'<span class="num" data-label="累計工時">{esc(fmt_hours(e["hours"]))}{unfilled}</span>{token}')
     body = _kickoff(e["kickoff"], BENEFIT_FIELDS) if e["key"] else ""
     if not body:
@@ -766,20 +784,67 @@ def _overview_project(e, week_done: dict, staffing: dict, page) -> str:
     return f'<details class="proj"><summary class="proj-head">{head}</summary><div class="proj-body">{body}</div></details>'
 
 
+def _overview_closed(e, delivered: set, page) -> str:
+    """已結案一列（段內沒有自己的表頭，結案週寫成「W42 結案」自己看得懂）：名稱、結案週、成效說明連結（有已完成的 Deliverable 才有，點了切到成效說明頁籤）、累計工時。"""
+    token = f'<span class="num tok" data-label="Token">Token {esc(fmt_tokens(e["tokens"]))}</span>' if page.tokens else ""
+    link = '<a href="#delivered">成效說明 ›</a>' if e["key"] in delivered else ""
+    return (f'<div class="proj"><div class="proj-head"><span class="name">{page.title(e["key"], e["summary"])}</span>'
+            f'<span class="cw" data-label="結案週">{esc(_short_week(e["closed_week"]))} 結案</span>'
+            f'<span class="dv" data-label="成效說明">{link}</span>'
+            f'<span class="num" data-label="累計工時">{esc(fmt_hours(e["hours"]))}</span>{token}</div></div>')
+
+
+def _by_idle(epics: list) -> list:
+    """未結案的依幾天沒動排、久的在上；有卡號的未結案 epic 少了 idle_days 就讓它炸，不排到最後裝沒事。"""
+    for e in epics:
+        if e["idle_days"] is None:
+            raise ValueError(f'{e["key"]} 未結案卻沒有 idle_days：metrics 要用 schema {SCHEMA} 重算')
+    return sorted(epics, key=lambda e: (-e["idle_days"], issue_sort_key(e["key"])))
+
+
+def _by_closed(epics: list) -> list:
+    """已結案的依結案週排、新的在上；少了 closed_week 就讓它炸。"""
+    for e in epics:
+        if not e["closed_week"]:
+            raise ValueError(f'{e["key"]} 已結案卻沒有 closed_week：metrics 要用 schema {SCHEMA} 重算')
+    return sorted(epics, key=lambda e: (e["closed_week"], issue_sort_key(e["key"])), reverse=True)
+
+
 def _overview_projects(metrics, page) -> str:
-    """專案依 label 分段，段的順序跟 label 表一樣；未歸屬 epic 放最後一段。段首的工時取 label 表，兩處不會各算一次。"""
+    """專案依 label 分段，段的順序跟 label 表一樣；未歸屬 epic 放最後一段。段首的工時取 label 表，兩處不會各算一次。
+    段內依狀態排（2026-11-02 使用者裁版型乙，plan：jira-weekly-report · 總覽優化）：進行中依幾天沒動排、久的在上，
+    再列 100% 待結案（帶標籤，也依幾天沒動排），已結案收在段尾、新結案的在上。label 分段與區塊順序是 2026-10-07 鎖定的，不動。"""
     epics = metrics["cumulative"]["epics"]
     if not epics:
         return '<p class="muted">還沒有任何專案</p>'
     week_done = {e["id"]: e["week"]["completed_count"] for e in metrics["epics"]}
     staffing = {s["id"]: s for s in metrics["staffing"]}
-    sections = [_overview_table_head(page)]
+    delivered = {c["epic"] for c in metrics["deliverables"] or []}
+    keyed = [e for e in epics if e["key"]]
+    full_all = [e for e in keyed if _overview_state(e) == "full"]
+    idle_open = sum(1 for e in keyed if _overview_state(e) == "open" and e["stalled"])
+    sections = [f'<p class="note">每段先列進行中（久沒動的在上），再列 100% 待結案，已結案收在段尾。全部 100% 待結案 {len(full_all)} 個；'
+                f'進行中 {IDLE_DAYS} 天以上沒動 {idle_open} 個，100% 待結案裡也 {IDLE_DAYS} 天以上沒動的 {sum(1 for e in full_all if e["stalled"])} 個。</p>',
+                _overview_table_head(page)]
     for row in metrics["labels"]:
-        members = [e for e in epics if e["key"] and e["label"] == row["label"]]
+        members = [e for e in keyed if e["label"] == row["label"]]
         if not members:
             continue
-        sections.append(f'<h4>{esc(row["label"])} <span class="muted">· {len(members)} 個專案 · 累計工時 {esc(fmt_hours(row["cumulative"]["hours"]))}</span></h4>'
-                        f'<div class="projs">{"".join(_overview_project(e, week_done, staffing, page) for e in members)}</div>')
+        open_ = _by_idle([e for e in members if _overview_state(e) == "open"])
+        full = _by_idle([e for e in members if _overview_state(e) == "full"])
+        done = _by_closed([e for e in members if _overview_state(e) == "done"])
+        idle_n = sum(1 for e in open_ if e["stalled"])
+        counts = "、".join(filter(None, [
+            (f"進行中 {len(open_)}" + (f"（{idle_n} 個久沒動）" if idle_n else "")) if open_ else "",
+            f"100% 待結案 {len(full)}" if full else "",
+            f"已結案 {len(done)}" if done else ""]))
+        body = ("".join(_overview_project(e, week_done, staffing, page) for e in open_)
+                + "".join(_overview_project(e, week_done, staffing, page, FULL_TAG) for e in full))
+        if done:
+            body += (f'<details class="closed"><summary>已結案 {len(done)} 個</summary>'
+                     f'{"".join(_overview_closed(e, delivered, page) for e in done)}</details>')
+        sections.append(f'<h4>{esc(row["label"])} <span class="muted">· {esc(counts)} · 累計工時 {esc(fmt_hours(row["cumulative"]["hours"]))}</span></h4>'
+                        f'<div class="projs">{body}</div>')
     loose = [e for e in epics if not e["key"]]
     if loose:
         sections.append(f'<h4>未歸屬 epic <span class="muted">· 卡片照自己的 label 算進 label 表</span></h4>'
@@ -805,28 +870,77 @@ def _week_projects(cards: list, order: dict, page) -> str:
     return f'<ul class="list">{"".join(items)}</ul>'
 
 
+def _roster_changes(history: list) -> list:
+    """名單人數變的週：[(週, 前一週人數, 這週人數)]，從 health 的 roster 推，不寫死哪一週（W41 團隊搬入是 3→7）。
+    名單沒資料（None，沒有 config/team.json 的舊資料或測試）的週不比。"""
+    return [(history[i]["week"], history[i - 1]["roster"], history[i]["roster"]) for i in range(1, len(history))
+            if None not in (history[i - 1]["roster"], history[i]["roster"]) and history[i - 1]["roster"] != history[i]["roster"]]
+
+
+def _since_note(metrics) -> str:
+    """起算說明。名單人數變過就接一句分界：跨期的累計數字含人少的那幾週，讀的人要知道。"""
+    c, history = metrics["cumulative"], metrics["health"]
+    if not c["since"]:
+        return '<p class="note">到本期結束還沒有任何完成的卡。</p>'
+    base = f'從 {esc(fmt_date(c["since"]))} 第一張完成卡起算，到本期結束。'
+    changes = _roster_changes(history)
+    if not changes:
+        return f'<p class="note">{base}</p>'
+    first, before, _ = changes[0]
+    early = [r for r in history if r["week"] < first]
+    people = sorted({r["explore_people"] for r in early})
+    who = f"{people[0]}～{people[-1]}" if len(people) > 1 else str(people[0])
+    span = _short_week(early[0]["week"]) + (f'～{_short_week(early[-1]["week"])}' if len(early) > 1 else "")
+    marks = "、".join(f"{_short_week(w)} 起名單 {b}→{a} 人" for w, b, a in changes)
+    return (f'<p class="note">{base}<b class="era">{esc(marks)}</b>：{esc(span)} 名單 {before} 人、有完成卡的 {esc(who)} 人，'
+            f'累計數字含這 {len(early)} 週。</p>')
+
+
+def _done_weeks(metrics, page) -> str:
+    """完成：一週一列摘要（週、名單人數、完成張數、實際工時），點開才看依專案分組的逐卡，新的週在上（2026-11-02 總覽優化 AC-5）。
+    名單人數變的地方在兩週之間畫分界線，上下兩段的張數不能直接比。分界照週次位置畫，不看那週有沒有列：
+    名單變動那週沒有完成卡（cumulative.weeks 沒有那一列）時，線畫在它前後兩列之間（fable 審 2026-11-02）。"""
+    c = metrics["cumulative"]
+    if not c["weeks"]:
+        return '<p class="muted">還沒有任何完成的卡。</p>'
+    roster = {h["week"]: h["roster"] for h in metrics["health"]}
+    changes = _roster_changes(metrics["health"])
+    order = {e["id"]: i for i, e in enumerate(c["epics"])}
+    out = ['<div class="wk-sum"><div class="wrow head"><span>週</span><span>名單</span><span>完成張數</span><span>實際工時</span></div>']
+    newer = None
+    for w in c["weeks"]:  # 新的在上：這一列上方的線是變動週落在（這週, 上一列那週] 的
+        for week, b, a in reversed(changes):
+            if w["week"] < week and (newer is None or week <= newer):
+                out.append(f'<div class="era-line"><span>名單 {b}→{a} 人（{esc(_short_week(week))} 起）</span></div>')
+        newer = w["week"]
+        cards = [r for r in c["completed"] if r["week"] == w["week"]]
+        size = roster.get(w["week"])
+        out.append(f'<details class="wrow"><summary><span>{esc(w["week"])}</span><span>{f"{size} 人" if size is not None else DASH}</span>'
+                   f'<span>{w["completed"]} 張</span><span>{esc(fmt_hours(w["hours"]))}</span></summary>'
+                   f'{_week_projects(cards, order, page)}</details>')
+    return "".join(out) + "</div>"
+
+
 def _cumulative_panel(metrics, page) -> str:
     """區塊順序：資源 → 依 label → 專案列表 → 完成（2026-10-07 使用者要求，取代同日「跟本週頁一致」；
     2026-10-28 團隊表拿掉：每人累計工時與張數並排就是人與人比較，跟「不排名」衝突，人的累計看團隊頁）。
-    資源多一格 epic 數，是專案列表裡的 epic 數，未歸屬 epic 不是一個 epic，不算。"""
+    資源的 epic 數是專案列表裡的 epic 數，未歸屬 epic 不是一個 epic，不算；下面一定併列進行中、100% 待結案、已結案三個數
+    （fable 審 2026-11-02：累計結案多是小題，單看結案數會誤讀）。名單人數變的週在起算說明、依 label 與完成三處標出來。"""
     c = metrics["cumulative"]
-    since = f'從 {esc(fmt_date(c["since"]))} 第一張完成卡起算，到本期結束。' if c["since"] else "到本期結束還沒有任何完成的卡。"
-    order = {e["id"]: i for i, e in enumerate(c["epics"])}
-    weeks = []
-    for w in c["weeks"]:
-        cards = [r for r in c["completed"] if r["week"] == w["week"]]
-        weeks.append(_done_group(esc(w["week"]), w["completed"], w["hours"], _week_projects(cards, order, page)))
+    changes = _roster_changes(metrics["health"])
+    marks = "、".join(f"{_short_week(w)} 起 {b}→{a} 人" for w, b, a in changes)
+    era = f'<p class="legend">累計跨過名單人數變動（{esc(marks)}），前後的週人數不同。</p>' if changes else ""
     return f"""
-  <p class="note">{since}</p>
+  {_since_note(metrics)}
   <h3>資源</h3>
-  {_resources(c["totals"], "累計", "累計工時", page, epics=sum(1 for e in c["epics"] if e["key"]))}
+  {_resources(c["totals"], "累計", "累計工時", page, epics=[e for e in c["epics"] if e["key"]])}
   <h3>依 label</h3>
-  {_labels(metrics)}
+  {era}{_labels(metrics)}
   <h3>專案列表</h3>
-  <p class="legend">進度條 <i class="sw-before"></i>之前完成 <i class="sw-week"></i>本週完成 <i class="sw-left"></i>未完成；點一列看 Kick off 的目標五段。</p>
+  <p class="legend">進度條 <i class="sw-before"></i>之前完成 <i class="sw-week"></i>本週完成 <i class="sw-left"></i>未完成；幾天沒動＝底下的卡最後一次更新到本期結束（還沒有卡的看 epic 自己），{IDLE_DAYS} 天以上標色；點一列看 Kick off 的目標五段。</p>
   {_overview_projects(metrics, page)}
   <h3>完成</h3>
-  {"".join(weeks) or '<p class="muted">還沒有任何完成的卡。</p>'}
+  {_done_weeks(metrics, page)}
   {_breakpoint(metrics["migrated"]["cumulative"], page, with_week=True)}"""
 
 
@@ -971,7 +1085,8 @@ def _glossary(metrics) -> str:
     terms = (
         ("本週", f'{fmt_day(period["start"])} 00:00 到 {fmt_day(period["week_ending"])} 23:59（UTC+8）。'
                  "卡片的 Jira 完成時間落在這段期間內，才算本週完成；不是週一到週日。"),
-        ("累計", f'從第一張完成卡起算，到本週結束（{fmt_date(period["week_ending"])}）為止。'),
+        ("累計", f'從第一張完成卡起算，到本週結束（{fmt_date(period["week_ending"])}）為止。'
+                 "成員名單（config/team.json）人數變過的週，在總覽起算說明、依 label 與完成清單標出來，前後兩段的數字不能直接比。"),
         ("完成卡片", "完成的卡片張數，只數沒有子卡的卡。有子卡的父卡不算一張，它的張數與工時都計在子卡。"),
         ("實際工時", "Jira 的 Story point estimate 欄位，由執行人完工後回填花費的時數。"
                      "只加沒有子卡的卡；有子卡的父卡自己的數字不算，避免重複。"),
@@ -984,15 +1099,17 @@ def _glossary(metrics) -> str:
                  "不列入的卡與改組前的卡不算完成、仍算在全部張數裡，所以 Jira 上已全部完成的專案這裡可能不到 100%。"),
         ("label", "專案的 label 取 epic 在 Jira 上的 label；不在 epic 底下的卡用自己的 label。"
                   "沒有 label、或有兩個以上 label 的歸「未分類」，並列進資料檢查。epic 數是總覽專案列表裡掛這個 label 的 epic。"),
-        ("Done／On Track", "Done 是 epic 在 Jira 已完成；On Track 只表示 epic 還沒完成，不代表進度評估。"),
+        ("Done／On Track", "Done 是 epic 在 Jira 已完成；On Track 只表示 epic 還沒完成，不代表進度評估。"
+                           "總覽專案列表的已結案收在每段最後，標 epic 在 Jira 完成的那一週（結案週）。"),
         ("沒動", f"最後一次更新到本週結束過了幾天（只改 label 也算更新）。專案看底下的卡（不算 Kick off），卡看它自己；"
-                 f"{IDLE_DAYS} 天以上列進「這週要你出手的地方」，人卡標警示色。Kick off 的「需要決定」沒有沒動這回事，有寫就列，附 Kick off 卡寫了幾天。"),
+                 f"{IDLE_DAYS} 天以上列進「這週要你出手的地方」，人卡與總覽專案列表的幾天沒動標警示色。Kick off 的「需要決定」沒有沒動這回事，有寫就列，附 Kick off 卡寫了幾天。"),
         ("停滯", f"epic 還沒完成，專案沒動 {IDLE_DAYS} 天以上；底下沒有卡就看 epic 自己。"),
         ("可運用人日", f"config/team.json 成員名單裡，每人在職期間的工作日加總；工作日是週一到週五扣掉 config/holidays.json 的國定假日"
                       f"（人事行政總處辦公日曆表），加上補班日，一天 {capacity_lib.HOURS_PER_DAY} 小時。請假還沒有資料來源，沒扣。"
                       "只拿來當產出的分母，不跟實際工時比：實際工時是完工後回填，一人一週超過可運用時數的列進資料檢查，可能填錯。"),
         ("新 epic", "這週第一次有完成卡的 epic（不含未歸屬 epic）。epic 建立當天就有完成卡的另外數出來，可能是事後一次開卡結卡；只陳述同期數字，不代表原因。"),
-        ("100% 待結案", "epic 還沒完成，但底下算進進度的卡全部完成了；列進「這週要你出手的地方」，人卡負責欄另外數。"),
+        ("100% 待結案", "epic 還沒完成，但底下算進進度的卡全部完成了；列進「這週要你出手的地方」，人卡負責欄另外數，"
+                        "總覽專案列表排在每段的進行中之後、帶標籤。資源的 epic 數下面跟進行中、已結案併列。"),
         ("消化速率", "完成卡片張數 ÷ 可運用人日。本週頁的主數字是滾動 4 週（4 週完成張數加總 ÷ 4 週可運用人日加總），跟上週那時的滾動值比；"
                      "單週值會被結卡集中在哪一天拉動。卡切得越細張數越多，所以副標附名單上每人完成張數的中位數。"),
         ("探索人力占比", "每個有產出的人一週先把自己完成的卡換成 100%（用自己填的實際工時當權重，沒填的卡補他這週的平均，整週都沒填就用張數），"
@@ -1203,16 +1320,29 @@ div.proj>.proj-head,.proj.head{padding-left:16px}
 .sig{display:inline-block;font-size:11px;padding:0 6px;border-radius:4px;background:var(--warn-bg);color:var(--warn-fg);white-space:nowrap}
 .next{width:22%;color:var(--muted);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .people{width:150px;font-size:13px;font-variant-numeric:tabular-nums}
+.idle{flex:none;width:72px;text-align:right;font-variant-numeric:tabular-nums;font-size:13px}.proj.head .idle{font-size:12px}
+.cw{flex:none;width:88px;color:var(--muted);font-size:13px;text-align:right}
+.dv{flex:none;width:88px;text-align:right;font-size:13px}
+details.closed{border-top:1px solid var(--line);padding:6px 0}
+details.closed>summary{font-size:13px;color:var(--muted)}
 .proj-body{padding:0 0 10px 16px}
 .labels{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 14px}
 .lrow{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
 .lrow:last-child{border-bottom:0}
 .lrow .lname{width:180px;flex:none}
-.lrow .num{color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px}
+.lrow .num{flex:none;width:200px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px}
 .lrow .num small{display:block;white-space:normal}
-.done-group{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 14px;margin:0 0 8px}
-.done-group>summary{font-size:14px;font-weight:600}
-.done-group .list{margin-top:6px}
+/* 總覽完成：一週一列摘要，名單人數變的地方畫分界（2026-11-02 總覽優化） */
+.wk-sum{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 14px}
+.wrow{border-bottom:1px solid var(--line)}.wrow:last-child{border-bottom:0}
+.wrow>summary,.wrow.head{display:grid;gap:12px;padding:8px 0;font-size:14px;font-variant-numeric:tabular-nums}
+.wrow>summary{grid-template-columns:12px minmax(0,1fr) 80px 90px 90px}.wrow>summary::before{margin:0}
+.wrow.head{grid-template-columns:minmax(0,1fr) 80px 90px 90px;color:var(--muted);font-size:12px;padding-left:24px}
+.wrow>summary>span:not(:first-child),.wrow.head>span:not(:first-child){text-align:right}
+.wrow .list{margin:0 0 8px 18px}
+.era{color:var(--text);font-weight:600;margin-left:4px}
+.era-line{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;padding:4px 0;border-bottom:1px solid var(--line)}
+.era-line::before,.era-line::after{content:"";flex:1;border-top:1px dashed var(--muted)}
 .dv-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
 .dv-card:has(details[open]){grid-column:1/-1}
 .dv-card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
@@ -1377,7 +1507,10 @@ details[open]>summary::before{content:"▾"}
   .owner,.next{width:auto;white-space:normal;flex-basis:100%}
   .people{width:auto;flex:1 1 0;min-width:0}  /* 人與累計工時同一行（2026-10-07 總覽 UI 盤點 U8） */
   .sigs{width:auto}
-  .lrow{flex-wrap:wrap}.lrow .lname{width:100%}.lrow .bar{flex-basis:100%}
+  .lrow{flex-wrap:wrap}.lrow .lname{width:100%}.lrow .bar{flex-basis:100%}.lrow .num{width:auto;text-align:left}
+  .idle,.cw,.dv{width:auto;text-align:left}
+  .wrow>summary{grid-template-columns:12px minmax(0,1fr) auto auto}.wrow.head{grid-template-columns:minmax(0,1fr) auto auto}
+  .wrow>summary>span:nth-child(2),.wrow.head>span:nth-child(2){display:none}
   .list summary .nums{grid-column:2;margin-left:0}
   .tabs button{flex:1;padding:10px 4px}
 }

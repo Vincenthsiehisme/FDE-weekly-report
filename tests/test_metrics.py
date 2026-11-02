@@ -637,7 +637,7 @@ class FlowHealthTest(unittest.TestCase):
             issue("CS-4", parent="CS-1", points=2.0, resolved=LAST_WEEK, assignee="B", created="2026-09-10T03:59:30.000+0800", progress_seen=True),
         ]
         m = run(issues)
-        self.assertEqual(m["schema"], 11)
+        self.assertEqual(m["schema"], 12)
         # 單卡工時只除有填的張數：W39 CS-2 1h、CS-3 沒填 → 1.0h，不是 0.5h（2026-11-02 本週頁一圖一訊息 AC-1）
         keys = ("week", "completed", "via_progress", "unestimated", "hours", "hours_per_card")
         self.assertEqual([{k: h[k] for k in keys} for h in m["health"]], [
@@ -946,3 +946,38 @@ class CapacityTest(unittest.TestCase):
         with mock.patch.object(metrics_module, "ALLOCATION_TOP", 1):
             alloc = run(issues)["allocation"]
         self.assertEqual(alloc["labels"], ["新", "其他"])
+
+
+class CumulativeEpicStateTest(unittest.TestCase):
+    """總覽優化 AC-6（schema 12）：累計專案帶結案週、幾天沒動與停滯，跟週頁 epic 同一個時鐘。"""
+
+    def test_open_epics_get_idle_days_and_settled_ones_get_their_week(self):
+        issues = [
+            issue("CS-1", level=1, status="doing", labels=["甲"]),
+            issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A", updated="2026-09-20T10:00:00.000+0800"),
+            # 底下的卡 21 天沒更新：停滯
+            issue("CS-10", level=1, status="doing", labels=["甲"]),
+            issue("CS-11", parent="CS-10", status="todo", updated="2026-09-01T10:00:00.000+0800"),
+            # 還沒有卡：看 epic 自己
+            issue("CS-20", level=1, status="todo", labels=["甲"], updated="2026-09-05T10:00:00.000+0800"),
+            issue("CS-30", level=1, status="done", resolved=LAST_WEEK, labels=["甲"]),
+            issue("CS-31", parent="CS-30", points=2.0, resolved=LAST_WEEK, assignee="A"),
+            issue("CS-40", points=1.0, resolved=IN_WEEK, assignee="A"),
+        ]
+        m = run(issues)
+        cum = {e["id"]: e for e in m["cumulative"]["epics"]}
+        week = {e["id"]: e for e in m["epics"]}
+        pick = lambda e: (e["closed_week"], e["idle_days"], e["stalled"])
+        self.assertEqual(pick(cum["CS-1"]), (None, 2, False))
+        self.assertEqual(pick(cum["CS-10"]), (None, 21, True))
+        self.assertEqual(pick(cum["CS-20"]), (None, 17, True))
+        self.assertEqual(pick(cum["CS-30"]), ("2026-W38", None, False))
+        self.assertEqual(pick(cum[UNASSIGNED_EPIC]), (None, None, False))
+        # 抓取當下已結案、但結案在期末之後：累計照期末算未結案，有幾天沒動、沒有結案週；週頁用抓取當下的狀態篩掉它
+        late = run(issues + [issue("CS-60", level=1, status="done", resolved="2026-09-23T09:00:00.000+0800", labels=["甲"]),
+                             issue("CS-61", parent="CS-60", status="todo")])
+        row = next(e for e in late["cumulative"]["epics"] if e["id"] == "CS-60")
+        self.assertEqual((row["status"], row["closed_week"], row["idle_days"]), ("On Track", None, 2))
+        self.assertNotIn("CS-60", {e["id"] for e in late["epics"]})
+        for key in ("CS-1", "CS-10", "CS-20"):
+            self.assertEqual((cum[key]["idle_days"], cum[key]["stalled"]), (week[key]["idle_days"], week[key]["stalled"]), key)
