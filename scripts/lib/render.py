@@ -541,8 +541,9 @@ def _time_chart(history: list) -> str:
         out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 17}" text-anchor="middle" class="t-axis">{_short_week(r["week"])}</text>')
         out.append(f'<text x="{x + bw / 2:.1f}" y="{base + 33}" text-anchor="middle" class="t-axis">{r["explore_people"]}{"／" + str(r["roster"]) if r["roster"] is not None else ""} 人</text>')
     out.append(f'<line x1="0" x2="{w}" y1="{base}" y2="{base}" class="axis"/></svg>')
-    sub = ("每個有產出的人一週先換成 100%（用自己填的工時當權重），切成探索（這週第一次有完成卡的 epic）與開發（其餘，含未歸屬 epic），"
-           f"再對有產出的人平均；柱頂是探索占比；只陳述同期數字 · {span}")
+    # 副標只講怎麼分、怎麼算，細節（沒填工時怎麼補）在名詞定義（2026-11-02 使用者嫌繞口）
+    sub = ("探索是這週第一次有完成卡的 epic，其餘（含未歸屬 epic）算開發。"
+           f"先照每人自己填的工時算兩邊各占幾成，再把有完成卡的人平均；柱頂是探索占比 · {span}")
     legend = '<p class="legend"><i class="sw-week"></i>探索 <i class="sw-before"></i>開發</p>'
     return _chart(title, sub, legend + "".join(out))
 
@@ -1474,9 +1475,11 @@ details[open]>summary::before{content:"▾"}
 .wk-kpis strong.alert,.alert{color:var(--alert)}
 .wk-kpis small.hint{margin-top:2px}
 .viz{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0 0}
-.viz-panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.viz-panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0;display:flex;flex-direction:column}
 .viz-panel.wide{grid-column:1/-1}
 .viz-panel h4{margin:0;font-size:16px}.viz-panel .note{margin:2px 0 8px}.viz-panel .legend{margin:0 0 6px}
+/* 同一列兩張圖的標題與副標行數不同時，圖例與圖一起貼齊卡片底部，基線對齊（2026-11-02 使用者） */
+.viz-panel .note+*{margin-top:auto}
 .viz svg{display:block;width:100%;height:auto}
 .viz text{font-size:12px;fill:var(--muted)}
 .spark text{font-size:10px;fill:var(--muted)}
