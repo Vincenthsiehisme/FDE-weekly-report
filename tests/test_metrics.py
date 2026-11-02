@@ -895,13 +895,24 @@ class CapacityTest(unittest.TestCase):
             issue("CS-9", parent="CS-8", points=1.0, resolved=IN_WEEK, assignee="A"),
             issue("CS-10", level=1, resolved=after, labels=["甲"]),
             issue("CS-11", parent="CS-10", points=1.0, resolved=IN_WEEK, assignee="A"),
+            issue("CS-12", level=1, labels=["甲"]),  # 完成卻沒有結案時間：不算，列資料檢查
+            issue("CS-13", parent="CS-12", points=1.0, resolved=IN_WEEK, assignee="A"),
+            # W32 結案、沒有工作卡：超過近 6 週，不再列資料檢查（不然清單一路變長）；CS-16 把週序列拉到 W32
+            issue("CS-14", level=1, resolved="2026-07-29T04:00:00.000+0800", labels=["甲"]),
+            issue("CS-16", parent="CS-6", points=1.0, resolved="2026-07-29T04:00:00.000+0800", assignee="A"),
         ]
         team = self.team(("A", "2026-09-01", None), ("B", "2026-09-21", None))
         m = self.run_with(issues, team)
-        w38, w39 = m["health"]
-        self.assertEqual((w39["completed"], w39["epics_closed"], w39["person_days"], w39["epics_per_person_week"]), (5, 1, 7, 0.71))  # 1 ÷ (7 ÷ 5)
+        self.assertEqual(m["health"][0]["week"], "2026-W32")
+        w38, w39 = m["health"][-2:]
+        self.assertEqual((w39["completed"], w39["epics_closed"], w39["person_days"], w39["epics_per_person_week"]), (6, 1, 7, 0.71))  # 1 ÷ (7 ÷ 5)
         self.assertEqual((w38["epics_closed"], w38["person_days"], w38["epics_per_person_week"]), (1, 5, 1.0))
-        self.assertEqual([c for c in m["checks"] if c["kind"] == "epic_closed_outside_weeks"], [])
+        # 算不進去的都看得到（fable 審 7a39417）：沒有工作卡的、沒有結案時間的；期末後結案的是之後的事，不列
+        epic_checks = [(c["kind"], c["key"], c["message"]) for c in m["checks"] if c["kind"].startswith("epic_")]
+        self.assertEqual(epic_checks, [
+            ("epic_closed_without_work", "CS-5", "epic 在 2026-W39 結案，底下沒有算進累計的完成工作卡（沒有卡，或只剩改組前、排除的卡），消化速度不算它"),
+            ("epic_done_without_resolution", "CS-12", "epic 狀態是完成但沒有完成時間（resolutiondate），消化速度沒算到它"),
+        ])
 
     def test_epic_closed_before_the_first_completed_week_goes_to_data_checks(self):
         # 結案在 W38、唯一的完成卡在 W39：週序列從 W39 起，W38 不在裡面，列進資料檢查，不算進任何一週
@@ -911,7 +922,7 @@ class CapacityTest(unittest.TestCase):
         self.assertEqual([h["epics_closed"] for h in m["health"]], [0])
         checks = [c for c in m["checks"] if c["kind"] == "epic_closed_outside_weeks"]
         self.assertEqual([(c["key"], c["message"]) for c in checks],
-                         [("CS-1", "epic 結案在 2026-W38，早於第一張完成卡那週，消化速率沒算到它")])
+                         [("CS-1", "epic 結案在 2026-W38，早於全隊第一張完成卡那週，消化速度沒算到它")])
 
     def test_hours_over_capacity_and_strangers_go_to_data_checks(self):
         issues = [issue("CS-1", level=1, status="doing", labels=["甲"]),

@@ -849,20 +849,30 @@ def _epics_closed(health, tree, done_leaves, group_of, period, checks) -> None:
     """epics_closed 加在 health 每一列：這週結案的 epic 數（2026-11-02 使用者裁「改算 epic」：epic 完成才算完成，不數卡）。
     epic 卡本身完成、有結案時間、結案在本期結束前，週次取結案時間落在哪一週；底下沒有任何算進累計的完成工作卡的不算
     （沒有工作被消化，可能是改組或取消；W42 FDEPROJECT-245 就是 0 張卡）。排除的 epic 在 compute 之前已經整棵移掉。
-    結案週不在 health 的週序列裡（早於第一張完成卡那週），列進資料檢查，不算進任何一週。"""
+    算不進去的三種都列進資料檢查，不靜默略過（fable 審 7a39417：專案一覽表的本週結案數會跟圖對不上）：
+    完成卻沒有結案時間；結案在近 CAPACITY_CHECK_WEEKS 週、底下沒有完成工作卡；結案週早於全隊第一張完成卡那週（不在週序列裡）。"""
     with_work = {group_of[leaf["key"]] for leaf in done_leaves}
     by_week = {h["week"]: h for h in health}
+    recent = {h["week"] for h in health[-CAPACITY_CHECK_WEEKS:]}
     for h in health:
         h["epics_closed"] = 0
     for epic in sorted(tree.epics, key=lambda e: issue_sort_key(e["key"])):
-        if not (_done(epic) and epic["resolved"] and epic["key"] in with_work):
+        if not _done(epic):
+            continue
+        if not epic["resolved"]:
+            checks.append(_check("epic_done_without_resolution", epic["key"], "epic 狀態是完成但沒有完成時間（resolutiondate），消化速度沒算到它"))
             continue
         moment = parse_jira_time(epic["resolved"])
         if moment >= period.end_exclusive:
             continue
         week = period_containing(moment).week_id
+        if epic["key"] not in with_work:
+            if week in recent:
+                checks.append(_check("epic_closed_without_work", epic["key"],
+                                     f"epic 在 {week} 結案，底下沒有算進累計的完成工作卡（沒有卡，或只剩改組前、排除的卡），消化速度不算它"))
+            continue
         if week not in by_week:
-            checks.append(_check("epic_closed_outside_weeks", epic["key"], f"epic 結案在 {week}，早於第一張完成卡那週，消化速率沒算到它"))
+            checks.append(_check("epic_closed_outside_weeks", epic["key"], f"epic 結案在 {week}，早於全隊第一張完成卡那週，消化速度沒算到它"))
             continue
         by_week[week]["epics_closed"] += 1
 

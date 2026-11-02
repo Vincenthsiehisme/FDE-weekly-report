@@ -469,11 +469,11 @@ def _output_chart(history: list, full: int) -> str:
     title = (f"本週結案 {now['epics_closed']} 個 epic，{rate:.2f} 個／可運用人週" + (f"；過去四週平均 {r4:.2f}" if r4 is not None else "")
              if rate is not None else "本週沒有可運用人日")
     weeks = now["person_days"] / capacity_lib.DAYS_PER_WEEK
-    sub = (f"結案 epic ÷ 可運用 {weeks:g} 人週（名單 {now['roster']} 人 × 工作日 {now['person_days']} 人日 ÷ {capacity_lib.DAYS_PER_WEEK}，"
+    sub = (f"結案 epic ÷ 可運用 {weeks:g} 人週（名單 {now['roster']} 人的工作日合計 {now['person_days']} 人日 ÷ {capacity_lib.DAYS_PER_WEEK}，"
            f"已扣國定假日、未扣請假）；另有 {full} 個 epic 底下的卡全完成、還沒結案，不算進來。"
            f"epic 大小不一，單週會被集中結案拉動，看四週值 · {span}")
     body = _bars(rows, lambda r: r["epics_per_person_week"], lambda r: DASH if r["epics_per_person_week"] is None else f'{r["epics_per_person_week"]:.2f}',
-                 lambda r: f'4 週 {rolling[r["week"]]:.2f}' if rolling[r["week"]] is not None else "", f"{span}每可運用人週結案 epic 數",
+                 lambda r: f'4 週 {rolling[r["week"]]:.2f}' if rolling[r["week"]] is not None else "", f"{span}消化速度：每可運用人週結案 epic 數",
                  _roster_dividers(history, offset))
     return _chart(title, sub, body)
 
@@ -998,9 +998,10 @@ def _glossary(metrics) -> str:
                       "只拿來當產出的分母，不跟實際工時比：實際工時是完工後回填，一人一週超過可運用時數的列進資料檢查，可能填錯。"),
         ("新 epic", "這週第一次有完成卡的 epic（不含未歸屬 epic）。epic 建立當天就有完成卡的另外數出來，可能是事後一次開卡結卡；只陳述同期數字，不代表原因。"),
         ("100% 待結案", "epic 還沒完成，但底下算進進度的卡全部完成了；列進「這週要你出手的地方」，人卡負責欄另外數。"),
-        ("消化速率", f"結案 epic 數 ÷ 可運用人週（可運用人日 ÷ {capacity_lib.DAYS_PER_WEEK}）。epic 卡本身結案才算完成，週次取結案時間；"
-                     "底下沒有任何完成工作卡的 epic 不算，100% 待結案的也不算。本週頁的主數字是過去四週平均（4 週結案 epic 加總 ÷ 4 週可運用人週加總），"
-                     "跟上週那時的四週值比；單週值會被集中結案拉動。epic 大小不一，一個 epic 可能一天也可能兩個月。"),
+        ("消化速度", f"結案 epic 數 ÷ 可運用人週（可運用人日 ÷ {capacity_lib.DAYS_PER_WEEK}）。epic 卡本身結案才算完成，週次取結案時間；"
+                     "底下沒有任何完成工作卡的 epic 不算（列在資料檢查），100% 待結案的也不算。本週頁的主數字是過去四週平均（4 週結案 epic 加總 ÷ 4 週可運用人週加總），"
+                     "跟上週的四週值比；上週值用這一期的資料重算，epic 重開再結案時會跟上週頁面寫的不同。單週值會被集中結案拉動。"
+                     "epic 大小不一，一個 epic 可能一天也可能兩個月。"),
         ("探索人力占比", "每個有產出的人一週先把自己完成的卡換成 100%（用自己填的實際工時當權重，沒填的卡補他這週的平均，整週都沒填就用張數），"
                        "切成探索（這週第一次有完成卡的 epic）與開發（其餘，含未歸屬 epic），再對有產出的人平均。只在人內換算，不拿小時跨人比。"),
         ("投入比例", "團隊頁人卡的累計投入比例：這個人自己完成的卡，用自己填的實際工時當權重換成 100%，看落在哪些 label。"

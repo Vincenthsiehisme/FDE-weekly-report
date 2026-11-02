@@ -748,6 +748,25 @@ class StepInTest(unittest.TestCase):
         self.assertIn('<strong>—</strong><small>資料還不到 4 週（目前 3 週）</small>', short)
         self.assertIn('<strong>49%</strong><small>上週 68%，少 19 個百分點</small>', html)
 
+    def test_rate_tile_and_chart_read_computed_metrics_with_a_team(self):
+        # 走正式路徑 compute(team, calendar) → render（fable 審 7a39417：手刻 dict 測不到欄位改名）
+        from lib.capacity import parse_calendar, parse_team
+        issues = [
+            issue("CS-1", level=1, resolved=IN_WEEK, labels=("門市",)),
+            issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="amy", labels=("門市",)),
+            issue("CS-3", level=1, resolved=LAST_WEEK, labels=("門市",)),
+            issue("CS-4", parent="CS-3", points=1.0, resolved="2026-08-27T04:00:00.000+0800", assignee="amy", labels=("門市",)),
+        ]
+        team = parse_team({"members": [{"name": "amy", "since": "2026-08-01", "until": None}]}, "team.json")
+        calendar = parse_calendar({"years": [2026], "off": {}, "workdays": {}}, "holidays.json")
+        m = compute(snapshot(issues), PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False,
+                    previous=None, team=team, calendar=calendar)
+        week = panel(render(m, {"highlights": [], "epic_results": {"CS-1": "結案。"}}, ["2026-W39"], in_reports_dir=False), "week")
+        # W36～W39 四週各 5 人日＝4 人週，結案 2 個 → 0.50；上週那時不到 4 週
+        self.assertIn('<span>過去四週平均消化速度（epic／人週）</span><strong>0.50</strong><small>沒有上週的值</small>', week)
+        self.assertIn("<h4>本週結案 1 個 epic，1.00 個／可運用人週；過去四週平均 0.50</h4>", week)
+        self.assertIn("名單 1 人的工作日合計 5 人日 ÷ 5", week)
+
     def test_two_charts_without_a_team_say_capacity_is_unknown(self):
         week = panel(self.html(), "week")
         viz = week[week.index('class="viz"'):week.index('id="step-in"')]
@@ -766,7 +785,7 @@ class StepInTest(unittest.TestCase):
         rows = [row("2026-W41", 3, 7, 31), row("2026-W42", 4, 7, 28), row("2026-W43", 2, 7, 35), row("2026-W44", 2, 7, 28)]
         html = _output_chart(rows, 12)
         self.assertIn("<h4>本週結案 2 個 epic，0.36 個／可運用人週；過去四週平均 0.45</h4>", html)
-        self.assertIn("結案 epic ÷ 可運用 5.6 人週（名單 7 人 × 工作日 28 人日 ÷ 5，已扣國定假日、未扣請假）；"
+        self.assertIn("結案 epic ÷ 可運用 5.6 人週（名單 7 人的工作日合計 28 人日 ÷ 5，已扣國定假日、未扣請假）；"
                       "另有 12 個 epic 底下的卡全完成、還沒結案，不算進來。", html)
         self.assertIn('class="t-val">0.36</text>', html)
         self.assertIn('class="t-axis">4 週 0.45</text>', html)
