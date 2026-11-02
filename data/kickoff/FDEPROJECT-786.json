@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-786",
+  "kickoff_key": "FDEPROJECT-788",
+  "last_seen": {
+    "after": ".24 lily-pg 每天 01:30 自動抓新對話、歷史回補到第一天；每則訊息原始 JSON 保留；可用官網訪客碼 LTID 經 Amplitude 歸戶表對會員（抽樣 23%）",
+    "before": "對話只在廠商後台，最多翻 1 萬筆、只能人工看；沒人知道能不能對到會員",
+    "decision": null,
+    "evidence": "lily_session／lily_message 筆數、etl_run 每日紀錄、與後台 Solr 每日筆數核對差值",
+    "next_milestone": "歷史回補完成（預估約 3 週）；真人客服對話系統（另一系統，Jin 取得資訊後）接上",
+    "objective": "Lily 後台對話（約 52.6 萬通、124 萬則，2024-10-30 起）每日自動入庫，歷史全數回補",
+    "why": "10-29 CDP 會議：Lily 痛點是沒登入認不出人、通路端擔心資料清洗後細節撈不回；先把原始資料收在自己手上，之後對會員、進 CDP 都能用"
+  },
+  "last_seen_at": "2026-11-02T13:45:21.836350+08:00",
+  "last_seen_key": "FDEPROJECT-788",
+  "locked_at": "2026-11-02T13:45:21.836350+08:00",
+  "problems": [],
+  "sections": {
+    "after": ".24 lily-pg 每天 01:30 自動抓新對話、歷史回補到第一天；每則訊息原始 JSON 保留；可用官網訪客碼 LTID 經 Amplitude 歸戶表對會員（抽樣 23%）",
+    "before": "對話只在廠商後台，最多翻 1 萬筆、只能人工看；沒人知道能不能對到會員",
+    "decision": null,
+    "evidence": "lily_session／lily_message 筆數、etl_run 每日紀錄、與後台 Solr 每日筆數核對差值",
+    "next_milestone": "歷史回補完成（預估約 3 週）；真人客服對話系統（另一系統，Jin 取得資訊後）接上",
+    "objective": "Lily 後台對話（約 52.6 萬通、124 萬則，2024-10-30 起）每日自動入庫，歷史全數回補",
+    "why": "10-29 CDP 會議：Lily 痛點是沒登入認不出人、通路端擔心資料清洗後細節撈不回；先把原始資料收在自己手上，之後對會員、進 CDP 都能用"
+  }
+}
