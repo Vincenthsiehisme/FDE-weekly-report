@@ -36,7 +36,6 @@
 """
 from __future__ import annotations
 
-import statistics
 from datetime import datetime, timedelta
 
 from . import capacity as capacity_lib
@@ -59,6 +58,8 @@ ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
 CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近幾週（跟本週頁的圖同一段），不然資料檢查會一路變長
+# 12：消化速率改以 epic 結案為完成單位（2026-11-02 使用者裁「改算 epic」）：health 逐週多了 epics_closed（這週結案、底下有完成工作卡的 epic 數）、
+#     epics_per_person_week（÷ 可運用人週）；拿掉 cards_per_person_day、median_cards（頁面不再用，卡片速率要看就 completed ÷ person_days）；
 # 11：health 逐週多了 explore_share（探索人力占比）、explore_people、roster、person_days、cards_per_person_day、median_cards（config/team.json × config/holidays.json 的可運用人日）
 #     與 epics_active、epics_new、new_hours_share、new_same_day（探索同期陳述）；投入比例前幾名改本週有份額的 label 優先；
 #     近 CAPACITY_CHECK_WEEKS 週的人週工時超過可運用、有完成卡卻不在名單的人列進資料檢查（2026-11-02 本週頁產值與探索）；
@@ -70,7 +71,7 @@ CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近�
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 11
+SCHEMA = 12
 SNAPSHOT_SCHEMAS = (3, 4)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓
 
 
@@ -521,6 +522,7 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
     weeks = _week_span(week_of, period)
     health = _health(tree, cumulative_leaves, week_of, weeks)
     _explore(health, tree, cumulative_leaves, week_of, group_of)
+    _epics_closed(health, tree, cumulative_leaves, group_of, period, checks)
     _capacity(health, tree, cumulative_leaves, week_of, period, team, calendar, checks)
     allocation = _allocation(cumulative_leaves, week_of, weeks, tree.owner_of, label_of)
     _person_views(people, cumulative_leaves, week_of, weeks, tree, label_of, period)
@@ -843,13 +845,45 @@ def _explore(health, tree, done_leaves, week_of, group_of) -> None:
         h["new_hours_share"] = round(new_hours.get(h["week"], 0.0) / total, 4) if total else None
 
 
+def _epics_closed(health, tree, done_leaves, group_of, period, checks) -> None:
+    """epics_closed 加在 health 每一列：這週結案的 epic 數（2026-11-02 使用者裁「改算 epic」：epic 完成才算完成，不數卡）。
+    epic 卡本身完成、有結案時間、結案在本期結束前，週次取結案時間落在哪一週；底下沒有任何算進累計的完成工作卡的不算
+    （沒有工作被消化，可能是改組或取消；W42 FDEPROJECT-245 就是 0 張卡）。排除的 epic 在 compute 之前已經整棵移掉。
+    算不進去的三種都列進資料檢查，不靜默略過（fable 審 7a39417：專案一覽表的本週結案數會跟圖對不上）：
+    完成卻沒有結案時間；結案在近 CAPACITY_CHECK_WEEKS 週、底下沒有完成工作卡；結案週早於全隊第一張完成卡那週（不在週序列裡）。"""
+    with_work = {group_of[leaf["key"]] for leaf in done_leaves}
+    by_week = {h["week"]: h for h in health}
+    recent = {h["week"] for h in health[-CAPACITY_CHECK_WEEKS:]}
+    for h in health:
+        h["epics_closed"] = 0
+    for epic in sorted(tree.epics, key=lambda e: issue_sort_key(e["key"])):
+        if not _done(epic):
+            continue
+        if not epic["resolved"]:
+            checks.append(_check("epic_done_without_resolution", epic["key"], "epic 狀態是完成但沒有完成時間（resolutiondate），消化速度沒算到它"))
+            continue
+        moment = parse_jira_time(epic["resolved"])
+        if moment >= period.end_exclusive:
+            continue
+        week = period_containing(moment).week_id
+        if epic["key"] not in with_work:
+            if week in recent:
+                checks.append(_check("epic_closed_without_work", epic["key"],
+                                     f"epic 在 {week} 結案，底下沒有算進累計的完成工作卡（沒有卡，或只剩改組前、排除的卡），消化速度不算它"))
+            continue
+        if week not in by_week:
+            checks.append(_check("epic_closed_outside_weeks", epic["key"], f"epic 結案在 {week}，早於全隊第一張完成卡那週，消化速度沒算到它"))
+            continue
+        by_week[week]["epics_closed"] += 1
+
+
 def _capacity(health, tree, done_leaves, week_of, period, team, calendar, checks) -> None:
     """可運用人日加在 health 每一列：roster 這週在職的人數、person_days 可運用人日（在職工作日加總，一天 8 小時）、
-    cards_per_person_day 完成張數 ÷ 可運用人日、median_cards 名單上每人完成張數的中位數（沒結卡的算 0）。
-    沒給名單（測試）時四欄都是 None。近 CAPACITY_CHECK_WEEKS 週裡，一人一週的實際工時超過他當週可運用時數的，
+    epics_per_person_week 結案 epic 數 ÷ 可運用人週（人日 ÷ capacity.DAYS_PER_WEEK；每人日約 0.1 個，換成人週才分得出週間差異）。
+    沒給名單（測試）時三欄都是 None。近 CAPACITY_CHECK_WEEKS 週裡，一人一週的實際工時超過他當週可運用時數的，
     以及有完成卡卻不在名單上的人，列進資料檢查（2026-11-02 使用者裁：超過代表填錯）。"""
     for h in health:
-        h.update(roster=None, person_days=None, cards_per_person_day=None, median_cards=None)
+        h.update(roster=None, person_days=None, epics_per_person_week=None)
     if team is None or calendar is None:
         return
     weeks = [h["week"] for h in health]
@@ -868,8 +902,8 @@ def _capacity(health, tree, done_leaves, week_of, period, team, calendar, checks
         on = [n for n, d in per_member.items() if d]
         h["roster"] = len(on)
         h["person_days"] = sum(per_member.values())
-        h["cards_per_person_day"] = round(h["completed"] / h["person_days"], 2) if h["person_days"] else None
-        h["median_cards"] = statistics.median(cards.get((h["week"], n), 0) for n in on) if on else None
+        h["epics_per_person_week"] = (round(h["epics_closed"] / (h["person_days"] / capacity_lib.DAYS_PER_WEEK), 2)
+                                      if h["person_days"] else None)
         if h["week"] not in recent:
             continue
         for (week, owner), logged in sorted(hours.items()):
