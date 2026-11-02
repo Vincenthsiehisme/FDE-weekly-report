@@ -901,6 +901,9 @@ class CapacityTest(unittest.TestCase):
             issue("CS-17", level=1, resolved=LAST_WEEK, labels=["甲"]),  # 上週結案但還有卡沒做（例：改組前的卡留在分母）：照算，週次取完成卡
             issue("CS-18", parent="CS-17", points=1.0, resolved=LAST_WEEK, assignee="A"),
             issue("CS-19", parent="CS-17", status="todo"),
+            issue("CS-23", level=1, status="doing", resolved=LAST_WEEK, labels=["甲"]),  # 重開的 epic 留著舊結案時間、卡沒做完：不算（fable 審 80d905f）
+            issue("CS-24", parent="CS-23", points=1.0, resolved=LAST_WEEK, assignee="A"),
+            issue("CS-25", parent="CS-23", status="todo"),
             issue("CS-20", level=1, resolved=after, labels=["甲"]),  # 期末後才結案、卡沒做完：期末時還沒完成，不算
             issue("CS-21", parent="CS-20", points=1.0, resolved=IN_WEEK, assignee="A"),
             issue("CS-22", parent="CS-20", status="doing"),

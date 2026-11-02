@@ -739,7 +739,7 @@ class StepInTest(unittest.TestCase):
 
     def test_rolling_rate_tile_compares_with_last_weeks_rolling_value(self):
         from lib.render import _week_kpis
-        # W44 真資料（2026-11-02 觀察）：完成張數照舊在 completed，消化速度只看結案 epic
+        # 手刻的 5 週（數列沿用 schema 13 時 W44 的結案數，只測四週值的算法）：完成張數照舊在 completed，消化速度看 epics_done
         row = lambda w, done, epics, days, share, n: {"week": w, "completed": done, "epics_done": epics, "person_days": days,
                                                       "explore_share": share, "explore_people": n, "roster": 7}
         rows = [row("2026-W40", 36, 1, 9, 1.0, 2), row("2026-W41", 140, 6, 31, 0.7165, 7), row("2026-W42", 88, 3, 28, 0.3079, 7),
@@ -757,6 +757,10 @@ class StepInTest(unittest.TestCase):
         html = _week_kpis({"health": rows, "kpis": {"stalled": {"now": 4, "prev": None}}})
         self.assertIn('<strong>49%</strong><small>上週 68%（6 人），人數不同不直接比</small>', html)
         self.assertNotIn("少 19 個百分點", html)
+        # 這週沒人有完成卡：小字只講這件事，不寫「0／7 人…這些人」
+        rows[-1].update(explore_share=None, explore_people=0)
+        html = _week_kpis({"health": rows, "kpis": {"stalled": {"now": 4, "prev": None}}})
+        self.assertIn('<small class="hint">本週沒有人有完成卡，看不出時間怎麼分</small>', html)
 
     def test_rate_tile_and_chart_read_computed_metrics_with_a_team(self):
         # 走正式路徑 compute(team, calendar) → render（fable 審 7a39417：手刻 dict 測不到欄位改名）
@@ -783,6 +787,9 @@ class StepInTest(unittest.TestCase):
         self.assertEqual(viz.count('<div class="viz-panel'), 2)
         self.assertIn("<h4>沒有成員名單，算不出可運用人日</h4>", viz)
         self.assertIn("<h4>本週有產出的人把 100% 的時間投到探索</h4>", viz)
+        # 沒有名單：只寫幾個人，不寫「／None」（fable 審 80d905f）
+        self.assertIn("2 人有完成卡；這些人的時間", week)
+        self.assertNotIn("／None", week)
         self.assertIn('<p class="quality">資料品質：本週完成 2 張，有填工時 2 張</p>', week)
         # 投入比例與未結案 epic 狀態圖 2026-11-02 移出本週頁
         self.assertNotIn("力氣", week)
@@ -796,7 +803,7 @@ class StepInTest(unittest.TestCase):
         html = _output_chart(rows)
         self.assertIn("<h4>本週完成 2 個 epic，0.36 個／可運用人週；過去四週平均 0.45</h4>", html)
         self.assertIn("完成 epic ÷ 可運用 5.6 人週（名單 7 人的工作日合計 28 人日 ÷ 5，已扣國定假日，請假不扣）；"
-                      "epic 底下的卡都做完就算完成（不等 epic 在 Jira 關掉），算在最後一張卡做完那週。", html)
+                      "epic 底下的卡都做完（不等 epic 在 Jira 關掉）或 epic 已結案就算完成，算在最後一張卡做完那週。", html)
         self.assertNotIn("不算進來", html)
         self.assertIn('class="t-val">0.36</text>', html)
         self.assertIn('class="t-axis">4 週 0.45</text>', html)
