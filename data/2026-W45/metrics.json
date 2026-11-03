@@ -116,6 +116,26 @@
       "message": "標題有 1 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」"
     },
     {
+      "key": "FDEPROJECT-829",
+      "kind": "deliverable_no_entry",
+      "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
+    },
+    {
+      "key": "FDEPROJECT-829",
+      "kind": "deliverable_no_media",
+      "message": "Deliverable 已完成，沒有附畫面或影片"
+    },
+    {
+      "key": "FDEPROJECT-830",
+      "kind": "deliverable_no_entry",
+      "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
+    },
+    {
+      "key": "FDEPROJECT-830",
+      "kind": "deliverable_no_media",
+      "message": "Deliverable 已完成，沒有附畫面或影片"
+    },
+    {
       "key": "FDEPROJECT-848",
       "kind": "deliverable_format",
       "message": "描述少了「Code：」這一行"
@@ -126,9 +146,39 @@
       "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
     },
     {
+      "key": "FDEPROJECT-884",
+      "kind": "deliverable_no_entry",
+      "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
+    },
+    {
+      "key": "FDEPROJECT-884",
+      "kind": "deliverable_no_media",
+      "message": "Deliverable 已完成，沒有附畫面或影片"
+    },
+    {
+      "key": "FDEPROJECT-928",
+      "kind": "deliverable_no_entry",
+      "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
+    },
+    {
+      "key": "FDEPROJECT-928",
+      "kind": "deliverable_no_media",
+      "message": "Deliverable 已完成，沒有附畫面或影片"
+    },
+    {
       "key": "FDEPROJECT-1000",
       "kind": "deliverable_internal",
       "message": "有 1 處內部網址或私有 IP，頁面換成「（內部位址，不公開）」；Deliverable 只放對外網址"
+    },
+    {
+      "key": "FDEPROJECT-1000",
+      "kind": "deliverable_no_entry",
+      "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
+    },
+    {
+      "key": "FDEPROJECT-1000",
+      "kind": "deliverable_no_media",
+      "message": "Deliverable 已完成，沒有附畫面或影片"
     },
     {
       "key": "FDEPROJECT-1001",
@@ -136,7 +186,22 @@
       "message": "有 2 處內部網址或私有 IP，頁面換成「（內部位址，不公開）」；Deliverable 只放對外網址"
     },
     {
+      "key": "FDEPROJECT-1001",
+      "kind": "deliverable_no_entry",
+      "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
+    },
+    {
+      "key": "FDEPROJECT-1001",
+      "kind": "deliverable_no_media",
+      "message": "Deliverable 已完成，沒有附畫面或影片"
+    },
+    {
       "key": "FDEPROJECT-1008",
+      "kind": "deliverable_no_entry",
+      "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
+    },
+    {
+      "key": "FDEPROJECT-1049",
       "kind": "deliverable_no_entry",
       "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
     },
@@ -10378,7 +10443,7 @@
           "done_points": 72.5,
           "percent": 68,
           "total_cards": 31,
-          "total_points": 82.0,
+          "total_points": 83.0,
           "unestimated_cards": 8
         },
         "stalled": false,
@@ -12860,6 +12925,445 @@
     {
       "acceptance": [
         {
+          "condition": "板橋客人訊息進 Chatwoot",
+          "result": "通過",
+          "where": "正式站，10/07"
+        },
+        {
+          "condition": "8 位業務帳號分到板橋收件匣",
+          "result": "通過",
+          "where": "10/07"
+        },
+        {
+          "condition": "每日優化報告抓出的問題開卡修正",
+          "result": "通過",
+          "where": "10/07～10/19"
+        },
+        {
+          "condition": "AI 開放給客人",
+          "result": "未驗",
+          "where": "併入 423"
+        }
+      ],
+      "attachments": [
+        {
+          "filename": "store-liff.png",
+          "id": "14660",
+          "image": "assets/deliverables/14660.png",
+          "mime": "image/png",
+          "size": 394116
+        }
+      ],
+      "base": "0 段（試用前沒有接 Chatwoot）",
+      "base_date": "2026-10-06",
+      "code": [
+        "Azure Repos FDE/store-ai-assistant"
+      ],
+      "delivered": "板橋 LINE OA 接入 Chatwoot 收件匣；開通管理者 2＋業務 8 個帳號並分到板橋收件匣；業務電腦網頁版（LINE 登入）；AI 客服內部試用期間的使用分析與修正",
+      "done": "2026-11-04T06:10:08.373+0800",
+      "entry": [],
+      "env": [
+        "https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/store-ai-assistant"
+      ],
+      "epic": "FDEPROJECT-325",
+      "epic_summary": "門市 AI 客服 階段二：板橋門市試用",
+      "failed": 0,
+      "features": [
+        "板橋門市導入 Chatwoot：板橋 LINE 官方帳號的客人訊息集中收進 Chatwoot 客服後台，門市主管與業務用自己的帳號看全店對話；同時讓主管與專員內部試用門市 AI 客服。"
+      ],
+      "key": "FDEPROJECT-1049",
+      "label": "門市",
+      "manual": [],
+      "metric": "板橋門市客人 LINE 對話收進 Chatwoot 的段數（試用前客人訊息只在 LINE 官方帳號後台，門市主管看不到全店）",
+      "new": false,
+      "not_done": [
+        "- AI 還沒開放給客人：開放標準併入 FDEPROJECT-423 追蹤",
+        "- 業務仍在 LINE 官方帳號後台回覆，何時改在 Chatwoot 回覆併入 423",
+        "- 10/15 起正式站幾乎沒人用，後期回饋以 FDEPROJECT-284 收集為主"
+      ],
+      "now": "974 段（10/07 接入後到 10/12）",
+      "now_date": "2026-10-12",
+      "other": [
+        "開通帳號 10 個（管理者 2、業務 8）",
+        "AI 客服內部試用：10/05～10/08 19 人、10/09～10/14 6 人用過"
+      ],
+      "passed": 3,
+      "source": "Chatwoot 正式站 板橋門市收件匣對話數（10/12 查核優先度權限時一併查）；AI 試用數字來自每週優化週報 10/08、10/16",
+      "stale": false,
+      "versions": [],
+      "week": "2026-W46"
+    },
+    {
+      "acceptance": [
+        {
+          "condition": "手機拍照或選照片（含 HEIC）、圈選、OCR 讀出支出單號與批號、一鍵開 ERP（FDEPROJECT-737 UAT）",
+          "result": "通過",
+          "where": "正式站 （內部位址，不公開）"
+        },
+        {
+          "condition": "使用者一次掃 5 張支出單，1 分鐘內取得 5 個 ERP 連結",
+          "result": "通過",
+          "where": "2026-11-03"
+        },
+        {
+          "condition": "ERP 開在具名分頁、工具頁結果保留（FDEPROJECT-999）→ 完成，2026-11-03",
+          "result": null,
+          "where": null
+        },
+        {
+          "condition": "OCR 改 CPU 部署（FDEPROJECT-855）",
+          "result": "通過",
+          "where": "2026-10-30"
+        }
+      ],
+      "attachments": [],
+      "base": "人工查一張支出單 2～3 分鐘（手打單號再到 ERP 查詢），每天審 5 張以上，約 10～15 分鐘",
+      "base_date": null,
+      "code": [
+        "erp_receipt_redirect main 0fa5ca1（2026-10-30",
+        "上線版本待確認）"
+      ],
+      "delivered": "主管用手機拍支出單或批號，圈選後由 OCR 讀出編號，一鍵開啟 ERP 對應頁面核對、核可，不用再手打單號。",
+      "done": "2026-11-04T06:10:05.126+0800",
+      "entry": [],
+      "env": [
+        "https://github.com/Liontech-tw/fde-devcontainers/tree/FDEPROJECT-998-add-erp-receipt-redirect/projects/erp-receipt-redirect （審核中，合併後改指 main）"
+      ],
+      "epic": "FDEPROJECT-652",
+      "epic_summary": "[客製國旅]規劃團體成本支單審核流程優化",
+      "failed": 0,
+      "features": [
+        "網址： p-ot-backstage （內部位址，不公開），CPU OCR）",
+        "iPhone 拍照或選照片，支援 HEIC，照片只在記憶體處理、不保存",
+        "用手指圈選一個或多個範圍，可旋轉、縮放；也可直接辨識整張照片",
+        "自動擷取支出單號與批號，多筆結果可修改、重新分類、刪除，重複編號自動合併",
+        "每筆一鍵開啟 ERP 對應頁面"
+      ],
+      "key": "FDEPROJECT-1001",
+      "label": "客製國旅",
+      "manual": [],
+      "metric": "從拿到支出單到開啟 ERP 對應頁面的時間",
+      "new": false,
+      "not_done": [
+        "GPU 推論 → 保留設定、未啟用，目前只用 CPU",
+        "核可仍由主管在 ERP 執行 → 設計邊界，工具不代替核可",
+        "批號查詢是否已接正式映射（先前為固定範例 POST）→ 待確認"
+      ],
+      "now": "一次掃 5 張支出單，1 分鐘內取得全部 ERP 連結（約每張 12 秒）",
+      "now_date": "2026-11-03",
+      "other": [
+        "OCR 單次圈選 0.15～0.5 秒、整張照片約 1 秒（Mac CPU 實測，非正式主機數字）"
+      ],
+      "passed": 3,
+      "source": "使用者實測（FDEPROJECT-737 UAT，2026-11-03，一次 5 張）；人工基準為使用者估計",
+      "stale": false,
+      "versions": [],
+      "week": "2026-W46"
+    },
+    {
+      "acceptance": [
+        {
+          "condition": "427 人名單（一般 50＋大團 377）在正式 SERP 團號 26TED31I0A 完整匯入",
+          "result": "通過",
+          "where": "正式 SERP，2026-10-28"
+        },
+        {
+          "condition": "訂單有「取消」列、列數多於旅客時匯入（FDEPROJECT-981）",
+          "result": "通過",
+          "where": "2026-11-02（正式匯入日期待確認）"
+        },
+        {
+          "condition": "PDF 名單經 MinerU 4.0.12 轉換（FDEPROJECT-982）",
+          "result": "通過",
+          "where": "開發機，2026-11-02"
+        }
+      ],
+      "attachments": [],
+      "base": "0 人（業務逐筆手動建單）",
+      "base_date": "2026-10-06",
+      "code": [
+        "csv_convert_serp main 344263c（PR #19，2026-11-02",
+        "上線版本待確認）"
+      ],
+      "delivered": "業務把客人給的報名名單（CSV／XLS／XLSX／PDF）上傳到網站，系統轉成 SERP 格式並標出有問題的欄位，再代為登入 SERP 依團號開單並匯入名單（一般訂單與大團），每筆留截圖紀錄。",
+      "done": "2026-11-04T06:10:01.929+0800",
+      "entry": [],
+      "env": [
+        "https://github.com/Liontech-tw/fde-devcontainers/tree/FDEPROJECT-997-add-csv-convert-serp/projects/csv-convert-serp （審核中，合併後改指 main）"
+      ],
+      "epic": "FDEPROJECT-309",
+      "epic_summary": "[客製國旅]外部報名系統資料串接 SERP",
+      "failed": 0,
+      "features": [
+        "網址： p-ot-backstage （內部位址，不公開））",
+        "轉換檔案：上傳 CSV／XLS／XLSX／PDF 名單，自動對應欄位、轉換日期、國籍與性別，列出問題欄位，可下載 SERP 匯入檔",
+        "SERP 匯入：依團號開單或補上傳，一般訂單與大團（每單 40／50 人容量分配），略過已取消列",
+        "執行紀錄：每筆工作的截圖、步驟與 SERP 訊息",
+        "操作說明書入口、問題回報"
+      ],
+      "key": "FDEPROJECT-1000",
+      "label": "客製國旅",
+      "manual": [],
+      "metric": "單次自動匯入 SERP 的旅客人數",
+      "new": false,
+      "not_done": [
+        "BullMQ 並行處理、Chrome Extension、付款連結批次發送、跨次匯入去重 → 不在本階段",
+        "訂單 6-12528534「找到 2 個修改按鈕」無法唯一定位 → 未處理",
+        "SERP Node 測試 8 項失敗（修改前即存在：分組邏輯、Mock 大團欄位）→ 未處理",
+        "人工與工具耗時對照 → 未量測"
+      ],
+      "now": "427 人（一般 1 張單＋大團 8 張單）",
+      "now_date": "2026-10-28",
+      "other": [
+        "支援 CSV／XLS／XLSX／PDF 名單",
+        "國籍與性別自動轉換",
+        "每筆匯入都留截圖紀錄"
+      ],
+      "passed": 3,
+      "source": "csv_convert_serp 執行紀錄 job b4870c91（正式 SERP 26TED31I0A）",
+      "stale": false,
+      "versions": [],
+      "week": "2026-W46"
+    },
+    {
+      "acceptance": [
+        {
+          "condition": "13 條修正在測試站實測",
+          "result": "通過",
+          "where": "dev .9，10/21"
+        },
+        {
+          "condition": "6 個端到端真發情境",
+          "result": "通過",
+          "where": "dev .9，10/21"
+        },
+        {
+          "condition": "正式站群發 → 未驗（還沒上線）",
+          "result": null,
+          "where": null
+        }
+      ],
+      "attachments": [],
+      "base": "0%（2026 年 31 家門市共 681 則群發，全部用 OA Manager 發）",
+      "base_date": "2026-10-20",
+      "code": [
+        "Azure LionTech/FDE/chatwoot-lion 分支 feat/line-broadcast"
+      ],
+      "delivered": "群發一覽（四分頁＋行事曆）；建立頁（本店或總部多店、六種對象、立即／預約／重複、預估人數與費用、測試訊息）；背景分批發送；卡片範本頁與多頁訊息編輯器（可匯入 OA Manager 素材）；對話裡顯示卡片與 LINE 引用回覆；群發與範本自訂角色權限；成效後端 R1～R4（送達、開封、點擊、回覆歸屬）；審查 15 條問題並修 13 條。目前都只在測試站（dev .9）",
+      "done": "2026-11-04T06:09:58.709+0800",
+      "entry": [],
+      "env": [
+        "https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/chatwoot-lion"
+      ],
+      "epic": "FDEPROJECT-626",
+      "epic_summary": "Chatwoot LINE 群發與卡片（取代 OA Manager 群發）",
+      "failed": 0,
+      "features": [
+        "門市可以直接在 Chatwoot 對 LINE 客人群發訊息和卡片，不用另外開 OA Manager；卡片範本、排程、重複傳送、多家門市一次發、成效追蹤都在同一個後台。"
+      ],
+      "key": "FDEPROJECT-928",
+      "label": "門市",
+      "manual": [],
+      "metric": "門市 LINE 群發改用 Chatwoot 發送的占比（Chatwoot 群發則數 ÷ 門市全部群發則數，31 家門市）",
+      "new": false,
+      "not_done": [
+        "- 正式站上線（要先補 .24 上傳檔備份、跑四個 migration，Jin 核准）",
+        "- 成效頁前端（R5）",
+        "- 門市試用與教學"
+      ],
+      "now": "0%（群發只上測試站，正式站還沒開放）",
+      "now_date": "2026-11-02",
+      "other": [
+        "費用試算（FDEPROJECT-622，30 家 7～9 月實際量）：群發改走 Chatwoot 不會多花",
+        "測試站實發 6 個端到端情境都通過，原時間沒有重複發送"
+      ],
+      "passed": 2,
+      "source": "基準：OA Manager 群發紀錄盤點（FDEPROJECT-591）；上線後：Chatwoot 正式站群發紀錄表＋OA Manager 群發紀錄",
+      "stale": false,
+      "versions": [],
+      "week": "2026-W46"
+    },
+    {
+      "acceptance": [
+        {
+          "condition": "特殊字元訊息即時進 Chatwoot",
+          "result": "通過",
+          "where": "正式站，10/30"
+        },
+        {
+          "condition": "LINE 送達失敗回到個位數",
+          "result": "通過",
+          "where": "10/30"
+        },
+        {
+          "condition": "整天漏收率回到 5% 以下",
+          "result": "通過",
+          "where": "linebiz 每日對帳 10/30～11/01 連三天 0%，另以抽樣 40 則二次確認，11/02"
+        }
+      ],
+      "attachments": [],
+      "base": "18.8%（10/27～29 每天 16.5%／20.2%／18.8%，約 1,450～1,740 則／天）",
+      "base_date": "2026-10-29",
+      "code": [
+        "linebiz-sync 3794dae（對帳修正，.24 主機 bare repo）"
+      ],
+      "delivered": "漏收每日核對（linebiz 每日 02:30 對帳，10/30 修正後補登不再算成已收到）；漏收原因調查與證據（LINE 送達失敗紀錄、主機紀錄逐則對時，約 92% 在公司網路入口被丟），交網路組／資安；10/30 驗證 F5 擋字元與連線逾時兩種漏收都已停止",
+      "done": "2026-11-04T06:09:55.454+0800",
+      "entry": [],
+      "env": [
+        "調查類，無專屬 devcontainer"
+      ],
+      "epic": "FDEPROJECT-695",
+      "epic_summary": "門市 LINE 訊息漏收排查：前端連線逾時與 F5 擋字元",
+      "failed": 0,
+      "features": [
+        "門市客人傳給 LINE 官方帳號的訊息，能穩定進到 Chatwoot 客服後台。"
+      ],
+      "key": "FDEPROJECT-884",
+      "label": "門市",
+      "manual": [],
+      "metric": "客人一對一訊息漏收率",
+      "new": false,
+      "not_done": [
+        "- F5／防火牆是誰改、改了什麼沒有確認；回網路組與資安的「已解決」信 Jin 決定不送",
+        "- 漏掉期間的訊息靠每日補登補進 Chatwoot，門市隔天才看得到，沒有即時補收",
+        "- 從 LINE 複製名字時夾帶的隱形字元沒測"
+      ],
+      "now": "0%（10/30～11/01 連三天漏收 0）",
+      "now_date": "2026-11-01",
+      "other": [
+        "LINE 送達失敗次數：10/27～29 每天 1,772～2,126 次 → 10/30 5、10/31 2、11/01 2、11/02 0",
+        "抽樣 10/31、11/01 各 20 則全部 webhook 即時收到",
+        "⁉※‧‼全形空白測試訊息全部 1～2 秒內進 Chatwoot"
+      ],
+      "passed": 3,
+      "source": ".24 linebiz-sync-pg core.daily_reconcile、LINE Developers Webhook 錯誤紀錄",
+      "stale": false,
+      "versions": [],
+      "week": "2026-W46"
+    },
+    {
+      "acceptance": [
+        {
+          "condition": "31 間每日 06:00 匯入",
+          "result": "通過",
+          "where": "Chatwoot 正式站，10/29"
+        },
+        {
+          "condition": "依班表派單",
+          "result": "未驗",
+          "where": null
+        }
+      ],
+      "attachments": [],
+      "base": "0 間",
+      "base_date": "2026-10-27",
+      "code": [
+        "chatwoot-lion main 473fcb0（GitHub lionjin88912/chatwoot-lion 暫放）",
+        "serpgogo feat/public-api da20c6e"
+      ],
+      "delivered": "serpgogo 公用帳號唯讀班表 API（/v1/roster、/v1/shift-codes，每個呼叫端一把 token）；Chatwoot 功能開關 store_roster（6 張資料表、每日排程、今日班表頁、自訂角色權限）；正式站 10-28 上線、31 間門市",
+      "done": "2026-11-04T06:09:52.034+0800",
+      "entry": [],
+      "env": [
+        "https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/chatwoot-lion（資料夾待建）"
+      ],
+      "epic": "FDEPROJECT-697",
+      "epic_summary": "Chatwoot 門市班表 階段一：每日匯入與今日班表",
+      "failed": 0,
+      "features": [
+        "Chatwoot 每天 06:00 自動匯入 31 間門市的 SERP 班表（今天起 14 天），店長在側欄「今日班表」看今天誰在班、可標請假／提早走／代班。"
+      ],
+      "key": "FDEPROJECT-830",
+      "label": "門市",
+      "manual": [],
+      "metric": "有班表資料的門市數\n（另：匯入在班人員 0 → 348 人，見其他成效）",
+      "new": false,
+      "not_done": [
+        "- 依班表自動派單（移到階段二 epic）",
+        "- 各店店長角色指派（等 Jin）",
+        "- 號碼機「在櫃台」狀態、匯入失敗通知、跨午夜班別細處理"
+      ],
+      "now": "31 間",
+      "now_date": "2026-10-29",
+      "other": [
+        "匯入在班人員 0 → 348 人",
+        "對上 Chatwoot 帳號 8 人（板橋）",
+        "店長不用另查 SERP 排班報表"
+      ],
+      "passed": 1,
+      "source": "Chatwoot 正式庫 lion_roster_imports（10-29 06:00 排程 31/31 成功）",
+      "stale": false,
+      "versions": [],
+      "week": "2026-W46"
+    },
+    {
+      "acceptance": [
+        {
+          "condition": "換版後服務實測正常、皆留回滾映像",
+          "result": "通過",
+          "where": "四台主機，10/23"
+        },
+        {
+          "condition": "OSIP 正式機意圖解析回 200",
+          "result": "通過",
+          "where": "P-K8S，10/23"
+        },
+        {
+          "condition": "同仁三台試登",
+          "result": "通過",
+          "where": ".9／.7／.24，10/27"
+        }
+      ],
+      "attachments": [],
+      "base": "91%",
+      "base_date": "2026-10-22",
+      "code": [
+        "OSIP 後端（Azure DevOps）master 5cd5729",
+        "d50761e"
+      ],
+      "delivered": "四台主機的漏洞盤點表與換版紀錄、閒置服務停用、.7 騰出空間與同仁帳號、搬遷 SERP 單草稿",
+      "done": "2026-11-04T06:09:08.677+0800",
+      "entry": [],
+      "env": [
+        "（主機維運類，無專屬 devcontainer",
+        "待 Jin 決定）"
+      ],
+      "epic": "FDEPROJECT-693",
+      "epic_summary": "FDE 自有主機維運與資安修補",
+      "failed": 0,
+      "features": [
+        "FDE 經手的四台內網主機（.9 p-ot-backstage、.7 p-ai-dify、.24 p-other-difyline、跳板 .125）建立「公告 → 盤點 → 修補／換版 → 留紀錄」的維運流程：",
+        "- 10/22 起四波資安公告（eMudhra 憑證、LiteLLM 投毒、Node TLS、Brotli HTTP2Shell）都有盤點表與處理紀錄，換版一律留回滾映像。",
+        "- 停用閒置服務（資料保留），監控套件升級、Grafana 改匿名唯讀，OSIP 後端補 certifi 上正式機。",
+        "- 數據部主機收回前：.7 騰出空間給同仁服務、同仁在三台開好帳號、搬遷所需 6 張 SERP 單草稿備妥。"
+      ],
+      "key": "FDEPROJECT-829",
+      "label": "雄獅",
+      "manual": [],
+      "metric": "p-ot-backstage 磁碟使用率（停用閒置服務前後）",
+      "new": false,
+      "not_done": [
+        "- Dify 升 1.18.0、.24 Airflow 升級另外排。",
+        "- 同仁服務實際搬上 .7、搬遷相關 SERP 單（Jin 名義）尚未送出。",
+        "- Langfuse 已整組停用，OSIP 抓 prompt 暫走備援快取。",
+        "- 主機資源三張聯絡單（.9 硬碟 500G、.7 CPU 4 核、1TB 資料主機）等資訊部處理，驗收移到階段二。"
+      ],
+      "now": "72%",
+      "now_date": "2026-10-23",
+      "other": [
+        "四波資安公告皆完成盤點，查無中毒版本與入侵跡象",
+        ".7 清理後硬碟 48G、記憶體約 15G 可用"
+      ],
+      "passed": 3,
+      "source": "主機 df -h（724 卡紀錄）",
+      "stale": false,
+      "versions": [],
+      "week": "2026-W46"
+    },
+    {
+      "acceptance": [
+        {
           "condition": "讀一張有法人付款人的單，旅客全部列出、沒有法人那一列",
           "result": "通過",
           "where": "正式機商店版 0.43.1，2026-11-02"
@@ -13014,445 +13518,6 @@
     {
       "acceptance": [
         {
-          "condition": "換版後服務實測正常、皆留回滾映像",
-          "result": "通過",
-          "where": "四台主機，10/23"
-        },
-        {
-          "condition": "OSIP 正式機意圖解析回 200",
-          "result": "通過",
-          "where": "P-K8S，10/23"
-        },
-        {
-          "condition": "同仁三台試登",
-          "result": "通過",
-          "where": ".9／.7／.24，10/27"
-        }
-      ],
-      "attachments": [],
-      "base": "91%",
-      "base_date": "2026-10-22",
-      "code": [
-        "OSIP 後端（Azure DevOps）master 5cd5729",
-        "d50761e"
-      ],
-      "delivered": "四台主機的漏洞盤點表與換版紀錄、閒置服務停用、.7 騰出空間與同仁帳號、搬遷 SERP 單草稿",
-      "done": null,
-      "entry": [],
-      "env": [
-        "（主機維運類，無專屬 devcontainer",
-        "待 Jin 決定）"
-      ],
-      "epic": "FDEPROJECT-693",
-      "epic_summary": "FDE 自有主機維運與資安修補",
-      "failed": 0,
-      "features": [
-        "FDE 經手的四台內網主機（.9 p-ot-backstage、.7 p-ai-dify、.24 p-other-difyline、跳板 .125）建立「公告 → 盤點 → 修補／換版 → 留紀錄」的維運流程：",
-        "- 10/22 起四波資安公告（eMudhra 憑證、LiteLLM 投毒、Node TLS、Brotli HTTP2Shell）都有盤點表與處理紀錄，換版一律留回滾映像。",
-        "- 停用閒置服務（資料保留），監控套件升級、Grafana 改匿名唯讀，OSIP 後端補 certifi 上正式機。",
-        "- 數據部主機收回前：.7 騰出空間給同仁服務、同仁在三台開好帳號、搬遷所需 6 張 SERP 單草稿備妥。"
-      ],
-      "key": "FDEPROJECT-829",
-      "label": "雄獅",
-      "manual": [],
-      "metric": "p-ot-backstage 磁碟使用率（停用閒置服務前後）",
-      "new": false,
-      "not_done": [
-        "- Dify 升 1.18.0、.24 Airflow 升級另外排。",
-        "- 同仁服務實際搬上 .7、搬遷相關 SERP 單（Jin 名義）尚未送出。",
-        "- Langfuse 已整組停用，OSIP 抓 prompt 暫走備援快取。",
-        "- 主機資源三張聯絡單（.9 硬碟 500G、.7 CPU 4 核、1TB 資料主機）等資訊部處理，驗收移到階段二。"
-      ],
-      "now": "72%",
-      "now_date": "2026-10-23",
-      "other": [
-        "四波資安公告皆完成盤點，查無中毒版本與入侵跡象",
-        ".7 清理後硬碟 48G、記憶體約 15G 可用"
-      ],
-      "passed": 3,
-      "source": "主機 df -h（724 卡紀錄）",
-      "stale": false,
-      "versions": [],
-      "week": null
-    },
-    {
-      "acceptance": [
-        {
-          "condition": "31 間每日 06:00 匯入",
-          "result": "通過",
-          "where": "Chatwoot 正式站，10/29"
-        },
-        {
-          "condition": "依班表派單",
-          "result": "未驗",
-          "where": null
-        }
-      ],
-      "attachments": [],
-      "base": "0 間",
-      "base_date": "2026-10-27",
-      "code": [
-        "chatwoot-lion main 473fcb0（GitHub lionjin88912/chatwoot-lion 暫放）",
-        "serpgogo feat/public-api da20c6e"
-      ],
-      "delivered": "serpgogo 公用帳號唯讀班表 API（/v1/roster、/v1/shift-codes，每個呼叫端一把 token）；Chatwoot 功能開關 store_roster（6 張資料表、每日排程、今日班表頁、自訂角色權限）；正式站 10-28 上線、31 間門市",
-      "done": null,
-      "entry": [],
-      "env": [
-        "https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/chatwoot-lion（資料夾待建）"
-      ],
-      "epic": "FDEPROJECT-697",
-      "epic_summary": "Chatwoot 門市班表 階段一：每日匯入與今日班表",
-      "failed": 0,
-      "features": [
-        "Chatwoot 每天 06:00 自動匯入 31 間門市的 SERP 班表（今天起 14 天），店長在側欄「今日班表」看今天誰在班、可標請假／提早走／代班。"
-      ],
-      "key": "FDEPROJECT-830",
-      "label": "門市",
-      "manual": [],
-      "metric": "有班表資料的門市數\n（另：匯入在班人員 0 → 348 人，見其他成效）",
-      "new": false,
-      "not_done": [
-        "- 依班表自動派單（移到階段二 epic）",
-        "- 各店店長角色指派（等 Jin）",
-        "- 號碼機「在櫃台」狀態、匯入失敗通知、跨午夜班別細處理"
-      ],
-      "now": "31 間",
-      "now_date": "2026-10-29",
-      "other": [
-        "匯入在班人員 0 → 348 人",
-        "對上 Chatwoot 帳號 8 人（板橋）",
-        "店長不用另查 SERP 排班報表"
-      ],
-      "passed": 1,
-      "source": "Chatwoot 正式庫 lion_roster_imports（10-29 06:00 排程 31/31 成功）",
-      "stale": false,
-      "versions": [],
-      "week": null
-    },
-    {
-      "acceptance": [
-        {
-          "condition": "特殊字元訊息即時進 Chatwoot",
-          "result": "通過",
-          "where": "正式站，10/30"
-        },
-        {
-          "condition": "LINE 送達失敗回到個位數",
-          "result": "通過",
-          "where": "10/30"
-        },
-        {
-          "condition": "整天漏收率回到 5% 以下",
-          "result": "通過",
-          "where": "linebiz 每日對帳 10/30～11/01 連三天 0%，另以抽樣 40 則二次確認，11/02"
-        }
-      ],
-      "attachments": [],
-      "base": "18.8%（10/27～29 每天 16.5%／20.2%／18.8%，約 1,450～1,740 則／天）",
-      "base_date": "2026-10-29",
-      "code": [
-        "linebiz-sync 3794dae（對帳修正，.24 主機 bare repo）"
-      ],
-      "delivered": "漏收每日核對（linebiz 每日 02:30 對帳，10/30 修正後補登不再算成已收到）；漏收原因調查與證據（LINE 送達失敗紀錄、主機紀錄逐則對時，約 92% 在公司網路入口被丟），交網路組／資安；10/30 驗證 F5 擋字元與連線逾時兩種漏收都已停止",
-      "done": null,
-      "entry": [],
-      "env": [
-        "調查類，無專屬 devcontainer"
-      ],
-      "epic": "FDEPROJECT-695",
-      "epic_summary": "門市 LINE 訊息漏收排查：前端連線逾時與 F5 擋字元",
-      "failed": 0,
-      "features": [
-        "門市客人傳給 LINE 官方帳號的訊息，能穩定進到 Chatwoot 客服後台。"
-      ],
-      "key": "FDEPROJECT-884",
-      "label": "門市",
-      "manual": [],
-      "metric": "客人一對一訊息漏收率",
-      "new": false,
-      "not_done": [
-        "- F5／防火牆是誰改、改了什麼沒有確認；回網路組與資安的「已解決」信 Jin 決定不送",
-        "- 漏掉期間的訊息靠每日補登補進 Chatwoot，門市隔天才看得到，沒有即時補收",
-        "- 從 LINE 複製名字時夾帶的隱形字元沒測"
-      ],
-      "now": "0%（10/30～11/01 連三天漏收 0）",
-      "now_date": "2026-11-01",
-      "other": [
-        "LINE 送達失敗次數：10/27～29 每天 1,772～2,126 次 → 10/30 5、10/31 2、11/01 2、11/02 0",
-        "抽樣 10/31、11/01 各 20 則全部 webhook 即時收到",
-        "⁉※‧‼全形空白測試訊息全部 1～2 秒內進 Chatwoot"
-      ],
-      "passed": 3,
-      "source": ".24 linebiz-sync-pg core.daily_reconcile、LINE Developers Webhook 錯誤紀錄",
-      "stale": false,
-      "versions": [],
-      "week": null
-    },
-    {
-      "acceptance": [
-        {
-          "condition": "13 條修正在測試站實測",
-          "result": "通過",
-          "where": "dev .9，10/21"
-        },
-        {
-          "condition": "6 個端到端真發情境",
-          "result": "通過",
-          "where": "dev .9，10/21"
-        },
-        {
-          "condition": "正式站群發 → 未驗（還沒上線）",
-          "result": null,
-          "where": null
-        }
-      ],
-      "attachments": [],
-      "base": "0%（2026 年 31 家門市共 681 則群發，全部用 OA Manager 發）",
-      "base_date": "2026-10-20",
-      "code": [
-        "Azure LionTech/FDE/chatwoot-lion 分支 feat/line-broadcast"
-      ],
-      "delivered": "群發一覽（四分頁＋行事曆）；建立頁（本店或總部多店、六種對象、立即／預約／重複、預估人數與費用、測試訊息）；背景分批發送；卡片範本頁與多頁訊息編輯器（可匯入 OA Manager 素材）；對話裡顯示卡片與 LINE 引用回覆；群發與範本自訂角色權限；成效後端 R1～R4（送達、開封、點擊、回覆歸屬）；審查 15 條問題並修 13 條。目前都只在測試站（dev .9）",
-      "done": null,
-      "entry": [],
-      "env": [
-        "https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/chatwoot-lion"
-      ],
-      "epic": "FDEPROJECT-626",
-      "epic_summary": "Chatwoot LINE 群發與卡片（取代 OA Manager 群發）",
-      "failed": 0,
-      "features": [
-        "門市可以直接在 Chatwoot 對 LINE 客人群發訊息和卡片，不用另外開 OA Manager；卡片範本、排程、重複傳送、多家門市一次發、成效追蹤都在同一個後台。"
-      ],
-      "key": "FDEPROJECT-928",
-      "label": "門市",
-      "manual": [],
-      "metric": "門市 LINE 群發改用 Chatwoot 發送的占比（Chatwoot 群發則數 ÷ 門市全部群發則數，31 家門市）",
-      "new": false,
-      "not_done": [
-        "- 正式站上線（要先補 .24 上傳檔備份、跑四個 migration，Jin 核准）",
-        "- 成效頁前端（R5）",
-        "- 門市試用與教學"
-      ],
-      "now": "0%（群發只上測試站，正式站還沒開放）",
-      "now_date": "2026-11-02",
-      "other": [
-        "費用試算（FDEPROJECT-622，30 家 7～9 月實際量）：群發改走 Chatwoot 不會多花",
-        "測試站實發 6 個端到端情境都通過，原時間沒有重複發送"
-      ],
-      "passed": 2,
-      "source": "基準：OA Manager 群發紀錄盤點（FDEPROJECT-591）；上線後：Chatwoot 正式站群發紀錄表＋OA Manager 群發紀錄",
-      "stale": false,
-      "versions": [],
-      "week": null
-    },
-    {
-      "acceptance": [
-        {
-          "condition": "427 人名單（一般 50＋大團 377）在正式 SERP 團號 26TED31I0A 完整匯入",
-          "result": "通過",
-          "where": "正式 SERP，2026-10-28"
-        },
-        {
-          "condition": "訂單有「取消」列、列數多於旅客時匯入（FDEPROJECT-981）",
-          "result": "通過",
-          "where": "2026-11-02（正式匯入日期待確認）"
-        },
-        {
-          "condition": "PDF 名單經 MinerU 4.0.12 轉換（FDEPROJECT-982）",
-          "result": "通過",
-          "where": "開發機，2026-11-02"
-        }
-      ],
-      "attachments": [],
-      "base": "0 人（業務逐筆手動建單）",
-      "base_date": "2026-10-06",
-      "code": [
-        "csv_convert_serp main 344263c（PR #19，2026-11-02",
-        "上線版本待確認）"
-      ],
-      "delivered": "業務把客人給的報名名單（CSV／XLS／XLSX／PDF）上傳到網站，系統轉成 SERP 格式並標出有問題的欄位，再代為登入 SERP 依團號開單並匯入名單（一般訂單與大團），每筆留截圖紀錄。",
-      "done": null,
-      "entry": [],
-      "env": [
-        "https://github.com/Liontech-tw/fde-devcontainers/tree/FDEPROJECT-997-add-csv-convert-serp/projects/csv-convert-serp （審核中，合併後改指 main）"
-      ],
-      "epic": "FDEPROJECT-309",
-      "epic_summary": "[客製國旅]外部報名系統資料串接 SERP",
-      "failed": 0,
-      "features": [
-        "網址： p-ot-backstage （內部位址，不公開））",
-        "轉換檔案：上傳 CSV／XLS／XLSX／PDF 名單，自動對應欄位、轉換日期、國籍與性別，列出問題欄位，可下載 SERP 匯入檔",
-        "SERP 匯入：依團號開單或補上傳，一般訂單與大團（每單 40／50 人容量分配），略過已取消列",
-        "執行紀錄：每筆工作的截圖、步驟與 SERP 訊息",
-        "操作說明書入口、問題回報"
-      ],
-      "key": "FDEPROJECT-1000",
-      "label": "客製國旅",
-      "manual": [],
-      "metric": "單次自動匯入 SERP 的旅客人數",
-      "new": false,
-      "not_done": [
-        "BullMQ 並行處理、Chrome Extension、付款連結批次發送、跨次匯入去重 → 不在本階段",
-        "訂單 6-12528534「找到 2 個修改按鈕」無法唯一定位 → 未處理",
-        "SERP Node 測試 8 項失敗（修改前即存在：分組邏輯、Mock 大團欄位）→ 未處理",
-        "人工與工具耗時對照 → 未量測"
-      ],
-      "now": "427 人（一般 1 張單＋大團 8 張單）",
-      "now_date": "2026-10-28",
-      "other": [
-        "支援 CSV／XLS／XLSX／PDF 名單",
-        "國籍與性別自動轉換",
-        "每筆匯入都留截圖紀錄"
-      ],
-      "passed": 3,
-      "source": "csv_convert_serp 執行紀錄 job b4870c91（正式 SERP 26TED31I0A）",
-      "stale": false,
-      "versions": [],
-      "week": null
-    },
-    {
-      "acceptance": [
-        {
-          "condition": "手機拍照或選照片（含 HEIC）、圈選、OCR 讀出支出單號與批號、一鍵開 ERP（FDEPROJECT-737 UAT）",
-          "result": "通過",
-          "where": "正式站 （內部位址，不公開）"
-        },
-        {
-          "condition": "使用者一次掃 5 張支出單，1 分鐘內取得 5 個 ERP 連結",
-          "result": "通過",
-          "where": "2026-11-03"
-        },
-        {
-          "condition": "ERP 開在具名分頁、工具頁結果保留（FDEPROJECT-999）→ 完成，2026-11-03",
-          "result": null,
-          "where": null
-        },
-        {
-          "condition": "OCR 改 CPU 部署（FDEPROJECT-855）",
-          "result": "通過",
-          "where": "2026-10-30"
-        }
-      ],
-      "attachments": [],
-      "base": "人工查一張支出單 2～3 分鐘（手打單號再到 ERP 查詢），每天審 5 張以上，約 10～15 分鐘",
-      "base_date": null,
-      "code": [
-        "erp_receipt_redirect main 0fa5ca1（2026-10-30",
-        "上線版本待確認）"
-      ],
-      "delivered": "主管用手機拍支出單或批號，圈選後由 OCR 讀出編號，一鍵開啟 ERP 對應頁面核對、核可，不用再手打單號。",
-      "done": null,
-      "entry": [],
-      "env": [
-        "https://github.com/Liontech-tw/fde-devcontainers/tree/FDEPROJECT-998-add-erp-receipt-redirect/projects/erp-receipt-redirect （審核中，合併後改指 main）"
-      ],
-      "epic": "FDEPROJECT-652",
-      "epic_summary": "[客製國旅]規劃團體成本支單審核流程優化",
-      "failed": 0,
-      "features": [
-        "網址： p-ot-backstage （內部位址，不公開），CPU OCR）",
-        "iPhone 拍照或選照片，支援 HEIC，照片只在記憶體處理、不保存",
-        "用手指圈選一個或多個範圍，可旋轉、縮放；也可直接辨識整張照片",
-        "自動擷取支出單號與批號，多筆結果可修改、重新分類、刪除，重複編號自動合併",
-        "每筆一鍵開啟 ERP 對應頁面"
-      ],
-      "key": "FDEPROJECT-1001",
-      "label": "客製國旅",
-      "manual": [],
-      "metric": "從拿到支出單到開啟 ERP 對應頁面的時間",
-      "new": false,
-      "not_done": [
-        "GPU 推論 → 保留設定、未啟用，目前只用 CPU",
-        "核可仍由主管在 ERP 執行 → 設計邊界，工具不代替核可",
-        "批號查詢是否已接正式映射（先前為固定範例 POST）→ 待確認"
-      ],
-      "now": "一次掃 5 張支出單，1 分鐘內取得全部 ERP 連結（約每張 12 秒）",
-      "now_date": "2026-11-03",
-      "other": [
-        "OCR 單次圈選 0.15～0.5 秒、整張照片約 1 秒（Mac CPU 實測，非正式主機數字）"
-      ],
-      "passed": 3,
-      "source": "使用者實測（FDEPROJECT-737 UAT，2026-11-03，一次 5 張）；人工基準為使用者估計",
-      "stale": false,
-      "versions": [],
-      "week": null
-    },
-    {
-      "acceptance": [
-        {
-          "condition": "板橋客人訊息進 Chatwoot",
-          "result": "通過",
-          "where": "正式站，10/07"
-        },
-        {
-          "condition": "8 位業務帳號分到板橋收件匣",
-          "result": "通過",
-          "where": "10/07"
-        },
-        {
-          "condition": "每日優化報告抓出的問題開卡修正",
-          "result": "通過",
-          "where": "10/07～10/19"
-        },
-        {
-          "condition": "AI 開放給客人",
-          "result": "未驗",
-          "where": "併入 423"
-        }
-      ],
-      "attachments": [
-        {
-          "filename": "store-liff.png",
-          "id": "14660",
-          "image": null,
-          "mime": "image/png",
-          "size": 394116
-        }
-      ],
-      "base": "0 段（試用前沒有接 Chatwoot）",
-      "base_date": "2026-10-06",
-      "code": [
-        "Azure Repos FDE/store-ai-assistant"
-      ],
-      "delivered": "板橋 LINE OA 接入 Chatwoot 收件匣；開通管理者 2＋業務 8 個帳號並分到板橋收件匣；業務電腦網頁版（LINE 登入）；AI 客服內部試用期間的使用分析與修正",
-      "done": null,
-      "entry": [],
-      "env": [
-        "https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/store-ai-assistant"
-      ],
-      "epic": "FDEPROJECT-325",
-      "epic_summary": "門市 AI 客服 階段二：板橋門市試用",
-      "failed": 0,
-      "features": [
-        "板橋門市導入 Chatwoot：板橋 LINE 官方帳號的客人訊息集中收進 Chatwoot 客服後台，門市主管與業務用自己的帳號看全店對話；同時讓主管與專員內部試用門市 AI 客服。"
-      ],
-      "key": "FDEPROJECT-1049",
-      "label": "門市",
-      "manual": [],
-      "metric": "板橋門市客人 LINE 對話收進 Chatwoot 的段數（試用前客人訊息只在 LINE 官方帳號後台，門市主管看不到全店）",
-      "new": false,
-      "not_done": [
-        "- AI 還沒開放給客人：開放標準併入 FDEPROJECT-423 追蹤",
-        "- 業務仍在 LINE 官方帳號後台回覆，何時改在 Chatwoot 回覆併入 423",
-        "- 10/15 起正式站幾乎沒人用，後期回饋以 FDEPROJECT-284 收集為主"
-      ],
-      "now": "974 段（10/07 接入後到 10/12）",
-      "now_date": "2026-10-12",
-      "other": [
-        "開通帳號 10 個（管理者 2、業務 8）",
-        "AI 客服內部試用：10/05～10/08 19 人、10/09～10/14 6 人用過"
-      ],
-      "passed": 3,
-      "source": "Chatwoot 正式站 板橋門市收件匣對話數（10/12 查核優先度權限時一併查）；AI 試用數字來自每週優化週報 10/08、10/16",
-      "stale": false,
-      "versions": [],
-      "week": null
-    },
-    {
-      "acceptance": [
-        {
           "condition": "Chatwoot 測試站看得到 Dify 知識庫總覽與問答列表",
           "result": "通過",
           "where": "Chatwoot 測試站，10/16"
@@ -13531,7 +13596,7 @@
         "done_points": 72.5,
         "percent": 68,
         "total_cards": 31,
-        "total_points": 82.0,
+        "total_points": 83.0,
         "unestimated_cards": 8
       },
       "project": "CS",
@@ -16848,7 +16913,7 @@
     "FDEPROJECT-117",
     "FDEPROJECT-118"
   ],
-  "generated_at": "2026-11-04T05:02:26.586459+08:00",
+  "generated_at": "2026-11-04T06:21:10.367028+08:00",
   "health": [
     {
       "completed": 8,
@@ -16981,8 +17046,8 @@
     {
       "current_state": "進行中",
       "group": "CS-25",
-      "hours": 1.0,
-      "idle_days": 1,
+      "hours": 1.5,
+      "idle_days": 0,
       "key": "CS-39",
       "leaf": true,
       "next": null,
@@ -17024,18 +17089,18 @@
       "current_state": "進行中",
       "group": "CS-25",
       "hours": null,
-      "idle_days": 1,
+      "idle_days": 0,
       "key": "CS-43",
       "leaf": true,
       "next": null,
       "owner": "hubertwang",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
       "root": "CS-41",
-      "summary": "Graph 讀信權限申請（等 Vincent／資通）",
+      "summary": "共用信箱讀信權限（地端 Exchange：EWS 或移到 Exchange Online，等 Vincent／資通）",
       "tokens": null
     },
     {
-      "current_state": "審核中",
+      "current_state": "進行中",
       "group": "CS-25",
       "hours": 0.5,
       "idle_days": 0,
@@ -17045,13 +17110,13 @@
       "owner": "hubertwang",
       "project": "CS-25 歐洲地接社-房產品資料彙整",
       "root": "CS-41",
-      "summary": "PR 審核與合併（PR #1–#6 及後續分支）（等 Vincent 審核）",
+      "summary": "PR 自動測試與合併（PR #1–#5 及 11 月分支）",
       "tokens": null
     },
     {
       "current_state": "進行中",
       "group": "CS-25",
-      "hours": 8.0,
+      "hours": 8.5,
       "idle_days": 0,
       "key": "CS-48",
       "leaf": true,
@@ -20366,12 +20431,12 @@
           "CS-39": 6,
           "CS-40": 1,
           "CS-43": 1,
-          "CS-47": 1,
+          "CS-47": 0,
           "CS-48": 0,
           "CS-50": 0
         },
         "count": 6,
-        "hours": 9.5,
+        "hours": 10.5,
         "keys": [
           "CS-39",
           "CS-40",

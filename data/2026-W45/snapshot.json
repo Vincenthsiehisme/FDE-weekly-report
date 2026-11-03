@@ -3,7 +3,7 @@
     "CS": 49,
     "FDEPROJECT": 1037
   },
-  "fetched_at": "2026-11-04T05:02:26.586459+08:00",
+  "fetched_at": "2026-11-04T06:21:10.367028+08:00",
   "issues": [
     {
       "assignee": "hubertwang",
@@ -860,7 +860,7 @@
       "level": -1,
       "moved_in": null,
       "parent": "CS-41",
-      "points": 1.0,
+      "points": 1.5,
       "progress_seen": true,
       "project": "CS",
       "resolved": null,
@@ -869,7 +869,7 @@
       "status_since": "2026-10-27T16:20:20.150000+00:00",
       "summary": "交通欄與舊城區距離：重新匯出 80 家飯店座標＋車站資料",
       "type": "子任務",
-      "updated": "2026-11-02T22:09:22.334+0800"
+      "updated": "2026-11-04T05:23:43.058+0800"
     },
     {
       "assignee": "hubertwang",
@@ -947,9 +947,9 @@
       "status": "進行中",
       "status_category": "indeterminate",
       "status_since": "2026-11-02T14:09:23.086000+00:00",
-      "summary": "Graph 讀信權限申請（等 Vincent／資通）",
+      "summary": "共用信箱讀信權限（地端 Exchange：EWS 或移到 Exchange Online，等 Vincent／資通）",
       "type": "子任務",
-      "updated": "2026-11-02T22:09:23.086+0800"
+      "updated": "2026-11-04T05:11:27.949+0800"
     },
     {
       "assignee": "hubertwang",
@@ -967,9 +967,9 @@
       "status": "待辦事項",
       "status_category": "new",
       "status_since": null,
-      "summary": "Graph 讀信接上 Agent 流程（等 Graph 權限）",
+      "summary": "讀信接上 Agent 流程（Graph 或 EWS，等讀信權限）",
       "type": "子任務",
-      "updated": "2026-11-02T22:08:53.933+0800"
+      "updated": "2026-11-04T05:11:28.392+0800"
     },
     {
       "assignee": "hubertwang",
@@ -1009,7 +1009,7 @@
       "status_since": null,
       "summary": "寄送對象與審核人確認（等欣欣）",
       "type": "子任務",
-      "updated": "2026-11-02T22:08:55.398+0800"
+      "updated": "2026-11-04T05:11:28.856+0800"
     },
     {
       "assignee": "hubertwang",
@@ -1021,15 +1021,15 @@
       "moved_in": null,
       "parent": "CS-41",
       "points": 0.5,
-      "progress_seen": false,
+      "progress_seen": true,
       "project": "CS",
       "resolved": null,
-      "status": "審核中",
+      "status": "進行中",
       "status_category": "indeterminate",
-      "status_since": "2026-11-02T14:09:23.716000+00:00",
-      "summary": "PR 審核與合併（PR #1–#6 及後續分支）（等 Vincent 審核）",
+      "status_since": "2026-11-03T21:11:29.983000+00:00",
+      "summary": "PR 自動測試與合併（PR #1–#5 及 11 月分支）",
       "type": "子任務",
-      "updated": "2026-11-04T04:15:07.521+0800"
+      "updated": "2026-11-04T05:11:29.983+0800"
     },
     {
       "assignee": "hubertwang",
@@ -1040,7 +1040,7 @@
       "level": -1,
       "moved_in": null,
       "parent": "CS-41",
-      "points": 8.0,
+      "points": 8.5,
       "progress_seen": true,
       "project": "CS",
       "resolved": null,
@@ -1049,7 +1049,7 @@
       "status_since": "2026-11-03T15:27:55.778000+00:00",
       "summary": "亞非線地接社設定檔",
       "type": "子任務",
-      "updated": "2026-11-04T04:52:12.003+0800"
+      "updated": "2026-11-04T05:23:40.671+0800"
     },
     {
       "assignee": "hubertwang",
@@ -11226,7 +11226,7 @@
       "status_since": null,
       "summary": "門市 AI 客服 階段二：板橋門市試用",
       "type": "大型工作",
-      "updated": "2026-10-20T17:16:28.007+0800"
+      "updated": "2026-11-04T06:10:11.488+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -19424,7 +19424,7 @@
       "status_since": null,
       "summary": "Chatwoot LINE 群發與卡片（取代 OA Manager 群發）",
       "type": "大型工作",
-      "updated": "2026-11-02T11:36:04.719+0800"
+      "updated": "2026-11-04T06:10:02.046+0800"
     },
     {
       "assignee": null,
@@ -21750,7 +21750,7 @@
       "status_since": null,
       "summary": "門市 LINE 訊息漏收排查：前端連線逾時與 F5 擋字元",
       "type": "大型工作",
-      "updated": "2026-11-02T11:08:37.972+0800"
+      "updated": "2026-11-04T06:09:59.186+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -21851,7 +21851,7 @@
       "status_since": null,
       "summary": "Chatwoot 門市班表 階段一：每日匯入與今日班表",
       "type": "大型工作",
-      "updated": "2026-11-02T11:13:36.641+0800"
+      "updated": "2026-11-04T06:09:55.924+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -26208,13 +26208,13 @@
       "points": null,
       "progress_seen": false,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "審核中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T03:36:10.454000+00:00",
+      "resolved": "2026-11-04T06:09:08.677+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-03T22:09:08.699000+00:00",
       "summary": "FDE 自有主機維運與資安修補",
       "type": "Deliverable",
-      "updated": "2026-11-02T11:36:10.454+0800"
+      "updated": "2026-11-04T06:09:08.699+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -26249,13 +26249,13 @@
       "points": null,
       "progress_seen": false,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "審核中",
-      "status_category": "indeterminate",
-      "status_since": "2026-10-29T09:22:40.080000+00:00",
+      "resolved": "2026-11-04T06:09:52.034+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-03T22:09:52.051000+00:00",
       "summary": "Chatwoot 門市班表 階段一：每日匯入與今日班表",
       "type": "Deliverable",
-      "updated": "2026-10-29T17:22:40.080+0800"
+      "updated": "2026-11-04T06:09:52.051+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -27943,13 +27943,13 @@
       "points": null,
       "progress_seen": false,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "審核中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T03:08:24.136000+00:00",
+      "resolved": "2026-11-04T06:09:55.454+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-03T22:09:55.475000+00:00",
       "summary": "門市 LINE 訊息漏收排查：前端連線逾時與 F5 擋字元",
       "type": "Deliverable",
-      "updated": "2026-11-02T11:08:24.136+0800"
+      "updated": "2026-11-04T06:09:55.475+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -29379,13 +29379,13 @@
       "points": null,
       "progress_seen": false,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "審核中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T03:36:03.792000+00:00",
+      "resolved": "2026-11-04T06:09:58.709+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-03T22:09:58.723000+00:00",
       "summary": "Chatwoot LINE 群發與卡片（取代 OA Manager 群發）",
       "type": "Deliverable",
-      "updated": "2026-11-02T11:36:03.792+0800"
+      "updated": "2026-11-04T06:09:58.723+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -32306,13 +32306,13 @@
       "points": null,
       "progress_seen": false,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "審核中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T09:33:35.023000+00:00",
+      "resolved": "2026-11-04T06:10:01.929+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-03T22:10:01.944000+00:00",
       "summary": "[客製國旅]外部報名系統資料串接 SERP",
       "type": "Deliverable",
-      "updated": "2026-11-03T17:33:35.023+0800"
+      "updated": "2026-11-04T06:10:01.944+0800"
     },
     {
       "assignee": "Vivian",
@@ -32347,13 +32347,13 @@
       "points": null,
       "progress_seen": false,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "審核中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T09:33:52.924000+00:00",
+      "resolved": "2026-11-04T06:10:05.126+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-03T22:10:05.141000+00:00",
       "summary": "[客製國旅]規劃團體成本支單審核流程優化",
       "type": "Deliverable",
-      "updated": "2026-11-03T17:33:52.924+0800"
+      "updated": "2026-11-04T06:10:05.141+0800"
     },
     {
       "assignee": "Jerry Huang",
@@ -33554,13 +33554,13 @@
       "points": null,
       "progress_seen": false,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "審核中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T15:40:20.074000+00:00",
+      "resolved": "2026-11-04T06:10:08.373+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-03T22:10:08.387000+00:00",
       "summary": "門市 AI 客服 階段二：板橋門市試用",
       "type": "Deliverable",
-      "updated": "2026-11-03T23:40:20.074+0800"
+      "updated": "2026-11-04T06:10:08.387+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
