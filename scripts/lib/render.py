@@ -1168,7 +1168,9 @@ def _names(cards: list) -> list:
 
 
 def _delivered_panel(metrics, page) -> str:
-    """成效說明：頂端一句話、單位錨點，依支援單位分段一列一個工具，驗收中收在最後（2026-11-03 鎖定 AC-1）。"""
+    """成效說明：頂端一句話、一排單位籤，一次顯示一個單位、一列一個工具，驗收中是最後一個籤（2026-11-03 鎖定 AC-1；
+    2026-11-04 使用者要單位籤各自切換，公開頁內部位址與單位頁籤）。只有驗收中卡的單位不另開籤，驗收通過才列進各單位。
+    籤是 #unit-… 的連結：沒有 JS 時照舊是跳轉、各單位往下排。"""
     cards = metrics["deliverables"]
     if cards is None:
         return '<p class="note">這一期的資料沒有抓 Deliverable，成效說明從之後重抓的週報開始有。</p>'
@@ -1188,22 +1190,28 @@ def _delivered_panel(metrics, page) -> str:
     sentence = f'已交付 <b>{len(cards)}</b> 個專案{units_text(order)}；本期新交付 <b>{fresh}</b> 個'
     if reviewing:
         sentence += f'；另有 <b>{len(reviewing)}</b> 個驗收中{units_text(review_units)}'
-    nav = []
-    for name in order + [n for n in review_units if n not in groups]:
-        n_review = sum(1 for c in reviewing if (c["label"] or UNLABELED) == name)
-        parts = ([str(len(groups[name]))] if name in groups else []) + ([f"驗收中 {n_review}"] if n_review else [])
-        href = _unit_id(name) if name in groups else "dv-review"
-        nav.append(f'<a href="#{href}">{esc(name)} <span class="muted">{"・".join(parts)}</span></a>')
+    tabs = [(_unit_id(name), esc(name), len(groups[name])) for name in order]
+    if reviewing:
+        tabs.append(("dv-review", "驗收中", len(reviewing)))
+    first = tabs[0][0]
+
+    def active(key):
+        return " active" if key == first else ""
+
+    nav = "".join(f'<a class="dv-tab" role="tab" id="tab-{key}" href="#{key}" aria-controls="{key}" aria-selected="{str(key == first).lower()}">'
+                  f'{name} <span class="muted">{n}</span></a>' for key, name, n in tabs)
     sections = "".join(
-        f'<section class="dv-unit" id="{_unit_id(name)}"><h3>{esc(name)} <span class="muted">{len(groups[name])}</span></h3>'
+        f'<section class="dv-unit{active(_unit_id(name))}" id="{_unit_id(name)}" role="tabpanel" aria-labelledby="tab-{_unit_id(name)}">'
+        f'<h3>{esc(name)} <span class="muted">{len(groups[name])}</span></h3>'
         f'<div class="dv-rows">{"".join(_dv_row(c, page) for c in groups[name])}</div></section>'
         for name in order)
     review = ""
     if reviewing:
-        review = (f'<details class="dv-review" id="dv-review"><summary><b>驗收中 <span class="muted">{len(reviewing)}</span></b>'
+        review = (f'<details class="dv-review{active("dv-review")}" id="dv-review" role="tabpanel" aria-labelledby="tab-dv-review">'
+                  f'<summary><b>驗收中 <span class="muted">{len(reviewing)}</span></b>'
                   f'<span class="muted">上線了、還在驗收，驗收通過後列進各單位</span></summary>'
                   f'<div class="dv-rows">{"".join(_dv_row(c, page, reviewing=True) for c in reviewing)}</div></details>')
-    return (f'<p class="dv-sentence">{sentence}。</p><nav class="dv-nav" aria-label="依單位跳到">{"".join(nav)}</nav>'
+    return (f'<p class="dv-sentence">{sentence}。</p><nav class="dv-tabs" role="tablist" aria-label="支援單位">{nav}</nav>'
             f'{sections}{review}')
 
 
@@ -1363,7 +1371,26 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
   var el = document.getElementById("generated");
   var t = Date.parse(el.getAttribute("data-generated"));
   if (!isNaN(t) && Date.now() - t > {STALE_DAYS} * 86400000) document.getElementById("stale").hidden = false;
-  var tabs = [].slice.call(document.querySelectorAll('[role="tab"]'));
+  var tabs = [].slice.call(document.querySelectorAll('.tabs [role="tab"]'));
+  // 成效說明的單位籤：只換成效說明裡面的單位，不動上層頁籤（2026-11-04）。驗收中是 details，切到它就打開
+  var unitTabs = [].slice.call(document.querySelectorAll('.dv-tabs [role="tab"]'));
+  function showUnit(id) {{
+    unitTabs.forEach(function (tab) {{
+      var on = tab.getAttribute("aria-controls") === id;
+      var unit = document.getElementById(tab.getAttribute("aria-controls"));
+      tab.setAttribute("aria-selected", on ? "true" : "false");
+      unit.classList.toggle("active", on);
+      if (on && unit.tagName === "DETAILS") unit.open = true;
+    }});
+  }}
+  unitTabs.forEach(function (tab) {{
+    tab.addEventListener("click", function (event) {{
+      event.preventDefault();
+      var id = tab.getAttribute("aria-controls");
+      showUnit(id);
+      history.replaceState(null, "", "#" + id);
+    }});
+  }});
   function show(id) {{
     tabs.forEach(function (tab) {{
       var on = tab.getAttribute("aria-controls") === id;
@@ -1379,13 +1406,16 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
     }});
   }});
   function fromHash() {{
-    // 頁籤名（#delivered）直接切；成效說明裡的單位錨點與驗收中（#unit-…、#dv-review）切到它所在的頁籤再捲過去
+    // 頁籤名（#delivered）直接切；成效說明裡的單位、驗收中與單張卡（#unit-…、#dv-review、#dv-<卡號>）
+    // 切到它所在的頁籤與單位籤再捲過去
     var wanted = decodeURIComponent(location.hash.slice(1));
     if (tabs.some(function (tab) {{ return tab.getAttribute("aria-controls") === wanted; }})) {{ show(wanted); return; }}
     var el = wanted && document.getElementById(wanted);
-    var panel = el && el.closest('[role="tabpanel"]');
+    var panel = el && el.closest('.panel');
     if (!panel) return;
     show(panel.id);
+    var unit = el.closest('.dv-unit, .dv-review');
+    if (unit) showUnit(unit.id);
     if (el.tagName === "DETAILS") el.open = true;
     el.scrollIntoView();
   }}
@@ -1503,11 +1533,18 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .era-line::before,.era-line::after{content:"";flex:1;border-top:1px dashed var(--muted)}
 /* 成效說明：版型甲，依單位分段一列一個工具（2026-11-03 成效說明多讀者改版） */
 .dv-sentence{font-size:19px;line-height:1.5;margin:16px 0 10px}.dv-sentence b{font-variant-numeric:tabular-nums}
-.dv-nav{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px}
-.dv-nav a{color:var(--text)}
-.dv-unit h3{margin:24px 0 8px}
-.dv-rows{background:var(--surface);border:1px solid var(--line);border-radius:10px}
-.dv-item{border-top:1px solid var(--line)}.dv-item:first-child{border-top:0}
+/* 單位籤：沒有 JS 時是一排跳轉連結、各單位往下排；有 JS 時一次只顯示一個單位（2026-11-04 使用者要各自切換） */
+.dv-tabs{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px}
+.dv-tab{color:var(--text)}
+.js .dv-tabs{gap:4px;padding:0;border-top:0;margin:4px 0 16px}
+.js .dv-tab{padding:8px 14px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.js .dv-tab:hover{text-decoration:none;color:var(--text)}
+.js .dv-tab[aria-selected="true"]{color:var(--text);font-weight:600;border-bottom-color:var(--accent)}
+.js .dv-unit,.js .dv-review{display:none}.js .dv-unit.active,.js .dv-review.active{display:block}
+.dv-unit h3{margin:24px 0 8px}.js .dv-unit h3{display:none}
+/* 卡與卡之間留呼吸空間：每張自己一個外框（2026-11-04 使用者要求） */
+.dv-rows{display:grid;gap:12px}
+.dv-item{background:var(--surface);border:1px solid var(--line);border-radius:10px}
 .dv-item>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;padding:14px 18px}
 .dv-item>summary::before{display:none}
 .dv-item[open]>summary{border-bottom:1px dashed var(--line)}
@@ -1536,6 +1573,8 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .dv-files{margin:6px 0 0}
 /* 不套 .panel>details 的白卡外框：裡面的 .dv-rows 已經是一張卡，套兩層就是冷讀抓過的灰上灰 */
 .panel>details.dv-review{margin-top:28px;background:none;border:0;border-radius:0;padding:0}
+/* 有 JS 時驗收中是一個籤：切到就打開，標題只留那句說明、不能收合 */
+.js .panel>details.dv-review{margin-top:0}.js .dv-review>summary{pointer-events:none}.js .dv-review>summary b{display:none}
 /* 分享 #delivered、#unit-… 進來時，頁籤列是 sticky，標題與那句話不要被蓋住 */
 #delivered,.dv-unit,.dv-review{scroll-margin-top:64px}.dv-review>summary{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:17px}.dv-review>summary b{white-space:nowrap}.dv-review>summary .muted{font-size:14px}
 .dv-review>.dv-rows{margin-top:8px}
