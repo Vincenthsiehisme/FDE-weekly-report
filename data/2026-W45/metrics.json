@@ -101,6 +101,21 @@
       "message": "依 config/excluded.json 整個 epic 不列入週報，本週完成的 1 張不算：行政作業不是專案成效；2026-09-29 使用者裁不放入成效統計"
     },
     {
+      "key": "FDEPROJECT-207",
+      "kind": "internal_address",
+      "message": "標題有 1 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」"
+    },
+    {
+      "key": "FDEPROJECT-258",
+      "kind": "internal_address",
+      "message": "標題有 1 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」"
+    },
+    {
+      "key": "FDEPROJECT-264",
+      "kind": "internal_address",
+      "message": "標題有 1 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」"
+    },
+    {
       "key": "FDEPROJECT-848",
       "kind": "deliverable_format",
       "message": "描述少了「Code：」這一行"
@@ -20838,7 +20853,7 @@
     "week": "2026-W45",
     "week_ending": "2026-11-03"
   },
-  "schema": 17,
+  "schema": 18,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {
