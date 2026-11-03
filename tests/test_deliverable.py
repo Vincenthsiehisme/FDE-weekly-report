@@ -216,7 +216,12 @@ class MetricsAndPageTest(unittest.TestCase):
         self.assertIn('aria-controls="week" aria-selected="true">', html)  # 預設仍是本週
         self.assertIn('<span class="dv-name">批次付款連結<span class="dv-tag new">本期新交付</span><span class="dv-tag">有影片</span></span>', panel)
         self.assertIn('epic <a href="https://example.atlassian.net/browse/CS-1">CS-1</a>・Deliverable <a href="https://example.atlassian.net/browse/CS-50">CS-50</a>', panel)
-        self.assertIn('<span class="dv-vals">6 分鐘 → <b>40 秒</b></span><span class="muted">09/20 量測</span>', panel)
+        # 成效自成一段：指標 → 現在值（墨色粗體）接量測日 →「原本」加基準；不畫箭頭、不用綠（2026-11-04 使用者選丁）
+        self.assertIn('<span class="dv-out"><span class="dv-metric">每張連結製作時間</span>'
+                      '<span class="dv-now">40 秒 <span class="dv-when">09/20 量測</span></span>'
+                      '<span class="dv-base"><b>原本</b>6 分鐘</span></span>', panel)
+        self.assertNotIn(" → <b>", panel)
+        self.assertIn(".dv-out{grid-column:1/-1;display:block;max-width:46em;margin-top:8px;border-left:2px solid var(--line-strong)", html)
         self.assertIn('<a class="dv-btn" href="https://tool.example.com/start">開始使用</a><a href="https://manual.example.com/">操作手冊</a>', panel)
         self.assertIn("驗收通過 1/2 項・09/18 交付", panel)
         self.assertIn('<a href="https://github.com/x/y/pull/1">github.com/x/y/pull/1</a>', html)
@@ -294,7 +299,11 @@ class MetricsAndPageTest(unittest.TestCase):
 
     def test_missing_outcome_is_shown_as_missing(self):
         m = run(epics() + [card("CS-50", customfield_10482=None)])
-        self.assertIn('<span class="dv-missing">成效未填</span>', self.page(m))
+        self.assertIn('<span class="dv-out missing"><span class="dv-missing">成效未填</span></span>', self.page(m))
+
+    def test_stale_outcome_warns_next_to_the_date(self):
+        m = run(epics() + [card("CS-50", customfield_10481="2026-07-27")])
+        self.assertIn('<span class="dv-now">40 秒 <span class="dv-when">07/27 量測，<b class="dv-warn">超過 8 週</b></span></span>', self.page(m))
 
     def test_deliverable_checks_reach_the_page(self):
         m = run(epics() + [card("CS-50"), card("CS-51")])
