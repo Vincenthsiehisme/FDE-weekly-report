@@ -3,20 +3,28 @@
 規則正本是 jira-ops `references/deliverable.md`，決策在 vault 的 jira-weekly-report · 成效說明頁籤（2026-10-29 鎖定）。
 - 關鍵內容在 FDEPROJECT 的自訂欄位（FIELDS），id 只在這個 team-managed 專案有效；CS 沒有 Deliverable 類型。
   段落欄位 REST v3 回 ADF、短文字回字串，兩種都收；全部選填，沒填是 None。
-- 描述只剩 3 行標籤：Acceptance、Code、Env，接受的寫法比照 Kick off（行首標籤、全半形冒號、標題形式）。
+- 描述的標籤：Acceptance、Code、Env 三行必有；入口、手冊兩行選填（2026-11-03 成效說明多讀者改版），
+  接受的寫法比照 Kick off（行首標籤、全半形冒號、標題形式）。
 - 畫面取附件：圖片（IMAGE_TYPES、不超過 MAX_IMAGE_BYTES）由 prepare 下載進 site/assets/deliverables/ 公開顯示，
   其他附件只列檔名加 Jira 連結（2026-11-03 使用者裁，推翻 10-29 不放圖；vault 的 jira-weekly-report · 成效說明顯示截圖）。
   個資守門在 Deliverable 規則：上傳前遮客人資料、轉完成前檢查。版本取修正版本（fixVersions）。
-- 頁籤只列已完成的 Deliverable，依完成時間所在的那一期分段、新的在上。不鎖定，每週取當下內容。
+- 頁籤列已完成的 Deliverable，依支援單位分段；Jira 狀態類別 indeterminate（審核中）的另列「驗收中」，
+  只解析不列格式檢查、不下載圖（圖要轉完成、遮過個資才公開）。不鎖定，每週取當下內容。
+- 頁面是公開網址：私有 IP 與 config/internal-hosts.json 列的主機，不管寫在哪一欄都換成 INTERNAL_MARK、列資料檢查；
+  剩下的 https:// 網址才做成連結（vault 的 jira-weekly-report · 成效說明多讀者改版，2026-11-03 使用者裁「維持公開」）。
 - 格式問題與沒填的列資料檢查，不擋週報：一張卡寫錯不該讓整份週報出不來。
 """
 from __future__ import annotations
 
+import ipaddress
+import json
 import os
 import re
 import tempfile
-from datetime import date
+from datetime import date, timedelta
+from functools import lru_cache
 from pathlib import Path
+from urllib.parse import urlsplit
 
 from .kickoff import adf_to_lines
 from .period import period_containing
@@ -39,7 +47,8 @@ FETCH_FIELDS = ["description", "attachment", "fixVersions", *FIELDS]
 # 已完成卻沒填就列資料檢查的欄位（2026-10-29：成效三欄與交付兩欄都改選填，Jira 不擋空白）
 REQUIRED_WHEN_DONE = (("delivered", "交付了什麼"), ("features", "交付功能"), ("metric", "成效指標"),
                       ("base", "成效基準值"), ("now", "成效最新值"))
-SECTIONS = (("acceptance", "Acceptance"), ("code", "Code"), ("env", "Env"))
+SECTIONS = (("acceptance", "Acceptance"), ("code", "Code"), ("env", "Env"), ("entry", "入口"), ("manual", "手冊"))
+OPTIONAL_SECTIONS = {"entry", "manual"}  # 2026-11-03 加的兩行，舊卡沒有不算格式問題；已完成沒有入口另列 deliverable_no_entry
 # 這天以後完成的 epic 要有完成的 Deliverable；之前已關閉的不補（2026-10-29 使用者裁）
 REQUIRED_SINCE = date(2026, 10, 29)
 RESULTS = ("通過", "未通過", "未驗")
@@ -53,7 +62,15 @@ IMAGE_TYPES = {
 MAX_IMAGE_BYTES = 2 * 1024 * 1024
 ASSET_DIR = "assets/deliverables"  # 相對 site/
 _LABELS = {label.lower(): key for key, label in SECTIONS}
-_LINE = re.compile(r"^[\s#>*•\-]*\**\s*(?P<label>Acceptance|Code|Env)\s*\**\s*(?:[:：]\s*(?P<rest>.*))?$", re.IGNORECASE)
+_LINE = re.compile(r"^[\s#>*•\-]*\**\s*(?P<label>Acceptance|Code|Env|入口|手冊)\s*\**\s*(?:[:：]\s*(?P<rest>.*))?$", re.IGNORECASE)
+# 成效最新日離本期結束超過這麼多天，列資料檢查、列上標「超過 8 週」
+STALE_OUTCOME_DAYS = 56
+INTERNAL_HOSTS_FILE = Path(__file__).resolve().parents[2] / "config" / "internal-hosts.json"
+INTERNAL_MARK = "（內部位址，不公開）"
+# 網址只收 ASCII：內文常把全形括號、逗號直接接在網址後面（1000 的「/convert/（部署於 …）」）
+_URL = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'*+,;=%]+")
+_IPV4 = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?!\.?\d)")  # 句尾接半形句號也要認得
+_IPV6 = re.compile(r"(?<![0-9A-Za-z:])[0-9A-Fa-f]{0,4}(?::[0-9A-Fa-f]{0,4}){2,7}(?![0-9A-Za-z:])")
 _RESULT = re.compile(r"^(?P<cond>.+?)\s*(?:→|->)\s*(?P<result>通過|未通過|未驗)\s*(?:[，,]\s*(?P<where>.*))?$")
 
 
@@ -161,11 +178,76 @@ def parse_description(lines: list) -> tuple:
         elif current is not None:
             collected[current].append(line)
     for key, label in SECTIONS:
-        if key not in collected:
+        if key not in collected and key not in OPTIONAL_SECTIONS:
             problems.append(f"描述少了「{label}：」這一行")
     for key, parts in collected.items():
         sections[key] = "；".join(p for p in parts if p).strip() or None
     return sections, list(dict.fromkeys(problems))
+
+
+@lru_cache(maxsize=None)
+def internal_hosts(path: Path = INTERNAL_HOSTS_FILE) -> frozenset:
+    """config/internal-hosts.json：外網打不開、不該出現在公開頁的主機名稱。檔案不在或格式不對就丟錯，不當成空清單。"""
+    data = json.loads(path.read_text(encoding="utf-8"))
+    hosts = data.get("hosts") if isinstance(data, dict) else None
+    if not isinstance(hosts, list) or not all(isinstance(h, str) and h.strip() for h in hosts):
+        raise ValueError(f"{path} 要是 {{\"hosts\": [\"主機名稱\", …]}}")
+    return frozenset(h.strip().lower() for h in hosts)
+
+
+def _private_ip(text: str) -> bool:
+    try:
+        return ipaddress.ip_address(text).is_private
+    except ValueError:
+        return False
+
+
+def _internal_url(url: str, hosts: frozenset) -> bool:
+    """解析不了的網址（例 `https://[foo`）當內部處理：換掉、列資料檢查，不讓一張卡寫錯擋掉整份週報（Codex 審 225df02）。"""
+    try:
+        host = (urlsplit(url).hostname or "").lower()
+    except ValueError:
+        return True
+    return not url.startswith("https://") or _private_ip(host) or any(host == h or host.endswith("." + h) for h in hosts)
+
+
+def scrub(text, hosts: frozenset) -> tuple:
+    """回傳 (公開頁能放的字, 拿掉了幾處)。內部網址（含 http://）、私有 IP、清單上的主機名稱換成 INTERNAL_MARK；
+    https:// 的公開網址留著，由頁面做成連結。None 照回 None。"""
+    if text is None:
+        return None, 0
+    count = 0
+
+    def url(match):
+        nonlocal count
+        found = match.group(0)
+        tail = len(found) - len(found.rstrip(".,;:!?"))
+        found, rest = found[:len(found) - tail], match.group(0)[len(found) - tail:]
+        if _internal_url(found, hosts):
+            count += 1
+            return INTERNAL_MARK + rest
+        return found + rest
+
+    def ip(match):
+        nonlocal count
+        if _private_ip(match.group(0)):
+            count += 1
+            return INTERNAL_MARK
+        return match.group(0)
+
+    out = _IPV6.sub(ip, _IPV4.sub(ip, _URL.sub(url, text)))
+    for host in sorted(hosts, key=len, reverse=True):
+        # 只看 ASCII 邊界：中文卡片常把主機名稱直接接在中文字旁（「部署在travel-tech.liontravel.com上」）；子網域一起換
+        pattern = re.compile(r"(?<![A-Za-z0-9.-])(?:[A-Za-z0-9-]+\.)*" + re.escape(host) + r"(?![A-Za-z0-9-])", re.IGNORECASE)
+        out, n = pattern.subn(INTERNAL_MARK, out)
+        count += n
+    return out, count
+
+
+def _public_urls(values: list) -> list:
+    """入口、手冊：只留 scrub 過還在的 https:// 網址（內部的已換成 INTERNAL_MARK、列過資料檢查）。"""
+    values = [v.rstrip(".,;:!?") for v in values]
+    return [v for v in values if v.startswith("https://") and _URL.fullmatch(v)]
 
 
 def _items(text, sep: str) -> list:
@@ -186,11 +268,13 @@ def _acceptance(text) -> list:
     return out
 
 
-def views(issues: list) -> tuple:
-    """回傳 (頁籤要的卡片清單, checks)。issues 是排除過整棵 epic 之後的 snapshot 卡片。
-    只列已完成的 Deliverable；一個 epic 多張只取卡號最小的那張，其餘列資料檢查。"""
+def views(issues: list, period, hosts: frozenset = None) -> tuple:
+    """回傳 (已完成的卡, 驗收中的卡, checks)。issues 是排除過整棵 epic 之後的 snapshot 卡片，period 是這一期
+    （本期新交付、成效多久沒更新都對它算，不看今天）。一個 epic 多張只取卡號最小的那張，其餘列資料檢查。
+    已完成的卡才下載圖（download_images 只收第一個值）；驗收中的只解析、不列格式與沒填的檢查。"""
+    hosts = internal_hosts() if hosts is None else hosts
     by_key = {i["key"]: i for i in issues}
-    checks, cards, seen = [], [], {}
+    checks, cards, reviewing, seen = [], [], [], {}
     for item in sorted((i for i in issues if i.get("deliverable") is not None), key=lambda i: issue_sort_key(i["key"])):
         parent = by_key.get(item["parent"]) if item["parent"] else None
         if parent is None or parent["level"] != EPIC_LEVEL:
@@ -200,43 +284,79 @@ def views(issues: list) -> tuple:
             checks.append(_check("deliverable_duplicate", item["key"], f"{parent['key']} 已經有 Deliverable {seen[parent['key']]}，這張不採用"))
             continue
         seen[parent["key"]] = item["key"]
-        if item["status_category"] != "done":
+        done = item["status_category"] == "done"
+        if not done and item["status_category"] != "indeterminate":
             continue
         d = item["deliverable"]
         sections, problems = parse_description(d["description"])
-        for problem in problems:
-            checks.append(_check("deliverable_format", item["key"], problem))
-        missing = [label for key, label in REQUIRED_WHEN_DONE if not d[key]]
-        if missing:
-            checks.append(_check("deliverable_missing", item["key"], f"Deliverable 已完成，沒填：{'、'.join(missing)}"))
-        if not item["resolved"]:
-            checks.append(_check("deliverable_no_resolution", item["key"], "Deliverable 是完成但沒有完成時間，不知道放哪一週"))
-            continue
+        if done:
+            for problem in problems:
+                checks.append(_check("deliverable_format", item["key"], problem))
+            missing = [label for key, label in REQUIRED_WHEN_DONE if not d[key]]
+            if missing:
+                checks.append(_check("deliverable_missing", item["key"], f"Deliverable 已完成，沒填：{'、'.join(missing)}"))
+            if not item["resolved"]:
+                checks.append(_check("deliverable_no_resolution", item["key"], "Deliverable 是完成但沒有完成時間，不知道放哪一週"))
+                continue
+        scrubbed = 0
+
+        def clean(text):
+            nonlocal scrubbed
+            out, n = scrub(text, hosts)
+            scrubbed += n
+            return out
+
+        fields = {key: clean(d[key]) for key in ("delivered", "features", "not_done", "metric", "base", "now", "source", "other")}
+        # 頁面上每個從 Jira 來的字都過同一道：epic 標題、label、附件檔名、版本名也會印出來（Codex 審 225df02）
+        title = clean(parent["summary"])
+        label = clean(parent["labels"][0]) if len(parent["labels"]) == 1 else None
+        sections = {key: clean(value) for key, value in sections.items()}
         acceptance = _acceptance(sections["acceptance"])
-        cards.append({
+        entry, manual = _public_urls(_items(sections["entry"], "[；;]")), _public_urls(_items(sections["manual"], "[；;]"))
+        attachments = [dict(a, filename=clean(a["filename"])) for a in (_shown_attachment(a) for a in d["attachments"])]
+        versions = [dict(v, name=clean(v["name"])) for v in d["versions"]]
+        if scrubbed:
+            checks.append(_check("deliverable_internal", item["key"], f"有 {scrubbed} 處內部網址或私有 IP，頁面換成「{INTERNAL_MARK}」；"
+                                                                      "Deliverable 只放對外網址"))
+        if not done:
+            attachments = [dict(a, image=None) for a in attachments]
+        week = period_containing(parse_jira_time(item["resolved"])).week_id if done else None
+        stale = done and bool(d["now_date"]) and (period.week_ending - date.fromisoformat(d["now_date"])) > timedelta(days=STALE_OUTCOME_DAYS)
+        if done:
+            if not entry:
+                checks.append(_check("deliverable_no_entry", item["key"], "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"))
+            if stale:
+                checks.append(_check("deliverable_stale", item["key"], f"成效最新日 {d['now_date']} 離本期結束超過 8 週，成效最新值要更新"))
+            if not any(a["mime"] and a["mime"].split("/")[0] in ("image", "video") for a in attachments):
+                checks.append(_check("deliverable_no_media", item["key"], "Deliverable 已完成，沒有附畫面或影片"))
+        (cards if done else reviewing).append({
             "key": item["key"],
             "epic": parent["key"],
-            "epic_summary": parent["summary"],
-            "label": parent["labels"][0] if len(parent["labels"]) == 1 else None,
-            "done": item["resolved"],
-            "week": period_containing(parse_jira_time(item["resolved"])).week_id,
-            "delivered": d["delivered"],
-            "features": _items(d["features"], "\n"),
-            "not_done": _items(d["not_done"], "\n"),
-            "metric": d["metric"],
-            "base": d["base"],
+            "epic_summary": title,
+            "label": label,
+            "done": item["resolved"] if done else None,
+            "week": week,
+            "new": week == period.week_id,
+            "delivered": fields["delivered"],
+            "features": _items(fields["features"], "\n"),
+            "not_done": _items(fields["not_done"], "\n"),
+            "metric": fields["metric"],
+            "base": fields["base"],
             "base_date": d["base_date"],
-            "now": d["now"],
+            "now": fields["now"],
             "now_date": d["now_date"],
-            "source": d["source"],
-            "other": _items(d["other"], "[；;]"),
+            "stale": stale,
+            "source": fields["source"],
+            "other": _items(fields["other"], "[；;]"),
             "acceptance": acceptance,
             "passed": sum(1 for a in acceptance if a["result"] == "通過"),
             "failed": sum(1 for a in acceptance if a["result"] == "未通過"),
             "code": _items(sections["code"], "[；;]"),
             "env": _items(sections["env"], "[；;]"),
-            "attachments": [_shown_attachment(a) for a in d["attachments"]],
-            "versions": d["versions"],
+            "entry": entry,
+            "manual": manual,
+            "attachments": attachments,
+            "versions": versions,
         })
     for epic in sorted((i for i in issues if i["level"] == EPIC_LEVEL and i["status_category"] == "done" and i["resolved"]),
                        key=lambda i: issue_sort_key(i["key"])):
@@ -245,7 +365,8 @@ def views(issues: list) -> tuple:
         if finished >= REQUIRED_SINCE and not has_done:
             checks.append(_check("deliverable_absent", epic["key"], f"epic {finished.isoformat()} 完成，底下沒有完成的 Deliverable"))
     cards.sort(key=lambda c: (c["done"], c["key"]), reverse=True)
-    return cards, checks
+    reviewing.sort(key=lambda c: issue_sort_key(c["key"]))
+    return cards, reviewing, checks
 
 
 def _check(kind: str, key, message: str) -> dict:

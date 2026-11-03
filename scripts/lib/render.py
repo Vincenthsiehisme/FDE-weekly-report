@@ -26,7 +26,9 @@ Kick off 目標五段只在總覽展開看。圖都是 inline SVG 或純 CSS，�
 """
 from __future__ import annotations
 
+import hashlib
 import html
+import re
 from datetime import datetime, timedelta
 from urllib.parse import quote
 
@@ -1044,23 +1046,39 @@ def _links(values: list) -> str:
     return "；".join(f'<a href="{esc(v)}">{esc(v[len("https://"):])}</a>' if v.startswith("https://") else esc(v) for v in values)
 
 
+_URL = re.compile(r"https://[A-Za-z0-9\-._~:/?#\[\]@!$&'*+,;=%]+")
+
+
+def linkify(value) -> str:
+    """成效說明的內文：在原文上切出 https:// 網址，網址與其餘文字各自跳脫，再把網址做成連結
+    （內部網址在 deliverable.views 已換掉，剩下的都是對外的）。先跳脫再找會把 &quot; 吃進網址（Codex 審 225df02）。"""
+    text = "" if value is None else str(value)
+    out, last = [], 0
+    for match in _URL.finditer(text):
+        found = match.group(0)
+        url = found.rstrip(".,;:!?'")
+        out.append(esc(text[last:match.start()]))
+        out.append(f'<a href="{esc(url)}">{esc(url[len("https://"):])}</a>{esc(found[len(url):])}')
+        last = match.end()
+    out.append(esc(text[last:]))
+    return "".join(out)
+
+
+def _unit_id(label: str) -> str:
+    """單位段的錨點：取 label 的雜湊，週與週之間不變，網址分享出去不會因單位排序變動而壞。"""
+    return "unit-" + hashlib.sha1(label.encode("utf-8")).hexdigest()[:8]
+
+
 def _dv_outcome(card: dict) -> str:
+    """列上的成效一行：指標灰字、基準 → 粗體最新、量測日。"""
     if not (card["metric"] and card["base"] and card["now"]):
-        return '<div class="dv-outcome missing">成效未填</div>'
-    more = f' <span class="dv-more">另 {len(card["other"])} 項，見完整說明</span>' if card["other"] else ""
-    return (f'<div class="dv-outcome"><small>{esc(card["metric"].replace(chr(10), " "))}</small>'
-            f'<strong>{esc(card["base"])} → {esc(card["now"])}</strong>{more}</div>')
-
-
-def _dv_cover(card: dict, page) -> str:
-    """卡片表面：第一張圖的縮圖，點了看原圖；底下是檔名（連 Jira）。沒有能顯示的圖就不放。"""
-    images = [a for a in card["attachments"] if a["image"]]
-    if not images:
-        return ""
-    first = images[0]
-    more = f'<span class="muted">，另 {len(images) - 1} 張見完整說明</span>' if len(images) > 1 else ""
-    return (f'<a class="dv-cover" href="{page.asset(first["image"])}"><img src="{page.asset(first["image"])}" alt="{esc(first["filename"])}" loading="lazy"></a>'
-            f'<p class="dv-cover-cap">{page.attachment(first)}{more}</p>')
+        return '<span class="dv-missing">成效未填</span>'
+    when = ""
+    if card["now_date"]:
+        warn = '，<b class="dv-warn">超過 8 週</b>' if card["stale"] else ""
+        when = f'<span class="muted">{esc(fmt_date(card["now_date"])[5:])} 量測{warn}</span>'
+    return (f'<span class="dv-metric">{esc(card["metric"].replace(chr(10), " "))}</span>'
+            f'<span class="dv-vals">{esc(card["base"])} → <b>{esc(card["now"])}</b></span>{when}')
 
 
 def _dv_shots(card: dict, page) -> str:
@@ -1079,66 +1097,111 @@ def _dv_shots(card: dict, page) -> str:
     return out
 
 
-def _dv_card(card: dict, page) -> str:
-    """成效說明一張卡：版型照原型 B（vault 的 jira-weekly-report · 成效說明原型B.html，2026-10-29 鎖定）。"""
+def _dv_full(card: dict, page) -> str:
+    """就地展開的完整說明。"""
     items = []
 
     def add(label, body):
         items.append(f"<div><dt>{label}</dt><dd>{body}</dd></div>")
 
     def bullets(values):
-        return "<ul>" + "".join(f"<li>{esc(v)}</li>" for v in values) + "</ul>"
+        return "<ul>" + "".join(f"<li>{linkify(v)}</li>" for v in values) + "</ul>"
 
     if card["features"]:
         add("交付功能", bullets(card["features"]))
     if card["metric"] and card["base"] and card["now"]:
         main = (f'{esc(card["metric"].replace(chr(10), " "))}：{esc(card["base"])}（{esc(fmt_date(card["base_date"]) if card["base_date"] else "日期未填")}）'
                 f' → {esc(card["now"])}（{esc(fmt_date(card["now_date"]) if card["now_date"] else "日期未填")}）')
-        source = f'<br><span class="muted">來源：{esc(card["source"])}</span>' if card["source"] else ""
-        add("成效", main + source + "".join(f"<br>{esc(o)}" for o in card["other"]))
+        source = f'<br><span class="muted">來源：{linkify(card["source"])}</span>' if card["source"] else ""
+        add("成效", main + source + "".join(f"<br>{linkify(o)}" for o in card["other"]))
     if card["acceptance"]:
         add("驗收", "<ul>" + "".join(
-            f'<li>{esc(a["condition"])}'
+            f'<li>{linkify(a["condition"])}'
             + (f' → <b class="{"bad" if a["result"] == "未通過" else ""}">{esc(a["result"])}</b>' if a["result"] else "")
-            + (f'<span class="muted">，{esc(a["where"])}</span>' if a["where"] else "") + "</li>"
+            + (f'<span class="muted">，{linkify(a["where"])}</span>' if a["where"] else "") + "</li>"
             for a in card["acceptance"]) + "</ul>")
     if card["not_done"]:
         add("沒做的", bullets(card["not_done"]))
     if card["attachments"]:
         add("畫面", _dv_shots(card, page))
+    links = [f'入口 {_links([u])}' for u in card["entry"]] + [f'手冊 {_links([u])}' for u in card["manual"]]
+    if links:
+        add("連結", "<br>".join(links))
     if card["code"]:
         add("程式碼", _links(card["code"]))
     if card["env"]:
         add("開發環境", _links(card["env"]))
     if card["versions"]:
         add("版本", "、".join(esc(v["name"]) + (f'（{esc(fmt_date(v["release_date"]))}）' if v["release_date"] else "") for v in card["versions"]))
-    if card["acceptance"]:
-        acc = f'驗收 {card["passed"]}/{len(card["acceptance"])} 通過' + (f'，<span class="bad">{card["failed"]} 未通過</span>' if card["failed"] else "")
-    else:
-        acc = "驗收未填"
-    delivered = esc(card["delivered"]) if card["delivered"] else '<span class="muted">交付了什麼未填</span>'
-    details = f'<details><summary>完整說明</summary><dl>{"".join(items)}</dl></details>' if items else ""
-    return (f'<article class="dv-card"><div class="dv-top"><span class="dv-title"><b>{page.issue(card["epic"])}</b> {esc(card["epic_summary"])}</span>'
-            f'<span class="dv-label">{esc(card["label"] or UNLABELED)}</span></div>'
-            f'<p class="dv-delivered">{delivered}</p>{_dv_outcome(card)}{_dv_cover(card, page)}'
-            f'<p class="dv-meta">{acc}，{esc(fmt_date(card["done"]))} 交付 · Deliverable {page.issue(card["key"])}</p>{details}</article>')
+    add("Jira", f'epic {page.issue(card["epic"])}・Deliverable {page.issue(card["key"])}<span class="muted">（要登入 Jira）</span>')
+    return f'<dl class="dv-full">{"".join(items)}</dl>'
+
+
+def _dv_row(card: dict, page, reviewing: bool = False) -> str:
+    """一列一個工具：版型甲（vault 的 jira-weekly-report · 成效說明多讀者改版，2026-11-03 使用者選甲）。"""
+    tags = '<span class="dv-tag new">本期新交付</span>' if card["new"] else ""
+    kinds = {(a["mime"] or "").split("/")[0] for a in card["attachments"]}
+    if "video" in kinds:
+        tags += '<span class="dv-tag">有影片</span>'
+    elif "image" in kinds:
+        tags += '<span class="dv-tag">有畫面</span>'
+    act = ""
+    if card["entry"]:
+        act += f'<a class="dv-btn{" ghost" if reviewing else ""}" href="{esc(card["entry"][0])}">{"試用入口" if reviewing else "開始使用"}</a>'
+    if card["manual"]:
+        act += f'<a href="{esc(card["manual"][0])}">操作手冊</a>'
+    acc = f'驗收通過 {card["passed"]}/{len(card["acceptance"])} 項' if card["acceptance"] else "驗收未填"
+    when = "驗收中" if reviewing else f'{esc(fmt_date(card["done"])[5:])} 交付'
+    delivered = linkify(card["delivered"]) if card["delivered"] else '<span class="muted">交付了什麼未填</span>'
+    return (f'<details class="dv-item" id="dv-{esc(card["key"])}"><summary>'
+            f'<span class="dv-name">{esc(card["epic_summary"])}{tags}</span>'
+            f'<span class="dv-one">{delivered}</span><span class="dv-out">{_dv_outcome(card)}</span>'
+            f'<span class="dv-side"><span class="dv-act">{act}</span><span class="muted">{acc}・{when}</span><span class="dv-open">完整說明</span></span>'
+            f'</summary>{_dv_full(card, page)}</details>')
+
+
+def _names(cards: list) -> list:
+    return list(dict.fromkeys(c["label"] or UNLABELED for c in cards))
 
 
 def _delivered_panel(metrics, page) -> str:
-    """成效說明：已完成的 Deliverable，依完成那一期分段、新的在上，一排兩張卡（2026-10-29 鎖定 AC-3）。"""
+    """成效說明：頂端一句話、單位錨點，依支援單位分段一列一個工具，驗收中收在最後（2026-11-03 鎖定 AC-1）。"""
     cards = metrics["deliverables"]
     if cards is None:
         return '<p class="note">這一期的資料沒有抓 Deliverable，成效說明從之後重抓的週報開始有。</p>'
-    if not cards:
+    reviewing = metrics.get("deliverables_reviewing") or []  # schema 16 以前沒有
+    if not cards and not reviewing:
         return '<p class="dv-empty">還沒有已交付的專案。epic 完成、Deliverable 卡填好後，下一期週報會列在這裡。</p>'
-    weeks = {}
-    for card in cards:
-        weeks.setdefault(card["week"], []).append(card)
+    groups = {}
+    for c in cards:
+        groups.setdefault(c["label"] or UNLABELED, []).append(c)
+    order = sorted(groups, key=lambda n: (-len(groups[n]), n))  # 沒有 label 順序表：已交付多的在前，同數照名稱
+    review_units = _names(reviewing)
+
+    def units_text(names):
+        return f'（{"、".join(esc(n) for n in names)}）' if 0 < len(names) <= 3 else (f"，服務 <b>{len(names)}</b> 個單位" if names else "")
+
+    fresh = sum(1 for c in cards if c["new"])
+    sentence = f'已交付 <b>{len(cards)}</b> 個專案{units_text(order)}；本期新交付 <b>{fresh}</b> 個'
+    if reviewing:
+        sentence += f'；另有 <b>{len(reviewing)}</b> 個驗收中{units_text(review_units)}'
+    nav = []
+    for name in order + [n for n in review_units if n not in groups]:
+        n_review = sum(1 for c in reviewing if (c["label"] or UNLABELED) == name)
+        parts = ([str(len(groups[name]))] if name in groups else []) + ([f"驗收中 {n_review}"] if n_review else [])
+        href = _unit_id(name) if name in groups else "dv-review"
+        nav.append(f'<a href="#{href}">{esc(name)} <span class="muted">{"・".join(parts)}</span></a>')
     sections = "".join(
-        f'<h3>{esc(week)} 交付 <span class="muted">{len(group)}</span></h3>'
-        f'<div class="dv-cards">{"".join(_dv_card(c, page) for c in group)}</div>'
-        for week, group in sorted(weeks.items(), reverse=True))
-    return f'<p class="note">依交付週排，新的在上；內容取自各 epic 的 Deliverable 卡，共 {len(cards)} 個專案。</p>{sections}'
+        f'<section class="dv-unit" id="{_unit_id(name)}"><h3>{esc(name)} <span class="muted">{len(groups[name])}</span></h3>'
+        f'<div class="dv-rows">{"".join(_dv_row(c, page) for c in groups[name])}</div></section>'
+        for name in order)
+    review = ""
+    if reviewing:
+        review = (f'<details class="dv-review" id="dv-review"><summary><b>驗收中 <span class="muted">{len(reviewing)}</span></b>'
+                  f'<span class="muted">上線了、還在驗收，驗收通過後列進各單位</span></summary>'
+                  f'<div class="dv-rows">{"".join(_dv_row(c, page, reviewing=True) for c in reviewing)}</div></details>')
+    return (f'<p class="dv-sentence">{sentence}。</p><nav class="dv-nav" aria-label="依單位跳到">{"".join(nav)}</nav>'
+            f'{sections}{review}')
 
 
 def _checks(metrics, page) -> str:
@@ -1313,8 +1376,15 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
     }});
   }});
   function fromHash() {{
-    var wanted = location.hash.slice(1);
-    if (tabs.some(function (tab) {{ return tab.getAttribute("aria-controls") === wanted; }})) show(wanted);
+    // 頁籤名（#delivered）直接切；成效說明裡的單位錨點與驗收中（#unit-…、#dv-review）切到它所在的頁籤再捲過去
+    var wanted = decodeURIComponent(location.hash.slice(1));
+    if (tabs.some(function (tab) {{ return tab.getAttribute("aria-controls") === wanted; }})) {{ show(wanted); return; }}
+    var el = wanted && document.getElementById(wanted);
+    var panel = el && el.closest('[role="tabpanel"]');
+    if (!panel) return;
+    show(panel.id);
+    if (el.tagName === "DETAILS") el.open = true;
+    el.scrollIntoView();
   }}
   window.addEventListener("hashchange", fromHash);
   fromHash();
@@ -1428,35 +1498,44 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .era{color:var(--text);font-weight:600;margin-left:4px}
 .era-line{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:12px;padding:4px 0;border-bottom:1px solid var(--line)}
 .era-line::before,.era-line::after{content:"";flex:1;border-top:1px dashed var(--muted)}
-.dv-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
-.dv-card:has(details[open]){grid-column:1/-1}
-.dv-card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
-.dv-top{display:flex;align-items:baseline;gap:8px;font-size:14px}
-.dv-title{flex:1;min-width:0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.dv-label{display:inline-block;padding:1px 9px;border-radius:999px;font-size:12px;font-weight:600;white-space:nowrap;background:var(--track-bg);color:var(--track-fg)}
-.dv-delivered{margin:6px 0 10px;font-size:15px}
-.dv-outcome{margin:0 0 8px;min-height:62px}
-.dv-outcome small{display:block;color:var(--muted);font-size:12px}
-.dv-outcome strong{font-size:22px;font-variant-numeric:tabular-nums;line-height:1.3}
-.dv-more{color:var(--muted);font-size:12px}
-.dv-outcome.missing{display:flex;align-items:center;padding:0 12px;border:1px dashed var(--warn-fg);border-radius:8px;background:var(--warn-bg);color:var(--warn-fg);font-weight:600}
-.dv-cover{display:block;margin:0 0 4px}
-.dv-cover img{display:block;width:100%;max-height:240px;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
-.dv-cover-cap{margin:0 0 10px;font-size:12px;overflow-wrap:anywhere}
-/* 要贏過 .dv-card dl div 的兩欄（標籤＋內容）：縮圖格在 dd 裡面，也是 dl 底下的 div */
-.dv-card dl .dv-shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;padding:0}
+/* 成效說明：版型甲，依單位分段一列一個工具（2026-11-03 成效說明多讀者改版） */
+.dv-sentence{font-size:19px;line-height:1.5;margin:16px 0 10px}.dv-sentence b{font-variant-numeric:tabular-nums}
+.dv-nav{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);font-size:14px}
+.dv-nav a{color:var(--text)}
+.dv-unit h3{margin:24px 0 8px}
+.dv-rows{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.dv-item{border-top:1px solid var(--line)}.dv-item:first-child{border-top:0}
+.dv-item>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;padding:14px 18px}
+.dv-item>summary::before{display:none}
+.dv-item[open]>summary{border-bottom:1px dashed var(--line)}
+.dv-name{grid-column:1;font-weight:600;font-size:16px}
+.dv-tag{display:inline-block;margin-left:8px;padding:0 7px;border-radius:4px;font-size:12px;font-weight:500;vertical-align:2px;background:var(--soft);color:var(--muted)}
+.dv-tag.new{background:var(--done-bg);color:var(--done-fg);font-weight:600}
+.dv-one{grid-column:1;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.dv-out{grid-column:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px}
+.dv-out>span{margin-right:10px}.dv-metric{color:var(--muted)}.dv-vals{font-variant-numeric:tabular-nums}.dv-vals b{font-size:16px}
+.dv-warn{color:var(--warn-fg)}
+.dv-missing{display:inline-block;padding:0 8px;border:1px dashed var(--warn-fg);border-radius:6px;background:var(--warn-bg);color:var(--warn-fg);font-size:13px;font-weight:600}
+.dv-side{grid-column:2;grid-row:1/4;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:6px;font-size:13px;text-align:right}
+.dv-act{display:flex;gap:14px;align-items:center}.dv-act:empty{display:none}
+.dv-btn{display:inline-block;padding:7px 16px;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:14px}.dv-btn:hover{text-decoration:none;opacity:.92}
+.dv-btn.ghost{background:none;color:var(--accent);border:1px solid var(--accent)}
+.dv-open{color:var(--muted)}.dv-open::before{content:"▸ "}.dv-item[open] .dv-open::before{content:"▾ "}
+.dv-full{margin:0;padding:6px 18px 16px;font-size:14px}
+.dv-full>div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.dv-full>div:first-child{border-top:0}
+.dv-full dt{color:var(--muted);font-size:13px}.dv-full dd{margin:0;min-width:0;overflow-wrap:anywhere}
+.dv-full ul{margin:0;padding-left:18px}.dv-full .bad{color:var(--warn-fg);font-weight:600}
+.dv-shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
 .dv-shots figure{margin:0;min-width:0}
-.dv-shots img{display:block;width:100%;height:120px;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+.dv-shots img{display:block;width:100%;height:160px;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
 .dv-shots figcaption{font-size:12px;overflow-wrap:anywhere}
 .dv-files{margin:6px 0 0}
-.dv-meta{font-size:13px;color:var(--muted);margin:auto 0 0}
-.dv-card details{margin-top:8px;font-size:14px}
-.dv-card details summary{color:var(--muted)}
-.dv-card dl{margin:6px 0 0;border-top:1px solid var(--line);padding-top:6px}
-.dv-card dl div{display:grid;grid-template-columns:96px minmax(0,1fr);gap:8px;padding:2px 0}
-.dv-card dt{color:var(--muted);font-size:13px}.dv-card dd{margin:0;min-width:0;overflow-wrap:anywhere}
-.dv-card ul{margin:0;padding-left:18px}
-.dv-card .bad{color:var(--warn-fg);font-weight:600}
+/* 不套 .panel>details 的白卡外框：裡面的 .dv-rows 已經是一張卡，套兩層就是冷讀抓過的灰上灰 */
+.panel>details.dv-review{margin-top:28px;background:none;border:0;border-radius:0;padding:0}
+/* 分享 #delivered、#unit-… 進來時，頁籤列是 sticky，標題與那句話不要被蓋住 */
+#delivered,.dv-unit,.dv-review{scroll-margin-top:64px}.dv-review>summary{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:17px}.dv-review>summary b{white-space:nowrap}.dv-review>summary .muted{font-size:14px}
+.dv-review>.dv-rows{margin-top:8px}
 .dv-empty{margin:24px 0;padding:20px;background:var(--surface);border:1px solid var(--line);border-radius:10px;color:var(--muted)}
 .kickoff{margin:8px 0;padding:8px 12px;background:var(--soft);border-radius:8px;font-size:14px}
 .kickoff div{display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;padding:2px 0}
@@ -1575,6 +1654,12 @@ details[open]>summary::before{content:"▾"}
 .proj-list{margin-top:24px}
 .proj-list>summary{font-weight:600;font-size:15px}
 @media (max-width:640px){
+.dv-sentence{font-size:17px}
+.dv-item>summary{grid-template-columns:minmax(0,1fr);padding:12px 14px}
+.dv-side{grid-column:1;grid-row:auto;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;text-align:left}
+.dv-one{-webkit-line-clamp:2}.dv-btn{padding:10px 18px}
+.dv-full{padding:6px 14px 14px}.dv-full>div{grid-template-columns:minmax(0,1fr);gap:2px}
+
   .dv-cards{grid-template-columns:minmax(0,1fr)}
   h1{font-size:22px}
   .viz,.pcards,.tcards{grid-template-columns:minmax(0,1fr)}
