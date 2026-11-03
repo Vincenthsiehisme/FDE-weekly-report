@@ -88,6 +88,21 @@
       "message": "依 config/excluded.json 整個 epic 不列入週報，本週完成的 3 張不算：行政作業不是專案成效；2026-09-29 使用者裁不放入成效統計"
     },
     {
+      "key": "FDEPROJECT-207",
+      "kind": "internal_address",
+      "message": "標題有 1 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」"
+    },
+    {
+      "key": "FDEPROJECT-258",
+      "kind": "internal_address",
+      "message": "標題有 1 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」"
+    },
+    {
+      "key": "FDEPROJECT-264",
+      "kind": "internal_address",
+      "message": "標題有 1 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」"
+    },
+    {
       "key": "FDEPROJECT-376",
       "kind": "unestimated",
       "message": "本週完成但 Story point estimate 沒填，實際工時以 0 計"
@@ -9501,6 +9516,7 @@
     ]
   },
   "deliverables": null,
+  "deliverables_reviewing": null,
   "epics": [
     {
       "active": false,
@@ -14704,7 +14720,7 @@
     "week": "2026-W44",
     "week_ending": "2026-10-27"
   },
-  "schema": 15,
+  "schema": 18,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {

@@ -3,6 +3,8 @@ import unittest
 from helpers import *  # noqa: F401,F403
 from lib.kickoff import adf_to_lines, as_of, parse_sections, reconcile
 
+LATER = "2099-01-01T00:00:00+08:00"  # 比任何修改都晚：只驗段落，不濾修改
+
 
 def para(*texts):
     content = []
@@ -153,19 +155,28 @@ class LockTest(unittest.TestCase):
     def test_as_of_takes_status_from_that_weeks_description(self):
         state = reconcile(None, "CS-1", "CS-20", ["Objective：目標", "Next Milestone：M1"], "t1")
         state = reconcile(state, "CS-1", "CS-20", ["Objective：目標", "Next Milestone：M2"], "t2")
-        old = as_of(state, ["Objective：目標", "Next Milestone：M1"])
+        old = as_of(state, ["Objective：目標", "Next Milestone：M1"], LATER)
         self.assertEqual(old["sections"]["next_milestone"], "M1")
         self.assertEqual(old["sections"]["objective"], "目標")
-        self.assertIsNone(as_of(state, None)["sections"]["next_milestone"])
+        self.assertIsNone(as_of(state, None, LATER)["sections"]["next_milestone"])
         self.assertEqual(state["sections"]["next_milestone"], "M2")  # 不改到傳進來的鎖定狀態
 
     def test_as_of_does_not_fill_blank_goals_from_an_older_description(self):
         # 最新鎖定檔的目標是空的，舊一期的描述有目標：重算舊期仍照鎖定檔，只有狀態段落取那一期的
         state = reconcile(None, "CS-1", "CS-20", ["Next Milestone：M2"], "t2")
-        old = as_of(state, ["Objective：舊目標", "Evidence：舊證據", "Next Milestone：M1"])
+        old = as_of(state, ["Objective：舊目標", "Evidence：舊證據", "Next Milestone：M1"], LATER)
         self.assertIsNone(old["sections"]["objective"])
         self.assertIsNone(old["sections"]["evidence"])
         self.assertEqual(old["sections"]["next_milestone"], "M1")
+
+    def test_as_of_drops_changes_detected_after_that_week(self):
+        # 重算舊的一期：之後那班才偵測到的修改不屬於那一期（2026-11-04 W44 重算帶出 11-04 的修改）
+        state = reconcile(None, "CS-1", "CS-20", ["Objective：目標"], "2026-10-20T00:00:30+08:00")
+        state = reconcile(state, "CS-1", "CS-20", ["Objective：改過的目標"], "2026-11-04T05:00:00+08:00")
+        self.assertEqual(len(state["changes"]), 1)
+        self.assertEqual(as_of(state, ["Objective：目標"], "2026-10-28T00:00:30+08:00")["changes"], [])
+        self.assertEqual(as_of(state, ["Objective：改過的目標"], "2026-11-04T05:00:00+08:00")["changes"], state["changes"])
+        self.assertEqual(len(state["changes"]), 1)  # 不改到傳進來的鎖定狀態
 
     def test_state_for_another_epic_is_rejected(self):
         state = reconcile(None, "CS-1", "CS-20", [], "t1")

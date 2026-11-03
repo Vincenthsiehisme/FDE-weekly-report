@@ -58,6 +58,8 @@ ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
 CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近幾週（跟本週頁的圖同一段），不然資料檢查會一路變長
+# 18：工作卡、epic 標題與 Kick off 有私有 IP 或 config/internal-hosts.json 的主機，一張卡列一條 internal_address 資料檢查；
+#     頁面在 render.esc 換掉，metrics 照存原文（2026-11-04 公開頁內部位址與單位頁籤）；
 # 17：多了 deliverables_reviewing（Jira 審核中的 Deliverable，頁籤「成效說明」收在最後；snapshot 3 是 null）；deliverables 與它每張多了
 #     new、stale、entry、manual，文字欄的內部網址與私有 IP 換成「（內部位址，不公開）」（2026-11-03 成效說明多讀者改版）；
 # 16：deliverables 每張卡的 attachments 從檔名字串改成 {id, filename, mime, size, image}，image 是要顯示的圖在 site/ 底下的路徑
@@ -82,7 +84,7 @@ CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近�
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 17
+SCHEMA = 18
 SNAPSHOT_SCHEMAS = (3, 4, 5)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓；
 # 5 的附件帶 id 才下載得了圖，4 的附件只有檔名、照舊只列檔名
 
@@ -149,6 +151,27 @@ class _Tree:
 
 def _check(kind: str, key, message: str) -> dict:
     return {"kind": kind, "key": key, "message": message}
+
+
+def _internal_address_checks(issues: list, kickoff_states: dict) -> list:
+    """標題與 Kick off 內容有私有 IP 或清單主機的，一張卡一條。頁面由 render.esc 換掉，這裡只讓人回 Jira 改。
+    Deliverable 卡的欄位由 deliverable.views 列 deliverable_internal，這裡不重報。Kick off 的鎖定版與最新讀到的同一段
+    常常一樣，相同的字只算一次。"""
+    hosts = deliverable_lib.internal_hosts()
+    mark = deliverable_lib.INTERNAL_MARK
+    out = []
+    for item in sorted(issues, key=lambda i: issue_sort_key(i["key"])):
+        if item.get("deliverable") is not None:
+            continue
+        _, n = deliverable_lib.scrub(item["summary"], hosts)
+        if n:
+            out.append(_check("internal_address", item["key"], f"標題有 {n} 處內部網址或私有 IP，公開頁換成「{mark}」"))
+    for state in sorted(kickoff_states.values(), key=lambda s: issue_sort_key(s["kickoff_key"])):
+        texts = {v for part in ("sections", "last_seen") for v in (state.get(part) or {}).values() if isinstance(v, str)}
+        n = sum(deliverable_lib.scrub(t, hosts)[1] for t in sorted(texts))
+        if n:
+            out.append(_check("internal_address", state["kickoff_key"], f"Kick off 有 {n} 處內部網址或私有 IP，公開頁換成「{mark}」"))
+    return out
 
 
 def _done(issue: dict) -> bool:
@@ -315,6 +338,7 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
                          f"用 weekly.py prepare --week-ending {period.week_ending.isoformat()} 重抓一次 Jira")
     checks = list(extra_checks)
     tree = _Tree(snapshot["issues"], checks)
+    checks += _internal_address_checks(snapshot["issues"], kickoff_states)
     deliverables = reviewing = None
     if snapshot["schema"] >= 4:
         deliverables, reviewing, deliverable_checks = deliverable_lib.views(snapshot["issues"], period)

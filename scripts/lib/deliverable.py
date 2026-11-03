@@ -12,6 +12,8 @@
   只解析不列格式檢查、不下載圖（圖要轉完成、遮過個資才公開）。不鎖定，每週取當下內容。
 - 頁面是公開網址：私有 IP 與 config/internal-hosts.json 列的主機，不管寫在哪一欄都換成 INTERNAL_MARK、列資料檢查；
   剩下的 https:// 網址才做成連結（vault 的 jira-weekly-report · 成效說明多讀者改版，2026-11-03 使用者裁「維持公開」）。
+  scrub 也是整份公開頁的出口：render.esc 每個字都過它，工作卡、epic、Kick off 的資料檢查在 metrics 列
+  （2026-11-04 公開頁內部位址與單位頁籤）。
 - 格式問題與沒填的列資料檢查，不擋週報：一張卡寫錯不該讓整份週報出不來。
 """
 from __future__ import annotations
@@ -196,6 +198,13 @@ def internal_hosts(path: Path = INTERNAL_HOSTS_FILE) -> frozenset:
 
 
 def _private_ip(text: str) -> bool:
+    """單獨的 `::`（分隔符號）沒有任何位址數字，不算；補零的 IPv4（010.0.0.5）Python 3.9.5 起 ipaddress 不收，
+    先去掉每段的前導零再判，不然會原樣上公開頁（2026-11-04 Sonnet 審 #41）。"""
+    if ":" in text and not re.search(r"[0-9A-Fa-f]", text):
+        return False
+    parts = text.split(".")
+    if len(parts) == 4 and all(p.isdigit() for p in parts):
+        text = ".".join(str(int(p)) for p in parts)
     try:
         return ipaddress.ip_address(text).is_private
     except ValueError:
@@ -236,12 +245,19 @@ def scrub(text, hosts: frozenset) -> tuple:
         return match.group(0)
 
     out = _IPV6.sub(ip, _IPV4.sub(ip, _URL.sub(url, text)))
-    for host in sorted(hosts, key=len, reverse=True):
-        # 只看 ASCII 邊界：中文卡片常把主機名稱直接接在中文字旁（「部署在travel-tech.liontravel.com上」）；子網域一起換
-        pattern = re.compile(r"(?<![A-Za-z0-9.-])(?:[A-Za-z0-9-]+\.)*" + re.escape(host) + r"(?![A-Za-z0-9-])", re.IGNORECASE)
+    for pattern in _host_patterns(hosts):
         out, n = pattern.subn(INTERNAL_MARK, out)
         count += n
     return out, count
+
+
+@lru_cache(maxsize=None)
+def _host_patterns(hosts: frozenset) -> tuple:
+    """清單上每個主機一條 regex，長的先換。頁面每個字都經過 scrub（render.esc），每次重編會拖慢整份 finalize。
+    只看 ASCII 邊界：中文卡片常把主機名稱直接接在中文字旁（「部署在travel-tech.liontravel.com上」）；子網域一起換"""
+    # 後面接「.字」照換：分不出是別的網域（.com.tw）還是附件副檔名（.png），寧可多遮（2026-11-04 Sonnet 審 #41 那條不改）
+    return tuple(re.compile(r"(?<![A-Za-z0-9.-])(?:[A-Za-z0-9-]+\.)*" + re.escape(host) + r"(?![A-Za-z0-9-])", re.IGNORECASE)
+                 for host in sorted(hosts, key=lambda h: (-len(h), h)))
 
 
 def _public_urls(values: list) -> list:

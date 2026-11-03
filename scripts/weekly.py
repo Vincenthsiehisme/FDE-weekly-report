@@ -179,7 +179,7 @@ def compute_week(snapshot: dict, *, fresh_fetch: bool) -> tuple:
         lines = kickoff_lib.adf_to_lines(card.get("description")) if card else None
         if existing is not None and datetime.fromisoformat(seen_at) < datetime.fromisoformat(existing["last_seen_at"]):
             # 重算舊的一期：鎖定檔代表最新的觀察，只讀不寫；不鎖的段落取那一期自己的描述
-            states[epic] = kickoff_lib.as_of(existing, lines)
+            states[epic] = kickoff_lib.as_of(existing, lines, seen_at)
             continue
         state = kickoff_lib.reconcile(existing, epic, card["key"] if card else None, lines, seen_at)
         if state != existing:
