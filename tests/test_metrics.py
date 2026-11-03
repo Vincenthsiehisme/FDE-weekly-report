@@ -617,6 +617,29 @@ class DeliverableTest(unittest.TestCase):
         self.assertEqual(checks, without)
 
 
+class InternalAddressTest(unittest.TestCase):
+    """公開頁全頁遮內部位址（2026-11-04 公開頁內部位址與單位頁籤 AC-2）：工作卡、epic 標題與 Kick off 有內部位址的，一張卡一條資料檢查。"""
+
+    def test_titles_and_kickoff_with_internal_addresses_are_listed(self):
+        issues = [
+            issue("CS-1", level=1, status="doing", summary="主機搬家到 10.0.0.5"),
+            issue("CS-2", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A", summary="從 10.0.0.5 搬到 192.168.1.20 並切換"),
+            issue("CS-3", parent="CS-1", points=1.0, resolved=IN_WEEK, assignee="A", summary="版本 1.2.3.4 上線，見 https://example.com/a"),
+            issue("CS-9", parent="CS-1", type_="Kick off", status="done"),
+        ]
+        state = {"kickoff_key": "CS-9", "locked_at": "2026-09-12T10:00:00+08:00", "changes": [],
+                 "sections": {"objective": "裝在 travel-tech.liontravel.com 上", "why": None, "before": None, "after": None,
+                              "evidence": None, "decision": None, "next_milestone": None},
+                 # 最新讀到的目標跟鎖定版同一段，只算一次
+                 "last_seen": {"objective": "裝在 travel-tech.liontravel.com 上", "decision": "要不要開 10.0.0.9 的防火牆"}}
+        m = run(issues, states={"CS-1": state})
+        found = {c["key"]: c["message"] for c in m["checks"] if c["kind"] == "internal_address"}
+        self.assertEqual(sorted(found), ["CS-1", "CS-2", "CS-9"])
+        self.assertEqual(found["CS-2"], "標題有 2 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」")
+        self.assertEqual(found["CS-1"], "標題有 1 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」")
+        self.assertEqual(found["CS-9"], "Kick off 有 2 處內部網址或私有 IP，公開頁換成「（內部位址，不公開）」")
+
+
 if __name__ == "__main__":
     unittest.main()
 
@@ -637,7 +660,7 @@ class FlowHealthTest(unittest.TestCase):
             issue("CS-4", parent="CS-1", points=2.0, resolved=LAST_WEEK, assignee="B", created="2026-09-10T03:59:30.000+0800", progress_seen=True),
         ]
         m = run(issues)
-        self.assertEqual(m["schema"], 17)
+        self.assertEqual(m["schema"], 18)
         # 單卡工時只除有填的張數：W39 CS-2 1h、CS-3 沒填 → 1.0h，不是 0.5h（2026-11-02 本週頁一圖一訊息 AC-1）
         keys = ("week", "completed", "via_progress", "unestimated", "hours", "hours_per_card")
         self.assertEqual([{k: h[k] for k in keys} for h in m["health"]], [

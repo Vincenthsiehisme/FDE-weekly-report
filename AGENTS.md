@@ -41,4 +41,4 @@ python3 -m unittest discover -s tests -t tests
 - 不寫 Jira。這個 repo 對 Jira 只讀。
 - 憑證只在環境變數或本機 `~/.config/jira-ops/env`，不進任何檔案、commit、PR 說明。
 - 不用 fallback 掩蓋錯誤：抓不到、驗不過就讓它失敗，不產出部分結果。
-- `site/` 是公開網址的內容。卡片標題會原樣公開，不要把憑證或個資寫進卡片標題；已完成 Deliverable 的圖片附件也會原樣公開，上傳前要遮客人資料。
+- `site/` 是公開網址的內容。卡片標題、Kick off、Deliverable 的文字會公開，只有私有 IP 與 `config/internal-hosts.json` 列的主機會換掉（`render.esc`），姓名、單號這類個資與憑證不會被擋，不要寫進卡片；已完成 Deliverable 的圖片附件也會原樣公開，上傳前要遮客人資料。

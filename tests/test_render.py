@@ -1089,6 +1089,26 @@ class OverviewStatusTest(unittest.TestCase):
         self.assertIn(".lrow .num{flex:none;width:200px;text-align:right;", page())
 
 
+class InternalAddressRenderTest(unittest.TestCase):
+    """公開頁全頁遮內部位址（2026-11-04 公開頁內部位址與單位頁籤 AC-1）：不只成效說明，任何經 esc 印出的字都換掉。"""
+
+    def test_esc_hides_private_ips_and_listed_hosts(self):
+        self.assertEqual(esc("搬到 10.0.0.5 並切換"), "搬到 （內部位址，不公開） 並切換")
+        self.assertEqual(esc("部署在travel-tech.liontravel.com上"), "部署在（內部位址，不公開）上")
+        # 公開網址、版本號、時間、Jira 連結照原文
+        for text in ("版本 1.2.3.4", "10:30 開會", "https://liontech-tw.atlassian.net/browse/CS-1", "0.43.1"):
+            self.assertEqual(esc(text), text)
+
+    def test_card_titles_on_every_tab_hide_private_ips(self):
+        issues = [issue("CS-1", level=1, status="doing", summary="主機搬家到 10.0.0.5"),
+                  issue("CS-2", level=0, parent="CS-1", status="done", points=1.5, resolved=IN_WEEK, assignee="Alice",
+                        summary="從 10.0.0.5 搬到 192.168.1.20")]
+        html = page(metrics=metrics_for(issues))
+        self.assertNotIn("10.0.0.5", html)
+        self.assertNotIn("192.168.1.20", html)
+        self.assertIn("從 （內部位址，不公開） 搬到 （內部位址，不公開）", html)
+
+
 if __name__ == "__main__":
     unittest.main()
 

@@ -15,6 +15,7 @@ Decision Needed 與 Next Milestone 是狀態不是目標，決定做完、里程
 from __future__ import annotations
 
 import re
+from datetime import datetime
 
 SECTIONS = (
     ("objective", "Objective"),
@@ -104,11 +105,15 @@ def _shown(locked: dict, current) -> dict:
     return shown
 
 
-def as_of(state: dict, lines) -> dict:
+def as_of(state: dict, lines, seen_at: str) -> dict:
     """重算舊的一期時用：目標五段照鎖定檔原樣（空的就是空的，不拿舊描述補），其餘段落換成那一期
-    snapshot 的描述。lines 是 None 代表那一期沒有 Kick off 卡。回傳新的 dict，不改傳進來的 state。"""
+    snapshot 的描述。lines 是 None 代表那一期沒有 Kick off 卡。回傳新的 dict，不改傳進來的 state。
+    seen_at 是那一期 snapshot 的抓取時間：之後才偵測到的修改不屬於那一期，不列（2026-11-04 重算 W44 時
+    帶出 7 條 11-04 才偵測到的「鎖定後被修改」，公開頁內部位址與單位頁籤）。"""
     current = parse_sections(lines)[0] if lines is not None else None
     view = dict(state)
+    cutoff = datetime.fromisoformat(seen_at)
+    view["changes"] = [c for c in state["changes"] if datetime.fromisoformat(c["detected_at"]) <= cutoff]
     view["sections"] = {key: state["sections"][key] if key in LOCKED_SECTIONS
                         else (current[key] if current is not None else None)
                         for key, _ in SECTIONS}

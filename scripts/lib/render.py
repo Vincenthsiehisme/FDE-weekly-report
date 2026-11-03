@@ -22,7 +22,7 @@ Kick off 目標五段只在總覽展開看。圖都是 inline SVG 或純 CSS，�
 數字剩停滯專案與有完成的專案；三張圖（完成張數、單卡平均工時、投入比例）各一則訊息，標題是程式照數字組的觀察句加上週比較；
 出手區改成一專案一列，專案沒動、卡沒動、需要決定三個條件同一個時鐘（最後一次更新到本期結束），人卡的天數也是這個時鐘。
 
-所有文字一律經過 html.escape；數字只從 metrics 來。
+所有文字一律經過 esc（先遮內部位址再 html.escape）；數字只從 metrics 來。
 """
 from __future__ import annotations
 
@@ -33,6 +33,7 @@ from datetime import datetime, timedelta
 from urllib.parse import quote
 
 from . import capacity as capacity_lib
+from .deliverable import internal_hosts, scrub
 from .metrics import ALLOCATION_TOP, ALLOCATION_WINDOW, CAPACITY_CHECK_WEEKS, OTHER_LABEL, SCHEMA, STALL_DAYS, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER, UNLABELED
 from .period import TZ
 from .snapshot import issue_sort_key, parse_jira_time
@@ -64,7 +65,9 @@ FULL_LABEL = "卡都做完，epic 沒關"
 
 
 def esc(value) -> str:
-    return html.escape("" if value is None else str(value))
+    """頁面上每個字的出口：先換掉私有 IP 與 config/internal-hosts.json 的主機（公開網址，2026-11-04 起不只成效說明），再跳脫。"""
+    text, _ = scrub("" if value is None else str(value), internal_hosts())
+    return html.escape(text)
 
 
 def multiline(value) -> str:
