@@ -229,8 +229,14 @@ class MetricsAndPageTest(unittest.TestCase):
         panel = self.page(run(issues)).split('id="delivered"')[1]
         self.assertIn('<p class="dv-sentence">已交付 <b>2</b> 個專案（國旅、直售）；本期新交付 <b>1</b> 個；另有 <b>1</b> 個驗收中（門市）。</p>', panel)
         zhi, guo = deliverable_unit("直售"), deliverable_unit("國旅")
-        self.assertIn(f'<a href="#{guo}">國旅 <span class="muted">1</span></a><a href="#{zhi}">直售 <span class="muted">1</span></a>'
-                      '<a href="#dv-review">門市 <span class="muted">驗收中 1</span></a>', panel)
+        # 單位是一排籤、各自切換，驗收中是最後一個籤；只有驗收中卡的單位（門市）不另開籤（2026-11-04 公開頁內部位址與單位頁籤 AC-5）
+        self.assertIn(f'<nav class="dv-tabs" role="tablist" aria-label="支援單位">'
+                      f'<a class="dv-tab" role="tab" id="tab-{guo}" href="#{guo}" aria-controls="{guo}" aria-selected="true">國旅 <span class="muted">1</span></a>'
+                      f'<a class="dv-tab" role="tab" id="tab-{zhi}" href="#{zhi}" aria-controls="{zhi}" aria-selected="false">直售 <span class="muted">1</span></a>'
+                      '<a class="dv-tab" role="tab" id="tab-dv-review" href="#dv-review" aria-controls="dv-review" aria-selected="false">驗收中 <span class="muted">1</span></a></nav>', panel)
+        self.assertIn(f'<section class="dv-unit active" id="{guo}" role="tabpanel" aria-labelledby="tab-{guo}">', panel)
+        self.assertIn(f'<section class="dv-unit" id="{zhi}" role="tabpanel" aria-labelledby="tab-{zhi}">', panel)
+        self.assertIn('<details class="dv-review" id="dv-review" role="tabpanel" aria-labelledby="tab-dv-review">', panel)
         self.assertLess(panel.index(f'id="{guo}"'), panel.index(f'id="{zhi}"'))  # 同數照名稱
         review = panel[panel.index('id="dv-review"'):]
         self.assertIn('<a class="dv-btn ghost" href="https://tool.example.com/start">試用入口</a>', review)
@@ -240,7 +246,30 @@ class MetricsAndPageTest(unittest.TestCase):
         self.assertEqual(deliverable_unit("直售"), deliverable_unit("直售"))
         self.assertRegex(deliverable_unit("直售"), r"^unit-[0-9a-f]{8}$")
         html = self.page(run(epics() + [card("CS-50")]))
-        self.assertIn("el.closest('[role=\"tabpanel\"]')", html)
+        # 上層四個頁籤與成效說明的單位籤分開找：單位籤也是 role="tab"，混在一起點單位會把上層頁籤全關掉
+        self.assertIn("document.querySelectorAll('.tabs [role=\"tab\"]')", html)
+        self.assertIn("document.querySelectorAll('.dv-tabs [role=\"tab\"]')", html)
+        self.assertIn("el.closest('.panel')", html)
+        self.assertIn("el.closest('.dv-unit, .dv-review')", html)
+        # 鍵盤收合驗收中時打開回去；壞掉的 %編碼不中斷初始化（2026-11-04 Sonnet 審 #42）
+        self.assertIn('if (!review.open && review.classList.contains("active")) review.open = true;', html)
+        self.assertIn("try { wanted = decodeURIComponent(location.hash.slice(1)); } catch (e) { return; }", html)
+
+    def test_only_reviewing_selects_the_review_tab(self):
+        panel = self.page(run(epics() + [card("CS-50", status="review")])).split('id="delivered"')[1]
+        self.assertIn('href="#dv-review" aria-controls="dv-review" aria-selected="true">驗收中', panel)
+        self.assertIn('<details class="dv-review active" id="dv-review"', panel)
+
+    def test_each_card_is_its_own_box_with_space_between(self):
+        # 卡與卡之間留間距：每張自己一個外框，不再共用一個白底框用分隔線切（AC-7）
+        html = self.page(run(epics() + [card("CS-50")]))
+        self.assertIn(".dv-rows{display:grid;gap:12px}", html)
+        self.assertIn(".dv-item{background:var(--surface);border:1px solid var(--line);border-radius:10px}", html)
+        self.assertNotIn(".dv-item:first-child{border-top:0}", html)
+        # 沒有 JS 時單位照舊往下排、籤是跳轉連結；有 JS 才一次只顯示一個單位
+        self.assertIn(".js .dv-unit,.js .dv-review{display:none}.js .dv-unit.active,.js .dv-review.active{display:block}", html)
+        # 有 JS 時驗收中是籤、不能收合：標題的 ▸ 收合記號也拿掉（2026-11-04 Vercel Preview 實機看到）
+        self.assertIn(".js .dv-review>summary b,.js .dv-review>summary::before{display:none}", html)
 
     def test_only_reviewing_still_shows_the_section(self):
         panel = self.page(run(epics() + [card("CS-50", status="review")])).split('id="delivered"')[1]
