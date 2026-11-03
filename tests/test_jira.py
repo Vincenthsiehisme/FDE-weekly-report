@@ -327,7 +327,8 @@ class AttachmentTest(unittest.TestCase):
             (self.redirect(f"https://media.example.com/f?token={secret}\x01"), None),
             (self.redirect(f"https://media.example.com/f?token={secret}"), http.client.InvalidURL(f"bad https://media.example.com/f?token={secret}")),
             (self.redirect(f"https://media.example.com/f?token={secret}"),
-             urllib.error.HTTPError(f"https://media.example.com/f?token={secret}", 403, "err", http.client.HTTPMessage(), io.BytesIO(b""))),
+             urllib.error.HTTPError(f"https://media.example.com/f?token={secret}", 403, f"proxy rejected https://media.example.com/f?token={secret}",
+                                    http.client.HTTPMessage(), io.BytesIO(b""))),
             (self.redirect(f"https://media.example.com/f?token={secret}"), urllib.error.URLError(f"https://media.example.com/f?token={secret}")),
         ]
         for first, second in cases:
