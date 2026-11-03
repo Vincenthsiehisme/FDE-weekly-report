@@ -69,7 +69,7 @@ INTERNAL_HOSTS_FILE = Path(__file__).resolve().parents[2] / "config" / "internal
 INTERNAL_MARK = "（內部位址，不公開）"
 # 網址只收 ASCII：內文常把全形括號、逗號直接接在網址後面（1000 的「/convert/（部署於 …）」）
 _URL = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'*+,;=%]+")
-_IPV4 = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
+_IPV4 = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?!\.?\d)")  # 句尾接半形句號也要認得
 _IPV6 = re.compile(r"(?<![0-9A-Za-z:])[0-9A-Fa-f]{0,4}(?::[0-9A-Fa-f]{0,4}){2,7}(?![0-9A-Za-z:])")
 _RESULT = re.compile(r"^(?P<cond>.+?)\s*(?:→|->)\s*(?P<result>通過|未通過|未驗)\s*(?:[，,]\s*(?P<where>.*))?$")
 
@@ -208,7 +208,7 @@ def _internal_url(url: str, hosts: frozenset) -> bool:
         host = (urlsplit(url).hostname or "").lower()
     except ValueError:
         return True
-    return not url.startswith("https://") or _private_ip(host) or host in hosts
+    return not url.startswith("https://") or _private_ip(host) or any(host == h or host.endswith("." + h) for h in hosts)
 
 
 def scrub(text, hosts: frozenset) -> tuple:
@@ -237,7 +237,8 @@ def scrub(text, hosts: frozenset) -> tuple:
 
     out = _IPV6.sub(ip, _IPV4.sub(ip, _URL.sub(url, text)))
     for host in sorted(hosts, key=len, reverse=True):
-        pattern = re.compile(r"(?<![\w.-])" + re.escape(host) + r"(?![\w-])", re.IGNORECASE)
+        # 只看 ASCII 邊界：中文卡片常把主機名稱直接接在中文字旁（「部署在travel-tech.liontravel.com上」）；子網域一起換
+        pattern = re.compile(r"(?<![A-Za-z0-9.-])(?:[A-Za-z0-9-]+\.)*" + re.escape(host) + r"(?![A-Za-z0-9-])", re.IGNORECASE)
         out, n = pattern.subn(INTERNAL_MARK, out)
         count += n
     return out, count
@@ -245,6 +246,7 @@ def scrub(text, hosts: frozenset) -> tuple:
 
 def _public_urls(values: list) -> list:
     """入口、手冊：只留 scrub 過還在的 https:// 網址（內部的已換成 INTERNAL_MARK、列過資料檢查）。"""
+    values = [v.rstrip(".,;:!?") for v in values]
     return [v for v in values if v.startswith("https://") and _URL.fullmatch(v)]
 
 
@@ -319,7 +321,7 @@ def views(issues: list, period, hosts: frozenset = None) -> tuple:
         if not done:
             attachments = [dict(a, image=None) for a in attachments]
         week = period_containing(parse_jira_time(item["resolved"])).week_id if done else None
-        stale = bool(d["now_date"]) and (period.week_ending - date.fromisoformat(d["now_date"])) > timedelta(days=STALE_OUTCOME_DAYS)
+        stale = done and bool(d["now_date"]) and (period.week_ending - date.fromisoformat(d["now_date"])) > timedelta(days=STALE_OUTCOME_DAYS)
         if done:
             if not entry:
                 checks.append(_check("deliverable_no_entry", item["key"], "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"))

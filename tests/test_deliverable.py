@@ -409,6 +409,19 @@ class InternalAddressTest(unittest.TestCase):
                 self.assertNotIn("travel-tech", html)
                 self.assertIn("deliverable_internal", [c["kind"] for c in checks])
 
+    def test_hosts_next_to_chinese_subdomains_and_trailing_dot(self):
+        # fable 審 870d1e0
+        for text in ("部署在travel-tech.liontravel.com上", "主機travel-tech.liontravel.com", "travel-tech.liontravel.com的 API"):
+            with self.subTest(text=text):
+                out, n = deliverable.scrub(text, self.HOSTS)
+                self.assertNotIn("travel-tech", out)
+                self.assertEqual(n, 1)
+        self.assertEqual(deliverable.scrub("主機 10.34.8.9.", frozenset()), ("主機 （內部位址，不公開）.", 1))
+        self.assertEqual(deliverable.scrub("https://dev.travel-tech.liontravel.com/x 與 x.travel-tech.liontravel.com", self.HOSTS),
+                         ("（內部位址，不公開） 與 （內部位址，不公開）", 2))
+        self.assertEqual(deliverable.scrub("版本 1.2.3.4 與 eviltravel-tech.liontravel.com.tw", self.HOSTS)[1], 0)
+        self.assertEqual(deliverable._public_urls(["https://a.example/x."]), ["https://a.example/x"])
+
     def test_malformed_url_and_ipv6_do_not_stop_the_report(self):
         self.assertEqual(deliverable.scrub("看 https://[foo 這裡", frozenset()), ("看 （內部位址，不公開） 這裡", 1))
         self.assertEqual(deliverable.scrub("主機 fd00::1 與 2001:4860::8888", frozenset()), ("主機 （內部位址，不公開） 與 2001:4860::8888", 1))
