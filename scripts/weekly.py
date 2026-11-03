@@ -6,6 +6,7 @@
   metrics <week>                      只從既有 snapshot 重算 metrics（不打 Jira）
   kickoff-hours <week>                只把既有 snapshot 裡 Kick off 卡的工時換成 Jira 現值，再重算 metrics；
                                       卡的範圍、狀態、結案時間都留在那一期抓的樣子
+  images <week>                       只下載這一期成效說明要顯示、site/ 裡還沒有的 Deliverable 圖（重算舊期後補圖用）
   finalize <week>                     驗證 narrative.json，通過才產出 site/ 底下的 HTML
 
 任何一步失敗都以非 0 結束，不產出部分結果。
@@ -24,6 +25,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 
 from lib import capacity as capacity_lib  # noqa: E402
+from lib import deliverable as deliverable_lib  # noqa: E402
 from lib import kickoff as kickoff_lib  # noqa: E402
 from lib.jira import JiraClient, load_credentials  # noqa: E402
 from lib.metrics import compute, drop_excluded_epics, kickoff_by_epic  # noqa: E402
@@ -199,9 +201,12 @@ def _without(tokens, keys: set):
     """None 代表沒有 Token 資料，照傳；有資料就拿掉 keys。"""
     return None if tokens is None else {k: v for k, v in tokens.items() if k not in keys}
 
-def publish_week(snapshot: dict, *, fresh_fetch: bool) -> dict:
-    """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。只有 prepare 剛抓完 Jira 時傳 fresh_fetch=True。"""
+def publish_week(snapshot: dict, *, fresh_fetch: bool, client=None) -> dict:
+    """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。只有 prepare 剛抓完 Jira 時傳 fresh_fetch=True。
+    給了 client（prepare）就先把成效說明要顯示的圖下載進 site/：下載失敗時這一期的資料一個檔都不寫。"""
     metrics, writes = compute_week(snapshot, fresh_fetch=fresh_fetch)
+    if client is not None:
+        deliverable_lib.download_images(client, metrics["deliverables"], SITE)
     writes[week_dir(metrics["period"]["week"]) / "snapshot.json"] = snapshot
     for path in sorted(writes):
         write_json(path, writes[path])
@@ -221,7 +226,7 @@ def cmd_prepare(args) -> None:
             time.sleep(seconds)
             now = datetime.now(TZ)
     snapshot = fetch_snapshot(client, period, now)
-    metrics = publish_week(snapshot, fresh_fetch=True)
+    metrics = publish_week(snapshot, fresh_fetch=True, client=client)
     t = metrics["totals"]
     print(f"snapshot：{sum(snapshot['counts'].values())} 張卡 {snapshot['counts']}", file=sys.stderr)
     print(f"本週完成 {t['completed']} 張、{t['hours']:g}h；資料檢查 {len(metrics['checks'])} 項", file=sys.stderr)
@@ -271,6 +276,14 @@ def cmd_metrics(args) -> None:
 
 
 
+def cmd_images(args) -> None:
+    metrics = read_json(week_dir(args.week) / "metrics.json")
+    client = JiraClient(load_credentials())
+    client.verify()
+    written = deliverable_lib.download_images(client, metrics["deliverables"], SITE)
+    print(f"{args.week}：下載 {len(written)} 張成效說明的圖", file=sys.stderr)
+
+
 def refuse_stale_metrics(week: str, metrics: dict, excluded_cards: dict, excluded_epics: dict) -> None:
     """metrics.json 是之後才把卡或 epic 加進排除前算的：頁面會照樣把排除的卡列成完成、照樣列出排除的專案，直接失敗。"""
     shown_epics = {e["key"] for e in metrics["epics"] + metrics["cumulative"]["epics"] if e["key"]}
@@ -285,6 +298,13 @@ def refuse_stale_metrics(week: str, metrics: dict, excluded_cards: dict, exclude
         raise ValueError(f"{week} 的 metrics.json 是用另一份 config/excluded.json 的 cards 算的（不同的是：{'、'.join(changed) or '沒有記錄'}），先跑 metrics {week} 重算")
 
 
+def refuse_missing_images(week: str, metrics: dict) -> None:
+    """成效說明要顯示的圖不在 site/ 裡：畫出來是破圖，直接失敗。prepare 會下載；重算舊期之後要補就跑 images。"""
+    missing = deliverable_lib.missing_images(metrics["deliverables"], SITE)
+    if missing:
+        raise ValueError(f"{week} 成效說明的圖不在 site/：{'、'.join(missing)}，先跑 weekly.py images {week}")
+
+
 def cmd_finalize(args) -> None:
     week = args.week
     folder = week_dir(week)
@@ -295,6 +315,7 @@ def cmd_finalize(args) -> None:
     cards, epics, issues, _ = excluded_view(snapshot, fresh_fetch=False)
     refuse_stale_metrics(week, metrics, cards, epics)
     validate(narrative, metrics, {i["key"] for i in issues})
+    refuse_missing_images(week, metrics)
 
     reports = SITE / "reports"
     weeks = sorted({p.stem for p in reports.glob("*.html") if WEEK_ID.fullmatch(p.stem)} | {week}, reverse=True)
@@ -305,6 +326,7 @@ def cmd_finalize(args) -> None:
         index_metrics = read_json(week_dir(latest) / "metrics.json")
         index_narrative = read_json(week_dir(latest) / "narrative.json")
         refuse_stale_metrics(latest, index_metrics, cards, epics)
+        refuse_missing_images(latest, index_metrics)
     # 兩頁都畫完才寫：首頁畫失敗時不能留下已更新的週報頁
     report_html = render(metrics, narrative, weeks, in_reports_dir=True)
     index_html = render(index_metrics, index_narrative, weeks, in_reports_dir=False)
@@ -327,6 +349,9 @@ def main(argv=None) -> int:
     p = sub.add_parser("kickoff-hours")
     p.add_argument("week")
     p.set_defaults(func=cmd_kickoff_hours)
+    p = sub.add_parser("images")
+    p.add_argument("week")
+    p.set_defaults(func=cmd_images)
     p = sub.add_parser("finalize")
     p.add_argument("week")
     p.set_defaults(func=cmd_finalize)

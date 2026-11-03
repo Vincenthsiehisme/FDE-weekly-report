@@ -479,3 +479,64 @@ class FinalizeArchiveTest(AtomicWriteTest):
             index = (site / "index.html").read_text(encoding="utf-8")
         self.assertIn("2026-W40</title>", index)
         self.assertIn('<a href="reports/2026-W39.html">2026-W39</a>', index)
+
+
+class DeliverableImagesTest(AtomicWriteTest):
+    """成效說明顯示截圖（2026-11-03 AC-1）：prepare 先下載圖才寫資料；finalize 缺圖就擋。"""
+
+    def _snap(self):
+        from test_deliverable import card
+        snap = snapshot([issue("CS-1", level=1, status="doing", summary="批次付款連結", labels=["直售"]), card("CS-50")])
+        snap["schema"] = 5
+        snap["period"] = {"week": "2026-W39", "week_ending": "2026-09-22", "start": "", "end_exclusive": ""}
+        return snap
+
+    def _client(self, error=None):
+        from test_deliverable import PNG, FakeDownloads
+        client = FakeDownloads({"501": PNG})
+        if error:
+            client.attachment = mock.Mock(side_effect=error)
+        client.verify = mock.Mock()
+        return client
+
+    def test_publish_with_a_client_downloads_before_writing(self):
+        site = self.root / "site"
+        client = self._client()
+        with mock.patch.object(weekly, "SITE", site):
+            weekly.publish_week(self._snap(), fresh_fetch=False, client=client)
+        self.assertTrue((site / "assets" / "deliverables" / "501.png").is_file())
+        self.assertTrue((self.root / "data" / "2026-W39" / "metrics.json").is_file())
+        self.assertEqual([a for a, _ in client.asked], ["501"])
+
+    def test_prepare_passes_its_client_so_images_are_downloaded(self):
+        # 接線：prepare 剛抓完 Jira 就要下載，不然 finalize 會因為缺圖停下
+        site = self.root / "site"
+        client = self._client()
+        with mock.patch.object(weekly, "SITE", site), mock.patch.object(weekly, "fetch_snapshot", return_value=self._snap()), \
+                mock.patch.object(weekly, "load_credentials"), mock.patch.object(weekly, "JiraClient", return_value=client):
+            weekly.main(["prepare", "--week-ending", "2026-09-22"])
+        self.assertTrue((site / "assets" / "deliverables" / "501.png").is_file())
+
+    def test_download_failure_writes_no_data(self):
+        site = self.root / "site"
+        with mock.patch.object(weekly, "SITE", site):
+            with self.assertRaisesRegex(RuntimeError, "連不到"):
+                weekly.publish_week(self._snap(), fresh_fetch=False, client=self._client(RuntimeError("連不到")))
+        self.assertFalse((self.root / "data").exists())
+        self.assertFalse(site.exists())
+
+    def test_finalize_refuses_missing_images_until_the_images_command_runs(self):
+        site = self.root / "site"
+        with mock.patch.object(weekly, "SITE", site):
+            weekly.publish_week(self._snap(), fresh_fetch=False)  # 重算：不打 Jira，不下載
+            (self.root / "data" / "2026-W39" / "narrative.json").write_text('{"highlights": [], "epic_results": {}}', encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "assets/deliverables/501.png.*weekly.py images 2026-W39"):
+                weekly.main(["finalize", "2026-W39"])
+            self.assertFalse((site / "index.html").exists())
+            with mock.patch.object(weekly, "load_credentials"), mock.patch.object(weekly, "JiraClient", return_value=self._client()):
+                weekly.main(["images", "2026-W39"])
+            weekly.main(["finalize", "2026-W39"])
+            index = (site / "index.html").read_text(encoding="utf-8")
+            report = (site / "reports" / "2026-W39.html").read_text(encoding="utf-8")
+        self.assertIn('<img src="assets/deliverables/501.png"', index)
+        self.assertIn('<img src="../assets/deliverables/501.png"', report)

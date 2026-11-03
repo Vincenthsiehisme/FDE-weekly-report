@@ -200,7 +200,7 @@ class MovedInTest(unittest.TestCase):
         self.assertIsNone(moved["CS-4"])
         # 只查完成的工作卡：epic 與未完成的卡不查
         self.assertEqual(sorted(client.changelog_ids), sorted(issue_id(k) for k in ("CS-2", "CS-3", "CS-4")))
-        self.assertEqual(snap["schema"], 4)
+        self.assertEqual(snap["schema"], 5)
 
     def test_move_from_a_project_with_no_cards_is_still_internal(self):
         # 查到的卡全是 CS，FDEPROJECT 一張都沒有；從 FDEPROJECT 搬過來仍不算外部搬入
@@ -277,6 +277,53 @@ class SnapshotTest(unittest.TestCase):
     def test_zero_issues_in_both_projects_fails(self):
         with self.assertRaisesRegex(ValueError, "0 張卡"):
             fetch_snapshot(FakeClient([], []), period_ending(date(2026, 9, 22)), datetime(2026, 9, 22, 23, 59, tzinfo=TZ))
+
+
+class AttachmentTest(unittest.TestCase):
+    """成效說明顯示截圖（2026-11-03）：附件內容轉址到 Jira 以外的主機時，那一跳不帶憑證。"""
+
+    @staticmethod
+    def body(data):
+        return mock.MagicMock(**{"__enter__.return_value.read.side_effect": lambda n: data[:n]})
+
+    def redirect(self, location):
+        return http_error(303, {"Location": location})
+
+    def test_redirect_is_followed_without_credentials(self):
+        later = []
+
+        def follow(request, timeout):
+            later.append(request)
+            return self.body(b"png-bytes")
+
+        with mock.patch("lib.jira._NO_REDIRECT.open", side_effect=self.redirect("https://media.example.com/f?token=t")) as first, \
+                mock.patch("urllib.request.urlopen", side_effect=follow):
+            self.assertEqual(JiraClient(CREDS).attachment("501", 100), b"png-bytes")
+        self.assertEqual(first.call_args[0][0].full_url, "https://example.atlassian.net/rest/api/3/attachment/content/501")
+        self.assertIn("Authorization", first.call_args[0][0].headers)
+        self.assertEqual(later[0].full_url, "https://media.example.com/f?token=t")
+        self.assertFalse(later[0].has_header("Authorization"))
+
+    def test_direct_answer_is_used_as_is(self):
+        with mock.patch("lib.jira._NO_REDIRECT.open", return_value=self.body(b"abc")):
+            self.assertEqual(JiraClient(CREDS).attachment("501", 3), b"abc")
+
+    def test_too_big_fails(self):
+        with mock.patch("lib.jira._NO_REDIRECT.open", return_value=self.body(b"abcd")):
+            with self.assertRaisesRegex(JiraError, "超過 3 bytes"):
+                JiraClient(CREDS).attachment("501", 3)
+
+    def test_plain_http_redirect_is_refused(self):
+        with mock.patch("lib.jira._NO_REDIRECT.open", side_effect=self.redirect("http://media.example.com/f")), \
+                mock.patch("urllib.request.urlopen") as follow:
+            with self.assertRaisesRegex(JiraError, "非 https"):
+                JiraClient(CREDS).attachment("501", 100)
+        follow.assert_not_called()
+
+    def test_error_without_location_stays_a_jira_error(self):
+        with mock.patch("lib.jira._NO_REDIRECT.open", side_effect=http_error(404)):
+            with self.assertRaisesRegex(JiraError, "HTTP 404"):
+                JiraClient(CREDS).attachment("501", 100)
 
 
 if __name__ == "__main__":

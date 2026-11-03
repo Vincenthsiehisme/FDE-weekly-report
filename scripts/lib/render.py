@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import html
 from datetime import datetime, timedelta
+from urllib.parse import quote
 
 from . import capacity as capacity_lib
 from .metrics import ALLOCATION_TOP, ALLOCATION_WINDOW, CAPACITY_CHECK_WEEKS, OTHER_LABEL, SCHEMA, STALL_DAYS, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER, UNLABELED
@@ -102,8 +103,9 @@ def fmt_moment(iso: str) -> str:
 
 
 class _Page:
-    def __init__(self, metrics: dict):
+    def __init__(self, metrics: dict, in_reports_dir: bool = False):
         self.site = metrics["site"]
+        self.in_reports_dir = in_reports_dir
         # data/tokens/ 一個檔都沒有時整欄不顯示，資源區只留一行說明；有任一檔就回到「—」規則，不會安靜少顯示
         # （主管版二次優化 AC-4，2026-09-27 使用者裁）。不從累計 Token 推：較晚的週才有檔時累計是 None，但來源已經接上
         self.tokens = metrics["token_source"]
@@ -112,6 +114,17 @@ class _Page:
         if not key:
             return DASH
         return f'<a href="https://{esc(self.site)}/browse/{esc(key)}">{esc(key)}</a>'
+
+    def asset(self, path: str) -> str:
+        """site/ 底下的檔：首頁在 site/、各期在 site/reports/，相對路徑差一層。"""
+        return esc(f"{'../' if self.in_reports_dir else ''}{path}")
+
+    def attachment(self, a: dict) -> str:
+        """Deliverable 附件的檔名，連到 Jira 的附件網址（要登入）；snapshot 4 沒有附件 id，只寫檔名。"""
+        if not a["id"]:
+            return esc(a["filename"])
+        url = f'https://{self.site}/secure/attachment/{quote(a["id"])}/{quote(a["filename"])}'
+        return f'<a href="{esc(url)}">{esc(a["filename"])}</a>'
 
     def title(self, key, summary) -> str:
         """專案或卡片的名稱：卡號（連結）＋摘要；未歸屬 epic 沒有卡號。"""
@@ -1039,6 +1052,33 @@ def _dv_outcome(card: dict) -> str:
             f'<strong>{esc(card["base"])} → {esc(card["now"])}</strong>{more}</div>')
 
 
+def _dv_cover(card: dict, page) -> str:
+    """卡片表面：第一張圖的縮圖，點了看原圖；底下是檔名（連 Jira）。沒有能顯示的圖就不放。"""
+    images = [a for a in card["attachments"] if a["image"]]
+    if not images:
+        return ""
+    first = images[0]
+    more = f'<span class="muted">，另 {len(images) - 1} 張見完整說明</span>' if len(images) > 1 else ""
+    return (f'<a class="dv-cover" href="{page.asset(first["image"])}"><img src="{page.asset(first["image"])}" alt="{esc(first["filename"])}" loading="lazy"></a>'
+            f'<p class="dv-cover-cap">{page.attachment(first)}{more}</p>')
+
+
+def _dv_shots(card: dict, page) -> str:
+    """完整說明的「畫面」：圖排成縮圖格，每張下面是檔名（連 Jira）；影片、太大的檔、snapshot 4 的附件只列檔名。"""
+    images = [a for a in card["attachments"] if a["image"]]
+    others = [a for a in card["attachments"] if not a["image"]]
+    out = ""
+    if images:
+        out += '<div class="dv-shots">' + "".join(
+            f'<figure><a href="{page.asset(a["image"])}"><img src="{page.asset(a["image"])}" alt="{esc(a["filename"])}" loading="lazy"></a>'
+            f'<figcaption>{page.attachment(a)}</figcaption></figure>' for a in images) + "</div>"
+    if others:
+        where = ('點檔名到 Jira 看（要登入）' if all(a["id"] for a in others)
+                 else f'檔案在 Jira 卡 {page.issue(card["key"])} 的附件')
+        out += f'<p class="dv-files">{"、".join(page.attachment(a) for a in others)}<br><span class="muted">這些檔案沒有放上週報，{where}</span></p>'
+    return out
+
+
 def _dv_card(card: dict, page) -> str:
     """成效說明一張卡：版型照原型 B（vault 的 jira-weekly-report · 成效說明原型B.html，2026-10-29 鎖定）。"""
     items = []
@@ -1065,7 +1105,7 @@ def _dv_card(card: dict, page) -> str:
     if card["not_done"]:
         add("沒做的", bullets(card["not_done"]))
     if card["attachments"]:
-        add("畫面", f'{esc("、".join(card["attachments"]))}<br><span class="muted">圖在 Jira 卡 {page.issue(card["key"])} 的附件</span>')
+        add("畫面", _dv_shots(card, page))
     if card["code"]:
         add("程式碼", _links(card["code"]))
     if card["env"]:
@@ -1080,7 +1120,7 @@ def _dv_card(card: dict, page) -> str:
     details = f'<details><summary>完整說明</summary><dl>{"".join(items)}</dl></details>' if items else ""
     return (f'<article class="dv-card"><div class="dv-top"><span class="dv-title"><b>{page.issue(card["epic"])}</b> {esc(card["epic_summary"])}</span>'
             f'<span class="dv-label">{esc(card["label"] or UNLABELED)}</span></div>'
-            f'<p class="dv-delivered">{delivered}</p>{_dv_outcome(card)}'
+            f'<p class="dv-delivered">{delivered}</p>{_dv_outcome(card)}{_dv_cover(card, page)}'
             f'<p class="dv-meta">{acc}，{esc(fmt_date(card["done"]))} 交付 · Deliverable {page.issue(card["key"])}</p>{details}</article>')
 
 
@@ -1213,7 +1253,7 @@ def _tabs(panels: dict) -> str:
 def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) -> str:
     if metrics.get("schema") != SCHEMA:
         raise ValueError(f"metrics 的 schema 是 {metrics.get('schema')}，頁面需要 {SCHEMA}：先用 weekly.py metrics <week> 重算")
-    page = _Page(metrics)
+    page = _Page(metrics, in_reports_dir)
     period = metrics["period"]
     start = fmt_day(period["start"])
     end = fmt_day(period["week_ending"])
@@ -1400,6 +1440,15 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .dv-outcome strong{font-size:22px;font-variant-numeric:tabular-nums;line-height:1.3}
 .dv-more{color:var(--muted);font-size:12px}
 .dv-outcome.missing{display:flex;align-items:center;padding:0 12px;border:1px dashed var(--warn-fg);border-radius:8px;background:var(--warn-bg);color:var(--warn-fg);font-weight:600}
+.dv-cover{display:block;margin:0 0 4px}
+.dv-cover img{display:block;width:100%;max-height:240px;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+.dv-cover-cap{margin:0 0 10px;font-size:12px;overflow-wrap:anywhere}
+/* 要贏過 .dv-card dl div 的兩欄（標籤＋內容）：縮圖格在 dd 裡面，也是 dl 底下的 div */
+.dv-card dl .dv-shots{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;padding:0}
+.dv-shots figure{margin:0;min-width:0}
+.dv-shots img{display:block;width:100%;height:120px;object-fit:cover;object-position:top;border:1px solid var(--line);border-radius:6px;background:var(--bg)}
+.dv-shots figcaption{font-size:12px;overflow-wrap:anywhere}
+.dv-files{margin:6px 0 0}
 .dv-meta{font-size:13px;color:var(--muted);margin:auto 0 0}
 .dv-card details{margin-top:8px;font-size:14px}
 .dv-card details summary{color:var(--muted)}

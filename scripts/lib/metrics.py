@@ -58,6 +58,8 @@ ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
 CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近幾週（跟本週頁的圖同一段），不然資料檢查會一路變長
+# 16：deliverables 每張卡的 attachments 從檔名字串改成 {id, filename, mime, size, image}，image 是要顯示的圖在 site/ 底下的路徑
+#     （2026-11-03 成效說明顯示截圖）；
 # 15：health 的 explore_share、explore_people 改算 Kick off：探索是這週完成、有填工時的 Kick off 卡，
 #     完成工作卡（含 Spike）都算開發（2026-11-02 使用者裁，取代「這週第一次有完成卡的 epic」；epics_new 這些新 epic 同期數字照留，頁面不用）；
 #     epics_done 只算本期結束前在 Jira Done 的 epic，卡都做完、epic 沒關的不再算；週次照舊取最後一張完成卡（同日使用者裁「Done 才算，算最後卡週」）；
@@ -78,8 +80,9 @@ CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近�
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 15
-SNAPSHOT_SCHEMAS = (3, 4)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓
+SCHEMA = 16
+SNAPSHOT_SCHEMAS = (3, 4, 5)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓；
+# 5 的附件帶 id 才下載得了圖，4 的附件只有檔名、照舊只列檔名
 
 
 def _round(value: float) -> float:
