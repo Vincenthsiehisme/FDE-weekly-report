@@ -98,27 +98,39 @@ def _shown_attachment(a) -> dict:
 
 def download_images(client, cards: list, site_dir: Path) -> list:
     """把 cards（metrics 的 deliverables）要顯示的圖存進 site_dir，回傳這次新寫的路徑。已經存過的同一個附件 id 不重抓：
-    附件的內容在 Jira 改不了，換圖就是新附件、新 id。下載的位元數或檔頭對不上就失敗，不寫半張或別的格式的檔。"""
-    written = []
+    附件的內容在 Jira 改不了，換圖就是新附件、新 id。
+    分兩段：先全部下載、驗位元數與檔頭（不碰磁碟），全部過了才寫；寫到一半失敗，這次寫進去的全部刪掉、暫存檔也刪，
+    site_dir 回到呼叫前的樣子。site/ 是公開網址，routine 是 `git add data site`，半套留下來下一班就發布（Codex 審 e0c5b6c）。"""
+    pending = []
     for card in cards or []:
         for a in card["attachments"]:
-            if not a["image"]:
-                continue
-            target = site_dir / a["image"]
-            if target.is_file():
+            if not a["image"] or (site_dir / a["image"]).is_file():
                 continue
             data = client.attachment(a["id"], MAX_IMAGE_BYTES)
             if len(data) != a["size"]:
                 raise ValueError(f"{card['key']} 的附件 {a['filename']} 下載到 {len(data)} bytes，Jira 寫的是 {a['size']}")
             if not data.startswith(IMAGE_TYPES[a["mime"]][1]):
                 raise ValueError(f"{card['key']} 的附件 {a['filename']} 內容不是 {a['mime']}（檔頭對不上），不放上週報")
+            pending.append((site_dir / a["image"], data))
+    written = []
+    try:
+        for target, data in pending:
             target.parent.mkdir(parents=True, exist_ok=True)
             fd, tmp = tempfile.mkstemp(dir=target.parent, suffix=".part")
-            with os.fdopen(fd, "wb") as f:
-                f.write(data)
-            os.chmod(tmp, 0o644)  # mkstemp 開的是 600，公開的網站檔要誰都讀得到
-            os.replace(tmp, target)
+            try:
+                with os.fdopen(fd, "wb") as f:
+                    f.write(data)
+                os.chmod(tmp, 0o644)  # mkstemp 開的是 600，公開的網站檔要誰都讀得到
+                os.replace(tmp, target)
+            except BaseException:
+                if os.path.exists(tmp):
+                    os.remove(tmp)
+                raise
             written.append(target)
+    except BaseException:
+        for target in written:
+            target.unlink()
+        raise
     return written
 
 

@@ -277,7 +277,12 @@ def cmd_metrics(args) -> None:
 
 
 def cmd_images(args) -> None:
-    metrics = read_json(week_dir(args.week) / "metrics.json")
+    """只補圖，不重算。metrics 是之後才加排除前算的，照它下載會把排除的 epic 的圖放上公開的 site/：先跟 finalize 同一道檢查擋下。"""
+    folder = week_dir(args.week)
+    snapshot = read_json(folder / "snapshot.json")
+    metrics = read_json(folder / "metrics.json")
+    cards, epics, _, _ = excluded_view(snapshot, fresh_fetch=False)
+    refuse_stale_metrics(args.week, metrics, cards, epics)
     client = JiraClient(load_credentials())
     client.verify()
     written = deliverable_lib.download_images(client, metrics["deliverables"], SITE)

@@ -259,6 +259,32 @@ class ImagesTest(unittest.TestCase):
                     deliverable.download_images(FakeDownloads({"501": content}), cards, Path(d))
                 self.assertEqual(list(Path(d).rglob("*.*")), [])
 
+    def test_a_later_failure_leaves_no_earlier_image(self):
+        two = [att("1", "a.png", "image/png", len(PNG)), att("2", "b.png", "image/png", len(PNG))]
+        cards, _ = deliverable.views(epics() + [card("CS-50", attachment=two)])
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaisesRegex(ValueError, "b.png"):
+                deliverable.download_images(FakeDownloads({"1": PNG, "2": b"x" * len(PNG)}), cards, Path(d))
+            self.assertEqual(list(Path(d).rglob("*")), [])
+
+    def test_a_write_failure_rolls_back_this_run_and_leaves_no_part_file(self):
+        from unittest import mock
+        two = [att("1", "a.png", "image/png", len(PNG)), att("2", "b.png", "image/png", len(PNG))]
+        cards, _ = deliverable.views(epics() + [card("CS-50", attachment=two)])
+        real = deliverable.os.replace
+        calls = []
+
+        def replace(src, dst):
+            calls.append(dst)
+            if len(calls) == 2:
+                raise OSError("磁碟滿了")
+            return real(src, dst)
+
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(deliverable.os, "replace", side_effect=replace):
+            with self.assertRaisesRegex(OSError, "磁碟滿了"):
+                deliverable.download_images(FakeDownloads({"1": PNG, "2": PNG}), cards, Path(d))
+            self.assertEqual([p for p in Path(d).rglob("*") if p.is_file()], [])
+
     def test_missing_images(self):
         cards, _ = deliverable.views(epics() + [card("CS-50")])
         with tempfile.TemporaryDirectory() as d:

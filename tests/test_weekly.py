@@ -517,6 +517,19 @@ class DeliverableImagesTest(AtomicWriteTest):
             weekly.main(["prepare", "--week-ending", "2026-09-22"])
         self.assertTrue((site / "assets" / "deliverables" / "501.png").is_file())
 
+    def test_images_refuses_metrics_computed_before_the_epic_was_excluded(self):
+        # metrics 算完才把 epic 加進整棵排除：照舊 metrics 補圖，排除的 epic 的圖會進公開的 site/（Codex 審 e0c5b6c）
+        site = self.root / "site"
+        client = self._client()
+        with mock.patch.object(weekly, "SITE", site):
+            weekly.publish_week(self._snap(), fresh_fetch=False)
+            (self.root / "config" / "excluded.json").write_text('{"cards": {}, "epics": {"CS-1": "之後才排除"}}', encoding="utf-8")
+            with mock.patch.object(weekly, "load_credentials"), mock.patch.object(weekly, "JiraClient", return_value=client):
+                with self.assertRaisesRegex(ValueError, "CS-1"):
+                    weekly.main(["images", "2026-W39"])
+        self.assertEqual(client.asked, [])
+        self.assertFalse(site.exists())
+
     def test_download_failure_writes_no_data(self):
         site = self.root / "site"
         with mock.patch.object(weekly, "SITE", site):

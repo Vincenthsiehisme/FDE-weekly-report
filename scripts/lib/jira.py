@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import base64
+import http.client
 import json
 import os
 import urllib.error
@@ -143,15 +144,17 @@ class JiraClient:
                 raise JiraError(f"Jira API HTTP {err.code}：GET {path} — {detail}") from err
         except urllib.error.URLError as err:
             raise JiraError(f"連不到 Jira（{self.site}）：{err.reason}") from err
-        if not location.startswith("https://"):
-            raise JiraError(f"GET {path} 轉址到非 https 的網址，不跟")
+        # 轉址網址帶短效 token：錯誤訊息只寫原本的 path。連線與網址格式的例外訊息可能帶網址，from None 不接進 traceback；
+        # HTTPError 的訊息只有狀態碼與原因，照檔內其他地方 from err（Codex 審 e0c5b6c）
+        if not location.startswith("https://") or any(ord(c) < 0x21 or ord(c) == 0x7F for c in location):
+            raise JiraError(f"GET {path} 轉址到非 https 或格式不對的網址，不跟")
         try:
             with urllib.request.urlopen(urllib.request.Request(location, method="GET"), timeout=60) as response:
                 return _read_capped(response, max_bytes, path)
         except urllib.error.HTTPError as err:
             raise JiraError(f"附件內容 HTTP {err.code}：GET {path} 轉址後") from err
-        except urllib.error.URLError as err:
-            raise JiraError(f"附件內容連不到：GET {path} 轉址後，{err.reason}") from err
+        except (urllib.error.URLError, http.client.HTTPException, ValueError, OSError) as err:
+            raise JiraError(f"附件內容連不到：GET {path} 轉址後，{type(err).__name__}") from None
 
     def project_ids(self, keys) -> dict:
         """{專案 key: 專案 id}。changelog 的專案異動只記 id。"""

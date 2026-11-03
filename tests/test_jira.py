@@ -320,6 +320,24 @@ class AttachmentTest(unittest.TestCase):
                 JiraClient(CREDS).attachment("501", 100)
         follow.assert_not_called()
 
+    def test_token_in_the_redirect_never_reaches_the_error_or_traceback(self):
+        import traceback
+        secret = "SENTINEL-TOKEN"
+        cases = [
+            (self.redirect(f"https://media.example.com/f?token={secret}\x01"), None),
+            (self.redirect(f"https://media.example.com/f?token={secret}"), http.client.InvalidURL(f"bad https://media.example.com/f?token={secret}")),
+            (self.redirect(f"https://media.example.com/f?token={secret}"),
+             urllib.error.HTTPError(f"https://media.example.com/f?token={secret}", 403, "err", http.client.HTTPMessage(), io.BytesIO(b""))),
+            (self.redirect(f"https://media.example.com/f?token={secret}"), urllib.error.URLError(f"https://media.example.com/f?token={secret}")),
+        ]
+        for first, second in cases:
+            with self.subTest(second=type(second).__name__):
+                with mock.patch("lib.jira._NO_REDIRECT.open", side_effect=first), mock.patch("urllib.request.urlopen", side_effect=second):
+                    with self.assertRaises(JiraError) as ctx:
+                        JiraClient(CREDS).attachment("501", 100)
+                text = "".join(traceback.format_exception(type(ctx.exception), ctx.exception, ctx.exception.__traceback__))
+                self.assertNotIn(secret, text)
+
     def test_error_without_location_stays_a_jira_error(self):
         with mock.patch("lib.jira._NO_REDIRECT.open", side_effect=http_error(404)):
             with self.assertRaisesRegex(JiraError, "HTTP 404"):
