@@ -4,14 +4,19 @@
 - 關鍵內容在 FDEPROJECT 的自訂欄位（FIELDS），id 只在這個 team-managed 專案有效；CS 沒有 Deliverable 類型。
   段落欄位 REST v3 回 ADF、短文字回字串，兩種都收；全部選填，沒填是 None。
 - 描述只剩 3 行標籤：Acceptance、Code、Env，接受的寫法比照 Kick off（行首標籤、全半形冒號、標題形式）。
-- 畫面取附件檔名（公開頁不放圖，附件要登入才看得到）；版本取修正版本（fixVersions）。
+- 畫面取附件：圖片（IMAGE_TYPES、不超過 MAX_IMAGE_BYTES）由 prepare 下載進 site/assets/deliverables/ 公開顯示，
+  其他附件只列檔名加 Jira 連結（2026-11-03 使用者裁，推翻 10-29 不放圖；vault 的 jira-weekly-report · 成效說明顯示截圖）。
+  個資守門在 Deliverable 規則：上傳前遮客人資料、轉完成前檢查。版本取修正版本（fixVersions）。
 - 頁籤只列已完成的 Deliverable，依完成時間所在的那一期分段、新的在上。不鎖定，每週取當下內容。
 - 格式問題與沒填的列資料檢查，不擋週報：一張卡寫錯不該讓整份週報出不來。
 """
 from __future__ import annotations
 
+import os
 import re
+import tempfile
 from datetime import date
+from pathlib import Path
 
 from .kickoff import adf_to_lines
 from .period import period_containing
@@ -38,6 +43,15 @@ SECTIONS = (("acceptance", "Acceptance"), ("code", "Code"), ("env", "Env"))
 # 這天以後完成的 epic 要有完成的 Deliverable；之前已關閉的不補（2026-10-29 使用者裁）
 REQUIRED_SINCE = date(2026, 10, 29)
 RESULTS = ("通過", "未通過", "未驗")
+# 會下載、公開顯示的圖片：mimeType → (副檔名, 檔頭)。SVG 不收：可以帶 script，直接打開網址會在週報的網域執行
+IMAGE_TYPES = {
+    "image/png": (".png", (b"\x89PNG\r\n\x1a\n",)),
+    "image/jpeg": (".jpg", (b"\xff\xd8\xff",)),
+    "image/gif": (".gif", (b"GIF87a", b"GIF89a")),
+}
+# 單張上限（2026-11-03 裁定）：repo 只用標準函式庫、沒有縮圖；實查最大一張 1.1 MB。超過的只列檔名加連結
+MAX_IMAGE_BYTES = 2 * 1024 * 1024
+ASSET_DIR = "assets/deliverables"  # 相對 site/
 _LABELS = {label.lower(): key for key, label in SECTIONS}
 _LINE = re.compile(r"^[\s#>*•\-]*\**\s*(?P<label>Acceptance|Code|Env)\s*\**\s*(?:[:：]\s*(?P<rest>.*))?$", re.IGNORECASE)
 _RESULT = re.compile(r"^(?P<cond>.+?)\s*(?:→|->)\s*(?P<result>通過|未通過|未驗)\s*(?:[，,]\s*(?P<where>.*))?$")
@@ -60,9 +74,69 @@ def normalize(fields: dict) -> dict:
     """Jira 回來的 fields → snapshot 存的 deliverable。只留頁籤與資料檢查要的。"""
     out = {name: _text(fields.get(fid)) for fid, name in FIELDS.items()}
     out["description"] = adf_to_lines(fields.get("description"))
-    out["attachments"] = [a["filename"] for a in fields.get("attachment") or []]
+    out["attachments"] = [_attachment(a) for a in fields.get("attachment") or []]
     out["versions"] = [{"name": v["name"], "release_date": v.get("releaseDate")} for v in fields.get("fixVersions") or []]
     return out
+
+
+def _attachment(raw: dict) -> dict:
+    for name in ("id", "filename", "mimeType", "size"):
+        if raw.get(name) is None:
+            raise ValueError(f"Deliverable 附件少了 {name}：{raw.get('filename') or raw.get('id')}")
+    return {"id": str(raw["id"]), "filename": raw["filename"], "mime": raw["mimeType"], "size": raw["size"]}
+
+
+def _shown_attachment(a) -> dict:
+    """頁面要的附件：image 是相對 site/ 的圖檔路徑，不顯示的是 None。
+    snapshot 4 的附件只有檔名（字串）：沒有 id 就做不了連結也下載不了，照舊只列檔名。"""
+    if isinstance(a, str):
+        return {"id": None, "filename": a, "mime": None, "size": None, "image": None}
+    kind = IMAGE_TYPES.get(a["mime"])
+    image = f"{ASSET_DIR}/{a['id']}{kind[0]}" if kind and a["size"] <= MAX_IMAGE_BYTES else None
+    return dict(a, image=image)
+
+
+def download_images(client, cards: list, site_dir: Path) -> list:
+    """把 cards（metrics 的 deliverables）要顯示的圖存進 site_dir，回傳這次新寫的路徑。已經存過的同一個附件 id 不重抓：
+    附件的內容在 Jira 改不了，換圖就是新附件、新 id。
+    分兩段：先全部下載、驗位元數與檔頭（不碰磁碟），全部過了才寫；寫到一半失敗，這次寫進去的全部刪掉、暫存檔也刪，
+    site_dir 回到呼叫前的樣子。site/ 是公開網址，routine 是 `git add data site`，半套留下來下一班就發布（Codex 審 e0c5b6c）。"""
+    pending = []
+    for card in cards or []:
+        for a in card["attachments"]:
+            if not a["image"] or (site_dir / a["image"]).is_file():
+                continue
+            data = client.attachment(a["id"], MAX_IMAGE_BYTES)
+            if len(data) != a["size"]:
+                raise ValueError(f"{card['key']} 的附件 {a['filename']} 下載到 {len(data)} bytes，Jira 寫的是 {a['size']}")
+            if not data.startswith(IMAGE_TYPES[a["mime"]][1]):
+                raise ValueError(f"{card['key']} 的附件 {a['filename']} 內容不是 {a['mime']}（檔頭對不上），不放上週報")
+            pending.append((site_dir / a["image"], data))
+    written = []
+    try:
+        for target, data in pending:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            fd, tmp = tempfile.mkstemp(dir=target.parent, suffix=".part")
+            try:
+                with os.fdopen(fd, "wb") as f:
+                    f.write(data)
+                os.chmod(tmp, 0o644)  # mkstemp 開的是 600，公開的網站檔要誰都讀得到
+                os.replace(tmp, target)
+            except BaseException:
+                if os.path.exists(tmp):
+                    os.remove(tmp)
+                raise
+            written.append(target)
+    except BaseException:
+        for target in written:
+            target.unlink()
+        raise
+    return written
+
+
+def missing_images(cards: list, site_dir: Path) -> list:
+    """頁面要顯示、site_dir 裡卻沒有的圖（相對路徑）。finalize 用它擋：畫出來會是破圖。"""
+    return [a["image"] for card in cards or [] for a in card["attachments"] if a["image"] and not (site_dir / a["image"]).is_file()]
 
 
 def parse_description(lines: list) -> tuple:
@@ -161,7 +235,7 @@ def views(issues: list) -> tuple:
             "failed": sum(1 for a in acceptance if a["result"] == "未通過"),
             "code": _items(sections["code"], "[；;]"),
             "env": _items(sections["env"], "[；;]"),
-            "attachments": d["attachments"],
+            "attachments": [_shown_attachment(a) for a in d["attachments"]],
             "versions": d["versions"],
         })
     for epic in sorted((i for i in issues if i["level"] == EPIC_LEVEL and i["status_category"] == "done" and i["resolved"]),

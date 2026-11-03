@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 import base64
+import http.client
 import json
 import os
 import urllib.error
@@ -49,6 +50,23 @@ def load_credentials(environ=None, env_file: Path = ENV_FILE) -> dict:
         return {k: values[k] for k in REQUIRED}
     missing = [k for k in REQUIRED if not environ.get(k)]
     raise CredentialError(f"找不到 Jira 憑證：環境變數缺少 {', '.join(missing)}，也沒有 {env_file}")
+
+
+class _KeepRedirect(urllib.request.HTTPRedirectHandler):
+    """不自動跟轉址：讓 3xx 變成 HTTPError，呼叫端自己決定下一跳帶不帶憑證。"""
+
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        return None
+
+
+_NO_REDIRECT = urllib.request.build_opener(_KeepRedirect)
+
+
+def _read_capped(response, max_bytes: int, path: str) -> bytes:
+    data = response.read(max_bytes + 1)
+    if len(data) > max_bytes:
+        raise JiraError(f"GET {path} 的內容超過 {max_bytes} bytes，不下載")
+    return data
 
 
 class JiraClient:
@@ -109,6 +127,34 @@ class JiraClient:
             raise JiraError(f"Jira API HTTP {err.code}：GET {path} — {detail}") from err
         except urllib.error.URLError as err:
             raise JiraError(f"連不到 Jira（{self.site}）：{err.reason}") from err
+
+    def attachment(self, attachment_id: str, max_bytes: int) -> bytes:
+        """下載一個附件的內容，超過 max_bytes 直接失敗。Jira 回 303 轉到 api.media.atlassian.com，網址自帶短效 token：
+        轉址那一跳自己跟、不帶 Authorization，憑證不送到 Jira 以外的主機（urllib 預設會把 headers 一起帶過去）。"""
+        path = f"/rest/api/3/attachment/content/{attachment_id}"
+        request = urllib.request.Request(f"https://{self.site}{path}", method="GET",
+                                         headers={"Authorization": self._auth, "Accept": "*/*"})
+        try:
+            with _NO_REDIRECT.open(request, timeout=60) as response:
+                return _read_capped(response, max_bytes, path)
+        except urllib.error.HTTPError as err:
+            location = err.headers.get("Location") if err.code in (301, 302, 303, 307, 308) and err.headers else None
+            if not location:
+                detail = err.read().decode(errors="replace")[:500]
+                raise JiraError(f"Jira API HTTP {err.code}：GET {path} — {detail}") from err
+        except urllib.error.URLError as err:
+            raise JiraError(f"連不到 Jira（{self.site}）：{err.reason}") from err
+        # 轉址網址帶短效 token：錯誤訊息只寫原本的 path，例外一律 from None 不接進 traceback。HTTPError 的原因文字由伺服器或
+        # proxy 給，也可能回顯網址（Codex 審 42954d3 重現）
+        if not location.startswith("https://") or any(ord(c) < 0x21 or ord(c) == 0x7F for c in location):
+            raise JiraError(f"GET {path} 轉址到非 https 或格式不對的網址，不跟")
+        try:
+            with urllib.request.urlopen(urllib.request.Request(location, method="GET"), timeout=60) as response:
+                return _read_capped(response, max_bytes, path)
+        except urllib.error.HTTPError as err:
+            raise JiraError(f"附件內容 HTTP {err.code}：GET {path} 轉址後") from None
+        except (urllib.error.URLError, http.client.HTTPException, ValueError, OSError) as err:
+            raise JiraError(f"附件內容連不到：GET {path} 轉址後，{type(err).__name__}") from None
 
     def project_ids(self, keys) -> dict:
         """{專案 key: 專案 id}。changelog 的專案異動只記 id。"""

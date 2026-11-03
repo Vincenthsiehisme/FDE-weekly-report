@@ -1,6 +1,8 @@
 """成效說明頁籤：Deliverable 卡的抓取、解析、資料檢查與畫面（vault 的 jira-weekly-report · 成效說明頁籤，2026-10-29 鎖定）。"""
+import tempfile
 import unittest
 from datetime import date, datetime
+from pathlib import Path
 
 from helpers import IN_WEEK, LAST_WEEK, issue, snapshot
 from lib import deliverable
@@ -11,6 +13,7 @@ from lib.snapshot import fetch_snapshot
 from test_jira import FakeClient, raw
 
 PERIOD = period_ending(date(2026, 9, 22))
+PNG = b"\x89PNG\r\n\x1a\n" + b"\0" * 24  # 造的圖：只有檔頭
 
 
 def adf(*paragraphs):
@@ -33,7 +36,8 @@ def fields(**over):
         "description": adf("Acceptance：金額全對 → 通過，正式帳號、2026/09/19；不重複產生 → 未通過，測試機",
                            "Code：https://github.com/x/y/pull/1；javascript:alert(1)",
                            "Env：https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/y"),
-        "attachment": [{"filename": "list.png"}],
+        "attachment": [{"id": "501", "filename": "list.png", "mimeType": "image/png", "size": len(PNG)},
+                       {"id": "502", "filename": "demo.mp4", "mimeType": "video/mp4", "size": 16_000_000}],
         "fixVersions": [{"name": "0.38.0", "releaseDate": "2026-09-20"}],
     }
     base.update(over)
@@ -56,7 +60,8 @@ class NormalizeTest(unittest.TestCase):
         d = deliverable.normalize(fields())
         self.assertEqual(d["features"], "勾選多張訂單一次產生\n連結帶入金額")
         self.assertEqual(d["base"], "6 分鐘")
-        self.assertEqual(d["attachments"], ["list.png"])
+        self.assertEqual(d["attachments"], [{"id": "501", "filename": "list.png", "mime": "image/png", "size": len(PNG)},
+                                            {"id": "502", "filename": "demo.mp4", "mime": "video/mp4", "size": 16_000_000}])
         self.assertEqual(d["versions"], [{"name": "0.38.0", "release_date": "2026-09-20"}])
 
     def test_blank_fields_are_none(self):
@@ -130,7 +135,7 @@ class FetchTest(unittest.TestCase):
         by_key = {i["key"]: i for i in snap["issues"]}
         self.assertEqual(by_key["CS-50"]["deliverable"]["base"], "6 分鐘")
         self.assertNotIn("deliverable", by_key["CS-1"])
-        self.assertEqual(snap["schema"], 4)
+        self.assertEqual(snap["schema"], 5)
 
     def test_deliverable_missing_from_full_query_fails(self):
         dv = raw("CS-50", "Deliverable", 0, **fields())
@@ -139,7 +144,7 @@ class FetchTest(unittest.TestCase):
                            datetime(2026, 9, 22, 23, 59, tzinfo=TZ))
 
 
-def run(issues, schema=4):
+def run(issues, schema=5):
     snap = dict(snapshot(issues), schema=schema)
     return compute(snap, PERIOD, None, {}, [], cumulative_tokens=None, excluded={}, token_source=False, previous=None)
 
@@ -183,8 +188,6 @@ class MetricsAndPageTest(unittest.TestCase):
         self.assertIn("另 2 項，見完整說明", html)
         self.assertIn('<a href="https://github.com/x/y/pull/1">github.com/x/y/pull/1</a>', html)
         self.assertNotIn('href="javascript:', html)
-        self.assertIn("圖在 Jira 卡", html)
-        self.assertNotIn("<img", panel)
 
     def test_missing_outcome_is_shown_as_missing(self):
         m = run(epics() + [card("CS-50", customfield_10482=None)])
@@ -193,6 +196,149 @@ class MetricsAndPageTest(unittest.TestCase):
     def test_deliverable_checks_reach_the_page(self):
         m = run(epics() + [card("CS-50"), card("CS-51")])
         self.assertIn("CS-1 已經有 Deliverable CS-50，這張不採用", self.page(m))
+
+
+def att(id_, name, mime, size):
+    return {"id": id_, "filename": name, "mimeType": mime, "size": size}
+
+
+class FakeDownloads:
+    """client.attachment 的替身：記下被要了哪幾個 id。"""
+
+    def __init__(self, contents):
+        self.contents, self.asked = contents, []
+
+    def attachment(self, attachment_id, max_bytes):
+        self.asked.append((attachment_id, max_bytes))
+        return self.contents[attachment_id]
+
+
+class ImagesTest(unittest.TestCase):
+    """成效說明顯示截圖（2026-11-03 鎖定 AC-1）：哪些附件顯示、怎麼下載、缺圖擋下。"""
+
+    def shown(self, attachments):
+        cards, _ = deliverable.views(epics() + [card("CS-50", attachment=attachments)])
+        return cards[0]["attachments"]
+
+    def test_only_small_known_images_are_shown(self):
+        shown = self.shown([att("1", "a.png", "image/png", 10), att("2", "b.jpg", "image/jpeg", deliverable.MAX_IMAGE_BYTES),
+                            att("3", "big.png", "image/png", deliverable.MAX_IMAGE_BYTES + 1), att("4", "v.mp4", "video/mp4", 10),
+                            att("5", "x.svg", "image/svg+xml", 10)])
+        self.assertEqual([a["image"] for a in shown],
+                         ["assets/deliverables/1.png", "assets/deliverables/2.jpg", None, None, None])
+
+    def test_snapshot_4_attachments_are_names_only(self):
+        item = card("CS-50")
+        item["deliverable"]["attachments"] = ["old.png"]
+        cards, _ = deliverable.views(epics() + [item])
+        self.assertEqual(cards[0]["attachments"], [{"id": None, "filename": "old.png", "mime": None, "size": None, "image": None}])
+
+    def test_attachment_without_id_fails_loud(self):
+        with self.assertRaisesRegex(ValueError, "附件少了 id"):
+            deliverable.normalize(fields(attachment=[{"filename": "a.png", "mimeType": "image/png", "size": 1}]))
+
+    def test_download_writes_each_image_once(self):
+        cards, _ = deliverable.views(epics() + [card("CS-50")])
+        client = FakeDownloads({"501": PNG})
+        with tempfile.TemporaryDirectory() as d:
+            site = Path(d)
+            written = deliverable.download_images(client, cards, site)
+            self.assertEqual(written, [site / "assets/deliverables/501.png"])
+            self.assertEqual((site / "assets/deliverables/501.png").read_bytes(), PNG)
+            self.assertEqual((site / "assets/deliverables/501.png").stat().st_mode & 0o777, 0o644)
+            self.assertEqual(client.asked, [("501", deliverable.MAX_IMAGE_BYTES)])  # mp4 沒下載
+            self.assertEqual(deliverable.download_images(client, cards, site), [])
+            self.assertEqual(len(client.asked), 1)  # 已經存過就不重抓
+            self.assertEqual(sorted(p.name for p in (site / "assets/deliverables").iterdir()), ["501.png"])
+
+    def test_wrong_size_or_wrong_format_writes_nothing(self):
+        cards, _ = deliverable.views(epics() + [card("CS-50")])
+        for content, message in ((PNG[:-1], "下載到"), (b"<svg" + PNG[4:], "檔頭對不上")):
+            with self.subTest(message=message), tempfile.TemporaryDirectory() as d:
+                with self.assertRaisesRegex(ValueError, message):
+                    deliverable.download_images(FakeDownloads({"501": content}), cards, Path(d))
+                self.assertEqual(list(Path(d).rglob("*.*")), [])
+
+    def test_a_later_failure_leaves_no_earlier_image(self):
+        two = [att("1", "a.png", "image/png", len(PNG)), att("2", "b.png", "image/png", len(PNG))]
+        cards, _ = deliverable.views(epics() + [card("CS-50", attachment=two)])
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaisesRegex(ValueError, "b.png"):
+                deliverable.download_images(FakeDownloads({"1": PNG, "2": b"x" * len(PNG)}), cards, Path(d))
+            self.assertEqual(list(Path(d).rglob("*")), [])
+
+    def test_a_write_failure_rolls_back_this_run_and_leaves_no_part_file(self):
+        from unittest import mock
+        two = [att("1", "a.png", "image/png", len(PNG)), att("2", "b.png", "image/png", len(PNG))]
+        cards, _ = deliverable.views(epics() + [card("CS-50", attachment=two)])
+        real = deliverable.os.replace
+        calls = []
+
+        def replace(src, dst):
+            calls.append(dst)
+            if len(calls) == 2:
+                raise OSError("磁碟滿了")
+            return real(src, dst)
+
+        with tempfile.TemporaryDirectory() as d, mock.patch.object(deliverable.os, "replace", side_effect=replace):
+            with self.assertRaisesRegex(OSError, "磁碟滿了"):
+                deliverable.download_images(FakeDownloads({"1": PNG, "2": PNG}), cards, Path(d))
+            self.assertEqual([p for p in Path(d).rglob("*") if p.is_file()], [])
+
+    def test_missing_images(self):
+        cards, _ = deliverable.views(epics() + [card("CS-50")])
+        with tempfile.TemporaryDirectory() as d:
+            self.assertEqual(deliverable.missing_images(cards, Path(d)), ["assets/deliverables/501.png"])
+            deliverable.download_images(FakeDownloads({"501": PNG}), cards, Path(d))
+            self.assertEqual(deliverable.missing_images(cards, Path(d)), [])
+        self.assertEqual(deliverable.missing_images(None, Path(d)), [])  # snapshot 3 沒抓 Deliverable
+
+
+class ImagesPageTest(unittest.TestCase):
+    """AC-2～4：卡片表面一張縮圖、完整說明縮圖格、附件連到 Jira。"""
+
+    def panel(self, issues, in_reports_dir=False, schema=5):
+        html = render(run(issues, schema=schema), {"highlights": [], "epic_results": {}}, ["2026-W39"], in_reports_dir=in_reports_dir)
+        return html.split('id="delivered"')[1]
+
+    def test_cover_and_grid_link_to_the_image_and_to_jira(self):
+        panel = self.panel(epics() + [card("CS-50")])
+        jira = '<a href="https://example.atlassian.net/secure/attachment/501/list.png">list.png</a>'
+        self.assertIn('<a class="dv-cover" href="assets/deliverables/501.png"><img src="assets/deliverables/501.png" alt="list.png" loading="lazy"></a>'
+                      f'<p class="dv-cover-cap">{jira}</p>', panel)
+        self.assertIn('<div class="dv-shots"><figure><a href="assets/deliverables/501.png"><img src="assets/deliverables/501.png"'
+                      f' alt="list.png" loading="lazy"></a><figcaption>{jira}</figcaption></figure></div>', panel)
+        self.assertIn('<a href="https://example.atlassian.net/secure/attachment/502/demo.mp4">demo.mp4</a><br>'
+                      '<span class="muted">這些檔案沒有放上週報，點檔名到 Jira 看（要登入）</span>', panel)
+
+    def test_report_pages_point_one_level_up(self):
+        panel = self.panel(epics() + [card("CS-50")], in_reports_dir=True)
+        self.assertIn('<img src="../assets/deliverables/501.png"', panel)
+        self.assertNotIn('src="assets/', panel)
+
+    def test_more_images_are_counted_on_the_card(self):
+        panel = self.panel(epics() + [card("CS-50", attachment=[att("1", "a.png", "image/png", 10), att("2", "b.png", "image/png", 10)])])
+        self.assertIn("，另 1 張見完整說明", panel)
+        self.assertEqual(panel.count('class="dv-cover"'), 1)
+
+    def test_filenames_are_escaped_in_links_and_text(self):
+        panel = self.panel(epics() + [card("CS-50", attachment=[att("1", 'a "b"<c>.png', "image/png", 10)])])
+        self.assertIn('/secure/attachment/1/a%20%22b%22%3Cc%3E.png">a &quot;b&quot;&lt;c&gt;.png</a>', panel)
+        self.assertNotIn("<c>", panel)
+
+    def test_no_image_no_cover(self):
+        panel = self.panel(epics() + [card("CS-50", attachment=[att("4", "v.mp4", "video/mp4", 10)])])
+        self.assertNotIn("<img", panel)
+        self.assertNotIn("dv-cover", panel)
+
+    def test_snapshot_4_keeps_the_old_wording(self):
+        # 今晚 W45 的 snapshot 4 附件只有檔名：照舊只列檔名，不放圖、不做附件連結
+        item = card("CS-50")
+        item["deliverable"]["attachments"] = ["list.png", "demo.mp4"]
+        panel = self.panel(epics() + [item], schema=4)
+        self.assertFalse("<img" in panel, "snapshot 4 不該有圖")
+        self.assertIn('list.png、demo.mp4<br><span class="muted">這些檔案沒有放上週報，檔案在 Jira 卡 '
+                      '<a href="https://example.atlassian.net/browse/CS-50">CS-50</a> 的附件</span>', panel)
 
 
 if __name__ == "__main__":

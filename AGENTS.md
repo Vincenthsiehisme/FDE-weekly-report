@@ -32,6 +32,7 @@ python3 -m unittest discover -s tests -t tests
 | `data/<YYYY-Www>/narrative.json` | routine 的 AI 寫的文字段 |
 | `data/kickoff/<epic>.json` | Kick off 鎖定狀態 |
 | `site/index.html`、`site/reports/<YYYY-Www>.html` | 產出的頁面 |
+| `site/assets/deliverables/<附件 id>.<副檔名>` | 成效說明顯示的 Deliverable 截圖，`prepare` 從 Jira 下載 |
 
 人維護、走 PR 的設定：`config/team.json`（成員名單與起訖日，算可運用人日）、`config/holidays.json`（國定假日與補班日，照人事行政總處辦公日曆表，每年補新一年）、`config/excluded.json`（`cards` 不算完成的卡、`epics` 整棵不列入週報的 epic，每張寫理由）、`data/tokens/<YYYY-Www>.json`（Token 用量，來源待定）。
 
@@ -40,4 +41,4 @@ python3 -m unittest discover -s tests -t tests
 - 不寫 Jira。這個 repo 對 Jira 只讀。
 - 憑證只在環境變數或本機 `~/.config/jira-ops/env`，不進任何檔案、commit、PR 說明。
 - 不用 fallback 掩蓋錯誤：抓不到、驗不過就讓它失敗，不產出部分結果。
-- `site/` 是公開網址的內容。卡片標題會原樣公開，不要把憑證或個資寫進卡片標題。
+- `site/` 是公開網址的內容。卡片標題會原樣公開，不要把憑證或個資寫進卡片標題；已完成 Deliverable 的圖片附件也會原樣公開，上傳前要遮客人資料。
