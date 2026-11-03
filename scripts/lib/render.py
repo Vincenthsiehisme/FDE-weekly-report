@@ -1073,15 +1073,19 @@ def _unit_id(label: str) -> str:
 
 
 def _dv_outcome(card: dict) -> str:
-    """列上的成效一行：指標灰字、基準 → 粗體最新、量測日。"""
+    """列上的成效一段：指標（灰）→ 現在值（墨色粗體、不截斷）接量測日 →「原本」加基準（灰）。
+    不用綠、不畫箭頭：綠在這頁是新交付與完成，程式判不出成效變好沒有（0% → 0% 也有），用色就等於替它判
+    （2026-11-04 使用者選丁，vault 的 jira-weekly-report · 成效列呈現與它的顧問報告）。"""
     if not (card["metric"] and card["base"] and card["now"]):
-        return '<span class="dv-missing">成效未填</span>'
+        return '<span class="dv-out missing"><span class="dv-missing">成效未填</span></span>'
     when = ""
     if card["now_date"]:
         warn = '，<b class="dv-warn">超過 8 週</b>' if card["stale"] else ""
-        when = f'<span class="muted">{esc(fmt_date(card["now_date"])[5:])} 量測{warn}</span>'
-    return (f'<span class="dv-metric">{esc(card["metric"].replace(chr(10), " "))}</span>'
-            f'<span class="dv-vals">{esc(card["base"])} → <b>{esc(card["now"])}</b></span>{when}')
+        # 前面用空白不用 margin：窄寬時量測日換到下一行，margin 會在行首留縮排
+        when = f' <span class="dv-when">{esc(fmt_date(card["now_date"])[5:])} 量測{warn}</span>'
+    return (f'<span class="dv-out"><span class="dv-metric">{esc(card["metric"].replace(chr(10), " "))}</span>'
+            f'<span class="dv-now">{esc(card["now"])}{when}</span>'
+            f'<span class="dv-base"><b>原本</b>{esc(card["base"])}</span></span>')
 
 
 def _dv_shots(card: dict, page) -> str:
@@ -1158,7 +1162,7 @@ def _dv_row(card: dict, page, reviewing: bool = False) -> str:
     delivered = linkify(card["delivered"]) if card["delivered"] else '<span class="muted">交付了什麼未填</span>'
     return (f'<details class="dv-item" id="dv-{esc(card["key"])}"><summary>'
             f'<span class="dv-name">{esc(card["epic_summary"])}{tags}</span>'
-            f'<span class="dv-one">{delivered}</span><span class="dv-out">{_dv_outcome(card)}</span>'
+            f'<span class="dv-one">{delivered}</span>{_dv_outcome(card)}'
             f'<span class="dv-side"><span class="dv-act">{act}</span><span class="muted">{acc}・{when}</span><span class="dv-open">完整說明</span></span>'
             f'</summary>{_dv_full(card, page)}</details>')
 
@@ -1437,10 +1441,10 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
 CSS = """
 :root{--bg:#f7f7f5;--surface:#fff;--soft:#f0f0ed;--text:#1d1d1f;--muted:#6e6e73;--line:#e3e3e0;--accent:#2f5bea;
 --done-bg:#e3f4ea;--done-fg:#1b7a45;--bar:#4faf7b;--bar-week:#1b7a45;--track-bg:#e8eefc;--track-fg:#2f5bea;--warn-bg:#fff4e0;--warn-fg:#8a5300;
---alert:#b25e09;--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;--s-other:#b5b4ad;}
+--alert:#b25e09;--line-strong:#c8c8c3;--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--s5:#e87ba4;--s6:#008300;--s7:#6250d6;--s-other:#b5b4ad;}
 @media (prefers-color-scheme: dark){:root{--bg:#141416;--surface:#1c1c1f;--soft:#26262a;--text:#ececef;--muted:#9a9aa1;--line:#2e2e33;
 --accent:#7c9cff;--done-bg:#15321f;--done-fg:#6fd39a;--bar:#2f7a52;--bar-week:#7fe0ad;--track-bg:#1b2544;--track-fg:#9fb6ff;--warn-bg:#3a2a0e;--warn-fg:#ffcf7a;
---alert:#ffb35c;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;--s-other:#5e5e64;}}
+--alert:#ffb35c;--line-strong:#4a4a50;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--s5:#d55181;--s6:#008300;--s7:#9085e9;--s-other:#5e5e64;}}
 /* 進度與橫條兩階同色綠：dataviz validate_palette.js --ordinal 亮暗各過（2026-10-07）；兩段之間留 2px 底色縫 */
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.6 -apple-system,BlinkMacSystemFont,"Noto Sans TC","PingFang TC","Segoe UI",sans-serif}
@@ -1558,11 +1562,17 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .dv-tag{display:inline-block;margin-left:8px;padding:0 7px;border-radius:4px;font-size:12px;font-weight:500;vertical-align:2px;background:var(--soft);color:var(--muted)}
 .dv-tag.new{background:var(--done-bg);color:var(--done-fg);font-weight:600}
 .dv-one{grid-column:1;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
-.dv-out{grid-column:1;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:14px}
-.dv-out>span{margin-right:10px}.dv-metric{color:var(--muted)}.dv-vals{font-variant-numeric:tabular-nums}.dv-vals b{font-size:16px}
+/* 成效自成一段、跨過右側按鈕欄；左邊中性細線，現在值墨色粗體，指標與原本灰字（2026-11-04 使用者選丁） */
+.dv-out{grid-column:1/-1;display:block;max-width:46em;margin-top:8px;border-left:2px solid var(--line-strong);padding:1px 0 1px 12px}
+.dv-out.missing{border-left:0;padding:0}
+.dv-metric{color:var(--muted);font-size:13px;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+.dv-now{display:block;font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.dv-when{color:var(--muted);font-size:12px;font-weight:400;white-space:nowrap}
+.dv-base{color:var(--muted);font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dv-base b{font-size:12px;margin-right:6px}
 .dv-warn{color:var(--warn-fg)}
 .dv-missing{display:inline-block;padding:0 8px;border:1px dashed var(--warn-fg);border-radius:6px;background:var(--warn-bg);color:var(--warn-fg);font-size:13px;font-weight:600}
-.dv-side{grid-column:2;grid-row:1/4;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:6px;font-size:13px;text-align:right}
+.dv-side{grid-column:2;grid-row:1/3;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:6px;font-size:13px;text-align:right}
 .dv-act{display:flex;gap:14px;align-items:center}.dv-act:empty{display:none}
 .dv-btn{display:inline-block;padding:7px 16px;border-radius:8px;background:var(--accent);color:#fff;font-weight:600;font-size:14px}.dv-btn:hover{text-decoration:none;opacity:.92}
 .dv-btn.ghost{background:none;color:var(--accent);border:1px solid var(--accent)}
@@ -1705,7 +1715,7 @@ details[open]>summary::before{content:"▾"}
 .dv-sentence{font-size:17px}
 .dv-item>summary{grid-template-columns:minmax(0,1fr);padding:12px 14px}
 .dv-side{grid-column:1;grid-row:auto;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;text-align:left}
-.dv-one{-webkit-line-clamp:2}.dv-btn{padding:10px 18px}
+.dv-one{-webkit-line-clamp:2}.dv-metric{-webkit-line-clamp:2}.dv-btn{padding:10px 18px}
 .dv-full{padding:6px 14px 14px}.dv-full>div{grid-template-columns:minmax(0,1fr);gap:2px}
 
   .dv-cards{grid-template-columns:minmax(0,1fr)}
