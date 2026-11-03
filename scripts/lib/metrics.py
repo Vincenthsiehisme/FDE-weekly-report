@@ -58,6 +58,8 @@ ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
 CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近幾週（跟本週頁的圖同一段），不然資料檢查會一路變長
+# 17：多了 deliverables_reviewing（Jira 審核中的 Deliverable，頁籤「成效說明」收在最後；snapshot 3 是 null）；deliverables 與它每張多了
+#     new、stale、entry、manual，文字欄的內部網址與私有 IP 換成「（內部位址，不公開）」（2026-11-03 成效說明多讀者改版）；
 # 16：deliverables 每張卡的 attachments 從檔名字串改成 {id, filename, mime, size, image}，image 是要顯示的圖在 site/ 底下的路徑
 #     （2026-11-03 成效說明顯示截圖）；
 # 15：health 的 explore_share、explore_people 改算 Kick off：探索是這週完成、有填工時的 Kick off 卡，
@@ -80,7 +82,7 @@ CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近�
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 16
+SCHEMA = 17
 SNAPSHOT_SCHEMAS = (3, 4, 5)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓；
 # 5 的附件帶 id 才下載得了圖，4 的附件只有檔名、照舊只列檔名
 
@@ -313,9 +315,9 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
                          f"用 weekly.py prepare --week-ending {period.week_ending.isoformat()} 重抓一次 Jira")
     checks = list(extra_checks)
     tree = _Tree(snapshot["issues"], checks)
-    deliverables = None
+    deliverables = reviewing = None
     if snapshot["schema"] >= 4:
-        deliverables, deliverable_checks = deliverable_lib.views(snapshot["issues"])
+        deliverables, reviewing, deliverable_checks = deliverable_lib.views(snapshot["issues"], period)
         checks += deliverable_checks
 
     def completed_this_week(item: dict) -> bool:
@@ -570,6 +572,7 @@ def compute(snapshot: dict, period, tokens, kickoff_states: dict, extra_checks: 
         "people": people,
         "staffing": staffing,
         "deliverables": deliverables,
+        "deliverables_reviewing": reviewing,
         "migrated": {
             "week": [migrated_row(k) for k in sorted(raw_week_done & migrated, key=issue_sort_key)],
             "cumulative": [migrated_row(k) for k in sorted(done_by_end & migrated, key=issue_sort_key)],
