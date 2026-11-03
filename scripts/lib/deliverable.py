@@ -198,6 +198,13 @@ def internal_hosts(path: Path = INTERNAL_HOSTS_FILE) -> frozenset:
 
 
 def _private_ip(text: str) -> bool:
+    """單獨的 `::`（分隔符號）沒有任何位址數字，不算；補零的 IPv4（010.0.0.5）Python 3.9.5 起 ipaddress 不收，
+    先去掉每段的前導零再判，不然會原樣上公開頁（2026-11-04 Sonnet 審 #41）。"""
+    if ":" in text and not re.search(r"[0-9A-Fa-f]", text):
+        return False
+    parts = text.split(".")
+    if len(parts) == 4 and all(p.isdigit() for p in parts):
+        text = ".".join(str(int(p)) for p in parts)
     try:
         return ipaddress.ip_address(text).is_private
     except ValueError:
@@ -248,6 +255,7 @@ def scrub(text, hosts: frozenset) -> tuple:
 def _host_patterns(hosts: frozenset) -> tuple:
     """清單上每個主機一條 regex，長的先換。頁面每個字都經過 scrub（render.esc），每次重編會拖慢整份 finalize。
     只看 ASCII 邊界：中文卡片常把主機名稱直接接在中文字旁（「部署在travel-tech.liontravel.com上」）；子網域一起換"""
+    # 後面接「.字」照換：分不出是別的網域（.com.tw）還是附件副檔名（.png），寧可多遮（2026-11-04 Sonnet 審 #41 那條不改）
     return tuple(re.compile(r"(?<![A-Za-z0-9.-])(?:[A-Za-z0-9-]+\.)*" + re.escape(host) + r"(?![A-Za-z0-9-])", re.IGNORECASE)
                  for host in sorted(hosts, key=lambda h: (-len(h), h)))
 

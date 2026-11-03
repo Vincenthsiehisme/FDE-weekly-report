@@ -427,6 +427,13 @@ class InternalAddressTest(unittest.TestCase):
         self.assertEqual(deliverable.scrub("主機 fd00::1 與 2001:4860::8888", frozenset()), ("主機 （內部位址，不公開） 與 2001:4860::8888", 1))
         self.assertEqual(deliverable.scrub("10:30 開會", frozenset()), ("10:30 開會", 0))
 
+    def test_review_edge_cases(self):
+        # 2026-11-04 Sonnet 審 #41：單獨的 :: 不是位址、補零的私有 IP 也要遮
+        self.assertEqual(deliverable.scrub("A :: B 與 ::", frozenset()), ("A :: B 與 ::", 0))
+        self.assertEqual(deliverable.scrub("主機 010.0.0.5 與 10.000.000.005", frozenset()),
+                         ("主機 （內部位址，不公開） 與 （內部位址，不公開）", 2))
+        self.assertEqual(deliverable.scrub("fe80::1", frozenset()), ("（內部位址，不公開）", 1))
+
     def test_hosts_file_must_have_a_list(self):
         with tempfile.TemporaryDirectory() as d:
             bad = Path(d) / "h.json"
