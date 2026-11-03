@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-963",
+  "kickoff_key": "FDEPROJECT-964",
+  "last_seen": {
+    "after": "dev 上可從 LINE 一路走到官網旅客頁，「指定服務業務」已預填當班業務，送出後訂單業務＝該門市業務",
+    "before": "客人自己點官網連結下單，商品連結還會跳出 LINE 進雄獅 App；訂單算不到門市業務",
+    "decision": "正式站上線時機；Platform=APP 修正（FDEPROJECT-950）何時上正式站；官網 3 個資安問題要不要通報",
+    "evidence": "dev 端到端實測截圖、測試單的訂單業務欄位、畫面設計稿（FDEPROJECT-951）與開發計畫（FDEPROJECT-952，docs/preorder-v1-code-plan.md）",
+    "next_milestone": "照開發計畫完成 dev 第 1～3 步（挑當班業務、動態組官網欄位、草稿 API 與斷點接回）",
+    "objective": "在 dev 做出 LINE 內代客報名 v1：客人在 LINE 裡完成官網團體報名，訂單自動算給門市業務",
+    "why": "門市 LINE 來的客人自己上官網下單，業績落不到門市業務（門市業務網單上班全空，單位派單派不到門市）；在 LINE 內帶著業務完成報名，業績才回得到門市"
+  },
+  "last_seen_at": "2026-11-04T05:02:26.586459+08:00",
+  "last_seen_key": "FDEPROJECT-964",
+  "locked_at": "2026-11-04T05:02:26.586459+08:00",
+  "problems": [],
+  "sections": {
+    "after": "dev 上可從 LINE 一路走到官網旅客頁，「指定服務業務」已預填當班業務，送出後訂單業務＝該門市業務",
+    "before": "客人自己點官網連結下單，商品連結還會跳出 LINE 進雄獅 App；訂單算不到門市業務",
+    "decision": "正式站上線時機；Platform=APP 修正（FDEPROJECT-950）何時上正式站；官網 3 個資安問題要不要通報",
+    "evidence": "dev 端到端實測截圖、測試單的訂單業務欄位、畫面設計稿（FDEPROJECT-951）與開發計畫（FDEPROJECT-952，docs/preorder-v1-code-plan.md）",
+    "next_milestone": "照開發計畫完成 dev 第 1～3 步（挑當班業務、動態組官網欄位、草稿 API 與斷點接回）",
+    "objective": "在 dev 做出 LINE 內代客報名 v1：客人在 LINE 裡完成官網團體報名，訂單自動算給門市業務",
+    "why": "門市 LINE 來的客人自己上官網下單，業績落不到門市業務（門市業務網單上班全空，單位派單派不到門市）；在 LINE 內帶著業務完成報名，業績才回得到門市"
+  }
+}
