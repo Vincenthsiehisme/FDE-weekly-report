@@ -472,6 +472,11 @@ details[open]>summary::before{content:"▾"}
       if (on && unit.tagName === "DETAILS") unit.open = true;
     });
   }
+  // 驗收中是籤時不能收合：滑鼠由 CSS 擋，鍵盤（summary 上按 Enter、空白）在這裡打開回去
+  var review = document.getElementById("dv-review");
+  if (review) review.addEventListener("toggle", function () {
+    if (!review.open && review.classList.contains("active")) review.open = true;
+  });
   unitTabs.forEach(function (tab) {
     tab.addEventListener("click", function (event) {
       event.preventDefault();
@@ -497,7 +502,8 @@ details[open]>summary::before{content:"▾"}
   function fromHash() {
     // 頁籤名（#delivered）直接切；成效說明裡的單位、驗收中與單張卡（#unit-…、#dv-review、#dv-<卡號>）
     // 切到它所在的頁籤與單位籤再捲過去
-    var wanted = decodeURIComponent(location.hash.slice(1));
+    var wanted;
+    try { wanted = decodeURIComponent(location.hash.slice(1)); } catch (e) { return; }  // 壞掉的 %編碼當成沒有 hash
     if (tabs.some(function (tab) { return tab.getAttribute("aria-controls") === wanted; })) { show(wanted); return; }
     var el = wanted && document.getElementById(wanted);
     var panel = el && el.closest('.panel');

@@ -251,6 +251,9 @@ class MetricsAndPageTest(unittest.TestCase):
         self.assertIn("document.querySelectorAll('.dv-tabs [role=\"tab\"]')", html)
         self.assertIn("el.closest('.panel')", html)
         self.assertIn("el.closest('.dv-unit, .dv-review')", html)
+        # 鍵盤收合驗收中時打開回去；壞掉的 %編碼不中斷初始化（2026-11-04 Sonnet 審 #42）
+        self.assertIn('if (!review.open && review.classList.contains("active")) review.open = true;', html)
+        self.assertIn("try { wanted = decodeURIComponent(location.hash.slice(1)); } catch (e) { return; }", html)
 
     def test_only_reviewing_selects_the_review_tab(self):
         panel = self.page(run(epics() + [card("CS-50", status="review")])).split('id="delivered"')[1]
