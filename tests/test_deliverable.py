@@ -247,6 +247,18 @@ class MetricsAndPageTest(unittest.TestCase):
         self.assertIn("已交付 <b>0</b> 個專案；本期新交付 <b>0</b> 個；另有 <b>1</b> 個驗收中（直售）。", panel)
         self.assertNotIn("還沒有已交付的專案", panel)
 
+    def test_quoted_and_query_urls_link_cleanly(self):
+        from lib.render import linkify
+        self.assertEqual(linkify('請看 "https://e.example/a"'), '請看 &quot;<a href="https://e.example/a">e.example/a</a>&quot;')
+        self.assertEqual(linkify("https://e.example/q?a=1&b=2"), '<a href="https://e.example/q?a=1&amp;b=2">e.example/q?a=1&amp;b=2</a>')
+        self.assertEqual(linkify("javascript:alert(1) <b>"), "javascript:alert(1) &lt;b&gt;")
+
+    def test_four_reviewing_units_are_counted(self):
+        units = ["門市", "雄獅", "國旅", "東北亞"]
+        issues = [issue(f"CS-{10 + n}", level=1, status="doing", labels=[u]) for n, u in enumerate(units)]
+        issues += [card(f"CS-{50 + n}", parent=f"CS-{10 + n}", status="review") for n in range(4)]
+        self.assertIn("另有 <b>4</b> 個驗收中，服務 <b>4</b> 個單位。", self.page(run(issues)))
+
     def test_links_in_text_become_links(self):
         m = run(epics() + [card("CS-50", customfield_10478=adf("商店：https://chromewebstore.google.com/detail/abc。"))])
         self.assertIn('<li>商店：<a href="https://chromewebstore.google.com/detail/abc">chromewebstore.google.com/detail/abc</a>。</li>', self.page(m))
@@ -383,6 +395,24 @@ class InternalAddressTest(unittest.TestCase):
         self.assertEqual(cards[0]["entry"], [])
         self.assertEqual([c["kind"] for c in checks], ["deliverable_internal", "deliverable_no_entry"])
         self.assertNotIn("travel-tech", str(cards))
+
+    def test_every_printed_field_is_scrubbed(self):
+        # Codex 審 225df02：epic 標題、label、附件檔名、版本名也會印上公開頁
+        parent = issue("CS-1", level=1, status="doing", summary="主機 10.34.8.9 搬遷", labels=["travel-tech.liontravel.com"])
+        for status in ("done", "review"):
+            with self.subTest(status=status):
+                dv = card("CS-50", status=status, attachment=[att("1", "travel-tech.liontravel.com.png", "image/png", 10)],
+                          fixVersions=[{"name": "10.34.8.9 版", "releaseDate": None}])
+                cards, reviewing, checks = deliverable.views([parent, dv], PERIOD, self.HOSTS)
+                html = str(cards + reviewing)
+                self.assertNotIn("10.34.8.9", html)
+                self.assertNotIn("travel-tech", html)
+                self.assertIn("deliverable_internal", [c["kind"] for c in checks])
+
+    def test_malformed_url_and_ipv6_do_not_stop_the_report(self):
+        self.assertEqual(deliverable.scrub("看 https://[foo 這裡", frozenset()), ("看 （內部位址，不公開） 這裡", 1))
+        self.assertEqual(deliverable.scrub("主機 fd00::1 與 2001:4860::8888", frozenset()), ("主機 （內部位址，不公開） 與 2001:4860::8888", 1))
+        self.assertEqual(deliverable.scrub("10:30 開會", frozenset()), ("10:30 開會", 0))
 
     def test_hosts_file_must_have_a_list(self):
         with tempfile.TemporaryDirectory() as d:

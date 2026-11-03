@@ -70,6 +70,7 @@ INTERNAL_MARK = "（內部位址，不公開）"
 # 網址只收 ASCII：內文常把全形括號、逗號直接接在網址後面（1000 的「/convert/（部署於 …）」）
 _URL = re.compile(r"https?://[A-Za-z0-9\-._~:/?#\[\]@!$&'*+,;=%]+")
 _IPV4 = re.compile(r"(?<![\d.])(?:\d{1,3}\.){3}\d{1,3}(?![\d.])")
+_IPV6 = re.compile(r"(?<![0-9A-Za-z:])[0-9A-Fa-f]{0,4}(?::[0-9A-Fa-f]{0,4}){2,7}(?![0-9A-Za-z:])")
 _RESULT = re.compile(r"^(?P<cond>.+?)\s*(?:→|->)\s*(?P<result>通過|未通過|未驗)\s*(?:[，,]\s*(?P<where>.*))?$")
 
 
@@ -202,7 +203,11 @@ def _private_ip(text: str) -> bool:
 
 
 def _internal_url(url: str, hosts: frozenset) -> bool:
-    host = (urlsplit(url).hostname or "").lower()
+    """解析不了的網址（例 `https://[foo`）當內部處理：換掉、列資料檢查，不讓一張卡寫錯擋掉整份週報（Codex 審 225df02）。"""
+    try:
+        host = (urlsplit(url).hostname or "").lower()
+    except ValueError:
+        return True
     return not url.startswith("https://") or _private_ip(host) or host in hosts
 
 
@@ -230,7 +235,7 @@ def scrub(text, hosts: frozenset) -> tuple:
             return INTERNAL_MARK
         return match.group(0)
 
-    out = _IPV4.sub(ip, _URL.sub(url, text))
+    out = _IPV6.sub(ip, _IPV4.sub(ip, _URL.sub(url, text)))
     for host in sorted(hosts, key=len, reverse=True):
         pattern = re.compile(r"(?<![\w.-])" + re.escape(host) + r"(?![\w-])", re.IGNORECASE)
         out, n = pattern.subn(INTERNAL_MARK, out)
@@ -300,13 +305,17 @@ def views(issues: list, period, hosts: frozenset = None) -> tuple:
             return out
 
         fields = {key: clean(d[key]) for key in ("delivered", "features", "not_done", "metric", "base", "now", "source", "other")}
+        # 頁面上每個從 Jira 來的字都過同一道：epic 標題、label、附件檔名、版本名也會印出來（Codex 審 225df02）
+        title = clean(parent["summary"])
+        label = clean(parent["labels"][0]) if len(parent["labels"]) == 1 else None
         sections = {key: clean(value) for key, value in sections.items()}
         acceptance = _acceptance(sections["acceptance"])
         entry, manual = _public_urls(_items(sections["entry"], "[；;]")), _public_urls(_items(sections["manual"], "[；;]"))
+        attachments = [dict(a, filename=clean(a["filename"])) for a in (_shown_attachment(a) for a in d["attachments"])]
+        versions = [dict(v, name=clean(v["name"])) for v in d["versions"]]
         if scrubbed:
             checks.append(_check("deliverable_internal", item["key"], f"有 {scrubbed} 處內部網址或私有 IP，頁面換成「{INTERNAL_MARK}」；"
                                                                       "Deliverable 只放對外網址"))
-        attachments = [_shown_attachment(a) for a in d["attachments"]]
         if not done:
             attachments = [dict(a, image=None) for a in attachments]
         week = period_containing(parse_jira_time(item["resolved"])).week_id if done else None
@@ -321,8 +330,8 @@ def views(issues: list, period, hosts: frozenset = None) -> tuple:
         (cards if done else reviewing).append({
             "key": item["key"],
             "epic": parent["key"],
-            "epic_summary": parent["summary"],
-            "label": parent["labels"][0] if len(parent["labels"]) == 1 else None,
+            "epic_summary": title,
+            "label": label,
             "done": item["resolved"] if done else None,
             "week": week,
             "new": week == period.week_id,
@@ -345,7 +354,7 @@ def views(issues: list, period, hosts: frozenset = None) -> tuple:
             "entry": entry,
             "manual": manual,
             "attachments": attachments,
-            "versions": d["versions"],
+            "versions": versions,
         })
     for epic in sorted((i for i in issues if i["level"] == EPIC_LEVEL and i["status_category"] == "done" and i["resolved"]),
                        key=lambda i: issue_sort_key(i["key"])):

@@ -1050,13 +1050,18 @@ _URL = re.compile(r"https://[A-Za-z0-9\-._~:/?#\[\]@!$&'*+,;=%]+")
 
 
 def linkify(value) -> str:
-    """成效說明的內文：先跳脫，再把 https:// 網址做成連結（內部網址在 deliverable.views 已換掉，剩下的都是對外的）。"""
-    def link(match):
+    """成效說明的內文：在原文上切出 https:// 網址，網址與其餘文字各自跳脫，再把網址做成連結
+    （內部網址在 deliverable.views 已換掉，剩下的都是對外的）。先跳脫再找會把 &quot; 吃進網址（Codex 審 225df02）。"""
+    text = "" if value is None else str(value)
+    out, last = [], 0
+    for match in _URL.finditer(text):
         found = match.group(0)
-        tail = len(found) - len(found.rstrip(".,;:!?"))
-        url, rest = found[:len(found) - tail], found[len(found) - tail:]
-        return f'<a href="{url}">{url[len("https://"):]}</a>{rest}'
-    return _URL.sub(link, esc(value))
+        url = found.rstrip(".,;:!?'")
+        out.append(esc(text[last:match.start()]))
+        out.append(f'<a href="{esc(url)}">{esc(url[len("https://"):])}</a>{esc(found[len(url):])}')
+        last = match.end()
+    out.append(esc(text[last:]))
+    return "".join(out)
 
 
 def _unit_id(label: str) -> str:
@@ -1179,7 +1184,7 @@ def _delivered_panel(metrics, page) -> str:
     fresh = sum(1 for c in cards if c["new"])
     sentence = f'已交付 <b>{len(cards)}</b> 個專案{units_text(order)}；本期新交付 <b>{fresh}</b> 個'
     if reviewing:
-        sentence += f'；另有 <b>{len(reviewing)}</b> 個驗收中{units_text(review_units) if len(review_units) <= 3 else ""}'
+        sentence += f'；另有 <b>{len(reviewing)}</b> 個驗收中{units_text(review_units)}'
     nav = []
     for name in order + [n for n in review_units if n not in groups]:
         n_review = sum(1 for c in reviewing if (c["label"] or UNLABELED) == name)
