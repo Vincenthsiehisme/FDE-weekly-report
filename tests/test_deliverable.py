@@ -265,6 +265,8 @@ class MetricsAndPageTest(unittest.TestCase):
         self.assertNotIn(".dv-item:first-child{border-top:0}", html)
         # 沒有 JS 時單位照舊往下排、籤是跳轉連結；有 JS 才一次只顯示一個單位
         self.assertIn(".js .dv-unit,.js .dv-review{display:none}.js .dv-unit.active,.js .dv-review.active{display:block}", html)
+        # 有 JS 時驗收中是籤、不能收合：標題的 ▸ 收合記號也拿掉（2026-11-04 Vercel Preview 實機看到）
+        self.assertIn(".js .dv-review>summary b,.js .dv-review>summary::before{display:none}", html)
 
     def test_only_reviewing_still_shows_the_section(self):
         panel = self.page(run(epics() + [card("CS-50", status="review")])).split('id="delivered"')[1]

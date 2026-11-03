@@ -1574,7 +1574,7 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 /* 不套 .panel>details 的白卡外框：裡面的 .dv-rows 已經是一張卡，套兩層就是冷讀抓過的灰上灰 */
 .panel>details.dv-review{margin-top:28px;background:none;border:0;border-radius:0;padding:0}
 /* 有 JS 時驗收中是一個籤：切到就打開，標題只留那句說明、不能收合 */
-.js .panel>details.dv-review{margin-top:0}.js .dv-review>summary{pointer-events:none}.js .dv-review>summary b{display:none}
+.js .panel>details.dv-review{margin-top:0}.js .dv-review>summary{pointer-events:none}.js .dv-review>summary b,.js .dv-review>summary::before{display:none}
 /* 分享 #delivered、#unit-… 進來時，頁籤列是 sticky，標題與那句話不要被蓋住 */
 #delivered,.dv-unit,.dv-review{scroll-margin-top:64px}.dv-review>summary{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;font-size:17px}.dv-review>summary b{white-space:nowrap}.dv-review>summary .muted{font-size:14px}
 .dv-review>.dv-rows{margin-top:8px}
