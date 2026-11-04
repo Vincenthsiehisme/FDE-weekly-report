@@ -77,8 +77,8 @@
         "people": 7,
         "shares": {
           "LiLi": 0.0932,
-          "其他": 0.1716,
-          "國旅": 0.1286,
+          "其他": 0.1626,
+          "國旅": 0.1376,
           "客製國旅": 0.1429,
           "東北亞": 0.1429,
           "歐洲團產TP": 0.1429,
@@ -204,6 +204,16 @@
       "key": "FDEPROJECT-1049",
       "kind": "deliverable_no_entry",
       "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
+    },
+    {
+      "key": "FDEPROJECT-455",
+      "kind": "deliverable_absent",
+      "message": "epic 2026-11-04 完成，底下沒有完成的 Deliverable"
+    },
+    {
+      "key": "FDEPROJECT-525",
+      "kind": "deliverable_absent",
+      "message": "epic 2026-11-04 完成，底下沒有完成的 Deliverable"
     },
     {
       "key": "CS-37",
@@ -1155,7 +1165,7 @@
     },
     {
       "group": "FDEPROJECT-761",
-      "hours": 0.25,
+      "hours": 0.5,
       "key": "FDEPROJECT-837",
       "leaf": true,
       "owner": "王碩緯",
@@ -1166,7 +1176,7 @@
     },
     {
       "group": "FDEPROJECT-761",
-      "hours": 0.5,
+      "hours": 1.5,
       "key": "FDEPROJECT-838",
       "leaf": true,
       "owner": "王碩緯",
@@ -1177,7 +1187,7 @@
     },
     {
       "group": "FDEPROJECT-761",
-      "hours": 0.5,
+      "hours": 1.5,
       "key": "FDEPROJECT-840",
       "leaf": true,
       "owner": "王碩緯",
@@ -1188,7 +1198,7 @@
     },
     {
       "group": "FDEPROJECT-761",
-      "hours": 0.5,
+      "hours": 1.5,
       "key": "FDEPROJECT-841",
       "leaf": true,
       "owner": "王碩緯",
@@ -1199,7 +1209,7 @@
     },
     {
       "group": "FDEPROJECT-761",
-      "hours": 0.5,
+      "hours": 1.5,
       "key": "FDEPROJECT-842",
       "leaf": true,
       "owner": "王碩緯",
@@ -7714,7 +7724,7 @@
       },
       {
         "group": "FDEPROJECT-653",
-        "hours": 0.25,
+        "hours": 0.5,
         "key": "FDEPROJECT-654",
         "leaf": true,
         "owner": "王碩緯",
@@ -7726,7 +7736,7 @@
       },
       {
         "group": "FDEPROJECT-653",
-        "hours": 0.5,
+        "hours": 1.5,
         "key": "FDEPROJECT-655",
         "leaf": true,
         "owner": "王碩緯",
@@ -7738,7 +7748,7 @@
       },
       {
         "group": "FDEPROJECT-653",
-        "hours": 0.5,
+        "hours": 1.5,
         "key": "FDEPROJECT-656",
         "leaf": true,
         "owner": "王碩緯",
@@ -7750,7 +7760,7 @@
       },
       {
         "group": "FDEPROJECT-653",
-        "hours": 0.25,
+        "hours": 1.5,
         "key": "FDEPROJECT-657",
         "leaf": true,
         "owner": "王碩緯",
@@ -7762,7 +7772,7 @@
       },
       {
         "group": "FDEPROJECT-653",
-        "hours": 0.5,
+        "hours": 1.5,
         "key": "FDEPROJECT-658",
         "leaf": true,
         "owner": "王碩緯",
@@ -7774,7 +7784,7 @@
       },
       {
         "group": "FDEPROJECT-653",
-        "hours": 0.5,
+        "hours": 1.5,
         "key": "FDEPROJECT-659",
         "leaf": true,
         "owner": "王碩緯",
@@ -7810,7 +7820,7 @@
       },
       {
         "group": "FDEPROJECT-653",
-        "hours": 1.0,
+        "hours": 2.0,
         "key": "FDEPROJECT-663",
         "leaf": true,
         "owner": "王碩緯",
@@ -9310,7 +9320,7 @@
       },
       {
         "group": "FDEPROJECT-761",
-        "hours": 0.25,
+        "hours": 0.5,
         "key": "FDEPROJECT-837",
         "leaf": true,
         "owner": "王碩緯",
@@ -9322,7 +9332,7 @@
       },
       {
         "group": "FDEPROJECT-761",
-        "hours": 0.5,
+        "hours": 1.5,
         "key": "FDEPROJECT-838",
         "leaf": true,
         "owner": "王碩緯",
@@ -9334,7 +9344,7 @@
       },
       {
         "group": "FDEPROJECT-761",
-        "hours": 0.5,
+        "hours": 1.5,
         "key": "FDEPROJECT-840",
         "leaf": true,
         "owner": "王碩緯",
@@ -9346,7 +9356,7 @@
       },
       {
         "group": "FDEPROJECT-761",
-        "hours": 0.5,
+        "hours": 1.5,
         "key": "FDEPROJECT-841",
         "leaf": true,
         "owner": "王碩緯",
@@ -9358,7 +9368,7 @@
       },
       {
         "group": "FDEPROJECT-761",
-        "hours": 0.5,
+        "hours": 1.5,
         "key": "FDEPROJECT-842",
         "leaf": true,
         "owner": "王碩緯",
@@ -10443,7 +10453,7 @@
           "done_points": 72.5,
           "percent": 68,
           "total_cards": 31,
-          "total_points": 83.0,
+          "total_points": 84.75,
           "unestimated_cards": 8
         },
         "stalled": false,
@@ -11203,7 +11213,7 @@
         "due": null,
         "hours": 6.5,
         "id": "FDEPROJECT-332",
-        "idle_days": 1,
+        "idle_days": 0,
         "key": "FDEPROJECT-332",
         "kickoff": {
           "key": "FDEPROJECT-333",
@@ -12101,9 +12111,9 @@
         "closed_week": null,
         "completed": 7,
         "due": null,
-        "hours": 3.5,
+        "hours": 10.0,
         "id": "FDEPROJECT-653",
-        "idle_days": 1,
+        "idle_days": 0,
         "key": "FDEPROJECT-653",
         "kickoff": {
           "key": "FDEPROJECT-651",
@@ -12123,10 +12133,10 @@
         "owner": "王碩緯",
         "progress": {
           "done_cards": 7,
-          "done_points": 3.5,
+          "done_points": 10.0,
           "percent": 100,
           "total_cards": 7,
-          "total_points": 3.5,
+          "total_points": 10.0,
           "unestimated_cards": 0
         },
         "stalled": false,
@@ -12360,9 +12370,9 @@
         "closed_week": null,
         "completed": 5,
         "due": null,
-        "hours": 2.25,
+        "hours": 6.5,
         "id": "FDEPROJECT-761",
-        "idle_days": 5,
+        "idle_days": 0,
         "key": "FDEPROJECT-761",
         "kickoff": {
           "key": "FDEPROJECT-755",
@@ -12382,10 +12392,10 @@
         "owner": "王碩緯",
         "progress": {
           "done_cards": 5,
-          "done_points": 2.25,
+          "done_points": 6.5,
           "percent": 83,
           "total_cards": 6,
-          "total_points": 2.75,
+          "total_points": 8.0,
           "unestimated_cards": 0
         },
         "stalled": false,
@@ -12436,7 +12446,7 @@
         "due": null,
         "hours": 3.25,
         "id": "FDEPROJECT-786",
-        "idle_days": 1,
+        "idle_days": 0,
         "key": "FDEPROJECT-786",
         "kickoff": {
           "key": "FDEPROJECT-788",
@@ -12473,7 +12483,7 @@
         "due": null,
         "hours": 0.0,
         "id": "FDEPROJECT-789",
-        "idle_days": 1,
+        "idle_days": 0,
         "key": "FDEPROJECT-789",
         "kickoff": {
           "key": "FDEPROJECT-791",
@@ -12827,14 +12837,14 @@
         "progress": {
           "done_cards": 0,
           "done_points": 0.0,
-          "percent": null,
-          "total_cards": 0,
-          "total_points": 0.0,
-          "unestimated_cards": 0
+          "percent": 0,
+          "total_cards": 4,
+          "total_points": 0.25,
+          "unestimated_cards": 3
         },
         "stalled": false,
         "status": "On Track",
-        "summary": "[國旅] 導領費用自動導入支單",
+        "summary": "[國旅] 導領費用自動核算與導入支單",
         "tokens": null
       },
       {
@@ -12878,7 +12888,7 @@
     "since": "2026-09-18",
     "totals": {
       "completed": 687,
-      "hours": 721.45,
+      "hours": 732.2,
       "projects": 55,
       "tokens": null,
       "unestimated_completed": 27
@@ -12886,12 +12896,12 @@
     "weeks": [
       {
         "completed": 163,
-        "hours": 230.3,
+        "hours": 234.55,
         "week": "2026-W45"
       },
       {
         "completed": 100,
-        "hours": 97.0,
+        "hours": 103.5,
         "week": "2026-W44"
       },
       {
@@ -13518,6 +13528,239 @@
     {
       "acceptance": [
         {
+          "condition": "試跑 10/25、10/18 全步驟核對通過",
+          "result": "通過",
+          "where": ".24，10/29"
+        },
+        {
+          "condition": "10/28 每日排程核對通過",
+          "result": "通過",
+          "where": ".24，10/29"
+        },
+        {
+          "condition": "回補遇錯跳下一天（假失敗日測試）",
+          "result": "通過",
+          "where": ".24，10/29"
+        },
+        {
+          "condition": "自動煞車（假連線錯誤／429）",
+          "result": "通過",
+          "where": ".24，10/30"
+        },
+        {
+          "condition": "經 Worker 補跑 10/29 核對",
+          "result": "通過",
+          "where": ".24，10/30"
+        },
+        {
+          "condition": "瀏覽器登入經 ml-02 代理",
+          "result": "通過",
+          "where": ".24，10/30"
+        }
+      ],
+      "attachments": [],
+      "base": "7 天",
+      "base_date": "2026-10-19",
+      "code": [
+        "Azure DevOps LionTech/FDE/voc-evox-analysis 分支 refactor-voc：8d70dd9、8a4b430、e42cb58、fa9093f、5dd64a9、c0c54da"
+      ],
+      "delivered": "每日排程 evox_daily 與歷史回補 evox_backfill（.24 共用 Airflow）、話務資料庫 evox-pg 12 張表（通聯、滿意度、響鈴、工時、錄音存檔、字典快照等）、ml-02 錄音存檔與轉文字 API、每日自動核對（筆數對 EVOX、錄音全存）",
+      "done": null,
+      "entry": [],
+      "env": [
+        "https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/voc-evox-analysis"
+      ],
+      "epic": "FDEPROJECT-497",
+      "epic_summary": "EVOX 通話分析 階段二：自動化上線與每日排程",
+      "failed": 0,
+      "features": [
+        "EVOX 直售 CallCenter（5 站）的話務原始資料每天自動收進雄獅自己的資料庫：通聯（撥入撥出全部狀態）、話後滿意度、響鈴紀錄、專員每日工時、組別／專員／標籤等字典的歷次版本，以及撥入＋撥出錄音與語音留言（存 Opus）。另有歷史回補排程，把 EVOX 上線以來（2024-10）的資料補齊。轉文字與來電原因分析的程式已備好，依應用端需求再開。"
+      ],
+      "key": "FDEPROJECT-825",
+      "label": "直售",
+      "manual": [],
+      "metric": "話務資料可查天數（通聯＋滿意度已入庫且核對通過的日數）",
+      "new": false,
+      "not_done": [
+        "- 11-03 起依廠商要求暫停三支排程（每日、歷史回補、每日換 token），等廠商回覆可接受速率／尖峰／IP 白名單後由 Jin 決定重啟日（FDEPROJECT-1020）",
+        "- 歷史錄音回補：暫停時補到 8.1%（107,344／1,333,412 段，2026-09-05 之後全補齊），重啟後約 6 週補完",
+        "- 轉文字、潤稿、來電原因：10-29 起暫停（Jin：先收 raw、看應用端需求再開），程式保留，開關 evox_analyze",
+        "- 電話對會員／訂單（成交歸因）：EVOX 沒有會員資料，要對 CRM，等 410 規則與 193 個資裁示",
+        "- Metabase 話務日報：10-23 停用中",
+        "- 響鈴紀錄的歷史：先不補（Jin 10-30，省約 70 萬次請求），每日排程照抓新的"
+      ],
+      "now": "741 天（2024-10-18～2026-10-28 全補完）；每日排程到 11-02 也核對通過，11-03 起暫停",
+      "now_date": "2026-11-01",
+      "other": [
+        "每日入庫筆數與 EVOX 一致（10/28：通聯 3,724、錄音 2,797 段全存）",
+        "錄音存成 Opus 約原檔 1/12（WAV 2.7G → 226M）",
+        "10-29 .24 對外 IP 被 EVOX 擋後，改經 Cloudflare Worker 轉發＋每 2 秒一次限速＋被擋自動煞車寄信，10-30 15:30 恢復後 0 失敗"
+      ],
+      "passed": 6,
+      "source": "evox-pg etl_run（step=fetch、status=ok 的日數）；進度頁 https://lineoa-db.liontravel.com/backfill/（內網，EVOX 段）",
+      "stale": false,
+      "versions": [],
+      "week": null
+    },
+    {
+      "acceptance": [
+        {
+          "condition": "補登 52 萬則放錯人／對話 0、重複 0、抽 300 段往上捲完整",
+          "result": "通過",
+          "where": "Chatwoot 正式站，10/29"
+        },
+        {
+          "condition": "每日排程自動補登",
+          "result": "通過",
+          "where": "10-30 02:30 首跑補 2.4 萬則、0 錯"
+        }
+      ],
+      "attachments": [
+        {
+          "filename": "2026-11-02pm-backfill-page.png",
+          "id": "14542",
+          "image": null,
+          "mime": "image/png",
+          "size": 576269
+        },
+        {
+          "filename": "report.md",
+          "id": "14658",
+          "image": null,
+          "mime": "text/markdown",
+          "size": 9508
+        }
+      ],
+      "base": "278,366 人",
+      "base_date": "2026-10-23",
+      "code": [
+        "linebiz-sync 3794dae（對帳修正",
+        "總覽頁 ee19f55 起",
+        ".24 主機 bare repo，尚無 Azure repo）",
+        "chatwoot-lion main 25ae4dc（Azure LionTech/FDE/chatwoot-lion）"
+      ],
+      "delivered": "linebiz-sync（每日增量、近三個月回補、歸戶表、內網進度網頁、Chatwoot 補登與時間校正的每日步驟，.24 共用 Airflow）；Chatwoot 往上捲依時間載入",
+      "done": null,
+      "entry": [],
+      "env": [
+        "https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/linebiz-sync"
+      ],
+      "epic": "FDEPROJECT-602",
+      "epic_summary": "門市 LINE OA 資料歸戶（需求單 26100566）",
+      "failed": 0,
+      "features": [
+        "每天自動同步 31 間門市 LINE 官方帳號後台的對話，把客人對到 LINE 會員編號（歸戶）。",
+        "近三個月的完整對話（含業務在 OA App 的回覆）補進 Chatwoot，每天自動補新的，晚到的訊息改回實際時間。"
+      ],
+      "key": "FDEPROJECT-827",
+      "label": "門市",
+      "manual": [],
+      "metric": "歸戶到 LINE 會員編號的人數（Chatwoot 補登與晚到訊息見其他成效）",
+      "new": false,
+      "not_done": [
+        "- 全部歷史回補：11-03 15:15 排入 296,041 位（半年回補 11-03 已 100% 完成），預估 11-10～11-15 補完，只進 linebiz",
+        "- LINE OA 後台可選資料 11 項（建議抓 4 項：群發、自動回應＋圖文選單、標籤／業務對照）等 Jin 決定",
+        "- 只靠名稱對到身分的約 5 萬位客人、在該門市沒有聯絡人的 3,456 則沒灌進 Chatwoot",
+        "- 圖片、檔案原檔（現在是示意圖）",
+        "- Chatwoot 顯示業務姓名（要先建業務帳號）",
+        "- 對話最後活動時間更新",
+        "- 官網會員對應（等 Sun 回覆）"
+      ],
+      "now": "280,469 人",
+      "now_date": "2026-11-03",
+      "other": [
+        "Chatwoot 補登訊息 0 → 546,731 則（10-30）",
+        "晚到客人訊息 1,272 → 0 則",
+        "真實漏收率可正確計算",
+        "門市主管在 Chatwoot 看得到業務在 OA App 怎麼回客人",
+        "近半年回補 118,998 位 100%、0 錯（11-03）",
+        "匯出檔對照錯誤率 9.5% → 0.1%",
+        "補 LINE UID 30／31 家、99.3%",
+        "回補總覽頁 https://lineoa-db.liontravel.com/backfill/"
+      ],
+      "passed": 2,
+      "source": ".24 linebiz-sync-pg core.identity_best",
+      "stale": false,
+      "versions": [],
+      "week": null
+    },
+    {
+      "acceptance": [
+        {
+          "condition": "升 1.18.0 後同題兩輪裁剪量與 token 跟 1.17.1 一致、結構化輸出／舊對話／MCP 對話編號正常",
+          "result": "通過",
+          "where": ".9 正式與測試站，10/31"
+        },
+        {
+          "condition": "正式站搬 .24 後端到端 10 項、3 個 workflow 都 succeeded",
+          "result": "通過",
+          "where": ".24，10/31"
+        },
+        {
+          "condition": "搬站後舊對話編號不報錯（LIFF 自動開新對話）",
+          "result": "通過",
+          "where": "正式 LIFF，10/31"
+        },
+        {
+          "condition": "搬站後回覆時間 → 未驗（.24 正式站尚無客人訊息，11-03 查）",
+          "result": null,
+          "where": null
+        }
+      ],
+      "attachments": [
+        {
+          "filename": "回覆時間-p50-p95-20261102.png",
+          "id": "14512",
+          "image": null,
+          "mime": "image/png",
+          "size": 74944
+        }
+      ],
+      "base": "p50 8.9 秒／p95 31.8 秒（搬站前全期 8/27～10/21，n=424）",
+      "base_date": "2026-10-21",
+      "code": [
+        "Azure Repos FDE/store-ai-assistant（dify-patch/）＋ .24 dify-lion.git 分支 lion/1.18.0"
+      ],
+      "delivered": "10/09 兩站原地升 1.17.1；10/10 上長對話整理；Weaviate 升 1.39.2 並清孤兒向量；MCP 工具清單重抓並備份；10/31 升 1.18.0（fork 自建映像 3 個減為 2 個，web 改官方映像，Langfuse 修改退休）；10/31 正式站從 .9 搬到 .24（公司網域、只限內網，測試站留 .9）；LIFF 找不到對話時自動開新對話",
+      "done": null,
+      "entry": [],
+      "env": [
+        "https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/store-ai-assistant"
+      ],
+      "epic": "FDEPROJECT-332",
+      "epic_summary": "Dify 平台與維運 階段二：升級與優化",
+      "failed": 0,
+      "features": [
+        "自建 Dify 升級到 1.17.1 再到 1.18.0，正式站搬到 .24、與測試站分機，並補上門市 AI 客服需要的功能與維運。"
+      ],
+      "key": "FDEPROJECT-885",
+      "label": "門市",
+      "manual": [],
+      "metric": "正式站 AI 回應時間 p50／p95（秒）：Dify 一輪從收到問題到答完，含查 MCP 工具，不含 LIFF 網路與畫面",
+      "new": false,
+      "not_done": [
+        "- FAQ 知識庫殘塊修正（「關於會員禮遇」只有 6 字、空答案塊）",
+        "- 換掉 Dify 的評估（10/16 方向：Captain 介面接 Dify，上線前不換）",
+        "- Dify 寄信設定（目前邀請靠手動給連結）",
+        "- brotli 仍 1.2.0（等下一版）、weaviate 1.39.13 未升、Langfuse 先不重架",
+        "- 搬 .24 後的回覆時間：等正式站有客人使用再量"
+      ],
+      "now": "搬站後無客人樣本，待真實使用後補（11-03 查 .24 正式站排除內部帳號仍 0 則）",
+      "now_date": "2026-11-03",
+      "other": [
+        "換版停機：1.18.0 原地換版約 5 分鐘（10/31 03:54～03:59），搬 .24 切換約 1 分鐘（10/31 06:09～06:10）",
+        "同題兩輪 prompt tokens 56,063（1.17.1）→ 56,389（1.18.0），裁剪量一致",
+        "回覆時間分月：9 月 p50 7.2／p95 23.7 秒（n=141）、10/1～10/30 p50 9.6／p95 32.1 秒（n=276，10 月起工具變多、飯店 API 首查較慢，推測未逐則驗證）"
+      ],
+      "passed": 3,
+      "source": "Dify 正式 app「Lion Travel 門市_Liff」messages.provider_response_latency（10/31 前 .9、之後 .24），排除內部測試帳號；附圖 回覆時間-p50-p95-20261102.png",
+      "stale": false,
+      "versions": [],
+      "week": null
+    },
+    {
+      "acceptance": [
+        {
           "condition": "Chatwoot 測試站看得到 Dify 知識庫總覽與問答列表",
           "result": "通過",
           "where": "Chatwoot 測試站，10/16"
@@ -13529,8 +13772,8 @@
         }
       ],
       "attachments": [],
-      "base": null,
-      "base_date": null,
+      "base": "0 則（知識庫只能在 Dify 後台看）",
+      "base_date": "2026-10-15",
       "code": [
         "Azure Repos FDE/chatwoot-lion 分支 feat/dify-admin（未合進 main、未上正式站）"
       ],
@@ -13549,20 +13792,20 @@
       "key": "FDEPROJECT-1050",
       "label": "門市",
       "manual": [],
-      "metric": "待 Jin 定（評估型 epic，正式站沒上，沒有使用量可量）",
+      "metric": "在 Chatwoot 裡（不用進 Dify 後台）看得到的 Dify 知識庫問答則數",
       "new": false,
       "not_done": [
         "- 正式站沒上；要不要往正式站推進併入 FDEPROJECT-423 追蹤（11-02 決定）",
         "- 這次只做知識庫的部分；AI 對話紀錄進 Chatwoot、FAQ 建議審核沒做"
       ],
-      "now": null,
-      "now_date": null,
+      "now": "1,952 則（主知識庫「雄獅知識庫」全部，可逐則看、依被查次數排序）",
+      "now_date": "2026-10-16",
       "other": [
         "知識庫品質問題第一次看得見：1,952 塊中 1,388 塊從沒被查到",
         "被查最多的「關於會員禮遇」只剩 6 個字（已列入 Dify 階段二 Deliverable FDEPROJECT-885 沒做的）"
       ],
       "passed": 1,
-      "source": null,
+      "source": "Chatwoot 測試站「Dify › 知識庫」總覽與問答列表，則數與 Dify 資料庫一致（FDEPROJECT-517、519 驗收）",
       "stale": false,
       "versions": [],
       "week": null
@@ -13596,7 +13839,7 @@
         "done_points": 72.5,
         "percent": 68,
         "total_cards": 31,
-        "total_points": 83.0,
+        "total_points": 84.75,
         "unestimated_cards": 8
       },
       "project": "CS",
@@ -13630,7 +13873,7 @@
             "hours": 1.0,
             "key": "CS-41",
             "owner": "hubertwang",
-            "result": "進行中（子任務 1/11 完成）",
+            "result": "進行中（子任務 2/11 完成）",
             "summary": "11月：Agent 機制上線與資料補齊",
             "tokens": null
           }
@@ -14014,7 +14257,7 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-332",
-      "idle_days": 1,
+      "idle_days": 0,
       "key": "FDEPROJECT-332",
       "kickoff": {
         "idle_days": 1,
@@ -14775,68 +15018,6 @@
       }
     },
     {
-      "active": true,
-      "due": null,
-      "id": "FDEPROJECT-455",
-      "idle_days": 1,
-      "key": "FDEPROJECT-455",
-      "kickoff": {
-        "idle_days": 1,
-        "key": "FDEPROJECT-456",
-        "locked_at": "2026-10-21T00:00:31.859357+08:00",
-        "modified_at": [],
-        "sections": {
-          "after": "安裝 Chrome 擴充功能，在分房處理頁按「產生 FINAL」，工具查齊並排好文字，OP 核對、填 [日期] 後貼上存檔。",
-          "before": "OP 逐頁開視窗複製到記事本，手算房數與人數，拼好後貼進 FINAL 框。",
-          "decision": null,
-          "evidence": "日本線 OP 以真實團號產生 FINAL，房數、人數、領隊、飯店與人工版本逐段一致。",
-          "next_milestone": "日本線同仁以 0.2.4 試用，依試用回報表收集回饋。",
-          "objective": "日本線 OP 在 SERP 分房處理頁按一下，自動產生 FINAL 框要貼的房數、人數、團號、添乘員與電話、每日飯店與電話傳真，不用再開多個視窗、用記事本拼湊。",
-          "why": "FINAL 的資料散在分房處理、旅館維護、飯店總覽、建議領隊、領隊資料五個頁面，OP 每團都要逐頁複製，再手算房型間數與 PAX，耗時又容易算錯。"
-        }
-      },
-      "owner": "Shira",
-      "progress": {
-        "done_cards": 12,
-        "done_points": 22.5,
-        "percent": 100,
-        "total_cards": 12,
-        "total_points": 22.5,
-        "unestimated_cards": 0
-      },
-      "project": "FDEPROJECT",
-      "stalled": false,
-      "status": "On Track",
-      "summary": "[東北亞]分房表 FINAL 一鍵產生",
-      "week": {
-        "completed_count": 2,
-        "completed_keys": [
-          "FDEPROJECT-462",
-          "FDEPROJECT-939"
-        ],
-        "hours": 2.0,
-        "roots": [
-          {
-            "hours": 1.0,
-            "key": "FDEPROJECT-462",
-            "owner": "Shira",
-            "result": "完成",
-            "summary": "收集日本線同仁試用回饋並整理待改項目",
-            "tokens": null
-          },
-          {
-            "hours": 1.0,
-            "key": "FDEPROJECT-939",
-            "owner": "Shira",
-            "result": "完成",
-            "summary": "整理分房表 FINAL 插件的完成成果（操作錄影、對照截圖、使用數據）附在 Jira",
-            "tokens": null
-          }
-        ],
-        "tokens": null
-      }
-    },
-    {
       "active": false,
       "due": null,
       "id": "FDEPROJECT-463",
@@ -15026,60 +15207,6 @@
         "completed_keys": [],
         "hours": 0.0,
         "roots": [],
-        "tokens": null
-      }
-    },
-    {
-      "active": true,
-      "due": null,
-      "id": "FDEPROJECT-525",
-      "idle_days": 0,
-      "key": "FDEPROJECT-525",
-      "kickoff": {
-        "idle_days": 1,
-        "key": "FDEPROJECT-526",
-        "locked_at": "2026-10-21T00:00:31.859357+08:00",
-        "modified_at": [],
-        "sections": {
-          "after": "在團產列表勾選藍色小腳丫的團、選分店，按「產生手配書」，工具查齊並下載填好的 Excel；OP 只補電話、餐標，並留下實際入住的飯店。",
-          "before": "OP 開多個視窗逐項抄到空白手配書，手算大人與兒童人數、找來店日、調整天數的列。",
-          "decision": null,
-          "evidence": "日本線 OP 以真實團號產生，人數、航班、日程、來店日與人工版本一致。",
-          "next_milestone": "OP 確認分店資料表後更新 7 個地區線，交日本線試用。",
-          "objective": "日本線 OP 在 SERP 團產列表勾選要做的團，一次產生手配書 Excel（一團一份），不用再逐項抄進空白手配書。",
-          "why": "手配書的團號、團名、人數、航班、每日行程、餐食、住宿、來店日散在團產列表、聯結→分房表、小飛機、官網行程四個地方，OP 每團都要逐頁抄進範本，天數不同還要自己調列，耗時又容易抄錯。"
-        }
-      },
-      "owner": "Shira",
-      "progress": {
-        "done_cards": 11,
-        "done_points": 24.0,
-        "percent": 100,
-        "total_cards": 11,
-        "total_points": 24.0,
-        "unestimated_cards": 0
-      },
-      "project": "FDEPROJECT",
-      "stalled": false,
-      "status": "On Track",
-      "summary": "[東北亞]手配書一鍵產生",
-      "week": {
-        "completed_count": 2,
-        "completed_keys": [
-          "FDEPROJECT-754",
-          "FDEPROJECT-773"
-        ],
-        "hours": 1.5,
-        "roots": [
-          {
-            "hours": 1.5,
-            "key": "FDEPROJECT-661",
-            "owner": "Shira",
-            "result": "完成",
-            "summary": "收集手配試用回報並依回報調整手配書",
-            "tokens": null
-          }
-        ],
         "tokens": null
       }
     },
@@ -15572,7 +15699,7 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-653",
-      "idle_days": 1,
+      "idle_days": 0,
       "key": "FDEPROJECT-653",
       "kickoff": {
         "idle_days": 1,
@@ -15592,10 +15719,10 @@
       "owner": "王碩緯",
       "progress": {
         "done_cards": 7,
-        "done_points": 3.5,
+        "done_points": 10.0,
         "percent": 100,
         "total_cards": 7,
-        "total_points": 3.5,
+        "total_points": 10.0,
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
@@ -16110,7 +16237,7 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-761",
-      "idle_days": 5,
+      "idle_days": 0,
       "key": "FDEPROJECT-761",
       "kickoff": {
         "idle_days": 1,
@@ -16130,10 +16257,10 @@
       "owner": "王碩緯",
       "progress": {
         "done_cards": 5,
-        "done_points": 2.25,
+        "done_points": 6.5,
         "percent": 83,
         "total_cards": 6,
-        "total_points": 2.75,
+        "total_points": 8.0,
         "unestimated_cards": 0
       },
       "project": "FDEPROJECT",
@@ -16149,10 +16276,10 @@
           "FDEPROJECT-841",
           "FDEPROJECT-842"
         ],
-        "hours": 2.25,
+        "hours": 6.5,
         "roots": [
           {
-            "hours": 0.25,
+            "hours": 0.5,
             "key": "FDEPROJECT-837",
             "owner": "王碩緯",
             "result": "完成",
@@ -16160,7 +16287,7 @@
             "tokens": null
           },
           {
-            "hours": 0.5,
+            "hours": 1.5,
             "key": "FDEPROJECT-838",
             "owner": "王碩緯",
             "result": "完成",
@@ -16168,7 +16295,7 @@
             "tokens": null
           },
           {
-            "hours": 0.5,
+            "hours": 1.5,
             "key": "FDEPROJECT-840",
             "owner": "王碩緯",
             "result": "完成",
@@ -16176,7 +16303,7 @@
             "tokens": null
           },
           {
-            "hours": 0.5,
+            "hours": 1.5,
             "key": "FDEPROJECT-841",
             "owner": "王碩緯",
             "result": "完成",
@@ -16184,7 +16311,7 @@
             "tokens": null
           },
           {
-            "hours": 0.5,
+            "hours": 1.5,
             "key": "FDEPROJECT-842",
             "owner": "王碩緯",
             "result": "完成",
@@ -16297,7 +16424,7 @@
       "active": true,
       "due": null,
       "id": "FDEPROJECT-786",
-      "idle_days": 1,
+      "idle_days": 0,
       "key": "FDEPROJECT-786",
       "kickoff": {
         "idle_days": 5,
@@ -16404,7 +16531,7 @@
       "active": false,
       "due": null,
       "id": "FDEPROJECT-789",
-      "idle_days": 1,
+      "idle_days": 0,
       "key": "FDEPROJECT-789",
       "kickoff": {
         "idle_days": 5,
@@ -16834,15 +16961,15 @@
       "progress": {
         "done_cards": 0,
         "done_points": 0.0,
-        "percent": null,
-        "total_cards": 0,
-        "total_points": 0.0,
-        "unestimated_cards": 0
+        "percent": 0,
+        "total_cards": 4,
+        "total_points": 0.25,
+        "unestimated_cards": 3
       },
       "project": "FDEPROJECT",
       "stalled": false,
       "status": "On Track",
-      "summary": "[國旅] 導領費用自動導入支單",
+      "summary": "[國旅] 導領費用自動核算與導入支單",
       "week": {
         "completed_count": 0,
         "completed_keys": [],
@@ -16913,7 +17040,7 @@
     "FDEPROJECT-117",
     "FDEPROJECT-118"
   ],
-  "generated_at": "2026-11-04T06:21:10.367028+08:00",
+  "generated_at": "2026-11-04T09:22:08.959253+08:00",
   "health": [
     {
       "completed": 8,
@@ -17012,10 +17139,10 @@
       "epics_new": 6,
       "epics_per_person_week": 0.36,
       "explore_people": 6,
-      "explore_share": 0.2675,
-      "hours": 97.0,
-      "hours_per_card": 1.0,
-      "new_hours_share": 0.4845,
+      "explore_share": 0.2393,
+      "hours": 103.5,
+      "hours_per_card": 1.1,
+      "new_hours_share": 0.5169,
       "new_same_day": 5,
       "person_days": 28,
       "roster": 7,
@@ -17030,10 +17157,10 @@
       "epics_new": 7,
       "epics_per_person_week": 0.29,
       "explore_people": 7,
-      "explore_share": 0.0954,
-      "hours": 230.3,
+      "explore_share": 0.0646,
+      "hours": 234.55,
       "hours_per_card": 1.5,
-      "new_hours_share": 0.1967,
+      "new_hours_share": 0.2113,
       "new_same_day": 5,
       "person_days": 35,
       "roster": 7,
@@ -17072,7 +17199,7 @@
       "tokens": null
     },
     {
-      "current_state": "進行中，子任務 1/11 完成",
+      "current_state": "進行中，子任務 2/11 完成",
       "group": "CS-25",
       "hours": null,
       "idle_days": 1,
@@ -17102,21 +17229,7 @@
     {
       "current_state": "進行中",
       "group": "CS-25",
-      "hours": 0.5,
-      "idle_days": 0,
-      "key": "CS-47",
-      "leaf": true,
-      "next": null,
-      "owner": "hubertwang",
-      "project": "CS-25 歐洲地接社-房產品資料彙整",
-      "root": "CS-41",
-      "summary": "PR 自動測試與合併（PR #1–#5 及 11 月分支）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "CS-25",
-      "hours": 8.5,
+      "hours": 9.25,
       "idle_days": 0,
       "key": "CS-48",
       "leaf": true,
@@ -17284,8 +17397,8 @@
     {
       "current_state": "進行中",
       "group": "FDEPROJECT-761",
-      "hours": 0.5,
-      "idle_days": 5,
+      "hours": 1.5,
+      "idle_days": 0,
       "key": "FDEPROJECT-839",
       "leaf": true,
       "next": null,
@@ -17307,314 +17420,6 @@
       "project": "FDEPROJECT-552 建置 SERP 內網 MCP：員工在 AI 工具用本人帳號查辦 SERP",
       "root": "FDEPROJECT-881",
       "summary": "製作 SERP 內網 MCP 推廣宣傳片 v1",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-423",
-      "hours": 0.25,
-      "idle_days": 2,
-      "key": "FDEPROJECT-889",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-423 門市 AI 客服 階段三：全省門市導入",
-      "root": "FDEPROJECT-889",
-      "summary": "建立 chatwoot-lion 的開發環境定義（fde-devcontainers）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-602",
-      "hours": 0.25,
-      "idle_days": 2,
-      "key": "FDEPROJECT-890",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-602 門市 LINE OA 資料歸戶（需求單 26100566）",
-      "root": "FDEPROJECT-890",
-      "summary": "建立 linebiz-sync 的開發環境定義（fde-devcontainers）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-399",
-      "hours": 0.25,
-      "idle_days": 2,
-      "key": "FDEPROJECT-891",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-399 串接板橋門市號碼機取號與叫號到 LINE",
-      "root": "FDEPROJECT-891",
-      "summary": "建立 store-queue-line 的開發環境定義（fde-devcontainers）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-497",
-      "hours": 0.25,
-      "idle_days": 2,
-      "key": "FDEPROJECT-892",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-497 EVOX 通話分析 階段二：自動化上線與每日排程",
-      "root": "FDEPROJECT-892",
-      "summary": "建立 voc-evox-analysis 的開發環境定義（fde-devcontainers）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-552",
-      "hours": 0.25,
-      "idle_days": 2,
-      "key": "FDEPROJECT-893",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-552 建置 SERP 內網 MCP：員工在 AI 工具用本人帳號查辦 SERP",
-      "root": "FDEPROJECT-893",
-      "summary": "建立 serpgogo 的開發環境定義（fde-devcontainers）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-786",
-      "hours": 0.25,
-      "idle_days": 2,
-      "key": "FDEPROJECT-894",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-786 Lily 智能客服資料收集 階段一：後台對話每日入庫",
-      "root": "FDEPROJECT-894",
-      "summary": "建立 lily 的開發環境定義（fde-devcontainers）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-423",
-      "hours": 0.25,
-      "idle_days": 2,
-      "key": "FDEPROJECT-895",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-423 門市 AI 客服 階段三：全省門市導入",
-      "root": "FDEPROJECT-895",
-      "summary": "建立 store-ai-assistant 的開發環境定義（fde-devcontainers）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-677",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-947",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-677 門市 LINE 客人業務歸屬：官網下單業績回到門市業務",
-      "root": "FDEPROJECT-947",
-      "summary": "確認官網送單時決定訂單業務的方式與訪客下單限制",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-677",
-      "hours": 0.5,
-      "idle_days": 1,
-      "key": "FDEPROJECT-948",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-677 門市 LINE 客人業務歸屬：官網下單業績回到門市業務",
-      "root": "FDEPROJECT-948",
-      "summary": "實測 LINE 內登入會員後預填門市業務到官網旅客頁",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-677",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-949",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-677 門市 LINE 客人業務歸屬：官網下單業績回到門市業務",
-      "root": "FDEPROJECT-949",
-      "summary": "擬定請平台組確認訂單綁業務的訊息並更新說明圖",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-950",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-950",
-      "summary": "修正 LINE 內商品連結跳出雄獅 App 的問題（測試站）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 1.0,
-      "idle_days": 0,
-      "key": "FDEPROJECT-951",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-951",
-      "summary": "設計 LINE 內報名流程的畫面",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 1.0,
-      "idle_days": 0,
-      "key": "FDEPROJECT-952",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-952",
-      "summary": "撰寫 LINE 內報名 v1 開發計畫",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-789",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-953",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-789 Chatwoot 依門市班表派單 階段二：自動派單（板橋先試）",
-      "root": "FDEPROJECT-953",
-      "summary": "補 Chatwoot 派單成效指標基準值與測試站截圖",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-966",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-954",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-966 Chatwoot 門市正式上線：31 店帳號與上線準備",
-      "root": "FDEPROJECT-954",
-      "summary": "盤點 Chatwoot 門市正式上線缺口並評估寄信改用公司信箱",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-966",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-955",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-966 Chatwoot 門市正式上線：31 店帳號與上線準備",
-      "root": "FDEPROJECT-955",
-      "summary": "實測 LINE 機器人送出的圖片網址怎麼被抓、會不會留存",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-332",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-956",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-332 Dify 平台與維運 階段二：升級與優化",
-      "root": "FDEPROJECT-956",
-      "summary": "評估 Dify 1.18 新型知識庫（KnowledgeFS）並確認舊式知識庫生效",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-332",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-957",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-332 Dify 平台與維運 階段二：升級與優化",
-      "root": "FDEPROJECT-957",
-      "summary": "統計 AI 客服回覆時間 p50／p95",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-929",
-      "hours": 0.75,
-      "idle_days": 1,
-      "key": "FDEPROJECT-958",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-929 FDE 自有主機維運與資安修補 階段二",
-      "root": "FDEPROJECT-958",
-      "summary": "清理 .9 主機空間並移除 filebrowser 對外入口",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-602",
-      "hours": 0.75,
-      "idle_days": 1,
-      "key": "FDEPROJECT-959",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-602 門市 LINE OA 資料歸戶（需求單 26100566）",
-      "root": "FDEPROJECT-959",
-      "summary": "回補總覽頁加純機器人段與可選資料區",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-399",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-960",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-399 串接板橋門市號碼機取號與叫號到 LINE",
-      "root": "FDEPROJECT-960",
-      "summary": "驗收 store-queue 子網域與 repo 聯絡單並補送內網 DNS 聯絡單",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-552",
-      "hours": 0.25,
-      "idle_days": 1,
-      "key": "FDEPROJECT-961",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-552 建置 SERP 內網 MCP：員工在 AI 工具用本人帳號查辦 SERP",
-      "root": "FDEPROJECT-961",
-      "summary": "新增 SERP MCP 作廢聯絡單與讀公告附件工具",
       "tokens": null
     },
     {
@@ -17773,356 +17578,6 @@
     },
     {
       "current_state": "進行中",
-      "group": "FDEPROJECT-497",
-      "hours": 0.5,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1020",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-497 EVOX 通話分析 階段二：自動化上線與每日排程",
-      "root": "FDEPROJECT-1020",
-      "summary": "暫停 EVOX 排程並回覆廠商下載與白名單說明",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-602",
-      "hours": 0.5,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1021",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-602 門市 LINE OA 資料歸戶（需求單 26100566）",
-      "root": "FDEPROJECT-1021",
-      "summary": "讓回補總覽頁與告警支援「暫停中」狀態（EVOX 不算落後、不告警）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-399",
-      "hours": 0.5,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1022",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-399 串接板橋門市號碼機取號與叫號到 LINE",
-      "root": "FDEPROJECT-1022",
-      "summary": "整理號碼機廠商確認書重點並驗算 LINE 推播費用",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-966",
-      "hours": 1.0,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1023",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-966 Chatwoot 門市正式上線：31 店帳號與上線準備",
-      "root": "FDEPROJECT-1023",
-      "summary": "準備 11-04 門市主管約談：議題、推播花費估算與下一步安排",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-602",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1024",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-602 門市 LINE OA 資料歸戶（需求單 26100566）",
-      "root": "FDEPROJECT-1024",
-      "summary": "盤點門市 LINE 對話資料庫結構並回覆 CRM 資料位置",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-423",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1025",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-423 門市 AI 客服 階段三：全省門市導入",
-      "root": "FDEPROJECT-1025",
-      "summary": "查 11-02 門市 LINE 訊息漏收原因（比對 LINE 送達失敗紀錄與入口紀錄）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-602",
-      "hours": 1.0,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1026",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-602 門市 LINE OA 資料歸戶（需求單 26100566）",
-      "root": "FDEPROJECT-1026",
-      "summary": "復盤半年回補並對匯出檔驗收，修正匯出檔↔客人對照規則並上線，排入全部歷史回補",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-399",
-      "hours": 0.5,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1027",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-399 串接板橋門市號碼機取號與叫號到 LINE",
-      "root": "FDEPROJECT-1027",
-      "summary": "重算號碼機改走 LINE 推播的費用（依各門市 OA 實際方案）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-399",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1028",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-399 串接板橋門市號碼機取號與叫號到 LINE",
-      "root": "FDEPROJECT-1028",
-      "summary": "評估號碼機全走 LINE 的各門市 OA 訊息量與費用",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-966",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1029",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-966 Chatwoot 門市正式上線：31 店帳號與上線準備",
-      "root": "FDEPROJECT-1029",
-      "summary": "清掉兩站多餘的 LIFF 測試收件匣，影子收件匣改用真實業務帳號",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-423",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1030",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-423 門市 AI 客服 階段三：全省門市導入",
-      "root": "FDEPROJECT-1030",
-      "summary": "評估轉真人「找專員」摘要與 LIFF 資料存放的改進方向",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-423",
-      "hours": 1.5,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1031",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-423 門市 AI 客服 階段三：全省門市導入",
-      "root": "FDEPROJECT-1031",
-      "summary": "改讓行銷活動入口向官網現查，拿掉要人維護的活動登記表",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-423",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1032",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-423 門市 AI 客服 階段三：全省門市導入",
-      "root": "FDEPROJECT-1032",
-      "summary": "清除 LIFF 沒在用的舊程式與設定",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-552",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1033",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-552 建置 SERP 內網 MCP：員工在 AI 工具用本人帳號查辦 SERP",
-      "root": "FDEPROJECT-1033",
-      "summary": "擴大 SERP MCP 簽核單清單到最多查兩年（90 天分段查、照申請日排序）",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-552",
-      "hours": 0.5,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1034",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-552 建置 SERP 內網 MCP：員工在 AI 工具用本人帳號查辦 SERP",
-      "root": "FDEPROJECT-1034",
-      "summary": "讓 SERP MCP 同時使用正式機與測試機（工具加 env 參數、雙 Session 保活）並部署",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-677",
-      "hours": 0.75,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1035",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-677 門市 LINE 客人業務歸屬：官網下單業績回到門市業務",
-      "root": "FDEPROJECT-1035",
-      "summary": "唯讀查詢 ordrerp：員工接單設定、訂單接單業務、改業務入口",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-929",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1036",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-929 FDE 自有主機維運與資安修補 階段二",
-      "root": "FDEPROJECT-1036",
-      "summary": "查 CrowdStrike 警示 LIONTRAVEL-ALERT-20261022-0003 原因並提供回覆草稿",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-929",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1037",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-929 FDE 自有主機維運與資安修補 階段二",
-      "root": "FDEPROJECT-1037",
-      "summary": "驗收 SERP 單 26101743（.9 硬碟 500G）、26101847（.7 CPU 4 核），並開放 SERP MCP 協作",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 0.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1038",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-1038",
-      "summary": "搬移 LINE 報名測試站到 liontravel.com 網域",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 1.5,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1039",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-1039",
-      "summary": "開發 LINE 內報名 v1＋v2 並部署測試站",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 0.75,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1040",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-1040",
-      "summary": "修正 LINE 內報名手機實測發現的問題",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 0.75,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1041",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-1041",
-      "summary": "查清楚 LINE 內登入跨瀏覽器與白畫面",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 0.75,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1042",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-1042",
-      "summary": "評估各團型能否在 LINE 內報名與內部價格 API",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 1.0,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1043",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-1043",
-      "summary": "讓 LINE 內報名支援多方案、團體自由行、主題團、郵輪",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 0.5,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1044",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-1044",
-      "summary": "開放會員限購團與旅天下團在 LINE 內報名",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
       "group": "FDEPROJECT-963",
       "hours": 0.75,
       "idle_days": 0,
@@ -18134,53 +17589,11 @@
       "root": "FDEPROJECT-1045",
       "summary": "讓 LINE 內報名支援單數人數與 AI 帶入方案",
       "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 0.5,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1046",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-1046",
-      "summary": "核對手機實測錄影並整理對外說明範圍",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-677",
-      "hours": 1.25,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1047",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-677 門市 LINE 客人業務歸屬：官網下單業績回到門市業務",
-      "root": "FDEPROJECT-1047",
-      "summary": "研究官網送單決定業務的流程與非會員算業績的解法",
-      "tokens": null
-    },
-    {
-      "current_state": "進行中",
-      "group": "FDEPROJECT-963",
-      "hours": 0.75,
-      "idle_days": 0,
-      "key": "FDEPROJECT-1048",
-      "leaf": true,
-      "next": null,
-      "owner": "陳勁佑 Jincoco",
-      "project": "FDEPROJECT-963 LINE 內代客報名 v1：在 LINE 裡完成官網報名並算給門市業務",
-      "root": "FDEPROJECT-1048",
-      "summary": "評估 LINE 內報名上正式站是否需要自建資料表",
-      "tokens": null
     }
   ],
   "kpis": {
     "projects": {
-      "now": 28,
+      "now": 26,
       "prev": 21
     },
     "stalled": {
@@ -18267,6 +17680,18 @@
     },
     {
       "cumulative": {
+        "hours": 26.0,
+        "unestimated": 0
+      },
+      "epics": 3,
+      "label": "國旅",
+      "week": {
+        "hours": 6.5,
+        "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
         "hours": 20.25,
         "unestimated": 0
       },
@@ -18286,18 +17711,6 @@
       "label": "入境",
       "week": {
         "hours": 0.25,
-        "unestimated": 0
-      }
-    },
-    {
-      "cumulative": {
-        "hours": 15.25,
-        "unestimated": 0
-      },
-      "epics": 3,
-      "label": "國旅",
-      "week": {
-        "hours": 2.25,
         "unestimated": 0
       }
     },
@@ -19252,7 +18665,7 @@
     },
     {
       "completed": 6,
-      "hours": 2.5,
+      "hours": 6.75,
       "owner": "王碩緯",
       "tokens": null
     },
@@ -19673,116 +19086,16 @@
       },
       "in_progress": {
         "ages": {
-          "FDEPROJECT-1020": 0,
-          "FDEPROJECT-1021": 0,
-          "FDEPROJECT-1022": 0,
-          "FDEPROJECT-1023": 0,
-          "FDEPROJECT-1024": 0,
-          "FDEPROJECT-1025": 0,
-          "FDEPROJECT-1026": 0,
-          "FDEPROJECT-1027": 0,
-          "FDEPROJECT-1028": 0,
-          "FDEPROJECT-1029": 0,
-          "FDEPROJECT-1030": 0,
-          "FDEPROJECT-1031": 0,
-          "FDEPROJECT-1032": 0,
-          "FDEPROJECT-1033": 0,
-          "FDEPROJECT-1034": 0,
-          "FDEPROJECT-1035": 0,
-          "FDEPROJECT-1036": 0,
-          "FDEPROJECT-1037": 0,
-          "FDEPROJECT-1038": 0,
-          "FDEPROJECT-1039": 0,
-          "FDEPROJECT-1040": 0,
-          "FDEPROJECT-1041": 0,
-          "FDEPROJECT-1042": 0,
-          "FDEPROJECT-1043": 0,
-          "FDEPROJECT-1044": 0,
           "FDEPROJECT-1045": 0,
-          "FDEPROJECT-1046": 0,
-          "FDEPROJECT-1047": 0,
-          "FDEPROJECT-1048": 0,
           "FDEPROJECT-405": 22,
-          "FDEPROJECT-881": 4,
-          "FDEPROJECT-889": 2,
-          "FDEPROJECT-890": 2,
-          "FDEPROJECT-891": 2,
-          "FDEPROJECT-892": 2,
-          "FDEPROJECT-893": 2,
-          "FDEPROJECT-894": 2,
-          "FDEPROJECT-895": 2,
-          "FDEPROJECT-947": 1,
-          "FDEPROJECT-948": 1,
-          "FDEPROJECT-949": 1,
-          "FDEPROJECT-950": 1,
-          "FDEPROJECT-951": 1,
-          "FDEPROJECT-952": 1,
-          "FDEPROJECT-953": 1,
-          "FDEPROJECT-954": 1,
-          "FDEPROJECT-955": 1,
-          "FDEPROJECT-956": 1,
-          "FDEPROJECT-957": 1,
-          "FDEPROJECT-958": 1,
-          "FDEPROJECT-959": 1,
-          "FDEPROJECT-960": 1,
-          "FDEPROJECT-961": 1
+          "FDEPROJECT-881": 4
         },
-        "count": 53,
-        "hours": 27.5,
+        "count": 3,
+        "hours": 2.25,
         "keys": [
           "FDEPROJECT-405",
           "FDEPROJECT-881",
-          "FDEPROJECT-889",
-          "FDEPROJECT-890",
-          "FDEPROJECT-891",
-          "FDEPROJECT-892",
-          "FDEPROJECT-893",
-          "FDEPROJECT-894",
-          "FDEPROJECT-895",
-          "FDEPROJECT-947",
-          "FDEPROJECT-948",
-          "FDEPROJECT-949",
-          "FDEPROJECT-950",
-          "FDEPROJECT-951",
-          "FDEPROJECT-952",
-          "FDEPROJECT-953",
-          "FDEPROJECT-954",
-          "FDEPROJECT-955",
-          "FDEPROJECT-956",
-          "FDEPROJECT-957",
-          "FDEPROJECT-958",
-          "FDEPROJECT-959",
-          "FDEPROJECT-960",
-          "FDEPROJECT-961",
-          "FDEPROJECT-1020",
-          "FDEPROJECT-1021",
-          "FDEPROJECT-1022",
-          "FDEPROJECT-1023",
-          "FDEPROJECT-1024",
-          "FDEPROJECT-1025",
-          "FDEPROJECT-1026",
-          "FDEPROJECT-1027",
-          "FDEPROJECT-1028",
-          "FDEPROJECT-1029",
-          "FDEPROJECT-1030",
-          "FDEPROJECT-1031",
-          "FDEPROJECT-1032",
-          "FDEPROJECT-1033",
-          "FDEPROJECT-1034",
-          "FDEPROJECT-1035",
-          "FDEPROJECT-1036",
-          "FDEPROJECT-1037",
-          "FDEPROJECT-1038",
-          "FDEPROJECT-1039",
-          "FDEPROJECT-1040",
-          "FDEPROJECT-1041",
-          "FDEPROJECT-1042",
-          "FDEPROJECT-1043",
-          "FDEPROJECT-1044",
-          "FDEPROJECT-1045",
-          "FDEPROJECT-1046",
-          "FDEPROJECT-1047",
-          "FDEPROJECT-1048"
+          "FDEPROJECT-1045"
         ],
         "unestimated": 0
       },
@@ -20431,17 +19744,15 @@
           "CS-39": 6,
           "CS-40": 1,
           "CS-43": 1,
-          "CS-47": 0,
           "CS-48": 0,
           "CS-50": 0
         },
-        "count": 6,
-        "hours": 10.5,
+        "count": 5,
+        "hours": 10.75,
         "keys": [
           "CS-39",
           "CS-40",
           "CS-43",
-          "CS-47",
           "CS-48",
           "CS-50"
         ],
@@ -20758,7 +20069,7 @@
           "FDEPROJECT-842",
           "FDEPROJECT-920"
         ],
-        "hours": 31.5,
+        "hours": 42.25,
         "tokens": null
       },
       "in_progress": {
@@ -20766,7 +20077,7 @@
           "FDEPROJECT-839": 5
         },
         "count": 1,
-        "hours": 0.5,
+        "hours": 1.5,
         "keys": [
           "FDEPROJECT-839"
         ],
@@ -20789,12 +20100,12 @@
       },
       "shares": [
         [
-          "入境",
-          0.5159
+          "國旅",
+          0.6154
         ],
         [
-          "國旅",
-          0.4841
+          "入境",
+          0.3846
         ]
       ],
       "trend": [
@@ -20837,7 +20148,7 @@
           "FDEPROJECT-842",
           "FDEPROJECT-920"
         ],
-        "hours": 2.5,
+        "hours": 6.75,
         "tokens": null
       }
     },
@@ -21840,7 +21151,7 @@
     },
     {
       "cumulative": {
-        "hours": 3.5,
+        "hours": 10.0,
         "people": [
           "王碩緯"
         ],
@@ -21997,7 +21308,7 @@
     },
     {
       "cumulative": {
-        "hours": 2.25,
+        "hours": 6.5,
         "people": [
           "王碩緯"
         ],
@@ -22009,7 +21320,7 @@
       "key": "FDEPROJECT-761",
       "summary": "[國旅]導領資料自動帶入車單系統",
       "week": {
-        "hours": 2.25,
+        "hours": 6.5,
         "people": [
           "王碩緯"
         ],
@@ -22137,8 +21448,8 @@
   "token_source": false,
   "totals": {
     "completed": 163,
-    "hours": 230.3,
-    "projects": 28,
+    "hours": 234.55,
+    "projects": 26,
     "stalled": 4,
     "tokens": null,
     "unestimated_completed": 7

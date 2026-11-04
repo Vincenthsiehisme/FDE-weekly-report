@@ -1,9 +1,9 @@
 {
   "counts": {
     "CS": 49,
-    "FDEPROJECT": 1037
+    "FDEPROJECT": 1041
   },
-  "fetched_at": "2026-11-04T06:21:10.367028+08:00",
+  "fetched_at": "2026-11-04T09:22:08.959253+08:00",
   "issues": [
     {
       "assignee": "hubertwang",
@@ -1020,16 +1020,16 @@
       "level": -1,
       "moved_in": null,
       "parent": "CS-41",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": true,
       "project": "CS",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T21:11:29.983000+00:00",
+      "resolved": "2026-11-04T06:50:28.248+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-03T22:50:28.263000+00:00",
       "summary": "PR 自動測試與合併（PR #1–#5 及 11 月分支）",
       "type": "子任務",
-      "updated": "2026-11-04T05:11:29.983+0800"
+      "updated": "2026-11-04T06:50:28.263+0800"
     },
     {
       "assignee": "hubertwang",
@@ -1040,7 +1040,7 @@
       "level": -1,
       "moved_in": null,
       "parent": "CS-41",
-      "points": 8.5,
+      "points": 9.25,
       "progress_seen": true,
       "project": "CS",
       "resolved": null,
@@ -1049,7 +1049,7 @@
       "status_since": "2026-11-03T15:27:55.778000+00:00",
       "summary": "亞非線地接社設定檔",
       "type": "子任務",
-      "updated": "2026-11-04T05:23:40.671+0800"
+      "updated": "2026-11-04T07:31:16.267+0800"
     },
     {
       "assignee": "hubertwang",
@@ -11506,12 +11506,12 @@
       "progress_seen": null,
       "project": "FDEPROJECT",
       "resolved": null,
-      "status": "進行中",
+      "status": "審核中",
       "status_category": "indeterminate",
       "status_since": null,
       "summary": "Dify 平台與維運 階段二：升級與優化",
       "type": "大型工作",
-      "updated": "2026-10-20T17:16:05.952+0800"
+      "updated": "2026-11-04T09:11:20.094+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -14889,13 +14889,13 @@
       "points": null,
       "progress_seen": null,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
+      "resolved": "2026-11-04T08:56:38.908+0800",
+      "status": "完成",
+      "status_category": "done",
       "status_since": null,
       "summary": "[東北亞]分房表 FINAL 一鍵產生",
       "type": "大型工作",
-      "updated": "2026-11-03T16:59:09.696+0800"
+      "updated": "2026-11-04T08:56:38.924+0800"
     },
     {
       "assignee": "Shira",
@@ -15871,12 +15871,12 @@
       "progress_seen": null,
       "project": "FDEPROJECT",
       "resolved": null,
-      "status": "進行中",
+      "status": "審核中",
       "status_category": "indeterminate",
       "status_since": null,
       "summary": "EVOX 通話分析 階段二：自動化上線與每日排程",
       "type": "大型工作",
-      "updated": "2026-10-29T17:28:41.285+0800"
+      "updated": "2026-11-04T09:11:25.078+0800"
     },
     {
       "assignee": null,
@@ -16610,13 +16610,13 @@
       "points": null,
       "progress_seen": null,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "審核中",
-      "status_category": "indeterminate",
+      "resolved": "2026-11-04T08:54:23.507+0800",
+      "status": "完成",
+      "status_category": "done",
       "status_since": null,
       "summary": "[東北亞]手配書一鍵產生",
       "type": "大型工作",
-      "updated": "2026-11-03T17:49:00.421+0800"
+      "updated": "2026-11-04T08:54:31.735+0800"
     },
     {
       "assignee": "Shira",
@@ -18820,12 +18820,12 @@
       "progress_seen": null,
       "project": "FDEPROJECT",
       "resolved": null,
-      "status": "進行中",
+      "status": "審核中",
       "status_category": "indeterminate",
       "status_since": null,
       "summary": "門市 LINE OA 資料歸戶（需求單 26100566）",
       "type": "大型工作",
-      "updated": "2026-10-20T17:01:06.952+0800"
+      "updated": "2026-11-04T09:11:22.442+0800"
     },
     {
       "assignee": null,
@@ -20722,7 +20722,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-653",
-      "points": 0.25,
+      "points": 0.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-21T18:45:28.393+0800",
@@ -20731,7 +20731,7 @@
       "status_since": "2026-10-21T10:45:28.416000+00:00",
       "summary": "SERP航班資料擷取與操作入口建置",
       "type": "任務",
-      "updated": "2026-10-22T07:56:44.226+0800"
+      "updated": "2026-11-04T08:12:39.750+0800"
     },
     {
       "assignee": "王碩緯",
@@ -20744,7 +20744,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-653",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-21T18:48:47.570+0800",
@@ -20753,7 +20753,7 @@
       "status_since": "2026-10-21T10:48:47.594000+00:00",
       "summary": "立榮航空航班時刻自動查詢與比對",
       "type": "任務",
-      "updated": "2026-10-22T07:57:11.929+0800"
+      "updated": "2026-11-04T08:12:31.948+0800"
     },
     {
       "assignee": "王碩緯",
@@ -20766,7 +20766,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-653",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-22T07:37:40.160+0800",
@@ -20775,7 +20775,7 @@
       "status_since": "2026-10-21T23:37:40.183000+00:00",
       "summary": "華信航空跨分頁查詢與航班資料去重",
       "type": "任務",
-      "updated": "2026-10-22T07:57:36.346+0800"
+      "updated": "2026-11-04T08:12:23.763+0800"
     },
     {
       "assignee": "王碩緯",
@@ -20788,7 +20788,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-653",
-      "points": 0.25,
+      "points": 1.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-22T08:07:16.768+0800",
@@ -20797,7 +20797,7 @@
       "status_since": "2026-10-22T00:07:16.790000+00:00",
       "summary": "整團航班一鍵查詢、航班異動判斷與 SERP 自動回寫",
       "type": "任務",
-      "updated": "2026-10-22T08:07:16.790+0800"
+      "updated": "2026-11-04T08:12:12.063+0800"
     },
     {
       "assignee": "王碩緯",
@@ -20810,7 +20810,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-653",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-22T08:00:16.809+0800",
@@ -20819,7 +20819,7 @@
       "status_since": "2026-10-22T00:00:16.832000+00:00",
       "summary": "SERP 自動存檔、結果確認與互動流程優化",
       "type": "任務",
-      "updated": "2026-10-22T08:00:32.149+0800"
+      "updated": "2026-11-04T08:11:45.712+0800"
     },
     {
       "assignee": "王碩緯",
@@ -20832,7 +20832,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-653",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-22T17:11:30.401+0800",
@@ -20841,7 +20841,7 @@
       "status_since": "2026-10-22T09:11:30.422000+00:00",
       "summary": "航班異動Q留言通知",
       "type": "任務",
-      "updated": "2026-10-22T17:11:36.490+0800"
+      "updated": "2026-11-04T08:11:35.030+0800"
     },
     {
       "assignee": "Shira",
@@ -20920,7 +20920,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-653",
-      "points": 1.0,
+      "points": 2.0,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-22T17:19:01.025+0800",
@@ -20929,7 +20929,7 @@
       "status_since": "2026-10-22T09:19:01.048000+00:00",
       "summary": "多情境測試功能完整性",
       "type": "任務",
-      "updated": "2026-11-02T09:07:52.683+0800"
+      "updated": "2026-11-04T08:11:27.118+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -25996,15 +25996,15 @@
         "description": [
           "Acceptance：試跑 10/25、10/18 全步驟核對通過 → 通過，.24，10/29；10/28 每日排程核對通過 → 通過，.24，10/29；回補遇錯跳下一天（假失敗日測試）→ 通過，.24，10/29；自動煞車（假連線錯誤／429）→ 通過，.24，10/30；經 Worker 補跑 10/29 核對 → 通過，.24，10/30；瀏覽器登入經 ml-02 代理 → 通過，.24，10/30",
           "Code：Azure DevOps LionTech/FDE/voc-evox-analysis 分支 refactor-voc：8d70dd9、8a4b430、e42cb58、fa9093f、5dd64a9、c0c54da",
-          "Env：https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/voc-evox-analysis（資料夾待建）"
+          "Env：https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/voc-evox-analysis"
         ],
         "features": "EVOX 直售 CallCenter（5 站）的話務原始資料每天自動收進雄獅自己的資料庫：通聯（撥入撥出全部狀態）、話後滿意度、響鈴紀錄、專員每日工時、組別／專員／標籤等字典的歷次版本，以及撥入＋撥出錄音與語音留言（存 Opus）。另有歷史回補排程，把 EVOX 上線以來（2024-10）的資料補齊。轉文字與來電原因分析的程式已備好，依應用端需求再開。",
         "metric": "話務資料可查天數（通聯＋滿意度已入庫且核對通過的日數）",
-        "not_done": "- 轉文字、潤稿、來電原因：10-29 起暫停（Jin：先收 raw、看應用端需求再開），程式保留，開關 evox_analyze。\n- 電話對會員／訂單（成交歸因）：EVOX 沒有會員資料，要對 CRM，等 410 規則與 193 個資裁示。\n- Metabase 話務日報：10-23 停用中。\n- 歷史錄音回補：進行中；10-30 起限速每 2 秒一次，預計約 12/5 補完。\n- 響鈴紀錄的歷史：先不補（Jin 10-30，省約 70 萬次請求），每日排程照抓新的，之後找機會補。",
-        "now": "685 天（回補中，目標 741 天）",
-        "now_date": "2026-10-30",
+        "not_done": "- 11-03 起依廠商要求暫停三支排程（每日、歷史回補、每日換 token），等廠商回覆可接受速率／尖峰／IP 白名單後由 Jin 決定重啟日（FDEPROJECT-1020）\n- 歷史錄音回補：暫停時補到 8.1%（107,344／1,333,412 段，2026-09-05 之後全補齊），重啟後約 6 週補完\n- 轉文字、潤稿、來電原因：10-29 起暫停（Jin：先收 raw、看應用端需求再開），程式保留，開關 evox_analyze\n- 電話對會員／訂單（成交歸因）：EVOX 沒有會員資料，要對 CRM，等 410 規則與 193 個資裁示\n- Metabase 話務日報：10-23 停用中\n- 響鈴紀錄的歷史：先不補（Jin 10-30，省約 70 萬次請求），每日排程照抓新的",
+        "now": "741 天（2024-10-18～2026-10-28 全補完）；每日排程到 11-02 也核對通過，11-03 起暫停",
+        "now_date": "2026-11-01",
         "other": "每日入庫筆數與 EVOX 一致（10/28：通聯 3,724、錄音 2,797 段全存）；錄音存成 Opus 約原檔 1/12（WAV 2.7G → 226M）；10-29 .24 對外 IP 被 EVOX 擋後，改經 Cloudflare Worker 轉發＋每 2 秒一次限速＋被擋自動煞車寄信，10-30 15:30 恢復後 0 失敗",
-        "source": "evox-pg etl_run（step=fetch、status=ok 的日數）",
+        "source": "evox-pg etl_run（step=fetch、status=ok 的日數）；進度頁 https://lineoa-db.liontravel.com/backfill/（內網，EVOX 段）",
         "versions": []
       },
       "due": null,
@@ -26016,15 +26016,15 @@
       "moved_in": null,
       "parent": "FDEPROJECT-497",
       "points": null,
-      "progress_seen": null,
+      "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
-      "status_since": null,
+      "status": "審核中",
+      "status_category": "indeterminate",
+      "status_since": "2026-11-04T01:11:23.721000+00:00",
       "summary": "EVOX 通話分析 階段二：自動化上線與每日排程",
       "type": "Deliverable",
-      "updated": "2026-10-30T18:38:11.092+0800"
+      "updated": "2026-11-04T09:11:23.721+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -26091,10 +26091,10 @@
         "description": [
           "Acceptance：補登 52 萬則放錯人／對話 0、重複 0、抽 300 段往上捲完整 → 通過，Chatwoot 正式站，10/29；每日排程自動補登 → 通過，10-30 02:30 首跑補 2.4 萬則、0 錯",
           "Code：linebiz-sync 3794dae（對帳修正；總覽頁 ee19f55 起；.24 主機 bare repo，尚無 Azure repo）；chatwoot-lion main 25ae4dc（Azure LionTech/FDE/chatwoot-lion）",
-          "Env：https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/linebiz-sync（資料夾待建）"
+          "Env：https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/linebiz-sync"
         ],
         "features": "每天自動同步 31 間門市 LINE 官方帳號後台的對話，把客人對到 LINE 會員編號（歸戶）。\n近三個月的完整對話（含業務在 OA App 的回覆）補進 Chatwoot，每天自動補新的，晚到的訊息改回實際時間。",
-        "metric": "歸戶到 LINE 會員編號的人數\n（另：Chatwoot 補登訊息 0 → 522,992 則、晚到訊息 1,272 → 0 則，見其他成效）",
+        "metric": "歸戶到 LINE 會員編號的人數（Chatwoot 補登與晚到訊息見其他成效）",
         "not_done": "- 全部歷史回補：11-03 15:15 排入 296,041 位（半年回補 11-03 已 100% 完成），預估 11-10～11-15 補完，只進 linebiz\n- LINE OA 後台可選資料 11 項（建議抓 4 項：群發、自動回應＋圖文選單、標籤／業務對照）等 Jin 決定\n- 只靠名稱對到身分的約 5 萬位客人、在該門市沒有聯絡人的 3,456 則沒灌進 Chatwoot\n- 圖片、檔案原檔（現在是示意圖）\n- Chatwoot 顯示業務姓名（要先建業務帳號）\n- 對話最後活動時間更新\n- 官網會員對應（等 Sun 回覆）",
         "now": "280,469 人",
         "now_date": "2026-11-03",
@@ -26111,15 +26111,15 @@
       "moved_in": null,
       "parent": "FDEPROJECT-602",
       "points": null,
-      "progress_seen": null,
+      "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
-      "status_since": null,
+      "status": "審核中",
+      "status_category": "indeterminate",
+      "status_since": "2026-11-04T01:11:21.179000+00:00",
       "summary": "門市 LINE OA 資料歸戶（需求單 26100566）",
       "type": "Deliverable",
-      "updated": "2026-11-03T22:32:19.344+0800"
+      "updated": "2026-11-04T09:11:21.179+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -26400,7 +26400,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-761",
-      "points": 0.25,
+      "points": 0.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-29T18:30:36.462+0800",
@@ -26409,7 +26409,7 @@
       "status_since": "2026-10-29T10:30:36.486000+00:00",
       "summary": "線控團體TL\\TG欄位新增\"車帶TL\"操作入口",
       "type": "任務",
-      "updated": "2026-10-29T18:30:42.768+0800"
+      "updated": "2026-11-04T08:11:07.923+0800"
     },
     {
       "assignee": "王碩緯",
@@ -26422,7 +26422,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-761",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-29T18:31:34.056+0800",
@@ -26431,7 +26431,7 @@
       "status_since": "2026-10-29T10:31:34.079000+00:00",
       "summary": "單一及多位導領聯絡資訊自動擷取",
       "type": "任務",
-      "updated": "2026-10-29T18:31:38.287+0800"
+      "updated": "2026-11-04T08:10:58.781+0800"
     },
     {
       "assignee": "王碩緯",
@@ -26444,7 +26444,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-761",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
       "resolved": null,
@@ -26453,7 +26453,7 @@
       "status_since": "2026-10-29T10:33:16.345000+00:00",
       "summary": "BUSSERP 車單自動查詢與定位",
       "type": "任務",
-      "updated": "2026-10-29T18:33:22.636+0800"
+      "updated": "2026-11-04T08:10:49.612+0800"
     },
     {
       "assignee": "王碩緯",
@@ -26466,7 +26466,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-761",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-29T18:34:44.605+0800",
@@ -26475,7 +26475,7 @@
       "status_since": "2026-10-29T10:34:44.621000+00:00",
       "summary": "導領車次資訊自動填寫存檔",
       "type": "任務",
-      "updated": "2026-10-29T18:34:47.958+0800"
+      "updated": "2026-11-04T08:10:40.969+0800"
     },
     {
       "assignee": "王碩緯",
@@ -26488,7 +26488,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-761",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-29T18:35:23.817+0800",
@@ -26497,7 +26497,7 @@
       "status_since": "2026-10-29T10:35:23.833000+00:00",
       "summary": "存檔結果驗證及例外處理",
       "type": "任務",
-      "updated": "2026-10-29T18:35:29.189+0800"
+      "updated": "2026-11-04T08:10:32.585+0800"
     },
     {
       "assignee": "王碩緯",
@@ -26510,7 +26510,7 @@
       "level": 0,
       "moved_in": null,
       "parent": "FDEPROJECT-761",
-      "points": 0.5,
+      "points": 1.5,
       "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": "2026-10-29T18:37:01.500+0800",
@@ -26519,7 +26519,7 @@
       "status_since": "2026-10-29T10:37:01.515000+00:00",
       "summary": "彈窗情境管理、執行結果通知",
       "type": "任務",
-      "updated": "2026-10-29T18:37:08.648+0800"
+      "updated": "2026-11-04T08:10:21.368+0800"
     },
     {
       "assignee": "Shira",
@@ -27967,7 +27967,7 @@
         "base_date": "2026-10-21",
         "delivered": "10/09 兩站原地升 1.17.1；10/10 上長對話整理；Weaviate 升 1.39.2 並清孤兒向量；MCP 工具清單重抓並備份；10/31 升 1.18.0（fork 自建映像 3 個減為 2 個，web 改官方映像，Langfuse 修改退休）；10/31 正式站從 .9 搬到 .24（公司網域、只限內網，測試站留 .9）；LIFF 找不到對話時自動開新對話",
         "description": [
-          "Acceptance：<條件 → 通過／未通過／未驗，在哪驗、日期；多條用；分隔>",
+          "Acceptance：升 1.18.0 後同題兩輪裁剪量與 token 跟 1.17.1 一致、結構化輸出／舊對話／MCP 對話編號正常 → 通過，.9 正式與測試站，10/31；正式站搬 .24 後端到端 10 項、3 個 workflow 都 succeeded → 通過，.24，10/31；搬站後舊對話編號不報錯（LIFF 自動開新對話）→ 通過，正式 LIFF，10/31；搬站後回覆時間 → 未驗（.24 正式站尚無客人訊息，11-03 查）",
           "Code：Azure Repos FDE/store-ai-assistant（dify-patch/）＋ .24 dify-lion.git 分支 lion/1.18.0",
           "Env：https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/store-ai-assistant"
         ],
@@ -27989,15 +27989,15 @@
       "moved_in": null,
       "parent": "FDEPROJECT-332",
       "points": null,
-      "progress_seen": null,
+      "progress_seen": false,
       "project": "FDEPROJECT",
       "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
-      "status_since": null,
+      "status": "審核中",
+      "status_category": "indeterminate",
+      "status_since": "2026-11-04T01:11:18.501000+00:00",
       "summary": "Dify 平台與維運 階段二：升級與優化",
       "type": "Deliverable",
-      "updated": "2026-11-03T22:32:24.342+0800"
+      "updated": "2026-11-04T09:11:18.501+0800"
     },
     {
       "assignee": "Vivian",
@@ -28502,13 +28502,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-01T08:12:24.596000+00:00",
+      "resolved": "2026-11-04T09:10:36.054+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:36.069000+00:00",
       "summary": "建立 chatwoot-lion 的開發環境定義（fde-devcontainers）",
       "type": "任務",
-      "updated": "2026-11-01T16:12:24.596+0800"
+      "updated": "2026-11-04T09:10:36.069+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -28524,13 +28524,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-01T08:12:37.123000+00:00",
+      "resolved": "2026-11-04T09:10:38.123+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:38.146000+00:00",
       "summary": "建立 linebiz-sync 的開發環境定義（fde-devcontainers）",
       "type": "任務",
-      "updated": "2026-11-01T16:12:37.123+0800"
+      "updated": "2026-11-04T09:10:38.146+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -28546,13 +28546,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-01T08:12:39.956000+00:00",
+      "resolved": "2026-11-04T09:10:39.161+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:39.176000+00:00",
       "summary": "建立 store-queue-line 的開發環境定義（fde-devcontainers）",
       "type": "任務",
-      "updated": "2026-11-01T16:12:39.956+0800"
+      "updated": "2026-11-04T09:10:39.176+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -28568,13 +28568,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-01T08:12:42.421000+00:00",
+      "resolved": "2026-11-04T09:10:40.182+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:40.189000+00:00",
       "summary": "建立 voc-evox-analysis 的開發環境定義（fde-devcontainers）",
       "type": "任務",
-      "updated": "2026-11-01T16:12:42.421+0800"
+      "updated": "2026-11-04T09:10:40.189+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -28590,13 +28590,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-01T08:12:45.223000+00:00",
+      "resolved": "2026-11-04T09:10:41.191+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:41.212000+00:00",
       "summary": "建立 serpgogo 的開發環境定義（fde-devcontainers）",
       "type": "任務",
-      "updated": "2026-11-01T16:12:45.223+0800"
+      "updated": "2026-11-04T09:10:41.212+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -28612,13 +28612,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-01T08:12:48.014000+00:00",
+      "resolved": "2026-11-04T09:10:42.248+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:42.254000+00:00",
       "summary": "建立 lily 的開發環境定義（fde-devcontainers）",
       "type": "任務",
-      "updated": "2026-11-01T16:12:48.014+0800"
+      "updated": "2026-11-04T09:10:42.254+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -28634,13 +28634,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-01T08:12:50.398000+00:00",
+      "resolved": "2026-11-04T09:10:43.491+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:43.497000+00:00",
       "summary": "建立 store-ai-assistant 的開發環境定義（fde-devcontainers）",
       "type": "任務",
-      "updated": "2026-11-01T16:12:50.398+0800"
+      "updated": "2026-11-04T09:10:43.497+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -29911,13 +29911,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:12.080000+00:00",
+      "resolved": "2026-11-04T09:10:16.649+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:16.665000+00:00",
       "summary": "確認官網送單時決定訂單業務的方式與訪客下單限制",
       "type": "Spike",
-      "updated": "2026-11-02T16:13:12.080+0800"
+      "updated": "2026-11-04T09:10:16.665+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -29933,13 +29933,13 @@
       "points": 0.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:15.162000+00:00",
+      "resolved": "2026-11-04T09:10:20.589+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:20.605000+00:00",
       "summary": "實測 LINE 內登入會員後預填門市業務到官網旅客頁",
       "type": "Spike",
-      "updated": "2026-11-02T16:13:15.162+0800"
+      "updated": "2026-11-04T09:10:20.605+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -29955,13 +29955,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:17.909000+00:00",
+      "resolved": "2026-11-04T09:10:21.805+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:21.821000+00:00",
       "summary": "擬定請平台組確認訂單綁業務的訊息並更新說明圖",
       "type": "任務",
-      "updated": "2026-11-02T16:13:17.909+0800"
+      "updated": "2026-11-04T09:10:21.821+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -29977,13 +29977,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:20.906000+00:00",
+      "resolved": "2026-11-04T09:10:22.871+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:22.885000+00:00",
       "summary": "修正 LINE 內商品連結跳出雄獅 App 的問題（測試站）",
       "type": "漏洞",
-      "updated": "2026-11-02T16:55:26.178+0800"
+      "updated": "2026-11-04T09:10:22.885+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -29999,13 +29999,13 @@
       "points": 1.0,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:23.219000+00:00",
+      "resolved": "2026-11-04T09:10:23.885+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:23.901000+00:00",
       "summary": "設計 LINE 內報名流程的畫面",
       "type": "任務",
-      "updated": "2026-11-03T22:31:48.937+0800"
+      "updated": "2026-11-04T09:10:23.901+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30021,13 +30021,13 @@
       "points": 1.0,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:26.746000+00:00",
+      "resolved": "2026-11-04T09:10:24.916+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:24.930000+00:00",
       "summary": "撰寫 LINE 內報名 v1 開發計畫",
       "type": "任務",
-      "updated": "2026-11-03T22:31:50.015+0800"
+      "updated": "2026-11-04T09:10:24.930+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30043,13 +30043,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:29.274000+00:00",
+      "resolved": "2026-11-04T09:10:26.092+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:26.107000+00:00",
       "summary": "補 Chatwoot 派單成效指標基準值與測試站截圖",
       "type": "任務",
-      "updated": "2026-11-02T16:13:29.274+0800"
+      "updated": "2026-11-04T09:10:26.107+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30065,13 +30065,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:31.656000+00:00",
+      "resolved": "2026-11-04T09:10:27.108+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:27.114000+00:00",
       "summary": "盤點 Chatwoot 門市正式上線缺口並評估寄信改用公司信箱",
       "type": "Spike",
-      "updated": "2026-11-02T16:59:34.966+0800"
+      "updated": "2026-11-04T09:10:27.114+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30087,13 +30087,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:34.424000+00:00",
+      "resolved": "2026-11-04T09:10:28.469+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:28.475000+00:00",
       "summary": "實測 LINE 機器人送出的圖片網址怎麼被抓、會不會留存",
       "type": "Spike",
-      "updated": "2026-11-02T16:59:35.552+0800"
+      "updated": "2026-11-04T09:10:28.475+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30109,13 +30109,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:36.900000+00:00",
+      "resolved": "2026-11-04T09:10:29.587+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:29.604000+00:00",
       "summary": "評估 Dify 1.18 新型知識庫（KnowledgeFS）並確認舊式知識庫生效",
       "type": "Spike",
-      "updated": "2026-11-02T16:13:36.900+0800"
+      "updated": "2026-11-04T09:10:29.604+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30131,13 +30131,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:39.139000+00:00",
+      "resolved": "2026-11-04T09:10:30.714+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:30.730000+00:00",
       "summary": "統計 AI 客服回覆時間 p50／p95",
       "type": "任務",
-      "updated": "2026-11-02T16:13:39.139+0800"
+      "updated": "2026-11-04T09:10:30.730+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30153,13 +30153,13 @@
       "points": 0.75,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:41.456000+00:00",
+      "resolved": "2026-11-04T09:10:31.769+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:31.790000+00:00",
       "summary": "清理 .9 主機空間並移除 filebrowser 對外入口",
       "type": "任務",
-      "updated": "2026-11-02T16:13:41.456+0800"
+      "updated": "2026-11-04T09:10:31.790+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30175,13 +30175,13 @@
       "points": 0.75,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:46.709000+00:00",
+      "resolved": "2026-11-04T09:10:32.878+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:32.893000+00:00",
       "summary": "回補總覽頁加純機器人段與可選資料區",
       "type": "任務",
-      "updated": "2026-11-02T16:13:46.709+0800"
+      "updated": "2026-11-04T09:10:32.893+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30197,13 +30197,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:49.104000+00:00",
+      "resolved": "2026-11-04T09:10:33.900+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:33.920000+00:00",
       "summary": "驗收 store-queue 子網域與 repo 聯絡單並補送內網 DNS 聯絡單",
       "type": "任務",
-      "updated": "2026-11-02T16:13:49.104+0800"
+      "updated": "2026-11-04T09:10:33.920+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -30219,13 +30219,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-02T08:13:51.364000+00:00",
+      "resolved": "2026-11-04T09:10:34.967+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:34.989000+00:00",
       "summary": "新增 SERP MCP 作廢聯絡單與讀公告附件工具",
       "type": "任務",
-      "updated": "2026-11-02T16:13:51.364+0800"
+      "updated": "2026-11-04T09:10:34.989+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -32138,15 +32138,15 @@
       "moved_in": null,
       "parent": "FDEPROJECT-966",
       "points": 0.75,
-      "progress_seen": null,
+      "progress_seen": false,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "待辦事項",
-      "status_category": "new",
-      "status_since": null,
+      "resolved": "2026-11-04T09:10:44.501+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:44.523000+00:00",
       "summary": "建立測試站「板橋門市（影子）」，同步正式站板橋對話供驗證 LINE 功能",
       "type": "任務",
-      "updated": "2026-11-03T09:21:43.655+0800"
+      "updated": "2026-11-04T09:10:44.523+0800"
     },
     {
       "assignee": "王碩緯",
@@ -32164,9 +32164,9 @@
       "status": "待辦事項",
       "status_category": "new",
       "status_since": null,
-      "summary": "[國旅] 導領費用自動導入支單",
+      "summary": "[國旅] 導領費用自動核算與導入支單",
       "type": "大型工作",
-      "updated": "2026-11-03T10:05:55.068+0800"
+      "updated": "2026-11-04T07:49:37.649+0800"
     },
     {
       "assignee": "王碩緯",
@@ -32890,13 +32890,13 @@
       "points": 0.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:30:52.688000+00:00",
+      "resolved": "2026-11-04T09:10:45.608+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:45.625000+00:00",
       "summary": "暫停 EVOX 排程並回覆廠商下載與白名單說明",
       "type": "任務",
-      "updated": "2026-11-03T22:30:52.688+0800"
+      "updated": "2026-11-04T09:10:45.625+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -32912,13 +32912,13 @@
       "points": 0.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:01.305000+00:00",
+      "resolved": "2026-11-04T09:10:46.647+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:46.663000+00:00",
       "summary": "讓回補總覽頁與告警支援「暫停中」狀態（EVOX 不算落後、不告警）",
       "type": "任務",
-      "updated": "2026-11-03T22:31:01.305+0800"
+      "updated": "2026-11-04T09:10:46.663+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -32934,13 +32934,13 @@
       "points": 0.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:03.851000+00:00",
+      "resolved": "2026-11-04T09:10:47.787+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:47.801000+00:00",
       "summary": "整理號碼機廠商確認書重點並驗算 LINE 推播費用",
       "type": "任務",
-      "updated": "2026-11-03T22:31:03.851+0800"
+      "updated": "2026-11-04T09:10:47.801+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -32956,13 +32956,13 @@
       "points": 1.0,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:06.593000+00:00",
+      "resolved": "2026-11-04T09:10:48.933+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:48.954000+00:00",
       "summary": "準備 11-04 門市主管約談：議題、推播花費估算與下一步安排",
       "type": "任務",
-      "updated": "2026-11-03T22:31:06.593+0800"
+      "updated": "2026-11-04T09:10:48.954+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -32978,13 +32978,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:09.213000+00:00",
+      "resolved": "2026-11-04T09:10:50.013+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:50.028000+00:00",
       "summary": "盤點門市 LINE 對話資料庫結構並回覆 CRM 資料位置",
       "type": "任務",
-      "updated": "2026-11-03T22:31:09.213+0800"
+      "updated": "2026-11-04T09:10:50.028+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33000,13 +33000,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:13.320000+00:00",
+      "resolved": "2026-11-04T09:10:51.193+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:51.215000+00:00",
       "summary": "查 11-02 門市 LINE 訊息漏收原因（比對 LINE 送達失敗紀錄與入口紀錄）",
       "type": "任務",
-      "updated": "2026-11-03T22:31:13.320+0800"
+      "updated": "2026-11-04T09:10:51.215+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33022,13 +33022,13 @@
       "points": 1.0,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:17.337000+00:00",
+      "resolved": "2026-11-04T09:10:52.264+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:52.279000+00:00",
       "summary": "復盤半年回補並對匯出檔驗收，修正匯出檔↔客人對照規則並上線，排入全部歷史回補",
       "type": "任務",
-      "updated": "2026-11-03T22:31:17.337+0800"
+      "updated": "2026-11-04T09:10:52.279+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33044,13 +33044,13 @@
       "points": 0.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:21.367000+00:00",
+      "resolved": "2026-11-04T09:10:53.294+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:53.308000+00:00",
       "summary": "重算號碼機改走 LINE 推播的費用（依各門市 OA 實際方案）",
       "type": "任務",
-      "updated": "2026-11-03T22:31:21.367+0800"
+      "updated": "2026-11-04T09:10:53.308+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33066,13 +33066,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:23.797000+00:00",
+      "resolved": "2026-11-04T09:10:54.370+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:54.387000+00:00",
       "summary": "評估號碼機全走 LINE 的各門市 OA 訊息量與費用",
       "type": "Spike",
-      "updated": "2026-11-03T22:31:23.797+0800"
+      "updated": "2026-11-04T09:10:54.387+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33088,13 +33088,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:26.265000+00:00",
+      "resolved": "2026-11-04T09:10:55.414+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:55.429000+00:00",
       "summary": "清掉兩站多餘的 LIFF 測試收件匣，影子收件匣改用真實業務帳號",
       "type": "任務",
-      "updated": "2026-11-03T22:31:26.265+0800"
+      "updated": "2026-11-04T09:10:55.429+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33110,13 +33110,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:28.693000+00:00",
+      "resolved": "2026-11-04T09:10:56.481+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:56.497000+00:00",
       "summary": "評估轉真人「找專員」摘要與 LIFF 資料存放的改進方向",
       "type": "Spike",
-      "updated": "2026-11-03T22:31:28.693+0800"
+      "updated": "2026-11-04T09:10:56.497+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33132,13 +33132,13 @@
       "points": 1.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:31.704000+00:00",
+      "resolved": "2026-11-04T09:10:57.484+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:57.499000+00:00",
       "summary": "改讓行銷活動入口向官網現查，拿掉要人維護的活動登記表",
       "type": "任務",
-      "updated": "2026-11-03T22:31:31.704+0800"
+      "updated": "2026-11-04T09:10:57.499+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33154,13 +33154,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:34.698000+00:00",
+      "resolved": "2026-11-04T09:10:58.509+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:58.526000+00:00",
       "summary": "清除 LIFF 沒在用的舊程式與設定",
       "type": "任務",
-      "updated": "2026-11-03T22:31:34.698+0800"
+      "updated": "2026-11-04T09:10:58.526+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33176,13 +33176,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:37.808000+00:00",
+      "resolved": "2026-11-04T09:10:59.686+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:10:59.701000+00:00",
       "summary": "擴大 SERP MCP 簽核單清單到最多查兩年（90 天分段查、照申請日排序）",
       "type": "任務",
-      "updated": "2026-11-03T22:31:37.808+0800"
+      "updated": "2026-11-04T09:10:59.701+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33198,13 +33198,13 @@
       "points": 0.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:40.707000+00:00",
+      "resolved": "2026-11-04T09:11:00.685+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:00.702000+00:00",
       "summary": "讓 SERP MCP 同時使用正式機與測試機（工具加 env 參數、雙 Session 保活）並部署",
       "type": "故事",
-      "updated": "2026-11-03T22:31:40.707+0800"
+      "updated": "2026-11-04T09:11:00.702+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33220,13 +33220,13 @@
       "points": 0.75,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:43.062000+00:00",
+      "resolved": "2026-11-04T09:11:01.689+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:01.711000+00:00",
       "summary": "唯讀查詢 ordrerp：員工接單設定、訂單接單業務、改業務入口",
       "type": "任務",
-      "updated": "2026-11-03T22:31:43.062+0800"
+      "updated": "2026-11-04T09:11:01.711+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33242,13 +33242,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:45.496000+00:00",
+      "resolved": "2026-11-04T09:11:02.801+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:02.817000+00:00",
       "summary": "查 CrowdStrike 警示 LIONTRAVEL-ALERT-20261022-0003 原因並提供回覆草稿",
       "type": "任務",
-      "updated": "2026-11-03T22:31:45.496+0800"
+      "updated": "2026-11-04T09:11:02.817+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33264,13 +33264,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:47.921000+00:00",
+      "resolved": "2026-11-04T09:11:03.843+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:03.859000+00:00",
       "summary": "驗收 SERP 單 26101743（.9 硬碟 500G）、26101847（.7 CPU 4 核），並開放 SERP MCP 協作",
       "type": "任務",
-      "updated": "2026-11-03T22:31:47.921+0800"
+      "updated": "2026-11-04T09:11:03.859+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33286,13 +33286,13 @@
       "points": 0.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:52.487000+00:00",
+      "resolved": "2026-11-04T09:11:04.839+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:04.853000+00:00",
       "summary": "搬移 LINE 報名測試站到 liontravel.com 網域",
       "type": "任務",
-      "updated": "2026-11-03T22:31:52.487+0800"
+      "updated": "2026-11-04T09:11:04.853+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33308,13 +33308,13 @@
       "points": 1.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:55.076000+00:00",
+      "resolved": "2026-11-04T09:11:05.910+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:05.926000+00:00",
       "summary": "開發 LINE 內報名 v1＋v2 並部署測試站",
       "type": "任務",
-      "updated": "2026-11-03T22:31:55.076+0800"
+      "updated": "2026-11-04T09:11:05.926+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33330,13 +33330,13 @@
       "points": 0.75,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:57.396000+00:00",
+      "resolved": "2026-11-04T09:11:06.927+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:06.934000+00:00",
       "summary": "修正 LINE 內報名手機實測發現的問題",
       "type": "漏洞",
-      "updated": "2026-11-03T22:31:57.396+0800"
+      "updated": "2026-11-04T09:11:06.934+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33352,13 +33352,13 @@
       "points": 0.75,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:31:59.788000+00:00",
+      "resolved": "2026-11-04T09:11:07.976+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:07.990000+00:00",
       "summary": "查清楚 LINE 內登入跨瀏覽器與白畫面",
       "type": "Spike",
-      "updated": "2026-11-03T22:31:59.788+0800"
+      "updated": "2026-11-04T09:11:07.990+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33374,13 +33374,13 @@
       "points": 0.75,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:32:02.166000+00:00",
+      "resolved": "2026-11-04T09:11:09.127+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:09.142000+00:00",
       "summary": "評估各團型能否在 LINE 內報名與內部價格 API",
       "type": "Spike",
-      "updated": "2026-11-03T22:32:02.166+0800"
+      "updated": "2026-11-04T09:11:09.142+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33396,13 +33396,13 @@
       "points": 1.0,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:32:04.521000+00:00",
+      "resolved": "2026-11-04T09:11:10.343+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:10.350000+00:00",
       "summary": "讓 LINE 內報名支援多方案、團體自由行、主題團、郵輪",
       "type": "任務",
-      "updated": "2026-11-03T22:32:04.521+0800"
+      "updated": "2026-11-04T09:11:10.350+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33418,13 +33418,13 @@
       "points": 0.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:32:07.018000+00:00",
+      "resolved": "2026-11-04T09:11:11.413+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:11.428000+00:00",
       "summary": "開放會員限購團與旅天下團在 LINE 內報名",
       "type": "任務",
-      "updated": "2026-11-03T22:32:07.018+0800"
+      "updated": "2026-11-04T09:11:11.428+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33462,13 +33462,13 @@
       "points": 0.5,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:32:11.819000+00:00",
+      "resolved": "2026-11-04T09:11:12.526+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:12.543000+00:00",
       "summary": "核對手機實測錄影並整理對外說明範圍",
       "type": "任務",
-      "updated": "2026-11-03T22:32:11.819+0800"
+      "updated": "2026-11-04T09:11:12.543+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33484,13 +33484,13 @@
       "points": 1.25,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:32:14.361000+00:00",
+      "resolved": "2026-11-04T09:11:13.534+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:13.540000+00:00",
       "summary": "研究官網送單決定業務的流程與非會員算業績的解法",
       "type": "Spike",
-      "updated": "2026-11-03T22:32:14.361+0800"
+      "updated": "2026-11-04T09:11:13.540+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33506,13 +33506,13 @@
       "points": 0.75,
       "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": null,
-      "status": "進行中",
-      "status_category": "indeterminate",
-      "status_since": "2026-11-03T14:32:16.906000+00:00",
+      "resolved": "2026-11-04T09:11:14.527+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-04T01:11:14.542000+00:00",
       "summary": "評估 LINE 內報名上正式站是否需要自建資料表",
       "type": "Spike",
-      "updated": "2026-11-03T22:32:16.906+0800"
+      "updated": "2026-11-04T09:11:14.542+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33567,8 +33567,8 @@
       "created": "2026-11-03T23:40:24.863+0800",
       "deliverable": {
         "attachments": [],
-        "base": null,
-        "base_date": null,
+        "base": "0 則（知識庫只能在 Dify 後台看）",
+        "base_date": "2026-10-15",
         "delivered": "Chatwoot 測試站 Dify 選單：知識庫唯讀總覽頁（各知識庫塊數、命中統計）、問答列表內頁；知識庫管理介面畫布",
         "description": [
           "Acceptance：Chatwoot 測試站看得到 Dify 知識庫總覽與問答列表 → 通過，Chatwoot 測試站，10/16；評估結論 → 已決定（11-02）：評估結束，後續併入 423",
@@ -33576,12 +33576,12 @@
           "Env：https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/chatwoot-lion"
         ],
         "features": "在 Chatwoot 裡看 Dify 知識庫：不用進 Dify 後台，就能看到知識庫總覽、問答列表與每塊被查到的次數。做在 Chatwoot 測試站，正式站未動。",
-        "metric": "待 Jin 定（評估型 epic，正式站沒上，沒有使用量可量）",
+        "metric": "在 Chatwoot 裡（不用進 Dify 後台）看得到的 Dify 知識庫問答則數",
         "not_done": "- 正式站沒上；要不要往正式站推進併入 FDEPROJECT-423 追蹤（11-02 決定）\n- 這次只做知識庫的部分；AI 對話紀錄進 Chatwoot、FAQ 建議審核沒做",
-        "now": null,
-        "now_date": null,
+        "now": "1,952 則（主知識庫「雄獅知識庫」全部，可逐則看、依被查次數排序）",
+        "now_date": "2026-10-16",
         "other": "知識庫品質問題第一次看得見：1,952 塊中 1,388 塊從沒被查到；被查最多的「關於會員禮遇」只剩 6 個字（已列入 Dify 階段二 Deliverable FDEPROJECT-885 沒做的）",
-        "source": null,
+        "source": "Chatwoot 測試站「Dify › 知識庫」總覽與問答列表，則數與 Dify 資料庫一致（FDEPROJECT-517、519 驗收）",
         "versions": []
       },
       "due": null,
@@ -33601,7 +33601,7 @@
       "status_since": "2026-11-03T15:40:26.715000+00:00",
       "summary": "Dify 與 Chatwoot CRM 整合評估",
       "type": "Deliverable",
-      "updated": "2026-11-03T23:40:26.715+0800"
+      "updated": "2026-11-04T09:15:38.119+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -33656,6 +33656,94 @@
       "summary": "門市 AI 客服 階段三：全省門市導入",
       "type": "Deliverable",
       "updated": "2026-11-04T00:22:16.102+0800"
+    },
+    {
+      "assignee": "王碩緯",
+      "created": "2026-11-04T07:53:37.143+0800",
+      "due": null,
+      "key": "FDEPROJECT-1052",
+      "labels": [
+        "國旅"
+      ],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-995",
+      "points": 0.25,
+      "progress_seen": false,
+      "project": "FDEPROJECT",
+      "resolved": "2026-11-04T07:53:57.609+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-03T23:53:57.623000+00:00",
+      "summary": "SERP操作入口與既有 Extension 相容性整合",
+      "type": "任務",
+      "updated": "2026-11-04T07:54:03.223+0800"
+    },
+    {
+      "assignee": "王碩緯",
+      "created": "2026-11-04T07:54:45.037+0800",
+      "due": null,
+      "key": "FDEPROJECT-1053",
+      "labels": [
+        "國旅"
+      ],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-995",
+      "points": null,
+      "progress_seen": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "status_since": null,
+      "summary": "團體主檔擷取與跨頁自動化流程編排",
+      "type": "任務",
+      "updated": "2026-11-04T07:55:54.239+0800"
+    },
+    {
+      "assignee": "王碩緯",
+      "created": "2026-11-04T07:56:51.470+0800",
+      "due": null,
+      "key": "FDEPROJECT-1054",
+      "labels": [
+        "國旅"
+      ],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-995",
+      "points": null,
+      "progress_seen": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "status_since": null,
+      "summary": "差旅費支單流程整合",
+      "type": "任務",
+      "updated": "2026-11-04T07:57:38.012+0800"
+    },
+    {
+      "assignee": "王碩緯",
+      "created": "2026-11-04T07:59:13.349+0800",
+      "due": null,
+      "key": "FDEPROJECT-1055",
+      "labels": [
+        "國旅"
+      ],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-995",
+      "points": null,
+      "progress_seen": null,
+      "project": "FDEPROJECT",
+      "resolved": null,
+      "status": "待辦事項",
+      "status_category": "new",
+      "status_since": null,
+      "summary": "領隊身分規則與差旅費api核算",
+      "type": "任務",
+      "updated": "2026-11-04T08:01:24.396+0800"
     }
   ],
   "period": {
