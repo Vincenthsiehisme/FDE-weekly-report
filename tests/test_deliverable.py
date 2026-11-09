@@ -482,16 +482,22 @@ class InternalAddressTest(unittest.TestCase):
 
 
 class ImagesPageTest(unittest.TestCase):
-    """截圖放在完整說明的縮圖格、附件連到 Jira（2026-11-03 甲版：列上不放縮圖，只標有畫面／有影片）。"""
+    """列左邊放第一張圖、完整說明放縮圖格、附件連到 Jira（2026-11-10 使用者要左圖（影）右文，推翻 11-03 甲的列上不放圖）。"""
 
     def panel(self, issues, in_reports_dir=False, schema=5):
         html = render(run(issues, schema=schema), {"highlights": [], "epic_results": {}}, ["2026-W39"], in_reports_dir=in_reports_dir)
         return html.split('id="delivered"')[1]
 
-    def test_grid_links_to_the_image_and_to_jira(self):
+    def summary(self, panel):
+        return panel[panel.index("<summary>"):panel.index("</summary>")]
+
+    def test_row_leads_with_the_image_and_grid_links_to_jira(self):
         panel = self.panel(epics() + [card("CS-50")])
         jira = '<a href="https://example.atlassian.net/secure/attachment/501/list.png">list.png</a>'
-        self.assertEqual(panel.count("<img"), 1)  # 列上沒有縮圖，只有完整說明那一張
+        self.assertIn('<details class="dv-item with-media" id="dv-CS-50"><summary><a class="dv-media" href="assets/deliverables/501.png">'
+                      '<img src="assets/deliverables/501.png" alt="list.png" loading="lazy"></a><span class="dv-name">', panel)
+        self.assertEqual(panel.count("<img"), 2)  # 列左邊一張、完整說明一張
+        self.assertIn('<span class="dv-tag">有影片</span>', self.summary(panel))  # 框裡放的是圖，影片要在名稱旁標
         self.assertIn('<div class="dv-shots"><figure><a href="assets/deliverables/501.png"><img src="assets/deliverables/501.png"'
                       f' alt="list.png" loading="lazy"></a><figcaption>{jira}</figcaption></figure></div>', panel)
         self.assertIn('<a href="https://example.atlassian.net/secure/attachment/502/demo.mp4">demo.mp4</a><br>'
@@ -499,30 +505,50 @@ class ImagesPageTest(unittest.TestCase):
 
     def test_report_pages_point_one_level_up(self):
         panel = self.panel(epics() + [card("CS-50")], in_reports_dir=True)
-        self.assertIn('<img src="../assets/deliverables/501.png"', panel)
-        self.assertNotIn('src="assets/', panel)
+        self.assertIn('<a class="dv-media" href="../assets/deliverables/501.png"><img src="../assets/deliverables/501.png"', panel)
+        self.assertNotIn('"assets/', panel)
 
-    def test_image_only_card_is_tagged(self):
+    def test_more_images_are_counted_on_the_row(self):
         panel = self.panel(epics() + [card("CS-50", attachment=[att("1", "a.png", "image/png", 10), att("2", "b.png", "image/png", 10)])])
-        self.assertIn('<span class="dv-tag">有畫面</span>', panel)
-        self.assertEqual(panel.count("<img"), 2)
+        row = self.summary(panel)
+        self.assertIn('alt="a.png" loading="lazy"><span class="dv-count">共 2 張</span></a>', row)
+        self.assertNotIn("dv-tag", row.replace("dv-tag new", ""))  # 圖已經在列上，不再標有畫面
+        self.assertEqual(panel.count("<img"), 3)
 
     def test_filenames_are_escaped_in_links_and_text(self):
         panel = self.panel(epics() + [card("CS-50", attachment=[att("1", 'a "b"<c>.png', "image/png", 10)])])
         self.assertIn('/secure/attachment/1/a%20%22b%22%3Cc%3E.png">a &quot;b&quot;&lt;c&gt;.png</a>', panel)
+        self.assertIn('alt="a &quot;b&quot;&lt;c&gt;.png"', self.summary(panel))
         self.assertNotIn("<c>", panel)
 
-    def test_no_image_no_img(self):
+    def test_video_only_row_gets_a_box_to_jira(self):
         panel = self.panel(epics() + [card("CS-50", attachment=[att("4", "v.mp4", "video/mp4", 10)])])
         self.assertNotIn("<img", panel)
-        self.assertIn('<span class="dv-tag">有影片</span>', panel)
+        self.assertIn('<details class="dv-item with-media" id="dv-CS-50"><summary>'
+                      '<a class="dv-media dv-media-out" href="https://example.atlassian.net/secure/attachment/4/v.mp4">'
+                      '<b>▶ 影片在 Jira</b><span>v.mp4</span><span class="muted">要登入 Jira</span></a>', panel)
+        self.assertNotIn('<span class="dv-tag">有影片</span>', panel)  # 框已經講了
+
+    def test_image_left_off_the_page_gets_a_box_to_jira(self):
+        # 超過上限、驗收中的卡沒下載的圖：不放圖，框連到 Jira 附件
+        big = att("3", "big.png", "image/png", deliverable.MAX_IMAGE_BYTES + 1)
+        panel = self.panel(epics() + [card("CS-50", attachment=[big])])
+        self.assertNotIn("<img", panel)
+        self.assertIn('<a class="dv-media dv-media-out" href="https://example.atlassian.net/secure/attachment/3/big.png">'
+                      '<b>畫面在 Jira</b><span>big.png</span>', panel)
+
+    def test_row_without_image_or_video_stays_full_width(self):
+        panel = self.panel(epics() + [card("CS-50", attachment=[att("6", "report.md", "text/markdown", 10)])])
+        self.assertIn('<details class="dv-item" id="dv-CS-50"><summary><span class="dv-name">', panel)
+        self.assertNotIn("dv-media", panel.split("<style")[0])
 
     def test_snapshot_4_keeps_the_old_wording(self):
-        # 今晚 W45 的 snapshot 4 附件只有檔名：照舊只列檔名，不放圖、不做附件連結
+        # 今晚 W45 的 snapshot 4 附件只有檔名：照舊只列檔名，不放圖、不做附件連結，列上也沒有框（認不出是不是圖）
         item = card("CS-50")
         item["deliverable"]["attachments"] = ["list.png", "demo.mp4"]
         panel = self.panel(epics() + [item], schema=4)
         self.assertFalse("<img" in panel, "snapshot 4 不該有圖")
+        self.assertIn('<details class="dv-item" id="dv-CS-50">', panel)
         self.assertIn('list.png、demo.mp4<br><span class="muted">這些檔案沒有放上週報，檔案在 Jira 卡 '
                       '<a href="https://example.atlassian.net/browse/CS-50">CS-50</a> 的附件</span>', panel)
 

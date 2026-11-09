@@ -124,11 +124,17 @@ class _Page:
         """site/ 底下的檔：首頁在 site/、各期在 site/reports/，相對路徑差一層。"""
         return esc(f"{'../' if self.in_reports_dir else ''}{path}")
 
+    def attachment_url(self, a: dict):
+        """Jira 的附件網址（要登入）；snapshot 4 沒有附件 id，回 None。"""
+        if not a["id"]:
+            return None
+        return f'https://{self.site}/secure/attachment/{quote(a["id"])}/{quote(a["filename"])}'
+
     def attachment(self, a: dict) -> str:
         """Deliverable 附件的檔名，連到 Jira 的附件網址（要登入）；snapshot 4 沒有附件 id，只寫檔名。"""
-        if not a["id"]:
+        url = self.attachment_url(a)
+        if not url:
             return esc(a["filename"])
-        url = f'https://{self.site}/secure/attachment/{quote(a["id"])}/{quote(a["filename"])}'
         return f'<a href="{esc(url)}">{esc(a["filename"])}</a>'
 
     def title(self, key, summary) -> str:
@@ -1144,14 +1150,38 @@ def _dv_full(card: dict, page) -> str:
     return f'<dl class="dv-full">{"".join(items)}</dl>'
 
 
+def _kind(a: dict) -> str:
+    return (a["mime"] or "").split("/")[0]
+
+
+def _dv_media(card: dict, page):
+    """列左邊的畫面：有放上週報的圖就放第一張，點了開原圖；圖沒放上週報（驗收中、超過上限、snapshot 4）或只有影片，
+    放一個框連到 Jira（要登入）；沒有圖也沒有影片回空字串，那列照舊全寬（2026-11-10 使用者要左圖（影）右文，
+    推翻 11-03 甲的「截圖影片只在展開後」）。回 (html, 框裡沒交代到、要在名稱旁標的那句)。"""
+    shown = [a for a in card["attachments"] if a["image"]]
+    videos = [a for a in card["attachments"] if _kind(a) == "video"]
+    if shown:
+        more = f'<span class="dv-count">共 {len(shown)} 張</span>' if len(shown) > 1 else ""
+        return (f'<a class="dv-media" href="{page.asset(shown[0]["image"])}">'
+                f'<img src="{page.asset(shown[0]["image"])}" alt="{esc(shown[0]["filename"])}" loading="lazy">{more}</a>',
+                "有影片" if videos else "")
+    hidden = videos or [a for a in card["attachments"] if _kind(a) == "image"]
+    if not hidden:
+        return "", ""
+    first = hidden[0]
+    url = page.attachment_url(first) or f'https://{page.site}/browse/{card["key"]}'
+    what = "影片" if _kind(first) == "video" else "畫面"
+    return (f'<a class="dv-media dv-media-out" href="{esc(url)}"><b>{"▶ " if what == "影片" else ""}{what}在 Jira</b>'
+            f'<span>{esc(first["filename"])}</span><span class="muted">要登入 Jira</span></a>', "")
+
+
 def _dv_row(card: dict, page, reviewing: bool = False) -> str:
-    """一列一個工具：版型甲（vault 的 jira-weekly-report · 成效說明多讀者改版，2026-11-03 使用者選甲）。"""
+    """一列一個工具：版型甲（vault 的 jira-weekly-report · 成效說明多讀者改版，2026-11-03 使用者選甲），
+    2026-11-10 起左邊放畫面、右邊文字。"""
     tags = '<span class="dv-tag new">本期新交付</span>' if card["new"] else ""
-    kinds = {(a["mime"] or "").split("/")[0] for a in card["attachments"]}
-    if "video" in kinds:
-        tags += '<span class="dv-tag">有影片</span>'
-    elif "image" in kinds:
-        tags += '<span class="dv-tag">有畫面</span>'
+    media, note = _dv_media(card, page)
+    if note:
+        tags += f'<span class="dv-tag">{note}</span>'
     act = ""
     if card["entry"]:
         act += f'<a class="dv-btn{" ghost" if reviewing else ""}" href="{esc(card["entry"][0])}">{"試用入口" if reviewing else "開始使用"}</a>'
@@ -1160,7 +1190,7 @@ def _dv_row(card: dict, page, reviewing: bool = False) -> str:
     acc = f'驗收通過 {card["passed"]}/{len(card["acceptance"])} 項' if card["acceptance"] else "驗收未填"
     when = "驗收中" if reviewing else f'{esc(fmt_date(card["done"])[5:])} 交付'
     delivered = linkify(card["delivered"]) if card["delivered"] else '<span class="muted">交付了什麼未填</span>'
-    return (f'<details class="dv-item" id="dv-{esc(card["key"])}"><summary>'
+    return (f'<details class="dv-item{" with-media" if media else ""}" id="dv-{esc(card["key"])}"><summary>{media}'
             f'<span class="dv-name">{esc(card["epic_summary"])}{tags}</span>'
             f'<span class="dv-one">{delivered}</span>{_dv_outcome(card)}'
             f'<span class="dv-side"><span class="dv-act">{act}</span><span class="muted">{acc}・{when}</span><span class="dv-open">完整說明</span></span>'
@@ -1557,6 +1587,14 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .dv-item{background:var(--surface);border:1px solid var(--line);border-radius:10px}
 .dv-item>summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;padding:14px 18px}
 .dv-item>summary::before{display:none}
+/* 左圖右文：圖不撐高列，絕對定位填滿左欄，列高由右邊文字決定；最矮 132px，免得只有一行字時圖只剩一條 */
+.dv-item.with-media>summary{grid-template-columns:200px minmax(0,1fr) auto;padding-left:14px}
+.with-media .dv-media{grid-column:1;grid-row:1/4;align-self:stretch;position:relative;display:block;min-height:132px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg)}
+.dv-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.dv-count{position:absolute;right:6px;bottom:6px;padding:0 7px;border-radius:4px;background:rgba(0,0,0,.62);color:#fff;font-size:12px}
+.dv-media-out{display:flex!important;flex-direction:column;justify-content:center;gap:2px;padding:10px 12px;font-size:12px;color:var(--muted);overflow-wrap:anywhere;border-style:dashed!important}
+.dv-media-out b{color:var(--accent);font-size:13px}.dv-media-out:hover{text-decoration:none;border-color:var(--accent)!important}
+.with-media .dv-name,.with-media .dv-one{grid-column:2}.with-media .dv-out{grid-column:2/-1}.with-media .dv-side{grid-column:3}
 .dv-item[open]>summary{border-bottom:1px dashed var(--line)}
 .dv-name{grid-column:1;font-weight:600;font-size:16px}
 .dv-tag{display:inline-block;margin-left:8px;padding:0 7px;border-radius:4px;font-size:12px;font-weight:500;vertical-align:2px;background:var(--soft);color:var(--muted)}
@@ -1715,6 +1753,9 @@ details[open]>summary::before{content:"▾"}
 .dv-sentence{font-size:17px}
 .dv-item>summary{grid-template-columns:minmax(0,1fr);padding:12px 14px}
 .dv-side{grid-column:1;grid-row:auto;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:space-between;text-align:left}
+.dv-item.with-media>summary{grid-template-columns:minmax(0,1fr);padding-left:14px}
+.with-media .dv-media{grid-row:auto;height:180px;min-height:0;margin-bottom:6px}.with-media .dv-media-out{height:auto}
+.with-media .dv-name,.with-media .dv-one,.with-media .dv-out,.with-media .dv-side{grid-column:1}
 .dv-one{-webkit-line-clamp:2}.dv-metric{-webkit-line-clamp:2}.dv-btn{padding:10px 18px}
 .dv-full{padding:6px 14px 14px}.dv-full>div{grid-template-columns:minmax(0,1fr);gap:2px}
 
