@@ -240,7 +240,8 @@ class MetricsAndPageTest(unittest.TestCase):
         # 單位是一排籤、各自切換，驗收中是最後一個籤；只有驗收中卡的單位（門市）不另開籤（2026-11-04 公開頁內部位址與單位頁籤 AC-5）
         self.assertIn(f'<nav class="dv-tabs" role="tablist" aria-label="支援單位">'
                       f'<a class="dv-tab" role="tab" id="tab-{guo}" href="#{guo}" aria-controls="{guo}" aria-selected="true">國旅 <span class="muted">1</span></a>'
-                      f'<a class="dv-tab" role="tab" id="tab-{zhi}" href="#{zhi}" aria-controls="{zhi}" aria-selected="false">直售 <span class="muted">1</span></a>'
+                      f'<a class="dv-tab" role="tab" id="tab-{zhi}" href="#{zhi}" aria-controls="{zhi}" aria-selected="false">直售 <span class="muted">1</span>'
+                      '<span class="dv-tab-new">本期 +1</span></a>'
                       '<a class="dv-tab" role="tab" id="tab-dv-review" href="#dv-review" aria-controls="dv-review" aria-selected="false">驗收中 <span class="muted">1</span></a></nav>', panel)
         self.assertIn(f'<section class="dv-unit active" id="{guo}" role="tabpanel" aria-labelledby="tab-{guo}">', panel)
         self.assertIn(f'<section class="dv-unit" id="{zhi}" role="tabpanel" aria-labelledby="tab-{zhi}">', panel)
@@ -249,6 +250,21 @@ class MetricsAndPageTest(unittest.TestCase):
         review = panel[panel.index('id="dv-review"'):]
         self.assertIn('<a class="dv-btn ghost" href="https://tool.example.com/start">試用入口</a>', review)
         self.assertIn("驗收中", review)
+
+    def test_this_period_list_sits_under_the_sentence_and_links_to_each_card(self):
+        # 2026-11-11 使用者要求：頁面是累計的，讀者看不出本期新增；同日裁「圖先不畫」，只列清單
+        issues = epics() + [issue("CS-30", level=1, status="doing", summary="門市專案", labels=["門市"]),
+                            card("CS-50"), card("CS-51", parent="CS-9", resolved=LAST_WEEK), card("CS-52", parent="CS-30", status="review")]
+        panel = self.page(run(issues)).split('id="delivered"')[1]
+        self.assertIn('。</p><div class="dv-fresh"><h4>本期新交付 <span class="muted">1</span></h4><ul class="dv-new">'
+                      '<li><a href="#dv-CS-50">批次付款連結</a> <span class="muted">直售</span></li></ul></div><nav class="dv-tabs"', panel)
+        self.assertNotIn('href="#dv-CS-51"', panel[:panel.index('<nav class="dv-tabs"')])
+        self.assertNotIn('<div class="bar"', panel[:panel.index('<nav class="dv-tabs"')])  # 不畫圖
+
+    def test_this_period_list_says_when_nothing_is_new(self):
+        panel = self.page(run(epics() + [card("CS-50", status="review")])).split('id="delivered"')[1]
+        self.assertIn("本期沒有新交付，下面都是之前交付的。", panel)
+        self.assertIn("<dt>本期新交付</dt>", panel)  # 有 Deliverable 資料的期才有這條名詞定義
 
     def test_unit_anchor_is_stable_and_hash_routing_finds_the_panel(self):
         self.assertEqual(deliverable_unit("直售"), deliverable_unit("直售"))
