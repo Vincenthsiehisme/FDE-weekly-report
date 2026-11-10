@@ -1219,21 +1219,8 @@ def _names(cards: list) -> list:
     return list(dict.fromkeys(c["label"] or UNLABELED for c in cards))
 
 
-def _dv_fresh(cards: list) -> str:
-    """頂端一句話下面的本期新交付清單（2026-11-11 使用者：頁面是累計的，讀者看不出本期新增），點了切到那張卡（#dv-卡號 走既有 hash 路由）。
-    同日先做了依單位與成效資料齊不齊兩塊橫條，使用者看完裁「圖先不畫」拿掉；成效值單位各張不同，加不起來（vault 的
-    jira-weekly-report · 總覽 epic 數與成效說明 overview）。"""
-    fresh = [c for c in cards if c["new"]]
-    if not fresh:
-        return ('<div class="dv-fresh"><h4>本期新交付 <span class="muted">0</span></h4>'
-                '<p class="muted small">本期沒有新交付。</p></div>')  # 不寫「下面都是之前交付的」：只有驗收中時下面沒有已交付（Codex 審 #47）
-    listed = "".join(f'<li><a href="#dv-{esc(c["key"])}">{esc(c["epic_summary"])}</a> <span class="muted">{esc(c["label"] or UNLABELED)}</span></li>'
-                     for c in fresh)
-    return f'<div class="dv-fresh"><h4>本期新交付 <span class="muted">{len(fresh)}</span></h4><ul class="dv-new">{listed}</ul></div>'
-
-
 def _delivered_panel(metrics, page) -> str:
-    """成效說明：頂端一句話、本期新交付清單（2026-11-11 加）、一排單位籤（有本期新交付的標「本期 +N」），一次顯示一個單位、一列一個工具，驗收中是最後一個籤（2026-11-03 鎖定 AC-1；
+    """成效說明：頂端一句話、一排單位籤（有本期新交付的標「本期 +N」，2026-11-11 加；同日加的頂端本期新交付清單使用者看過後拿掉），一次顯示一個單位、一列一個工具，驗收中是最後一個籤（2026-11-03 鎖定 AC-1；
     2026-11-04 使用者要單位籤各自切換，公開頁內部位址與單位頁籤）。只有驗收中卡的單位不另開籤，驗收通過才列進各單位。
     籤是 #unit-… 的連結：沒有 JS 時照舊是跳轉、各單位往下排。"""
     cards = metrics["deliverables"]
@@ -1279,7 +1266,7 @@ def _delivered_panel(metrics, page) -> str:
                   f'<summary><b>驗收中 <span class="muted">{len(reviewing)}</span></b>'
                   f'<span class="muted">上線了、還在驗收，驗收通過後列進各單位</span></summary>'
                   f'<div class="dv-rows">{"".join(_dv_row(c, page, reviewing=True) for c in reviewing)}</div></details>')
-    return (f'<p class="dv-sentence">{sentence}。</p>{_dv_fresh(cards)}'
+    return (f'<p class="dv-sentence">{sentence}。</p>'
             f'<nav class="dv-tabs" role="tablist" aria-label="支援單位">{nav}</nav>'
             f'{sections}{review}')
 
@@ -1324,7 +1311,7 @@ def _glossary(metrics) -> str:
         ("累計完成 epic／進行中 epic", "總覽資源的兩格，數的是專案列表裡的 epic，未歸屬 epic 不算。累計完成是 Jira 上已結案的 epic；"
                                  f"進行中是其餘的，含「{FULL_LABEL}」（小字寫幾個）。兩格加起來等於專案列表的 epic 數。"),
         *((("本期新交付", "成效說明裡 Deliverable 卡的 Jira 完成時間落在本週。成效說明列的是到本週為止全部已交付的專案（累計），"
-                         "本期新交付的在單位籤標「本期 +N」、列上標「本期新交付」，頂端另列一份清單。"),)
+                         "本期新交付的在單位籤標「本期 +N」、列上標「本期新交付」。"),)
           if metrics["deliverables"] is not None else ()),  # 沒抓 Deliverable 的舊期沒有成效說明，不放這條
         ("沒動", f"最後一次更新到本週結束過了幾天（只改 label 也算更新）。專案看底下的卡（不算 Kick off），卡看它自己；"
                  f"{IDLE_DAYS} 天以上列進「需要關注」，人卡與總覽專案列表的幾天沒動標警示色。Kick off 的「需要決定」沒有沒動這回事，有寫就列，附 Kick off 卡寫了幾天。"),
@@ -1678,9 +1665,6 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .dv-name{grid-column:1;font-weight:600;font-size:16px}
 .dv-tag{display:inline-block;margin-left:8px;padding:0 7px;border-radius:4px;font-size:12px;font-weight:500;vertical-align:2px;background:var(--soft);color:var(--muted)}
 .dv-tag.new{background:var(--done-bg);color:var(--done-fg);font-weight:600}
-.dv-fresh{margin:4px 0 18px}.dv-fresh h4{margin:6px 0 4px}
-.dv-new{list-style:none;margin:0;padding:10px 14px;columns:2;column-gap:28px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px}
-.dv-new li{break-inside:avoid;padding:3px 0}
 .dv-tab-new{margin-left:6px;padding:0 6px;border-radius:4px;font-size:11px;font-weight:600;background:var(--done-bg);color:var(--done-fg)}
 .dv-one{grid-column:1;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 /* 成效自成一段、跨過右側按鈕欄；左邊中性細線，現在值墨色粗體，指標與原本灰字（2026-11-04 使用者選丁） */
@@ -1871,7 +1855,6 @@ details[open]>summary::before{content:"▾"}
   .people{width:auto;flex:1 1 0;min-width:0}  /* 人與累計工時同一行（2026-10-07 總覽 UI 盤點 U8） */
   .sigs{width:auto}
   .lrow{flex-wrap:wrap}.lrow .lname{width:100%}.lrow .bar{flex-basis:100%}.lrow .num{width:auto;text-align:left}
-  .dv-new{columns:1}
   .idle,.cw,.dv{width:auto;text-align:left}
   .wrow>summary{grid-template-columns:12px minmax(0,1fr) auto auto}.wrow.head{grid-template-columns:minmax(0,1fr) auto auto}
   .wrow>summary>span:nth-child(2),.wrow.head>span:nth-child(2){display:none}
