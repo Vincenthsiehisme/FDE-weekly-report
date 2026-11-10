@@ -262,9 +262,15 @@ class MetricsAndPageTest(unittest.TestCase):
         self.assertNotIn('<div class="bar"', panel[:panel.index('<nav class="dv-tabs"')])  # 不畫圖
 
     def test_this_period_list_says_when_nothing_is_new(self):
+        # 只有驗收中、沒有任何已交付時，不能說下面是之前交付的（Codex 審 #47）
         panel = self.page(run(epics() + [card("CS-50", status="review")])).split('id="delivered"')[1]
-        self.assertIn("本期沒有新交付，下面都是之前交付的。", panel)
+        self.assertIn('<h4>本期新交付 <span class="muted">0</span></h4><p class="muted small">本期沒有新交付。</p>', panel)
+        self.assertNotIn("之前交付", panel)
         self.assertIn("<dt>本期新交付</dt>", panel)  # 有 Deliverable 資料的期才有這條名詞定義
+        # 只有上週交付的：同一句，列表不出現
+        panel = self.page(run(epics() + [card("CS-50", resolved=LAST_WEEK)])).split('id="delivered"')[1]
+        self.assertIn('<p class="muted small">本期沒有新交付。</p>', panel)
+        self.assertNotIn('<ul class="dv-new">', panel)
 
     def test_unit_anchor_is_stable_and_hash_routing_finds_the_panel(self):
         self.assertEqual(deliverable_unit("直售"), deliverable_unit("直售"))

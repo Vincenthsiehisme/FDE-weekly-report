@@ -1226,7 +1226,7 @@ def _dv_fresh(cards: list) -> str:
     fresh = [c for c in cards if c["new"]]
     if not fresh:
         return ('<div class="dv-fresh"><h4>本期新交付 <span class="muted">0</span></h4>'
-                '<p class="muted small">本期沒有新交付，下面都是之前交付的。</p></div>')
+                '<p class="muted small">本期沒有新交付。</p></div>')  # 不寫「下面都是之前交付的」：只有驗收中時下面沒有已交付（Codex 審 #47）
     listed = "".join(f'<li><a href="#dv-{esc(c["key"])}">{esc(c["epic_summary"])}</a> <span class="muted">{esc(c["label"] or UNLABELED)}</span></li>'
                      for c in fresh)
     return f'<div class="dv-fresh"><h4>本期新交付 <span class="muted">{len(fresh)}</span></h4><ul class="dv-new">{listed}</ul></div>'
