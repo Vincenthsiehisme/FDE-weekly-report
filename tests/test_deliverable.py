@@ -537,6 +537,14 @@ class ImagesPageTest(unittest.TestCase):
         self.assertIn('<a class="dv-media dv-media-out" href="https://example.atlassian.net/secure/attachment/3/big.png">'
                       '<b>畫面在 Jira</b><span>big.png</span>', panel)
 
+    def test_reviewing_card_shows_a_box_not_its_image(self):
+        # 驗收中的卡還沒過轉完成前的遮個資檢查，圖不上公開頁：列上只有連 Jira 的框（2026-11-10 裁定）
+        panel = self.panel(epics() + [card("CS-50", status="review", attachment=[att("1", "a.png", "image/png", 10)])])
+        self.assertIn('id="dv-review"', panel)
+        self.assertNotIn("<img", panel)
+        self.assertIn('<a class="dv-media dv-media-out" href="https://example.atlassian.net/secure/attachment/1/a.png">'
+                      '<b>畫面在 Jira</b><span>a.png</span>', panel)
+
     def test_row_without_image_or_video_stays_full_width(self):
         panel = self.panel(epics() + [card("CS-50", attachment=[att("6", "report.md", "text/markdown", 10)])])
         self.assertIn('<details class="dv-item" id="dv-CS-50"><summary><span class="dv-name">', panel)

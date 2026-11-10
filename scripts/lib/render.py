@@ -1169,7 +1169,9 @@ def _dv_media(card: dict, page):
     if not hidden:
         return "", ""
     first = hidden[0]
-    url = page.attachment_url(first) or f'https://{page.site}/browse/{card["key"]}'
+    url = page.attachment_url(first)
+    if not url:  # 會走到這裡的附件都有 mime，有 mime 就是 snapshot 5 以後、一定有 id；沒有就是資料壞了
+        raise ValueError(f'{card["key"]} 的附件 {first["filename"]} 有種類卻沒有附件 id，連不到 Jira')
     what = "影片" if _kind(first) == "video" else "畫面"
     return (f'<a class="dv-media dv-media-out" href="{esc(url)}"><b>{"▶ " if what == "影片" else ""}{what}在 Jira</b>'
             f'<span>{esc(first["filename"])}</span><span class="muted">要登入 Jira</span></a>', "")
@@ -1592,8 +1594,8 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .with-media .dv-media{grid-column:1;grid-row:1/4;align-self:stretch;position:relative;display:block;min-height:132px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg)}
 .dv-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
 .dv-count{position:absolute;right:6px;bottom:6px;padding:0 7px;border-radius:4px;background:rgba(0,0,0,.62);color:#fff;font-size:12px}
-.dv-media-out{display:flex!important;flex-direction:column;justify-content:center;gap:2px;padding:10px 12px;font-size:12px;color:var(--muted);overflow-wrap:anywhere;border-style:dashed!important}
-.dv-media-out b{color:var(--accent);font-size:13px}.dv-media-out:hover{text-decoration:none;border-color:var(--accent)!important}
+.with-media .dv-media-out{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:10px 12px;font-size:12px;color:var(--muted);overflow-wrap:anywhere;border-style:dashed}
+.dv-media-out b{color:var(--accent);font-size:13px}.with-media .dv-media-out:hover{text-decoration:none;border-color:var(--accent)}
 .with-media .dv-name,.with-media .dv-one{grid-column:2}.with-media .dv-out{grid-column:2/-1}.with-media .dv-side{grid-column:3}
 .dv-item[open]>summary{border-bottom:1px dashed var(--line)}
 .dv-name{grid-column:1;font-weight:600;font-size:16px}
