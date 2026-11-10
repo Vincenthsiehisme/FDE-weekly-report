@@ -251,26 +251,15 @@ class MetricsAndPageTest(unittest.TestCase):
         self.assertIn('<a class="dv-btn ghost" href="https://tool.example.com/start">試用入口</a>', review)
         self.assertIn("驗收中", review)
 
-    def test_this_period_list_sits_under_the_sentence_and_links_to_each_card(self):
-        # 2026-11-11 使用者要求：頁面是累計的，讀者看不出本期新增；同日裁「圖先不畫」，只列清單
-        issues = epics() + [issue("CS-30", level=1, status="doing", summary="門市專案", labels=["門市"]),
-                            card("CS-50"), card("CS-51", parent="CS-9", resolved=LAST_WEEK), card("CS-52", parent="CS-30", status="review")]
-        panel = self.page(run(issues)).split('id="delivered"')[1]
-        self.assertIn('。</p><div class="dv-fresh"><h4>本期新交付 <span class="muted">1</span></h4><ul class="dv-new">'
-                      '<li><a href="#dv-CS-50">批次付款連結</a> <span class="muted">直售</span></li></ul></div><nav class="dv-tabs"', panel)
-        self.assertNotIn('href="#dv-CS-51"', panel[:panel.index('<nav class="dv-tabs"')])
-        self.assertNotIn('<div class="bar"', panel[:panel.index('<nav class="dv-tabs"')])  # 不畫圖
-
-    def test_this_period_list_says_when_nothing_is_new(self):
-        # 只有驗收中、沒有任何已交付時，不能說下面是之前交付的（Codex 審 #47）
-        panel = self.page(run(epics() + [card("CS-50", status="review")])).split('id="delivered"')[1]
-        self.assertIn('<h4>本期新交付 <span class="muted">0</span></h4><p class="muted small">本期沒有新交付。</p>', panel)
-        self.assertNotIn("之前交付", panel)
-        self.assertIn("<dt>本期新交付</dt>", panel)  # 有 Deliverable 資料的期才有這條名詞定義
-        # 只有上週交付的：同一句，列表不出現
-        panel = self.page(run(epics() + [card("CS-50", resolved=LAST_WEEK)])).split('id="delivered"')[1]
-        self.assertIn('<p class="muted small">本期沒有新交付。</p>', panel)
+    def test_no_this_period_list_or_chart_above_the_unit_tabs(self):
+        # 2026-11-11 使用者：同日加的本期新交付清單（與更早拿掉的圖）不要，一句話後面直接接單位籤；本期新增看籤上「本期 +N」與列上標記
+        panel = self.page(run(epics() + [card("CS-50"), card("CS-51", parent="CS-9", resolved=LAST_WEEK)])).split('id="delivered"')[1]
+        self.assertIn('。</p><nav class="dv-tabs"', panel)
+        self.assertNotIn("dv-fresh", panel)
         self.assertNotIn('<ul class="dv-new">', panel)
+        self.assertIn('<span class="dv-tab-new">本期 +1</span>', panel)
+        self.assertIn('<span class="dv-tag new">本期新交付</span>', panel)
+        self.assertIn("<dt>本期新交付</dt>", panel)  # 有 Deliverable 資料的期才有這條名詞定義
 
     def test_unit_anchor_is_stable_and_hash_routing_finds_the_panel(self):
         self.assertEqual(deliverable_unit("直售"), deliverable_unit("直售"))
