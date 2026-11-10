@@ -212,7 +212,7 @@ def fetch_media(client, metrics: dict, r2=None) -> tuple:
         if r2 is None:
             r2 = r2_lib.R2Client(r2_lib.load_config(), r2_lib.load_credentials())
         uploaded = deliverable_lib.upload_videos(client, r2, metrics["deliverables"])
-    return uploaded, deliverable_lib.download_images(client, metrics["deliverables"], SITE)
+    return uploaded, deliverable_lib.download_images(client, deliverable_lib.shown_cards(metrics), SITE)
 
 
 def publish_week(snapshot: dict, *, fresh_fetch: bool, client=None, r2=None) -> dict:
@@ -297,6 +297,7 @@ def cmd_images(args) -> None:
     metrics = read_json(folder / "metrics.json")
     cards, epics, _, _ = excluded_view(snapshot, fresh_fetch=False)
     refuse_stale_metrics(args.week, metrics, cards, epics)
+    refuse_old_schema(args.week, metrics)
     client = JiraClient(load_credentials())
     client.verify()
     uploaded, written = fetch_media(client, metrics)
@@ -325,7 +326,7 @@ def refuse_old_schema(week: str, metrics: dict) -> None:
 
 def refuse_missing_images(week: str, metrics: dict) -> None:
     """成效說明要顯示的圖不在 site/ 裡：畫出來是破圖，直接失敗。prepare 會下載；重算舊期之後要補就跑 images。"""
-    missing = deliverable_lib.missing_images(metrics["deliverables"], SITE)
+    missing = deliverable_lib.missing_images(deliverable_lib.shown_cards(metrics), SITE)
     if missing:
         raise ValueError(f"{week} 成效說明的圖不在 site/：{'、'.join(missing)}，先跑 weekly.py images {week}")
 

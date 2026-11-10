@@ -126,7 +126,9 @@ class ViewsTest(unittest.TestCase):
         self.assertEqual((cards, checks), ([], []))  # 驗收中不列格式與沒填；待辦（自動開的空卡）不列
         self.assertEqual([c["key"] for c in reviewing], ["CS-50"])
         self.assertEqual((reviewing[0]["done"], reviewing[0]["week"], reviewing[0]["new"]), (None, None, False))
-        self.assertEqual([a["image"] for a in reviewing[0]["attachments"]], [None, None])  # 圖等轉完成才公開
+        # 驗收中的圖也公開（2026-11-10 使用者裁，推翻 11-03「轉完成才公開」）；影片照舊不上 R2
+        self.assertEqual([a["image"] for a in reviewing[0]["attachments"]], ["assets/deliverables/501.png", None])
+        self.assertEqual([a["video"] for a in reviewing[0]["attachments"]], [None, None])
         with tempfile.TemporaryDirectory() as d:
             self.assertEqual(deliverable.download_images(FakeDownloads({}), cards, Path(d)), [])
 
@@ -559,18 +561,19 @@ class ImagesPageTest(unittest.TestCase):
     def test_row_leads_with_the_image_and_grid_links_to_jira(self):
         panel = self.panel(epics() + [card("CS-50")])
         jira = '<a href="https://example.atlassian.net/secure/attachment/501/list.png">list.png</a>'
-        self.assertIn('<details class="dv-item with-media" id="dv-CS-50"><summary><a class="dv-media" href="assets/deliverables/501.png">'
+        self.assertIn('<details class="dv-item with-media" id="dv-CS-50"><summary><a class="dv-media" href="assets/deliverables/501.png" data-view="image" data-caption="list.png">'
                       '<img src="assets/deliverables/501.png" alt="list.png" loading="lazy"></a><span class="dv-name">', panel)
         self.assertEqual(panel.count("<img"), 2)  # 列左邊一張、完整說明一張
         self.assertIn('<span class="dv-tag">有影片</span>', self.summary(panel))  # 框裡放的是圖，影片要在名稱旁標
-        self.assertIn('<div class="dv-shots"><figure><a href="assets/deliverables/501.png"><img src="assets/deliverables/501.png"'
-                      f' alt="list.png" loading="lazy"></a><figcaption>{jira}</figcaption></figure></div>', panel)
+        self.assertIn('<div class="dv-shots"><figure><a href="assets/deliverables/501.png" data-view="image" data-caption="list.png">'
+                      f'<img src="assets/deliverables/501.png" alt="list.png" loading="lazy"></a><figcaption>{jira}</figcaption></figure></div>', panel)
         self.assertIn('<a href="https://example.atlassian.net/secure/attachment/502/demo.mov">demo.mov</a><br>'
                       '<span class="muted">這些檔案沒有放上週報，點檔名到 Jira 看（要登入）</span>', panel)
 
     def test_report_pages_point_one_level_up(self):
         panel = self.panel(epics() + [card("CS-50")], in_reports_dir=True)
-        self.assertIn('<a class="dv-media" href="../assets/deliverables/501.png"><img src="../assets/deliverables/501.png"', panel)
+        self.assertIn('<a class="dv-media" href="../assets/deliverables/501.png" data-view="image" data-caption="list.png">'
+                      '<img src="../assets/deliverables/501.png"', panel)
         self.assertNotIn('"assets/', panel)
 
     def test_more_images_are_counted_on_the_row(self):
@@ -610,7 +613,7 @@ class ImagesPageTest(unittest.TestCase):
         url = r2.public_url("7.mp4")
         video = f'<video src="{url}" controls preload="metadata" playsinline></video>'
         # 列上是連結包第一格、不帶 controls：summary 裡的播放器點了會展開那一列、播不了（2026-11-10 實測）
-        self.assertIn(f'<details class="dv-item with-media" id="dv-CS-50"><summary><a class="dv-media dv-video" href="{url}">'
+        self.assertIn(f'<details class="dv-item with-media" id="dv-CS-50"><summary><a class="dv-media dv-video" href="{url}" data-view="video" data-caption="v.mp4">'
                       f'<video src="{url}" preload="metadata" muted playsinline></video><span class="dv-play">▶ 播放</span></a>', panel)
         self.assertNotIn("controls", self.summary(panel))
         self.assertIn('<span class="dv-tag">有畫面</span>', self.summary(panel))  # 左邊是影片，另有截圖
@@ -618,13 +621,20 @@ class ImagesPageTest(unittest.TestCase):
         self.assertNotIn("這些檔案沒有放上週報", panel)
         self.assertEqual(panel.count("<video"), 2)  # 列上第一格、完整說明的播放器
 
-    def test_reviewing_card_shows_a_box_not_its_image(self):
-        # 驗收中的卡還沒過轉完成前的遮個資檢查，圖不上公開頁：列上只有連 Jira 的框（2026-11-10 裁定）
-        panel = self.panel(epics() + [card("CS-50", status="review", attachment=[att("1", "a.png", "image/png", 10)])])
-        self.assertIn('id="dv-review"', panel)
-        self.assertNotIn("<img", panel)
-        self.assertIn('<a class="dv-media dv-media-out" href="https://example.atlassian.net/secure/attachment/1/a.png">'
-                      '<b>畫面在 Jira</b><span>a.png</span>', panel)
+    def test_reviewing_card_shows_its_image_but_not_its_video(self):
+        # 驗收中的圖也公開（2026-11-10 使用者裁）；影片照舊不上 R2，列上放圖、名稱旁標有影片
+        panel = self.panel(epics() + [card("CS-50", status="review", attachment=[att("1", "a.png", "image/png", 10), att("2", "v.mp4", "video/mp4", 10)])])
+        review = panel[panel.index('id="dv-review"'):]
+        self.assertIn('<a class="dv-media" href="assets/deliverables/1.png" data-view="image" data-caption="a.png"><img', review)
+        self.assertNotIn("<video", review)
+        self.assertIn('<span class="dv-tag">有影片</span>', review)
+
+    def test_page_has_one_in_page_viewer(self):
+        # 點圖、點影片在頁內檢視窗打開，不離開頁面（2026-11-10 使用者回報開新視窗返回不易）；沒有 JS 照舊是連結
+        html = render(run(epics() + [card("CS-50")]), {"highlights": [], "epic_results": {}}, ["2026-W39"], in_reports_dir=False)
+        self.assertEqual(html.count('<dialog class="viewer" id="viewer"'), 1)
+        self.assertIn('event.target.closest("a[data-view]")', html)
+        self.assertIn("viewer.showModal()", html)
 
     def test_row_without_image_or_video_stays_full_width(self):
         panel = self.panel(epics() + [card("CS-50", attachment=[att("6", "report.md", "text/markdown", 10)])])

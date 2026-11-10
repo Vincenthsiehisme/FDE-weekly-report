@@ -11,7 +11,7 @@
 - 影片（VIDEO_TYPES、不超過 MAX_VIDEO_BYTES）由 prepare 上傳到 Cloudflare R2、頁面直接播（AC-5，2026-11-03 使用者裁
   「放 R2，限 100 MB」）；連線在 r2.py。
 - 頁籤列已完成的 Deliverable，依支援單位分段；Jira 狀態類別 indeterminate（審核中）的另列「驗收中」，
-  只解析不列格式檢查、不下載圖也不上傳影片（要轉完成、遮過個資才公開）。不鎖定，每週取當下內容。
+  只解析不列格式檢查、不上傳影片；圖照樣下載公開（2026-11-10 使用者裁，推翻 11-03「圖要轉完成才公開」）。不鎖定，每週取當下內容。
 - 頁面是公開網址：私有 IP 與 config/internal-hosts.json 列的主機，不管寫在哪一欄都換成 INTERNAL_MARK、列資料檢查；
   剩下的 https:// 網址才做成連結（vault 的 jira-weekly-report · 成效說明多讀者改版，2026-11-03 使用者裁「維持公開」）。
   scrub 也是整份公開頁的出口：render.esc 每個字都過它，工作卡、epic、Kick off 的資料檢查在 metrics 列
@@ -190,6 +190,11 @@ def download_images(client, cards: list, site_dir: Path) -> list:
             target.unlink()
         raise
     return written
+
+
+def shown_cards(metrics: dict) -> list:
+    """頁面上有列的 Deliverable：已完成加驗收中。圖兩種都下載、都檢查；影片只看已完成（videos 吃 deliverables）。"""
+    return (metrics["deliverables"] or []) + (metrics["deliverables_reviewing"] or [])
 
 
 def missing_images(cards: list, site_dir: Path) -> list:
@@ -373,8 +378,8 @@ def views(issues: list, period, hosts: frozenset = None) -> tuple:
         if scrubbed:
             checks.append(_check("deliverable_internal", item["key"], f"有 {scrubbed} 處內部網址或私有 IP，頁面換成「{INTERNAL_MARK}」；"
                                                                       "Deliverable 只放對外網址"))
-        if not done:
-            attachments = [dict(a, image=None, video=None) for a in attachments]
+        if not done:  # 驗收中的圖也公開（2026-11-10 使用者裁，推翻 11-03「轉完成才公開」）；影片照舊只連 Jira
+            attachments = [dict(a, video=None) for a in attachments]
         week = period_containing(parse_jira_time(item["resolved"])).week_id if done else None
         stale = done and bool(d["now_date"]) and (period.week_ending - date.fromisoformat(d["now_date"])) > timedelta(days=STALE_OUTCOME_DAYS)
         if done:

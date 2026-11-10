@@ -1108,7 +1108,8 @@ def _dv_shots(card: dict, page) -> str:
     if shown:
         out += '<div class="dv-shots">' + "".join(
             (f'<figure>{_video(a)}' if a["video"] else
-             f'<figure><a href="{page.asset(a["image"])}"><img src="{page.asset(a["image"])}" alt="{esc(a["filename"])}" loading="lazy"></a>')
+             f'<figure><a href="{page.asset(a["image"])}" data-view="image" data-caption="{esc(a["filename"])}">'
+             f'<img src="{page.asset(a["image"])}" alt="{esc(a["filename"])}" loading="lazy"></a>')
             + f'<figcaption>{page.attachment(a)}</figcaption></figure>' for a in shown) + "</div>"
     if others:
         where = ('點檔名到 Jira 看（要登入）' if all(a["id"] for a in others)
@@ -1172,11 +1173,12 @@ def _dv_media(card: dict, page):
         # 列是 <summary>：裡面放帶 controls 的 <video>，點畫面會展開那一列、播不了（2026-11-10 Browser pane 實測）。
         # 左邊放不帶 controls 的第一格包在連結裡，點了開 R2 的原檔直接播，跟圖點開原圖同一個做法；完整說明裡才是播放器
         url = esc(r2_lib.public_url(played[0]["video"]))
-        return (f'<a class="dv-media dv-video" href="{url}"><video src="{url}" preload="metadata" muted playsinline></video>'
+        return (f'<a class="dv-media dv-video" href="{url}" data-view="video" data-caption="{esc(played[0]["filename"])}">'
+                f'<video src="{url}" preload="metadata" muted playsinline></video>'
                 f'<span class="dv-play">▶ 播放</span></a>', "有畫面" if shown else "")
     if shown:
         more = f'<span class="dv-count">共 {len(shown)} 張</span>' if len(shown) > 1 else ""
-        return (f'<a class="dv-media" href="{page.asset(shown[0]["image"])}">'
+        return (f'<a class="dv-media" href="{page.asset(shown[0]["image"])}" data-view="image" data-caption="{esc(shown[0]["filename"])}">'
                 f'<img src="{page.asset(shown[0]["image"])}" alt="{esc(shown[0]["filename"])}" loading="lazy">{more}</a>',
                 "有影片" if videos else "")
     hidden = videos or [a for a in card["attachments"] if _kind(a) == "image"]
@@ -1416,6 +1418,7 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
 {_checks(metrics, page)}
 {_archive(weeks, period["week"], in_reports_dir)}
 </main>
+<dialog class="viewer" id="viewer" aria-label="檢視畫面"><button type="button" class="viewer-close" aria-label="關閉">關閉 ✕</button><div class="viewer-body"></div><p class="viewer-caption"></p></dialog>
 <script>
 (function () {{
   var el = document.getElementById("generated");
@@ -1477,6 +1480,28 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
   }}
   window.addEventListener("hashchange", fromHash);
   fromHash();
+  // 成效說明的圖與影片：在頁內檢視窗打開，不離開頁面（2026-11-10 使用者回報點圖開新視窗、返回不易）。
+  // 帶修飾鍵或中鍵照舊走連結；瀏覽器沒有 dialog 也照舊走連結
+  var viewer = document.getElementById("viewer");
+  if (viewer && viewer.showModal) {{
+    var body = viewer.querySelector(".viewer-body"), caption = viewer.querySelector(".viewer-caption");
+    document.addEventListener("click", function (event) {{
+      var link = event.target.closest && event.target.closest("a[data-view]");
+      if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      body.textContent = "";
+      var media = document.createElement(link.getAttribute("data-view") === "video" ? "video" : "img");
+      media.src = link.getAttribute("href");
+      if (media.tagName === "VIDEO") {{ media.controls = true; media.autoplay = true; media.playsInline = true; }}
+      else media.alt = link.getAttribute("data-caption") || "";
+      body.appendChild(media);
+      caption.textContent = link.getAttribute("data-caption") || "";
+      viewer.showModal();
+    }});
+    viewer.querySelector(".viewer-close").addEventListener("click", function () {{ viewer.close(); }});
+    viewer.addEventListener("click", function (event) {{ if (event.target === viewer) viewer.close(); }});  // 點外面收起
+    viewer.addEventListener("close", function () {{ body.textContent = ""; }});  // 影片跟著停
+  }}
 }})();
 </script>
 </body>
@@ -1608,6 +1633,14 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .with-media .dv-media{grid-column:1;grid-row:1/4;align-self:stretch;position:relative;display:block;min-height:132px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg)}
 .dv-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
 .dv-video{background:#000}.dv-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.viewer{max-width:94vw;max-height:94vh;padding:0;border:0;border-radius:10px;background:var(--surface);color:var(--text);overflow:hidden}
+.viewer::backdrop{background:rgba(0,0,0,.72)}
+.viewer-close{position:absolute;top:8px;right:8px;z-index:1;padding:4px 10px;border:0;border-radius:6px;background:rgba(0,0,0,.62);color:#fff;font:inherit;font-size:13px;cursor:pointer}
+/* 圖照寬度放、太長就在彈窗裡捲（827 那張 1280×4200 壓進一屏字看不清，2026-11-10 實看）；影片整支放進一屏 */
+.viewer-body{max-height:calc(94vh - 40px);overflow:auto}
+.viewer-body img{display:block;max-width:94vw;height:auto;margin:0 auto}
+.viewer-body video{display:block;max-width:94vw;max-height:calc(94vh - 40px);margin:0 auto;background:#000}
+.viewer-caption{margin:0;padding:8px 14px;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
 .dv-play{position:absolute;left:8px;bottom:8px;padding:2px 9px;border-radius:4px;background:rgba(0,0,0,.62);color:#fff;font-size:12px}
 .dv-shots video{display:block;width:100%;height:160px;border:1px solid var(--line);border-radius:6px;background:#000}
 .dv-count{position:absolute;right:6px;bottom:6px;padding:0 7px;border-radius:4px;background:rgba(0,0,0,.62);color:#fff;font-size:12px}
