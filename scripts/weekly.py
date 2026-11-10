@@ -30,7 +30,7 @@ from lib import deliverable as deliverable_lib  # noqa: E402
 from lib import kickoff as kickoff_lib  # noqa: E402
 from lib import r2 as r2_lib  # noqa: E402
 from lib.jira import JiraClient, load_credentials  # noqa: E402
-from lib.metrics import compute, drop_excluded_epics, kickoff_by_epic  # noqa: E402
+from lib.metrics import SCHEMA, compute, drop_excluded_epics, kickoff_by_epic  # noqa: E402
 from lib.narrative import validate  # noqa: E402
 from lib.period import TZ, period_ending, period_for, period_from_dict, wait_for_end  # noqa: E402
 from lib.render import render  # noqa: E402
@@ -205,7 +205,8 @@ def _without(tokens, keys: set):
 
 def fetch_media(client, metrics: dict, r2=None) -> tuple:
     """成效說明要的影片上傳 R2、圖下載進 site/，回傳 (上傳的影片鍵, 新寫的圖)。影片先做：上傳回滾不了，
-    放在寫任何檔之前，失敗時 site/ 與 data/ 都沒動。有影片要傳才讀 R2 憑證，沒有影片的週不需要它。"""
+    放在寫任何檔之前，失敗時 site/ 與 data/ 都沒動。這一期有要播的影片就讀 R2 憑證（要 HEAD 查在不在，
+    已經全部上傳過也一樣）；沒有要播的影片的週不需要它。"""
     uploaded = []
     if deliverable_lib.videos(metrics["deliverables"]):
         if r2 is None:
@@ -316,6 +317,12 @@ def refuse_stale_metrics(week: str, metrics: dict, excluded_cards: dict, exclude
         raise ValueError(f"{week} 的 metrics.json 是用另一份 config/excluded.json 的 cards 算的（不同的是：{'、'.join(changed) or '沒有記錄'}），先跑 metrics {week} 重算")
 
 
+def refuse_old_schema(week: str, metrics: dict) -> None:
+    """render 也擋，但它最後才跑：舊 schema 的 attachments 沒有 video，缺圖缺影片的檢查會先丟 KeyError，看不到要重算。"""
+    if metrics.get("schema") != SCHEMA:
+        raise ValueError(f"{week} 的 metrics schema 是 {metrics.get('schema')}，頁面需要 {SCHEMA}：先用 weekly.py metrics {week} 重算")
+
+
 def refuse_missing_images(week: str, metrics: dict) -> None:
     """成效說明要顯示的圖不在 site/ 裡：畫出來是破圖，直接失敗。prepare 會下載；重算舊期之後要補就跑 images。"""
     missing = deliverable_lib.missing_images(metrics["deliverables"], SITE)
@@ -341,6 +348,7 @@ def cmd_finalize(args) -> None:
     cards, epics, issues, _ = excluded_view(snapshot, fresh_fetch=False)
     refuse_stale_metrics(week, metrics, cards, epics)
     validate(narrative, metrics, {i["key"] for i in issues})
+    refuse_old_schema(week, metrics)
     refuse_missing_images(week, metrics)
     refuse_missing_videos(week, metrics)
 
@@ -353,6 +361,7 @@ def cmd_finalize(args) -> None:
         index_metrics = read_json(week_dir(latest) / "metrics.json")
         index_narrative = read_json(week_dir(latest) / "narrative.json")
         refuse_stale_metrics(latest, index_metrics, cards, epics)
+        refuse_old_schema(latest, index_metrics)
         refuse_missing_images(latest, index_metrics)
         refuse_missing_videos(latest, index_metrics)
     # 兩頁都畫完才寫：首頁畫失敗時不能留下已更新的週報頁

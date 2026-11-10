@@ -124,10 +124,13 @@ def public_exists(url: str) -> bool:
     try:
         request = urllib.request.Request(url, method="HEAD", headers={"User-Agent": USER_AGENT})
         with urllib.request.urlopen(request, timeout=30) as response:
-            return response.status == 200
+            status = response.status
     except urllib.error.HTTPError as err:
         if err.code == 404:
             return False
         raise R2Error(f"HEAD {url} 回 HTTP {err.code}") from None
     except urllib.error.URLError as err:
         raise R2Error(f"連不到 {url}：{err.reason}") from None
+    if status != 200:  # 當成「不在」會叫人跑 images，images 又因 R2 HEAD 200 跳過，訊息兜不起來
+        raise R2Error(f"HEAD {url} 回 HTTP {status}，不是 200")
+    return True

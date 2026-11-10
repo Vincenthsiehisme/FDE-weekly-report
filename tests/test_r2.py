@@ -131,6 +131,11 @@ class ClientTest(unittest.TestCase):
         self.assertEqual(request.get_header("Content-length"), "4")
         self.assertIn("SignedHeaders=content-length;content-type;host;x-amz-content-sha256;x-amz-date", request.get_header("Authorization"))
 
+    def test_put_2xx_other_than_200_fails(self):
+        with mock.patch.object(r2.urllib.request, "urlopen", return_value=FakeResponse(204)):
+            with self.assertRaisesRegex(r2.R2Error, "不是 200"):
+                self.client().put("502.mp4", b"data", "video/mp4")
+
     def test_put_error_names_the_object_not_the_secret(self):
         with mock.patch.object(r2.urllib.request, "urlopen", side_effect=http_error(403, b"<Error>AccessDenied</Error>")):
             with self.assertRaises(r2.R2Error) as ctx:
@@ -145,6 +150,9 @@ class ClientTest(unittest.TestCase):
         self.assertEqual(opened.call_args[0][0].get_header("User-agent"), "fde-weekly-report")
         with mock.patch.object(r2.urllib.request, "urlopen", side_effect=http_error(404)):
             self.assertFalse(r2.public_exists("https://pub-x.r2.dev/502.mp4"))
+        with mock.patch.object(r2.urllib.request, "urlopen", return_value=FakeResponse(204)):
+            with self.assertRaisesRegex(r2.R2Error, "不是 200"):
+                r2.public_exists("https://pub-x.r2.dev/502.mp4")
         with mock.patch.object(r2.urllib.request, "urlopen", side_effect=http_error(429)):
             with self.assertRaisesRegex(r2.R2Error, "429"):
                 r2.public_exists("https://pub-x.r2.dev/502.mp4")

@@ -405,6 +405,11 @@ class ImagesTest(unittest.TestCase):
         cards, _ = views(epics() + [item])
         self.assertEqual(cards[0]["attachments"], [{"id": None, "filename": "old.png", "mime": None, "size": None, "image": None, "video": None}])
 
+    def test_attachment_id_must_be_digits(self):
+        # id 會變成 site/ 底下的檔名與 R2 物件鍵，不能帶 . 或 /
+        with self.assertRaisesRegex(ValueError, "附件 id 不是數字"):
+            deliverable.normalize(fields(attachment=[{"id": "../x", "filename": "a.png", "mimeType": "image/png", "size": 1}]))
+
     def test_attachment_without_id_fails_loud(self):
         with self.assertRaisesRegex(ValueError, "附件少了 id"):
             deliverable.normalize(fields(attachment=[{"filename": "a.png", "mimeType": "image/png", "size": 1}]))
@@ -601,7 +606,8 @@ class ImagesPageTest(unittest.TestCase):
 
     def test_played_video_leads_the_row_and_sits_in_the_grid(self):
         panel = self.panel(epics() + [card("CS-50", attachment=[att("501", "list.png", "image/png", len(PNG)), att("7", "v.mp4", "video/mp4", 10)])])
-        url = "https://pub-bbf15d266c104e9bb1a663e4f14c0008.r2.dev/7.mp4"
+        from lib import r2
+        url = r2.public_url("7.mp4")
         video = f'<video src="{url}" controls preload="metadata" playsinline></video>'
         # 列上是連結包第一格、不帶 controls：summary 裡的播放器點了會展開那一列、播不了（2026-11-10 實測）
         self.assertIn(f'<details class="dv-item with-media" id="dv-CS-50"><summary><a class="dv-media dv-video" href="{url}">'

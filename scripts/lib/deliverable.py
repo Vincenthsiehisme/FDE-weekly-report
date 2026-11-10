@@ -111,6 +111,10 @@ def _attachment(raw: dict) -> dict:
     for name in ("id", "filename", "mimeType", "size"):
         if raw.get(name) is None:
             raise ValueError(f"Deliverable 附件少了 {name}：{raw.get('filename') or raw.get('id')}")
+    # id 同時是公開的 site/assets/deliverables/<id>.<副檔名> 與 R2 物件鍵：Jira 的附件 id 一律是數字，
+    # 不是數字就失敗，不讓 . 或 / 進路徑（2026-11-10 fable 審 #45）
+    if not str(raw["id"]).isdigit():
+        raise ValueError(f"Deliverable 附件 id 不是數字：{raw['filename']}，不放上週報")
     return {"id": str(raw["id"]), "filename": raw["filename"], "mime": raw["mimeType"], "size": raw["size"]}
 
 

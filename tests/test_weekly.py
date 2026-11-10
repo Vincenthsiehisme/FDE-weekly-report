@@ -599,11 +599,24 @@ class DeliverableImagesTest(AtomicWriteTest):
             with mock.patch.object(weekly.r2_lib, "public_exists", return_value=False) as head:
                 with self.assertRaisesRegex(ValueError, "影片不在 R2：7.mp4.*weekly.py images 2026-W39"):
                     weekly.main(["finalize", "2026-W39"])
-            head.assert_called_with("https://pub-bbf15d266c104e9bb1a663e4f14c0008.r2.dev/7.mp4")
+            head.assert_called_with(weekly.r2_lib.public_url("7.mp4"))
             self.assertFalse((site / "index.html").exists())
             with mock.patch.object(weekly.r2_lib, "public_exists", return_value=True):
                 weekly.main(["finalize", "2026-W39"])
-        self.assertIn("r2.dev/7.mp4", (site / "index.html").read_text(encoding="utf-8"))
+        self.assertIn(weekly.r2_lib.public_url("7.mp4"), (site / "index.html").read_text(encoding="utf-8"))
+
+    def test_finalize_names_the_old_schema_before_checking_media(self):
+        site = self.root / "site"
+        with mock.patch.object(weekly, "SITE", site):
+            weekly.publish_week(self._video_snap(), fresh_fetch=False)
+            path = self.root / "data" / "2026-W39" / "metrics.json"
+            old = json.loads(path.read_text(encoding="utf-8"))
+            old["schema"] = 18
+            path.write_text(json.dumps(old), encoding="utf-8")
+            (self.root / "data" / "2026-W39" / "narrative.json").write_text('{"highlights": [], "epic_results": {}}', encoding="utf-8")
+            with mock.patch.object(weekly.r2_lib, "public_exists", side_effect=AssertionError("不該查")):
+                with self.assertRaisesRegex(ValueError, "schema 是 18.*weekly.py metrics 2026-W39"):
+                    weekly.main(["finalize", "2026-W39"])
 
     def test_finalize_refuses_missing_images_until_the_images_command_runs(self):
         site = self.root / "site"
