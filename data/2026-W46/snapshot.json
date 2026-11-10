@@ -1,9 +1,9 @@
 {
   "counts": {
     "CS": 50,
-    "FDEPROJECT": 1258
+    "FDEPROJECT": 1264
   },
-  "fetched_at": "2026-11-11T05:28:18.636478+08:00",
+  "fetched_at": "2026-11-11T07:36:36.823352+08:00",
   "issues": [
     {
       "assignee": "hubertwang",
@@ -2981,7 +2981,7 @@
       "status_since": null,
       "summary": "MeetPilot 團隊會議記錄",
       "type": "大型工作",
-      "updated": "2026-10-19T10:43:34.272+0800"
+      "updated": "2026-11-11T07:27:51.325+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -3797,7 +3797,7 @@
       "status_since": null,
       "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
       "type": "大型工作",
-      "updated": "2026-10-07T05:54:20.653+0800"
+      "updated": "2026-11-11T07:27:59.871+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -6312,7 +6312,7 @@
       "status_since": null,
       "summary": "LiLi 自建系統需求盤點表",
       "type": "大型工作",
-      "updated": "2026-10-19T11:57:43.709+0800"
+      "updated": "2026-11-11T07:27:42.554+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -16869,7 +16869,7 @@
       "status_since": null,
       "summary": "LiLi 客服側窗插件",
       "type": "大型工作",
-      "updated": "2026-10-20T08:33:54.928+0800"
+      "updated": "2026-11-11T07:27:27.151+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -17044,7 +17044,7 @@
       "status_since": null,
       "summary": "LiLi 客服側窗插件：接線中查詢",
       "type": "大型工作",
-      "updated": "2026-10-27T10:28:52.257+0800"
+      "updated": "2026-11-11T07:27:35.682+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -18293,7 +18293,7 @@
       "status_since": null,
       "summary": "LINE 會議助手 bot 標準化",
       "type": "大型工作",
-      "updated": "2026-11-02T06:07:03.266+0800"
+      "updated": "2026-11-11T07:28:07.837+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -21633,7 +21633,7 @@
       "due": null,
       "key": "FDEPROJECT-693",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 1,
       "moved_in": null,
@@ -21647,7 +21647,7 @@
       "status_since": null,
       "summary": "FDE 自有主機維運與資安修補",
       "type": "大型工作",
-      "updated": "2026-11-05T07:45:28.099+0800"
+      "updated": "2026-11-11T05:57:16.476+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -21712,7 +21712,7 @@
       "due": null,
       "key": "FDEPROJECT-694",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -21726,7 +21726,7 @@
       "status_since": "2026-11-04T23:39:22.068000+00:00",
       "summary": "完成 FDE 自有主機維運與資安修補",
       "type": "Kick off",
-      "updated": "2026-11-10T17:25:50.233+0800"
+      "updated": "2026-11-11T05:59:42.669+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -22464,7 +22464,7 @@
       "due": null,
       "key": "FDEPROJECT-723",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -22478,7 +22478,7 @@
       "status_since": "2026-10-27T09:17:31.195000+00:00",
       "summary": "盤點經手內網機的資安破口與閒置服務",
       "type": "任務",
-      "updated": "2026-11-02T16:14:31.670+0800"
+      "updated": "2026-11-11T05:59:10.695+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -22486,7 +22486,7 @@
       "due": null,
       "key": "FDEPROJECT-724",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -22500,7 +22500,7 @@
       "status_since": "2026-10-27T09:17:34.144000+00:00",
       "summary": "盤點並修補雄獅機器的 eMudhra／LiteLLM／Node 漏洞，關閉閒置服務",
       "type": "任務",
-      "updated": "2026-11-02T16:14:32.435+0800"
+      "updated": "2026-11-11T05:59:19.230+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -22508,7 +22508,7 @@
       "due": null,
       "key": "FDEPROJECT-725",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -22522,7 +22522,7 @@
       "status_since": "2026-10-27T09:17:37.283000+00:00",
       "summary": "升級 p-ai-dify 監控套件與 Langfuse，Grafana 改成匿名唯讀",
       "type": "任務",
-      "updated": "2026-11-02T16:14:33.190+0800"
+      "updated": "2026-11-11T05:58:50.774+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -22530,7 +22530,7 @@
       "due": null,
       "key": "FDEPROJECT-726",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -22544,7 +22544,7 @@
       "status_since": "2026-10-27T09:17:40.321000+00:00",
       "summary": "補上 OSIP 後端 certifi 憑證修補並上正式機",
       "type": "任務",
-      "updated": "2026-11-02T16:14:33.867+0800"
+      "updated": "2026-11-11T05:59:28.151+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -22552,7 +22552,7 @@
       "due": null,
       "key": "FDEPROJECT-727",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -22566,7 +22566,7 @@
       "status_since": "2026-10-27T09:17:43.175000+00:00",
       "summary": "盤點雄獅機器的 HTTP2Shell（Brotli 解碼漏洞）影響範圍",
       "type": "任務",
-      "updated": "2026-11-02T16:14:34.651+0800"
+      "updated": "2026-11-11T06:00:20.428+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -22574,7 +22574,7 @@
       "due": null,
       "key": "FDEPROJECT-728",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -22588,7 +22588,7 @@
       "status_since": "2026-10-27T09:17:46.167000+00:00",
       "summary": "回顧近一週資安處理的資料外洩風險並列出未收尾項目",
       "type": "任務",
-      "updated": "2026-11-02T16:14:35.442+0800"
+      "updated": "2026-11-11T06:00:28.832+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -22596,7 +22596,7 @@
       "due": null,
       "key": "FDEPROJECT-729",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -22610,7 +22610,7 @@
       "status_since": "2026-10-27T09:17:49.107000+00:00",
       "summary": "盤點 p-ot-backstage／p-ai-dify／p-other-difyline 三台主機的申請單與 owner",
       "type": "Spike",
-      "updated": "2026-11-02T16:14:36.093+0800"
+      "updated": "2026-11-11T06:00:37.911+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -22618,7 +22618,7 @@
       "due": null,
       "key": "FDEPROJECT-730",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -22632,7 +22632,7 @@
       "status_since": "2026-10-27T09:17:52.080000+00:00",
       "summary": "搬遷 FDE 服務回自有主機：盤點 .9／.7 資源、.7 騰出空間並開同仁帳號",
       "type": "任務",
-      "updated": "2026-11-02T16:14:36.855+0800"
+      "updated": "2026-11-11T06:00:46.154+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -22640,7 +22640,7 @@
       "due": null,
       "key": "FDEPROJECT-731",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -22654,7 +22654,7 @@
       "status_since": "2026-10-27T09:17:54.889000+00:00",
       "summary": "整理服務搬遷到 p-ai-dify 需申請的 SERP 單與草稿",
       "type": "任務",
-      "updated": "2026-11-02T16:14:37.612+0800"
+      "updated": "2026-11-11T06:00:54.630+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -25475,7 +25475,7 @@
       "due": null,
       "key": "FDEPROJECT-803",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -25489,7 +25489,7 @@
       "status_since": "2026-10-29T09:20:54.145000+00:00",
       "summary": "處理 p-ot-backstage 硬碟寫滿導致測試站資料庫停擺並加上 build 防呆",
       "type": "任務",
-      "updated": "2026-11-03T23:43:23.199+0800"
+      "updated": "2026-11-11T06:01:02.888+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -25629,7 +25629,7 @@
       "due": null,
       "key": "FDEPROJECT-810",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -25643,7 +25643,7 @@
       "status_since": "2026-11-02T03:36:08.497000+00:00",
       "summary": "申請 FDE 主機資源（.9 硬碟 500G、.7 CPU 4 核、1TB 資料主機）",
       "type": "任務",
-      "updated": "2026-11-02T11:36:08.497+0800"
+      "updated": "2026-11-11T06:01:14.917+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -26200,7 +26200,7 @@
       "due": null,
       "key": "FDEPROJECT-829",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -26214,7 +26214,7 @@
       "status_since": "2026-11-04T23:45:18.925000+00:00",
       "summary": "FDE 自有主機維運與資安修補",
       "type": "Deliverable",
-      "updated": "2026-11-05T07:45:18.925+0800"
+      "updated": "2026-11-11T05:56:26.234+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -26285,7 +26285,7 @@
       "due": null,
       "key": "FDEPROJECT-832",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -26299,7 +26299,7 @@
       "status_since": "2026-10-29T09:28:40.115000+00:00",
       "summary": "備份 ITTC 公司金鑰到 1Password（Lion Work）",
       "type": "任務",
-      "updated": "2026-10-29T17:28:40.115+0800"
+      "updated": "2026-11-11T06:01:28.530+0800"
     },
     {
       "assignee": "Shira",
@@ -27872,7 +27872,7 @@
       "due": null,
       "key": "FDEPROJECT-882",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -27886,7 +27886,7 @@
       "status_since": "2026-10-30T10:38:03.560000+00:00",
       "summary": "升級 .125 n8n 並恢復 un8n.liontravel.com",
       "type": "任務",
-      "updated": "2026-10-30T18:38:03.560+0800"
+      "updated": "2026-11-11T06:01:37.813+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -27894,7 +27894,7 @@
       "due": null,
       "key": "FDEPROJECT-883",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -27908,7 +27908,7 @@
       "status_since": "2026-10-30T10:38:05.984000+00:00",
       "summary": "盤點 .9 硬碟滿 100% 可清空間",
       "type": "任務",
-      "updated": "2026-11-03T23:43:24.663+0800"
+      "updated": "2026-11-11T06:01:46.974+0800"
     },
     {
       "assignee": "陳勁佑 Jincoco",
@@ -29156,7 +29156,7 @@
       "due": null,
       "key": "FDEPROJECT-919",
       "labels": [
-        "雄獅"
+        "FDE_team"
       ],
       "level": 0,
       "moved_in": null,
@@ -29170,7 +29170,7 @@
       "status_since": "2026-11-02T03:08:19.211000+00:00",
       "summary": "建置雄獅自有主機的 Docker 管理介面（Portainer）",
       "type": "任務",
-      "updated": "2026-11-02T11:08:19.211+0800"
+      "updated": "2026-11-11T06:01:57.736+0800"
     },
     {
       "assignee": "王碩緯",
@@ -29558,13 +29558,13 @@
       "points": null,
       "progress_seen": null,
       "project": "FDEPROJECT",
-      "resolved": "2026-11-10T18:41:07.258+0800",
-      "status": "完成",
-      "status_category": "done",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
       "status_since": null,
       "summary": "[國旅]完成詢價需求單按需同步派團表",
       "type": "大型工作",
-      "updated": "2026-11-10T18:41:07.281+0800"
+      "updated": "2026-11-11T05:54:17.654+0800"
     },
     {
       "assignee": "Vivian",
@@ -29602,15 +29602,15 @@
       "moved_in": null,
       "parent": "FDEPROJECT-933",
       "points": null,
-      "progress_seen": false,
+      "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": "2026-11-10T18:14:45.110+0800",
-      "status": "完成",
-      "status_category": "done",
-      "status_since": "2026-11-10T10:14:45.125000+00:00",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "status_since": "2026-11-10T21:54:12.773000+00:00",
       "summary": "[國旅]完成詢價需求單按需同步派團表",
       "type": "Deliverable",
-      "updated": "2026-11-10T18:14:45.125+0800"
+      "updated": "2026-11-11T05:54:12.773+0800"
     },
     {
       "assignee": "Vivian",
@@ -29624,13 +29624,13 @@
       "points": null,
       "progress_seen": null,
       "project": "FDEPROJECT",
-      "resolved": "2026-11-10T18:41:12.175+0800",
-      "status": "完成",
-      "status_category": "done",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
       "status_since": null,
       "summary": "[國旅]完成團確單自動產生網站：上傳成本表即產出團確單",
       "type": "大型工作",
-      "updated": "2026-11-10T18:41:12.190+0800"
+      "updated": "2026-11-11T05:55:09.465+0800"
     },
     {
       "assignee": "Vivian",
@@ -29661,15 +29661,15 @@
       "moved_in": null,
       "parent": "FDEPROJECT-935",
       "points": null,
-      "progress_seen": false,
+      "progress_seen": true,
       "project": "FDEPROJECT",
-      "resolved": "2026-11-10T18:14:49.756+0800",
-      "status": "完成",
-      "status_category": "done",
-      "status_since": "2026-11-10T10:14:49.778000+00:00",
+      "resolved": null,
+      "status": "進行中",
+      "status_category": "indeterminate",
+      "status_since": "2026-11-10T21:54:54.843000+00:00",
       "summary": "[國旅]完成團確單自動產生網站：上傳成本表即產出團確單",
       "type": "Deliverable",
-      "updated": "2026-11-10T18:14:49.778+0800"
+      "updated": "2026-11-11T05:54:54.843+0800"
     },
     {
       "assignee": "Vivian",
@@ -33903,7 +33903,7 @@
         "not_done": "INF 不寫入 Excel，由 OP 人工處理 → 不做（依 user 回饋）\n未上架 Chrome 線上應用程式商店，目前用開發人員模式安裝\n與其他開票相關插件整合 → 未做（Vincent 10/06 建議）",
         "now": "套件產出加核對約 3 分鐘／團，產出後不需要手改",
         "now_date": "2026-11-04",
-        "other": "已提供給所有韓國線 OP 使用，目前沒有團還在手 key；每週約 5～10 團，最常用 BX、OZ；每團省 2～7 分鐘，每週約省 10～70 分鐘；試用至今未回報問題，也沒有調整需求。",
+        "other": "已提供給所有韓國線 OP 使用，目前沒有團還在手 key；試用至今未回報問題，也沒有調整需求；套件支援的 RF、KE、OZ、BX、7C、ZE 一年 551 團（SERP 線控團體，2025/11～2026/10 出團、團體且成團），以每團省 2～7 分鐘算，一年約省 18～64 小時",
         "source": "user 張佳雯訪談（2026-11-04，手 key 5 分鐘、套件 3 分鐘）；10 分鐘為 FDE 估計（含核對時間）",
         "versions": []
       },
@@ -33924,7 +33924,7 @@
       "status_since": "2026-11-04T09:06:37.162000+00:00",
       "summary": "[東北亞]韓國線 SERP 旅客資料自動填入航空公司名單",
       "type": "Deliverable",
-      "updated": "2026-11-04T17:06:37.162+0800"
+      "updated": "2026-11-11T06:06:16.562+0800"
     },
     {
       "assignee": "Vivian",
@@ -35766,7 +35766,14 @@
       "assignee": "Vincent Hsieh",
       "created": "2026-11-09T07:03:30.004+0800",
       "deliverable": {
-        "attachments": [],
+        "attachments": [
+          {
+            "filename": "lili-faq · 知識庫重構 · 成效影片.mp4",
+            "id": "15038",
+            "mime": "video/mp4",
+            "size": 12113711
+          }
+        ],
         "base": "3 人 × 2 週以上（人工逐題盤查）",
         "base_date": "2026-10-30",
         "delivered": "LiLi 的 FAQ 還原成有來源、可查證的知識文件：管理者與編輯依分類查每一句知識出自哪幾題、查證結果如何，每題答案改由知識句重寫；知識盤查從人工逐題改成程式加 AI 可重跑",
@@ -35801,7 +35808,7 @@
       "status_since": "2026-11-09T03:36:32.564000+00:00",
       "summary": "LiLi 知識庫重構（FAQ 還原成知識文件）",
       "type": "Deliverable",
-      "updated": "2026-11-10T08:13:48.160+0800"
+      "updated": "2026-11-11T07:17:47.887+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -36755,12 +36762,19 @@
       "assignee": "Vincent Hsieh",
       "created": "2026-11-10T07:57:30.761+0800",
       "deliverable": {
-        "attachments": [],
+        "attachments": [
+          {
+            "filename": "fde-leave-calendar · 團隊行程推播 · 成效影片.mp4",
+            "id": "15039",
+            "mime": "video/mp4",
+            "size": 13066723
+          }
+        ],
         "base": null,
         "base_date": null,
         "delivered": "FDE 團隊成員在 LINE 官方帳號或網頁登記會議與休假後，團隊 Teams 頻道每個平日早上自動收到當天行程，白天有變動再推更新，不用打開日曆",
         "description": [
-          "Acceptance：行程卡只列公開日曆當天有效的姓名與類別，取消的不列 → 未驗，正式頻道待看前一天有全天休假的平日；全天排前、其餘依開始時間排，沒行程也貼一則 → 通過，本機測試 2026-11-09；用 Teams Workflows webhook 貼卡片並附「打開日曆」按鈕 → 通過，正式頻道 2026-11-09；Teams 回錯或沒設網址時報錯、不假裝成功 → 通過，本機測試 2026-11-09；平日 8 點自動貼當天行程卡 → 通過，正式頻道 2026-11-10；週六、週日不貼 → 未驗，正式頻道 2026-11-14 看；行程卡貼出後到 18 點，網頁或 LINE 登記、取消今天的行程時頻道發更新通知 → 未驗，正式頻道待驗；既有網頁、LINE 登記與忙碌連動不變 → 通過，本機測試 2026-11-09",
+          "Acceptance：行程卡只列公開日曆當天有效的姓名與類別，取消的不列 → 未驗，正式頻道待看前一天有全天休假的平日；全天排前、其餘依開始時間排，沒行程也貼一則 → 通過，本機測試 2026-11-09；用 Teams Workflows webhook 貼卡片並附「打開日曆」按鈕 → 通過，正式頻道 2026-11-09；Teams 回錯或沒設網址時報錯、不假裝成功 → 通過，本機測試 2026-11-09；平日 8 點自動貼當天行程卡 → 通過，正式頻道 2026-11-10；週六、週日不貼 → 未驗，正式頻道 2026-11-14 看；行程卡貼出後到 18 點，網頁或 LINE 登記、取消今天的行程時頻道發更新通知 → 通過，正式頻道待驗；既有網頁、LINE 登記與忙碌連動不變 → 通過，本機測試 2026-11-09",
           "Code：",
           "Env："
         ],
@@ -36790,7 +36804,7 @@
       "status_since": "2026-11-10T01:17:24.818000+00:00",
       "summary": "LINE 會議預約＋Teams 推播機制",
       "type": "Deliverable",
-      "updated": "2026-11-10T09:20:13.722+0800"
+      "updated": "2026-11-11T07:17:51.930+0800"
     },
     {
       "assignee": "Vincent Hsieh",
@@ -39801,6 +39815,294 @@
       "summary": "[派團表] 修正組長本人同步結果為 0 筆",
       "type": "漏洞",
       "updated": "2026-11-10T18:38:33.315+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "created": "2026-11-11T07:27:17.046+0800",
+      "deliverable": {
+        "attachments": [
+          {
+            "filename": "lili-cs-panel · 側窗插件 · 成效影片.mp4",
+            "id": "15040",
+            "mime": "video/mp4",
+            "size": 13974886
+          }
+        ],
+        "base": "104 秒",
+        "base_date": "2026-10-16",
+        "delivered": "LiLi 文字客服在 Helpdesk4J 接轉真人會話時，從 Chrome 商店裝的側窗直接看到客人進線前提到的團與 SERP 上那團的名額、價格，看得到哪個會話還沒回，並可一鍵轉派",
+        "description": [
+          "Acceptance：側窗商品摘要 → 通過，測試機 2026-10-19；SERP 資訊 → 通過，測試機 2026-10-19；未回覆提醒 → 通過，測試機 2026-10-19；轉派可用 → 通過，測試機 2026-10-19；SERP 不送查詢以外的表單 → 通過，單元測試與測試機 2026-10-19；一位文字客服的瀏覽器跑通 → 未驗；上線 14 天後量第一句真正回覆中位數、客人還在比例、客服沒送過句子比例，對照基準 104 秒、60%、15% → 未驗",
+          "Code：https://github.com/Vincenthsiehisme/lili-cs-panel；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/1；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/2；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/3；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/4；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/5；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/6；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/7；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/8；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/9；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/10",
+          "Env：",
+          "入口：https://chromewebstore.google.com/detail/inggckdihjpmcakmccopcoiagmpacmgg",
+          "手冊：https://lili-cs-panel-intro.vercel.app/"
+        ],
+        "features": "側窗列出手上的會話與客人各自已等多久，等太久一直再響、標紅、跳桌面通知，直到客服處理\n側窗收著或 Helpdesk 分頁在背景時照樣提醒，工具列圖示顯示等你回的會話數\n點進會話看到客人轉真人前打的原句與提到的團\n用團號只讀查 SERP，帶出名額、價格與訂金、行程、航班、成團、簽證、優惠，各項可複製或帶入回覆框\n依團號線別預選要轉的組，客服按一下才送出\n單團頁的連結直接開 SERP 銷售團體頁\n從 Chrome 線上應用程式商店安裝，改版自動更新",
+        "metric": "轉真人後客服第一句真正回覆中位數（秒）",
+        "not_done": "改 Helpdesk4J 伺服器設定，伺服器面歸 LiLi 運營團隊 → 不做\n超時自動轉派，轉派一律由客服自己按 → 不做\n替客服回覆或結束會話 → 不做\n寫回 SERP，SERP 只讀 → 不做",
+        "now": null,
+        "now_date": null,
+        "other": "第一句真正回覆超過 2 分比例：41%（2026/10/16）；有問問題的會話客人還在比例：60%（2026/10/16）；客服沒送過句子比例：15%（2026/10/16）",
+        "source": "Helpdesk4J 正式機轉真人會話紀錄，近一個月全量只讀統計（3,337 個轉真人會話）",
+        "versions": []
+      },
+      "due": null,
+      "key": "FDEPROJECT-1278",
+      "labels": [],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-534",
+      "points": null,
+      "progress_seen": false,
+      "project": "FDEPROJECT",
+      "resolved": "2026-11-11T07:27:23.552+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-10T23:27:23.570000+00:00",
+      "summary": "LiLi 客服側窗插件",
+      "type": "Deliverable",
+      "updated": "2026-11-11T07:27:23.570+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "created": "2026-11-11T07:27:24.941+0800",
+      "deliverable": {
+        "attachments": [
+          {
+            "filename": "lili-cs-panel · 接線中查詢 · 成效影片.mp4",
+            "id": "15041",
+            "mime": "video/mp4",
+            "size": 12393361
+          }
+        ],
+        "base": "104 秒",
+        "base_date": "2026-10-16",
+        "delivered": "LiLi 文字客服在 Helpdesk4J 接線中，客人講到團號或團名時，在 LiLi 客服側窗的「對話中查詢」直接查 SERP，看到那一團的名額、價格與行程，不用另開 SERP 分頁；客人給訂單編號時一鍵開我的團單、單號帶好",
+        "description": [
+          "Acceptance：團號、標準團名、對話中提到的團號三種查詢帶得出那一團的資訊 → 通過，測試機，2026-10-19；三種查詢在一位文字客服的瀏覽器跑通 → 未驗；SERP 不送查詢以外的表單 → 未驗；右鍵查詢先驗 Helpdesk 不攔右鍵、右鍵點得開側窗 → 通過，測試機，2026-10-19；訂單編號依客服權限查得到單或寫明要到哪一頁查 → 未驗，客服帳號開不開得了我的團單未確認；改成一鍵開我的團單帶單號，測試機驗過，2026-10-20",
+          "Code：https://github.com/Vincenthsiehisme/lili-cs-panel；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/4；https://github.com/Vincenthsiehisme/lili-cs-panel/pull/9",
+          "Env：",
+          "入口：https://chromewebstore.google.com/detail/inggckdihjpmcakmccopcoiagmpacmgg",
+          "手冊：https://lili-cs-panel-intro.vercel.app/"
+        ],
+        "features": "側窗單則頁切換「轉接前彙整｜對話中查詢」\n在查詢框打團號、團名或訂單編號，側窗自己判斷是哪一種；團號少了尾碼時提醒要帶尾碼\n打團名列出符合的團，一次最多 10 團，點一團看名額、價格與行程\n客人在對話中提到的團號列成一行，點一下才查\n在 Helpdesk4J 對話裡反白團號或團名、按右鍵，側窗自己打開並查出那團\n打訂單編號時一鍵開我的團單，單號帶好，年號照會話時間推",
+        "metric": "轉真人後客服第一句真正回覆中位數（秒）",
+        "not_done": "在側窗查訂單內容、用訂單編號找團號 → 不做（2026-10-20 改成開我的團單帶單號）",
+        "now": null,
+        "now_date": null,
+        "other": null,
+        "source": "Helpdesk4J 正式機轉真人會話紀錄唯讀統計，2026-10-16 量 3,337 個轉真人會話",
+        "versions": []
+      },
+      "due": null,
+      "key": "FDEPROJECT-1279",
+      "labels": [],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-538",
+      "points": null,
+      "progress_seen": false,
+      "project": "FDEPROJECT",
+      "resolved": "2026-11-11T07:27:31.993+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-10T23:27:32.007000+00:00",
+      "summary": "LiLi 客服側窗插件：接線中查詢",
+      "type": "Deliverable",
+      "updated": "2026-11-11T07:27:32.007+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "created": "2026-11-11T07:27:33.442+0800",
+      "deliverable": {
+        "attachments": [
+          {
+            "filename": "lili-faq · 自建系統需求盤點 · 成效影片.mp4",
+            "id": "15042",
+            "mime": "video/mp4",
+            "size": 11465099
+          }
+        ],
+        "base": null,
+        "base_date": null,
+        "delivered": "LiLi 運營單位與 FDE 有一張共用的需求盤點表，運營同仁的期待與 FDE 回應逐筆並列，自建 LiLi 之前看得到兩邊的落差",
+        "description": [
+          "Acceptance：盤點表每一筆需求都有 FDE 回應並標上三類之一 → 未驗，盤點表沒有逐筆核對過；FDEPROJECT-183 留言（2026-10-19）寫 FDE 逐筆回應，拆三類的 FDEPROJECT-357 於 2026-10-19 轉完成，但沒有核對紀錄；與運營單位一起看過落差並確認分類 → 未驗，Jira 與 vault 都沒有紀錄",
+          "Code：",
+          "Env：",
+          "入口：",
+          "手冊："
+        ],
+        "features": "需求盤點表分六個面向頁籤，運營同仁從實際工作寫下問題與期待\n每筆需求旁並列 FDE 的回應判斷，落差一眼看得到\n每筆標成現在能做、流程應優化、未來應列入三類之一\nFDE 唯讀探索 LiLi 現況（wise 後台、Helpdesk4J、一個月對話紀錄），整理成報告「Helpdesk4J 文字客服一個月的發現」\n探索結論成案：LiLi 客服側窗插件（FDEPROJECT-534）",
+        "metric": null,
+        "not_done": "自建 LiLi 的方案與開發 → 不做\n探索結果的 FAQ 線下維運實作 → FDEPROJECT-441",
+        "now": null,
+        "now_date": null,
+        "other": "運營需求：4 位同仁 6 天寫下 45 筆（2026/10/06）；LiLi 後台盤查：wise 後台 17 頁（2026/10/08）、Helpdesk4J 18 個模組（2026/10/13）；正式機一個月對話：55,011 則客人提問（2026/10/16）；Helpdesk4J 近一個月：45,782 個會話、轉真人 7.3%（2026/10/16）",
+        "source": null,
+        "versions": []
+      },
+      "due": null,
+      "key": "FDEPROJECT-1280",
+      "labels": [],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-183",
+      "points": null,
+      "progress_seen": false,
+      "project": "FDEPROJECT",
+      "resolved": "2026-11-11T07:27:39.224+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-10T23:27:39.246000+00:00",
+      "summary": "LiLi 自建系統需求盤點表",
+      "type": "Deliverable",
+      "updated": "2026-11-11T07:27:39.246+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "created": "2026-11-11T07:27:40.784+0800",
+      "deliverable": {
+        "attachments": [
+          {
+            "filename": "MeetPilot · 團隊會議記錄 · 成效影片.mp4",
+            "id": "15043",
+            "mime": "video/mp4",
+            "size": 13831171
+          }
+        ],
+        "base": null,
+        "base_date": null,
+        "delivered": "會議記錄人在自己的 Mac 或 Windows 電腦上裝好 MeetPilot、輸入邀請碼就能錄音與轉錄，記錄自動放進共享資料夾，讀的人不用安裝",
+        "description": [
+          "Acceptance：乾淨的 Mac 與 Windows 各裝一次、啟動到主畫面 → 通過，Windows 記錄人電腦 2026-09-29 裝好並完成設定，Mac 新電腦 2026-10-20 裝好並完成設定，兩台裝之前有沒有 Node 與 ffmpeg 沒有紀錄；Windows 上一場真實錄音跑到轉錄完成，記錄出現在共享資料夾 → 未驗，Windows 記錄人電腦 2026-09-29 只跑過一段約 16 秒的測試錄音，轉錄完成、記錄同步進共享資料夾，真實會議的記錄沒有紀錄；CI 的 macOS 與 Windows 矩陣全綠 → 通過，GitHub Actions 2026-09-24 首次兩平台全綠，2026-10-19 最後一次發版時仍全綠；語音備忘錄與 app 內錄音的逐字稿對照 → 未驗，沒有對照紀錄",
+          "Code：https://github.com/Vincenthsiehisme/MeetPilot；https://github.com/Vincenthsiehisme/MeetPilot/pull/14；https://github.com/Vincenthsiehisme/MeetPilot/pull/15；https://github.com/Vincenthsiehisme/MeetPilot/pull/16；https://github.com/Vincenthsiehisme/MeetPilot/pull/17；https://github.com/Vincenthsiehisme/MeetPilot/pull/18；https://github.com/Vincenthsiehisme/MeetPilot/pull/19；https://github.com/Vincenthsiehisme/MeetPilot/pull/20；https://github.com/Vincenthsiehisme/MeetPilot/pull/40",
+          "Env：",
+          "入口：",
+          "手冊："
+        ],
+        "features": "下載 Mac（.dmg）或 Windows（.exe）安裝檔就能裝，不用自己裝 Node 與 ffmpeg\n第一次打開輸入邀請碼、選共享資料夾，金鑰與人員名單由後台自動發，不落在設定檔\n在 app 裡按錄音，關掉視窗會縮到系統匣繼續錄，按停止後自動送進轉錄\n轉錄完成後，會議記錄與逐字稿自動放進共享資料夾，讀的人打開資料夾就能看\n新版放進共享資料夾的更新區，app 會提示記錄人更新",
+        "metric": "每月記錄場數（場）",
+        "not_done": null,
+        "now": null,
+        "now_date": null,
+        "other": null,
+        "source": null,
+        "versions": []
+      },
+      "due": null,
+      "key": "FDEPROJECT-1281",
+      "labels": [],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-79",
+      "points": null,
+      "progress_seen": false,
+      "project": "FDEPROJECT",
+      "resolved": "2026-11-11T07:27:47.913+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-10T23:27:47.935000+00:00",
+      "summary": "MeetPilot 團隊會議記錄",
+      "type": "Deliverable",
+      "updated": "2026-11-11T07:27:47.935+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "created": "2026-11-11T07:27:49.566+0800",
+      "deliverable": {
+        "attachments": [
+          {
+            "filename": "notion-mirror · Notion 鏡像 · 成效影片.mp4",
+            "id": "15044",
+            "mime": "video/mp4",
+            "size": 15591852
+          }
+        ],
+        "base": null,
+        "base_date": null,
+        "delivered": "同事開一個連結授權 Notion 一次、勾選要分享的頁，那些頁連同子頁面與內文連到的頁就每天自動鏡像成 markdown，在 Obsidian 裡讀得到，不用再去問本人",
+        "description": [
+          "Acceptance：同事開一個連結授權一次、不裝任何東西 → 通過，線上 Worker，第一位同事（另一個 Notion workspace）用授權碼授權，2026-09-30；勾選分享的頁 5 分鐘內進鏡像 repo → 通過，線上 Worker，3 頁 2 分鐘內寫入、錯誤 0，2026-09-30；每天更新一次 → 通過，線上 Worker 每日排程實跑，2026-10-01；再按一次書籤立刻重抓 → 通過，線上 Worker，2026-09-30；Obsidian 自動拉取 → 通過，使用者 Mac 的 Obsidian，2026-09-30",
+          "Code：https://github.com/Vincenthsiehisme/notion-mirror；https://github.com/Vincenthsiehisme/notion-mirror/pull/1；https://github.com/Vincenthsiehisme/notion-mirror/pull/2；https://github.com/Vincenthsiehisme/notion-mirror/pull/3；https://github.com/Vincenthsiehisme/notion-mirror/pull/4；https://github.com/Vincenthsiehisme/notion-mirror/pull/5；https://github.com/Vincenthsiehisme/notion-mirror/pull/6；https://github.com/Vincenthsiehisme/notion-mirror/pull/7；https://github.com/Vincenthsiehisme/notion-mirror/pull/8；https://github.com/Vincenthsiehisme/notion-mirror/pull/9；https://github.com/Vincenthsiehisme/notion-mirror/pull/10；https://github.com/Vincenthsiehisme/notion-mirror/pull/11；https://github.com/Vincenthsiehisme/notion-mirror/pull/12；https://github.com/Vincenthsiehisme/notion-mirror/pull/13；https://github.com/Vincenthsiehisme/notion-mirror/pull/14；https://github.com/Vincenthsiehisme/notion-mirror/pull/15",
+          "Env：",
+          "入口：",
+          "手冊："
+        ],
+        "features": "同事開自己專屬的授權連結，在 Notion 授權一次、勾選要分享的頁，不用裝任何東西\n授權完成頁列出收到哪些頁，5 分鐘內開始同步\n分享的頁連同子頁面、子資料庫、內文連到的頁一起鏡像；內嵌的資料庫連列帶欄位，在 Obsidian 是一張表格\nNotion 裡的圖片與附件一起下載進 vault\n每天自動更新；原頁刪除或取消分享時標記來源已移除，不刪檔\n在 Notion 頁面「⋯ → 連結」加上或移除，就是加頁或收回\n按一次書籤，要求某頁立刻重抓\n管理頁：替每位同事產一組授權碼、看誰授權了、單獨作廢一組碼、切每天更新或暫停、按「現在更新」\nObsidian 開著時自動拉取鏡像",
+        "metric": "接上的同事人數（人，目標 5～10 人）",
+        "not_done": "寫進公司 SharePoint 共用資料夾 → 不做（原路線 FDEPROJECT-115 結案）\nAI Meeting Notes 完成後自動轉拋 → 不做（原路線 FDEPROJECT-118 結案）\n回寫 Notion → 不做",
+        "now": null,
+        "now_date": null,
+        "other": "第一位同事授權到頁面進鏡像 repo：3 頁 2 分鐘內、錯誤 0（2026/09/30）",
+        "source": "notion-mirror 管理頁的使用者清單",
+        "versions": []
+      },
+      "due": null,
+      "key": "FDEPROJECT-1282",
+      "labels": [],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-110",
+      "points": null,
+      "progress_seen": false,
+      "project": "FDEPROJECT",
+      "resolved": "2026-11-11T07:27:56.357+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-10T23:27:56.379000+00:00",
+      "summary": "Notion 頁面鏡像到 Obsidian（notion-mirror）",
+      "type": "Deliverable",
+      "updated": "2026-11-11T07:27:56.379+0800"
+    },
+    {
+      "assignee": "Vincent Hsieh",
+      "created": "2026-11-11T07:27:57.983+0800",
+      "deliverable": {
+        "attachments": [
+          {
+            "filename": "line-meeting-bot · 發布者標準化 · 成效影片.mp4",
+            "id": "15045",
+            "mime": "video/mp4",
+            "size": 13342797
+          }
+        ],
+        "base": null,
+        "base_date": null,
+        "delivered": "管理者在會議 bot 的 Google Sheet 側邊欄就能替每個 LINE 群組指定發布者，新群上線、換發布者都不用改程式碼；發布者照原本的寫法貼【會議通知】，bot 就回加入日曆的確認卡",
+        "description": [
+          "Acceptance：正式群組新群不改程式碼完成上線並回卡 → 通過，正式群組（遷移時登錄為待確認的既有群），2026-10-20 在 Sheet 側邊欄設好發布者、2026-10-21 該群第一則通知回卡；換發布者後新發布者貼取消能對到舊會議 → 未驗，本機測試 2026-10-20 通過，正式群組還沒換過發布者；發布者離群時日報出現警示 → 未驗，本機測試 2026-10-20 通過，正式群組還沒有發布者離群",
+          "Code：",
+          "Env：",
+          "入口：",
+          "手冊："
+        ],
+        "features": "bot 被拉進新群或群裡第一次有人發言時，自動登錄成待確認；待確認群的通知只記錄、不回卡\n管理者從 Sheet 選單「會議 bot › 管理發布者」開側邊欄（只有 Sheet 編輯者看得到），看到每群的候選發布者與近 30 天通知數，按「設為發布者」再按一次確認，該群就開始回卡；候選人不用做任何事\n換發布者走同一個流程，新發布者貼的取消、改期對得到舊發布者建的會議\n發布者離開群組時，該群改回待確認，日報出現警示\n日報按群列出候選發布者，含近 30 天通知次數與解析成功率\n會議通知多讀懂三種寫法：「日期：」標籤、每週例會（回每週重複的日曆卡）、跨時區通知取台北時間",
+        "metric": null,
+        "not_done": "發布者改用 LIFF 表單貼固定格式的通知 → 不做\n串接 Lark 行事曆 → 不做",
+        "now": null,
+        "now_date": null,
+        "other": "解析失敗的發布者會議通知：15 則／227 則（2026-09-04～10-19）→ 補上「日期：」標籤與每週例會兩種寫法的解析（2026-10-19 部署，正式流量驗證中）；跨時區通知排進日曆的時差：YVR 行在前的 3 份通知差 15～16 小時 → 改取台北時間（2026-10-19 部署，正式流量驗證中）",
+        "source": null,
+        "versions": []
+      },
+      "due": null,
+      "key": "FDEPROJECT-1283",
+      "labels": [],
+      "level": 0,
+      "moved_in": null,
+      "parent": "FDEPROJECT-585",
+      "points": null,
+      "progress_seen": false,
+      "project": "FDEPROJECT",
+      "resolved": "2026-11-11T07:28:04.558+0800",
+      "status": "完成",
+      "status_category": "done",
+      "status_since": "2026-11-10T23:28:04.575000+00:00",
+      "summary": "LINE 會議助手 bot 標準化",
+      "type": "Deliverable",
+      "updated": "2026-11-11T07:28:04.575+0800"
     }
   ],
   "period": {
