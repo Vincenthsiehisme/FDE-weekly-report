@@ -49,14 +49,14 @@
         "week": "2026-W42"
       },
       {
-        "people": 7,
+        "people": 6,
         "shares": {
-          "LiLi": 0.2024,
-          "其他": 0.2545,
-          "客製國旅": 0.1429,
-          "東北亞": 0.1667,
-          "票務": 0.119,
-          "門市": 0.1144
+          "LiLi": 0.0598,
+          "其他": 0.3067,
+          "客製國旅": 0.1667,
+          "東北亞": 0.1944,
+          "票務": 0.1389,
+          "門市": 0.1335
         },
         "week": "2026-W43"
       },
@@ -281,16 +281,6 @@
       "key": "FDEPROJECT-1279",
       "kind": "deliverable_missing",
       "message": "Deliverable 已完成，沒填：成效最新值"
-    },
-    {
-      "key": "FDEPROJECT-1280",
-      "kind": "deliverable_missing",
-      "message": "Deliverable 已完成，沒填：成效指標、成效基準值、成效最新值"
-    },
-    {
-      "key": "FDEPROJECT-1280",
-      "kind": "deliverable_no_entry",
-      "message": "Deliverable 已完成，描述沒有「入口：」的對外網址，使用的人不知道去哪用"
     },
     {
       "key": "FDEPROJECT-1281",
@@ -5481,18 +5471,6 @@
         "week": "2026-W43"
       },
       {
-        "group": "FDEPROJECT-183",
-        "hours": null,
-        "key": "FDEPROJECT-357",
-        "leaf": true,
-        "owner": "未指派",
-        "project": "FDEPROJECT-183 LiLi 自建系統需求盤點表",
-        "root": "FDEPROJECT-357",
-        "summary": "拆分現在能做/ 流程應優化/未來應列入 ",
-        "tokens": null,
-        "week": "2026-W43"
-      },
-      {
         "group": "FDEPROJECT-140",
         "hours": 2.0,
         "key": "FDEPROJECT-359",
@@ -7085,18 +7063,6 @@
         "project": "FDEPROJECT-406 EVOX 通話分析 階段三：來電原因分析與成交歸因",
         "root": "FDEPROJECT-409",
         "summary": "檢查 EVOX 每日排程 10/16～10/19 執行狀況並暫停排程",
-        "tokens": null,
-        "week": "2026-W43"
-      },
-      {
-        "group": "FDEPROJECT-183",
-        "hours": 1.0,
-        "key": "FDEPROJECT-533",
-        "leaf": true,
-        "owner": "Vincent Hsieh",
-        "project": "FDEPROJECT-183 LiLi 自建系統需求盤點表",
-        "root": "FDEPROJECT-533",
-        "summary": "LiLi 數據探索",
         "tokens": null,
         "week": "2026-W43"
       },
@@ -13499,43 +13465,6 @@
         "tokens": null
       },
       {
-        "closed_week": "2026-W43",
-        "completed": 2,
-        "due": null,
-        "hours": 1.0,
-        "id": "FDEPROJECT-183",
-        "idle_days": null,
-        "key": "FDEPROJECT-183",
-        "kickoff": {
-          "key": "FDEPROJECT-358",
-          "locked_at": "2026-10-14T00:00:32.099355+08:00",
-          "modified_at": [],
-          "sections": {
-            "after": "一張需求盤點表，每筆並列運營同仁的問題、期待與 FDE 的回應，落差一眼看得到，並標成現在能做、流程應優化、未來應列入三類之一，作為後續自建討論的共同起點",
-            "before": "運營同仁的不便與期待只存在各自經驗裡，FDE 的判斷也沒有寫下來，兩邊沒有放在一起比對過",
-            "decision": null,
-            "evidence": "可行性：2026-10-08 查盤點表：六個面向頁籤已建好，運營單位 4 位同仁於 10/01–10/06 填入 45 筆需求，表上已有 FDE 回應欄可逐筆並列\n完成證明：盤點表每一筆需求都有 FDE 回應並標上三類之一；與運營單位一起看過落差並確認分類",
-            "next_milestone": "把盤點表裡的需求拆成現在能做、流程應優化、未來應列入三類（FDEPROJECT-357）",
-            "objective": "和 LiLi 運營單位完成現況對焦：運營同仁從實際工作經驗列出對自建 LiLi 的期待，FDE 逐筆回應判斷，兩邊放在同一張需求盤點表上看出落差；本案只對焦期待，不做自建方案與開發",
-            "why": "LiLi 是外部合作系統，未來要換掉；換之前運營端與 FDE 對「新系統該做到什麼」若沒對齊，後續討論會各說各話；表上已看得到落差，例如運營期待 AI 自動分類旅客需求，FDE 判斷應先定好分類再由 AI 判斷落點"
-          }
-        },
-        "label": "LiLi",
-        "owner": "Vincent Hsieh",
-        "progress": {
-          "done_cards": 2,
-          "done_points": 1.0,
-          "percent": 100,
-          "total_cards": 2,
-          "total_points": 1.0,
-          "unestimated_cards": 1
-        },
-        "stalled": false,
-        "status": "Done",
-        "summary": "LiLi 自建系統需求盤點表",
-        "tokens": null
-      },
-      {
         "closed_week": "2026-W41",
         "completed": 6,
         "due": null,
@@ -16094,11 +16023,11 @@
     ],
     "since": "2026-09-18",
     "totals": {
-      "completed": 878,
-      "hours": 957.9,
-      "projects": 70,
+      "completed": 876,
+      "hours": 956.9,
+      "projects": 69,
       "tokens": null,
-      "unestimated_completed": 29
+      "unestimated_completed": 28
     },
     "weeks": [
       {
@@ -16117,8 +16046,8 @@
         "week": "2026-W44"
       },
       {
-        "completed": 152,
-        "hours": 177.1,
+        "completed": 150,
+        "hours": 176.1,
         "week": "2026-W43"
       },
       {
@@ -16378,74 +16307,6 @@
       "now_date": null,
       "other": [],
       "passed": 2,
-      "source": null,
-      "stale": false,
-      "versions": [],
-      "week": "2026-W47"
-    },
-    {
-      "acceptance": [
-        {
-          "condition": "盤點表每一筆需求都有 FDE 回應並標上三類之一",
-          "result": "未驗",
-          "where": "盤點表沒有逐筆核對過"
-        },
-        {
-          "condition": "FDEPROJECT-183 留言（2026-10-19）寫 FDE 逐筆回應，拆三類的 FDEPROJECT-357 於 2026-10-19 轉完成，但沒有核對紀錄",
-          "result": null,
-          "where": null
-        },
-        {
-          "condition": "與運營單位一起看過落差並確認分類",
-          "result": "未驗",
-          "where": "Jira 與 vault 都沒有紀錄"
-        }
-      ],
-      "attachments": [
-        {
-          "filename": "lili-faq · 自建系統需求盤點 · 成效影片.mp4",
-          "id": "15042",
-          "image": null,
-          "mime": "video/mp4",
-          "size": 11465099,
-          "video": "15042.mp4"
-        }
-      ],
-      "base": null,
-      "base_date": null,
-      "code": [],
-      "delivered": "LiLi 運營單位與 FDE 有一張共用的需求盤點表，運營同仁的期待與 FDE 回應逐筆並列，自建 LiLi 之前看得到兩邊的落差",
-      "done": "2026-11-11T07:27:39.224+0800",
-      "entry": [],
-      "env": [],
-      "epic": "FDEPROJECT-183",
-      "epic_summary": "LiLi 自建系統需求盤點表",
-      "failed": 0,
-      "features": [
-        "需求盤點表分六個面向頁籤，運營同仁從實際工作寫下問題與期待",
-        "每筆需求旁並列 FDE 的回應判斷，落差一眼看得到",
-        "每筆標成現在能做、流程應優化、未來應列入三類之一",
-        "FDE 唯讀探索 LiLi 現況（wise 後台、Helpdesk4J、一個月對話紀錄），整理成報告「Helpdesk4J 文字客服一個月的發現」",
-        "探索結論成案：LiLi 客服側窗插件（FDEPROJECT-534）"
-      ],
-      "key": "FDEPROJECT-1280",
-      "label": "LiLi",
-      "manual": [],
-      "metric": null,
-      "new": false,
-      "not_done": [
-        "自建 LiLi 的方案與開發 → 不做",
-        "探索結果的 FAQ 線下維運實作 → FDEPROJECT-441"
-      ],
-      "now": null,
-      "now_date": null,
-      "other": [
-        "運營需求：4 位同仁 6 天寫下 45 筆（2026/10/06）",
-        "LiLi 後台盤查：wise 後台 17 頁（2026/10/08）、Helpdesk4J 18 個模組（2026/10/13）",
-        "正式機一個月對話：55,011 則客人提問（2026/10/16）",
-        "Helpdesk4J 近一個月：45,782 個會話、轉真人 7.3%（2026/10/16）"
-      ],
-      "passed": 0,
       "source": null,
       "stale": false,
       "versions": [],
@@ -22457,7 +22318,7 @@
       "epics_new": 9,
       "epics_per_person_week": 0.54,
       "explore_people": 7,
-      "explore_share": 0.0624,
+      "explore_share": 0.0573,
       "hours": 71.05,
       "hours_per_card": 0.9,
       "new_hours_share": 0.2365,
@@ -22469,21 +22330,21 @@
       "week": "2026-W42"
     },
     {
-      "completed": 152,
-      "epics_active": 28,
-      "epics_done": 6,
-      "epics_new": 16,
-      "epics_per_person_week": 0.86,
+      "completed": 150,
+      "epics_active": 27,
+      "epics_done": 5,
+      "epics_new": 15,
+      "epics_per_person_week": 0.71,
       "explore_people": 6,
-      "explore_share": 0.084,
-      "hours": 177.1,
+      "explore_share": 0.0879,
+      "hours": 176.1,
       "hours_per_card": 1.2,
-      "new_hours_share": 0.5723,
+      "new_hours_share": 0.5698,
       "new_same_day": 8,
       "person_days": 35,
       "roster": 7,
-      "unestimated": 7,
-      "via_progress": 20,
+      "unestimated": 6,
+      "via_progress": 19,
       "week": "2026-W43"
     },
     {
@@ -23734,18 +23595,6 @@
     },
     {
       "cumulative": {
-        "hours": 17.9,
-        "unestimated": 2
-      },
-      "epics": 6,
-      "label": "LiLi",
-      "week": {
-        "hours": 8.3,
-        "unestimated": 1
-      }
-    },
-    {
-      "cumulative": {
         "hours": 17.75,
         "unestimated": 4
       },
@@ -23754,6 +23603,18 @@
       "week": {
         "hours": 0.9,
         "unestimated": 0
+      }
+    },
+    {
+      "cumulative": {
+        "hours": 16.9,
+        "unestimated": 1
+      },
+      "epics": 5,
+      "label": "LiLi",
+      "week": {
+        "hours": 8.3,
+        "unestimated": 1
       }
     },
     {
@@ -26320,7 +26181,7 @@
     },
     {
       "cumulative": {
-        "completed": 127,
+        "completed": 126,
         "completed_keys": [
           "FDEPROJECT-80",
           "FDEPROJECT-81",
@@ -26407,7 +26268,6 @@
           "FDEPROJECT-453",
           "FDEPROJECT-508",
           "FDEPROJECT-531",
-          "FDEPROJECT-533",
           "FDEPROJECT-536",
           "FDEPROJECT-537",
           "FDEPROJECT-540",
@@ -26450,7 +26310,7 @@
           "FDEPROJECT-1165",
           "FDEPROJECT-1166"
         ],
-        "hours": 58.15,
+        "hours": 57.15,
         "tokens": null
       },
       "in_progress": {
@@ -26468,11 +26328,11 @@
       },
       "name": "Vincent Hsieh",
       "recent": {
-        "completed": 53,
+        "completed": 52,
         "labels": [
           [
             "LiLi",
-            22
+            21
           ],
           [
             "直售",
@@ -26488,23 +26348,23 @@
       "shares": [
         [
           "直售",
-          0.3976
+          0.4042
         ],
         [
           "LiLi",
-          0.2987
+          0.2872
         ],
         [
           "FDE_team",
-          0.1818
+          0.1846
         ],
         [
           "IT_team",
-          0.0731
+          0.0744
         ],
         [
           "內容中心",
-          0.0487
+          0.0496
         ]
       ],
       "trend": [
@@ -26525,7 +26385,7 @@
           "week": "2026-W42"
         },
         {
-          "completed": 18,
+          "completed": 17,
           "week": "2026-W43"
         },
         {
@@ -26566,80 +26426,6 @@
           "FDEPROJECT-1166"
         ],
         "hours": 12.2,
-        "tokens": null
-      }
-    },
-    {
-      "cumulative": {
-        "completed": 1,
-        "completed_keys": [
-          "FDEPROJECT-357"
-        ],
-        "hours": 0.0,
-        "tokens": null
-      },
-      "in_progress": {
-        "ages": {},
-        "count": 0,
-        "hours": 0.0,
-        "keys": [],
-        "unestimated": 0
-      },
-      "name": "未指派",
-      "recent": {
-        "completed": 1,
-        "labels": [
-          [
-            "LiLi",
-            1
-          ]
-        ],
-        "weeks": 4
-      },
-      "shares": [
-        [
-          "LiLi",
-          1.0
-        ]
-      ],
-      "trend": [
-        {
-          "completed": 0,
-          "week": "2026-W39"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W40"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W41"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W42"
-        },
-        {
-          "completed": 1,
-          "week": "2026-W43"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W44"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W45"
-        },
-        {
-          "completed": 0,
-          "week": "2026-W46"
-        }
-      ],
-      "week": {
-        "completed": 0,
-        "completed_keys": [],
-        "hours": 0.0,
         "tokens": null
       }
     }
@@ -26858,27 +26644,6 @@
       "id": "FDEPROJECT-173",
       "key": "FDEPROJECT-173",
       "summary": "SERP Q催收",
-      "week": {
-        "hours": 0.0,
-        "people": [],
-        "people_count": 0,
-        "unassigned": false,
-        "unestimated": 0
-      }
-    },
-    {
-      "cumulative": {
-        "hours": 1.0,
-        "people": [
-          "Vincent Hsieh"
-        ],
-        "people_count": 1,
-        "unassigned": true,
-        "unestimated": 1
-      },
-      "id": "FDEPROJECT-183",
-      "key": "FDEPROJECT-183",
-      "summary": "LiLi 自建系統需求盤點表",
       "week": {
         "hours": 0.0,
         "people": [],
