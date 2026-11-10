@@ -1666,7 +1666,8 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .dv-tag{display:inline-block;margin-left:8px;padding:0 7px;border-radius:4px;font-size:12px;font-weight:500;vertical-align:2px;background:var(--soft);color:var(--muted)}
 .dv-tag.new{background:var(--done-bg);color:var(--done-fg);font-weight:600}
 .dv-tab-new{margin-left:6px;padding:0 6px;border-radius:4px;font-size:11px;font-weight:600;background:var(--done-bg);color:var(--done-fg)}
-.dv-one{grid-column:1;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+/* align-self:start：成效未填時三列比左圖的 132px 矮，grid 把差額分給各列，描述被撐高就露出被截掉的半行（2026-11-11 W46 七張） */
+.dv-one{grid-column:1;align-self:start;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 /* 成效自成一段、跨過右側按鈕欄；左邊中性細線，現在值墨色粗體，指標與原本灰字（2026-11-04 使用者選丁） */
 .dv-out{grid-column:1/-1;display:block;max-width:46em;margin-top:8px;border-left:2px solid var(--line-strong);padding:1px 0 1px 12px}
 .dv-out.missing{border-left:0;padding:0}
