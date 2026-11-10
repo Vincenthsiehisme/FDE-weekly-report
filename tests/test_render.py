@@ -78,7 +78,7 @@ class RenderTest(unittest.TestCase):
         tokens = {"CS-1": 500, "CS-3": 100}
         # 資源區只在總覽（2026-10-28 本週頁換成四個數字）
         overview = panel(page(metrics=metrics_for(issues, tokens=tokens, cumulative_tokens=tokens)), "cumulative")
-        self.assertIn('<li><span>累計完成卡片</span><strong class="">2</strong></li>', overview)   # 父卡 CS-2 不算一張
+        self.assertIn('<span>2026-W39</span><span>—</span><span>2 張</span>', overview)   # 父卡 CS-2 不算一張（完成清單的週列）
         self.assertNotIn("交付", overview)
         self.assertIn('<li class=big><span>累計 Token</span><strong class="">600</strong></li>', overview)  # 含記在 epic 上的 500
 
@@ -226,7 +226,7 @@ class TokenHiddenTest(unittest.TestCase):
         html = page(metrics=metrics_for(self.ISSUES))
         self.assertEqual(html.count("Token"), 0)
         self.assertNotIn("尚未接資料來源", html)
-        self.assertIn('<ul class="kpis" style="--kpis:3">', panel(html, "cumulative"))  # 累計工時、累計完成卡片、epic 數
+        self.assertIn('<ul class="kpis" style="--kpis:3">', panel(html, "cumulative"))  # 累計工時、累計完成 epic、進行中 epic
 
     def test_a_file_for_an_earlier_week_brings_every_column_back(self):
         # 這一期沒有檔、較早期有：所有 Token 欄回來並顯示「—」，不會因為這一期沒資料就安靜少一欄
@@ -337,7 +337,7 @@ class WordingTest(unittest.TestCase):
         glossary = html[html.index('<section id="glossary"'):html.index("</section>", html.index('<section id="glossary"'))]
         self.assertIn("2026/09/16（三） 00:00 到 2026/09/22（二） 23:59（UTC+8）", glossary)
         for term in ("本週", "累計", "完成卡片", "實際工時", "累計工時", "未填工時", "人", "進度", "label", "Done／On Track", "資料檢查",
-                     "沒動", "停滯", "可運用人日", "探索人力占比", "卡都做完，epic 沒關", "投入比例"):
+                     "沒動", "停滯", "可運用人日", "探索人力占比", "卡都做完，epic 沒關", "投入比例", "累計完成 epic／進行中 epic"):
             self.assertIn(f"<dt>{term}</dt>", glossary)
         self.assertNotIn("<dt>新 epic</dt>", glossary)  # 2026-11-02 探索改算 Kick off，頁面不再用新 epic
         self.assertNotIn("<dt>補登</dt>", glossary)
@@ -520,7 +520,7 @@ class OverviewTest(unittest.TestCase):
         self.assertNotIn("<h3>團隊</h3>", week)
         self.assertNotIn("<h3>團隊</h3>", o)
         self.assertIn('<li class=big><span>累計工時</span><strong class="">5h</strong></li>', o)
-        self.assertIn('<li><span>累計完成卡片</span><strong class="">3</strong></li>', o)
+        self.assertNotIn("累計完成卡片", o)  # 2026-11-11 起總覽換成 epic 兩格，完成張數看下面的完成清單
 
 
 class OverviewLayoutTest(unittest.TestCase):
@@ -556,13 +556,15 @@ class OverviewLayoutTest(unittest.TestCase):
         positions = [o.index(h) for h in heads]
         self.assertEqual(positions, sorted(positions))
 
-    def test_resources_show_the_epic_count_of_the_project_list(self):
+    def test_resources_show_completed_and_open_epics_of_the_project_list(self):
         # 門市客服、已結案的直售專案、沒有 label 的專案：3 個 epic；沒有 epic 的卡不算一個 epic
         html = self.html()
         o, week = panel(html, "cumulative"), panel(html, "week")
         self.assertIn('<ul class="kpis" style="--kpis:3">', o)
-        # 結案數一定跟進行中、「卡都做完，epic 沒關」併列（2026-11-02 總覽優化 AC-3）
-        self.assertIn('<li><span>epic 數</span><strong class="">3</strong><small>進行中 2 · 卡都做完，epic 沒關 0 · 已結案 1</small></li>', o)
+        # 2026-11-11 使用者要求：累計完成 epic 與進行中 epic（含「卡都做完，epic 沒關」）兩格並排，取代完成卡片與 epic 數
+        self.assertIn('<li><span>累計完成 epic</span><strong class="">1</strong><small>Jira 已結案，共 3 個 epic</small></li>'
+                      '<li><span>進行中 epic</span><strong class="">2</strong><small>含「卡都做完，epic 沒關」0 個</small></li>', o)
+        self.assertNotIn("累計完成卡片", o)
         self.assertEqual(o.count('<div class="proj"><div class="proj-head">') + o.count('<details class="proj">'), 4)  # 3 個 epic＋未歸屬 epic 一列
         self.assertNotIn("epic 數</span>", week)
 
@@ -1036,8 +1038,10 @@ class OverviewStatusTest(unittest.TestCase):
         self.assertIn('<span class="cw" data-label="結案週">W39 結案</span>', closed)
         self.assertNotIn('<details class="closed" open', o)
 
-    def test_epic_count_always_shows_the_three_states_side_by_side(self):
-        self.assertIn('<li><span>epic 數</span><strong class="">6</strong><small>進行中 2 · 卡都做完，epic 沒關 2 · 已結案 2</small></li>', self.overview())
+    def test_completed_epics_always_sit_beside_open_ones_that_include_fully_done(self):
+        # 結案數不單獨出現（2026-11-02 AC-3）：2026-11-11 起由並排的進行中 epic 接住，進行中含「卡都做完，epic 沒關」
+        self.assertIn('<li><span>累計完成 epic</span><strong class="">2</strong><small>Jira 已結案，共 6 個 epic</small></li>'
+                      '<li><span>進行中 epic</span><strong class="">4</strong><small>含「卡都做完，epic 沒關」2 個</small></li>', self.overview())
 
     def test_missing_state_fields_fail_instead_of_showing_a_dash(self):
         for key, field in (("CS-10", "idle_days"), ("CS-40", "closed_week")):

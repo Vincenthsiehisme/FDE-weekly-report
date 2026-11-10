@@ -2,9 +2,9 @@
 
 版面（2026-09-23 改版，決策在 vault 的 jira-weekly-report 專案 index）：讀者原本是主管（2026-10-28 改成團隊負責人本人，見下），
 分四個頁籤：總覽（2026-10-07 由「持續累積」改名）、本週（預設）、團隊、成效說明（2026-10-29 加）。vault 的週報範本只當資訊清單，不照它的節次排。
-總覽依序是資源（多一格 epic 數）、依 label、專案列表、完成；專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開）；
+總覽依序是資源（2026-11-11 起完成卡片換成累計完成 epic、進行中 epic 兩格）、依 label、專案列表、完成；專案依 label 分段、每列可展開看 Kick off 目標五段（一段都沒填就不給展開）；
 2026-11-02 總覽優化（plan 在 vault 的 jira-weekly-report · 總覽優化）：段內依狀態排（進行中依幾天沒動、「卡都做完，epic 沒關」、已結案收合標結案週），
-epic 數下面併列三種狀態，名單人數變的週標分界，完成清單一週一列摘要；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
+名單人數變的週標分界，完成清單一週一列摘要；Kick off 鎖定後被修改只列在資料檢查，頁面不顯示提示（2026-10-07 使用者裁）。
 Decision Needed 不顯示；Kick off 欄位有填才顯示；Token 一個檔都沒有時整欄不顯示、資源區只留一行說明，
 有檔但沒記錄的卡顯示「—」，不顯示 0。目標日不顯示（2026-10-06 使用者裁：不是當前重點；metrics 仍帶 due）。
 工時是實際花費時數（2026-09-30 使用者確認：Story point estimate 由執行人完工後回填），頁面一律叫「實際工時」；
@@ -159,19 +159,18 @@ def _kpis(tiles: list) -> str:
     return f'<ul class="kpis" style="--kpis:{len(tiles)}">{"".join(items)}</ul>'
 
 
-def _resources(totals: dict, prefix: str, hours_label: str, page, epics=None) -> str:
-    """資源 KPI：工時、Token、完成卡片。Token 一個檔都沒有時不放 Token 格，也不留說明
+def _resources(totals: dict, prefix: str, hours_label: str, page, epics: list) -> str:
+    """總覽的資源 KPI：工時、Token、累計完成 epic、進行中 epic。Token 一個檔都沒有時不放 Token 格，也不留說明
     （2026-10-07 使用者裁，取代 2026-09-27「資源區留一行」：AI 用量整合已擱置，沒有可預期的接入日）。
-    epics 只有總覽給：專案列表裡的 epic，多一格 epic 數（2026-10-07 使用者要求），下面併列進行中、「卡都做完，epic 沒關」、已結案三個數
-    （2026-11-02 總覽優化 AC-3：結案數不單獨出現）。"""
+    epics 是專案列表裡的 epic。完成卡片與 epic 數兩格換成「累計完成 epic」與「進行中 epic」，進行中含「卡都做完，epic 沒關」、
+    小字拆開寫（2026-11-11 使用者要求；11-02 總覽優化 AC-3「結案數不單獨出現」由並排的進行中那格接住）。"""
     unfilled = f'{totals["unestimated_completed"]} 張完成卡{UNFILLED}' if totals["unestimated_completed"] else None
     tiles = [(hours_label, fmt_hours(totals["hours"]), unfilled, True)]
     if page.tokens:
         tiles.append((f"{prefix} Token".strip(), fmt_tokens(totals["tokens"]), NO_TOKEN_SOURCE if totals["tokens"] is None else None, True))
-    tiles.append((f"{prefix}完成卡片", str(totals["completed"]), None, False))
-    if epics is not None:
-        n = {k: sum(1 for e in epics if _overview_state(e) == k) for k in ("open", "full", "done")}
-        tiles.append(("epic 數", str(len(epics)), f'進行中 {n["open"]} · {FULL_LABEL} {n["full"]} · 已結案 {n["done"]}', False))
+    n = {k: sum(1 for e in epics if _overview_state(e) == k) for k in ("open", "full", "done")}
+    tiles.append(("累計完成 epic", str(n["done"]), f"Jira 已結案，共 {len(epics)} 個 epic", False))
+    tiles.append(("進行中 epic", str(n["open"] + n["full"]), f"含「{FULL_LABEL}」{n['full']} 個", False))
     return _kpis(tiles)
 
 
@@ -340,7 +339,7 @@ def _breakpoint(rows: list, page, with_week: bool) -> str:
 
 
 LABEL_LEGEND = ('<p class="legend">累計工時 <i class="sw-before"></i>之前 <i class="sw-week"></i>本週；'
-                '各列加總等於工時 KPI，epic 數加總等於總覽專案列表的 epic 數。</p>')
+                '各列加總等於工時 KPI，epic 數加總等於總覽的累計完成加進行中 epic。</p>')
 
 
 def _labels(metrics) -> str:
@@ -985,8 +984,8 @@ def _done_weeks(metrics, page) -> str:
 def _cumulative_panel(metrics, page) -> str:
     """區塊順序：資源 → 依 label → 專案列表 → 完成（2026-10-07 使用者要求，取代同日「跟本週頁一致」；
     2026-10-28 團隊表拿掉：每人累計工時與張數並排就是人與人比較，跟「不排名」衝突，人的累計看團隊頁）。
-    資源的 epic 數是專案列表裡的 epic 數，未歸屬 epic 不是一個 epic，不算；下面一定併列進行中、「卡都做完，epic 沒關」、已結案三個數
-    （fable 審 2026-11-02：累計結案多是小題，單看結案數會誤讀）。名單人數變的週在起算說明、依 label 與完成三處標出來。"""
+    資源的 epic 只數專案列表裡的 epic，未歸屬 epic 不是一個 epic，不算；累計完成 epic 旁一定並排進行中 epic
+    （fable 審 2026-11-02：累計結案多是小題，單看結案數會誤讀；2026-11-11 起兩格並排取代一格三數）。名單人數變的週在起算說明、依 label 與完成三處標出來。"""
     c = metrics["cumulative"]
     changes = _roster_changes(metrics["health"])
     marks = "、".join(f"{_short_week(w)} 起 {b}→{a} 人" for w, b, a in changes)
@@ -1220,8 +1219,21 @@ def _names(cards: list) -> list:
     return list(dict.fromkeys(c["label"] or UNLABELED for c in cards))
 
 
+def _dv_fresh(cards: list) -> str:
+    """頂端一句話下面的本期新交付清單（2026-11-11 使用者：頁面是累計的，讀者看不出本期新增），點了切到那張卡（#dv-卡號 走既有 hash 路由）。
+    同日先做了依單位與成效資料齊不齊兩塊橫條，使用者看完裁「圖先不畫」拿掉；成效值單位各張不同，加不起來（vault 的
+    jira-weekly-report · 總覽 epic 數與成效說明 overview）。"""
+    fresh = [c for c in cards if c["new"]]
+    if not fresh:
+        return ('<div class="dv-fresh"><h4>本期新交付 <span class="muted">0</span></h4>'
+                '<p class="muted small">本期沒有新交付。</p></div>')  # 不寫「下面都是之前交付的」：只有驗收中時下面沒有已交付（Codex 審 #47）
+    listed = "".join(f'<li><a href="#dv-{esc(c["key"])}">{esc(c["epic_summary"])}</a> <span class="muted">{esc(c["label"] or UNLABELED)}</span></li>'
+                     for c in fresh)
+    return f'<div class="dv-fresh"><h4>本期新交付 <span class="muted">{len(fresh)}</span></h4><ul class="dv-new">{listed}</ul></div>'
+
+
 def _delivered_panel(metrics, page) -> str:
-    """成效說明：頂端一句話、一排單位籤，一次顯示一個單位、一列一個工具，驗收中是最後一個籤（2026-11-03 鎖定 AC-1；
+    """成效說明：頂端一句話、本期新交付清單（2026-11-11 加）、一排單位籤（有本期新交付的標「本期 +N」），一次顯示一個單位、一列一個工具，驗收中是最後一個籤（2026-11-03 鎖定 AC-1；
     2026-11-04 使用者要單位籤各自切換，公開頁內部位址與單位頁籤）。只有驗收中卡的單位不另開籤，驗收通過才列進各單位。
     籤是 #unit-… 的連結：沒有 JS 時照舊是跳轉、各單位往下排。"""
     cards = metrics["deliverables"]
@@ -1251,8 +1263,11 @@ def _delivered_panel(metrics, page) -> str:
     def active(key):
         return " active" if key == first else ""
 
+    fresh_by_tab = {_unit_id(name): sum(1 for c in groups[name] if c["new"]) for name in order}
     nav = "".join(f'<a class="dv-tab" role="tab" id="tab-{key}" href="#{key}" aria-controls="{key}" aria-selected="{str(key == first).lower()}">'
-                  f'{name} <span class="muted">{n}</span></a>' for key, name, n in tabs)
+                  f'{name} <span class="muted">{n}</span>'
+                  + (f'<span class="dv-tab-new">本期 +{fresh_by_tab[key]}</span>' if fresh_by_tab.get(key) else "") + '</a>'
+                  for key, name, n in tabs)
     sections = "".join(
         f'<section class="dv-unit{active(_unit_id(name))}" id="{_unit_id(name)}" role="tabpanel" aria-labelledby="tab-{_unit_id(name)}">'
         f'<h3>{esc(name)} <span class="muted">{len(groups[name])}</span></h3>'
@@ -1264,7 +1279,8 @@ def _delivered_panel(metrics, page) -> str:
                   f'<summary><b>驗收中 <span class="muted">{len(reviewing)}</span></b>'
                   f'<span class="muted">上線了、還在驗收，驗收通過後列進各單位</span></summary>'
                   f'<div class="dv-rows">{"".join(_dv_row(c, page, reviewing=True) for c in reviewing)}</div></details>')
-    return (f'<p class="dv-sentence">{sentence}。</p><nav class="dv-tabs" role="tablist" aria-label="支援單位">{nav}</nav>'
+    return (f'<p class="dv-sentence">{sentence}。</p>{_dv_fresh(cards)}'
+            f'<nav class="dv-tabs" role="tablist" aria-label="支援單位">{nav}</nav>'
             f'{sections}{review}')
 
 
@@ -1301,10 +1317,15 @@ def _glossary(metrics) -> str:
         ("進度", "專案底下沒有子卡的卡：到本週結束為止算進完成卡片的張數／全部張數；進度條深色那段是其中本週完成的。"
                  "不列入的卡與改組前的卡不算完成、仍算在全部張數裡，所以 Jira 上已全部完成的專案這裡可能不到 100%。"),
         ("label", "專案的 label 取 epic 在 Jira 上的 label；不在 epic 底下的卡用自己的 label。"
-                  "沒有 label、或有兩個以上 label 的歸「未分類」，並列進資料檢查。epic 數是總覽專案列表裡掛這個 label 的 epic。"),
+                  "沒有 label、或有兩個以上 label 的歸「未分類」，並列進資料檢查。epic 數是總覽專案列表裡掛這個 label 的 epic，各 label 加總等於累計完成加進行中 epic。"),
         ("Done／On Track", "Done 是 epic 在 Jira 已完成；On Track 只表示 epic 還沒完成，不代表進度評估。"
                            "總覽專案列表的已結案收在每段最後，標 epic 在 Jira 完成的那一週（結案週）；"
-                           "資源的已結案數只看 Jira 的 epic 狀態；消化速度的「完成」另外算進卡都做完、epic 沒關的，不算底下沒有完成工作卡的，兩個不是同一個數。"),
+                           "總覽的累計完成 epic 只看 Jira 的 epic 狀態，進行中 epic 是其餘的，含「卡都做完，epic 沒關」；消化速度的「完成」另外算進卡都做完、epic 沒關的，不算底下沒有完成工作卡的，兩個不是同一個數。"),
+        ("累計完成 epic／進行中 epic", "總覽資源的兩格，數的是專案列表裡的 epic，未歸屬 epic 不算。累計完成是 Jira 上已結案的 epic；"
+                                 f"進行中是其餘的，含「{FULL_LABEL}」（小字寫幾個）。兩格加起來等於專案列表的 epic 數。"),
+        *((("本期新交付", "成效說明裡 Deliverable 卡的 Jira 完成時間落在本週。成效說明列的是到本週為止全部已交付的專案（累計），"
+                         "本期新交付的在單位籤標「本期 +N」、列上標「本期新交付」，頂端另列一份清單。"),)
+          if metrics["deliverables"] is not None else ()),  # 沒抓 Deliverable 的舊期沒有成效說明，不放這條
         ("沒動", f"最後一次更新到本週結束過了幾天（只改 label 也算更新）。專案看底下的卡（不算 Kick off），卡看它自己；"
                  f"{IDLE_DAYS} 天以上列進「需要關注」，人卡與總覽專案列表的幾天沒動標警示色。Kick off 的「需要決定」沒有沒動這回事，有寫就列，附 Kick off 卡寫了幾天。"),
         ("停滯", f"epic 還沒完成，專案沒動 {IDLE_DAYS} 天以上；底下沒有卡就看 epic 自己。"),
@@ -1657,6 +1678,10 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .dv-name{grid-column:1;font-weight:600;font-size:16px}
 .dv-tag{display:inline-block;margin-left:8px;padding:0 7px;border-radius:4px;font-size:12px;font-weight:500;vertical-align:2px;background:var(--soft);color:var(--muted)}
 .dv-tag.new{background:var(--done-bg);color:var(--done-fg);font-weight:600}
+.dv-fresh{margin:4px 0 18px}.dv-fresh h4{margin:6px 0 4px}
+.dv-new{list-style:none;margin:0;padding:10px 14px;columns:2;column-gap:28px;background:var(--surface);border:1px solid var(--line);border-radius:10px;font-size:13px}
+.dv-new li{break-inside:avoid;padding:3px 0}
+.dv-tab-new{margin-left:6px;padding:0 6px;border-radius:4px;font-size:11px;font-weight:600;background:var(--done-bg);color:var(--done-fg)}
 .dv-one{grid-column:1;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
 /* 成效自成一段、跨過右側按鈕欄；左邊中性細線，現在值墨色粗體，指標與原本灰字（2026-11-04 使用者選丁） */
 .dv-out{grid-column:1/-1;display:block;max-width:46em;margin-top:8px;border-left:2px solid var(--line-strong);padding:1px 0 1px 12px}
@@ -1846,6 +1871,7 @@ details[open]>summary::before{content:"▾"}
   .people{width:auto;flex:1 1 0;min-width:0}  /* 人與累計工時同一行（2026-10-07 總覽 UI 盤點 U8） */
   .sigs{width:auto}
   .lrow{flex-wrap:wrap}.lrow .lname{width:100%}.lrow .bar{flex-basis:100%}.lrow .num{width:auto;text-align:left}
+  .dv-new{columns:1}
   .idle,.cw,.dv{width:auto;text-align:left}
   .wrow>summary{grid-template-columns:12px minmax(0,1fr) auto auto}.wrow.head{grid-template-columns:minmax(0,1fr) auto auto}
   .wrow>summary>span:nth-child(2),.wrow.head>span:nth-child(2){display:none}
