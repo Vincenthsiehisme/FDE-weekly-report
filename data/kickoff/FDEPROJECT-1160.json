@@ -1,0 +1,27 @@
+{
+  "changes": [],
+  "epic": "FDEPROJECT-1160",
+  "kickoff_key": "FDEPROJECT-1162",
+  "last_seen": {
+    "after": null,
+    "before": null,
+    "decision": null,
+    "evidence": null,
+    "next_milestone": null,
+    "objective": "LINE 會議助手 bot 認到的會議預約，同步推播到 FAE 團隊的 Teams",
+    "why": null
+  },
+  "last_seen_at": "2026-11-11T05:28:18.636478+08:00",
+  "last_seen_key": "FDEPROJECT-1162",
+  "locked_at": "2026-11-11T05:28:18.636478+08:00",
+  "problems": [],
+  "sections": {
+    "after": null,
+    "before": null,
+    "decision": null,
+    "evidence": null,
+    "next_milestone": null,
+    "objective": "LINE 會議助手 bot 認到的會議預約，同步推播到 FAE 團隊的 Teams",
+    "why": null
+  }
+}
