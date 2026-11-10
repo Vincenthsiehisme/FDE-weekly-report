@@ -58,6 +58,8 @@ ALLOCATION_TOP = 7      # 投入比例畫幾個 label，其餘併「其他」（
 ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主力會被併進「其他」（原型 W43「其他」65%）
 OTHER_LABEL = "其他"
 CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近幾週（跟本週頁的圖同一段），不然資料檢查會一路變長
+# 19：deliverables 與 deliverables_reviewing 每張卡的 attachments 多了 video（R2 的物件鍵；不播的是 None；驗收中一律 None）
+#     （2026-11-10 成效說明多讀者改版 AC-5）；
 # 18：工作卡、epic 標題與 Kick off 有私有 IP 或 config/internal-hosts.json 的主機，一張卡列一條 internal_address 資料檢查；
 #     頁面在 render.esc 換掉，metrics 照存原文（2026-11-04 公開頁內部位址與單位頁籤）；
 # 17：多了 deliverables_reviewing（Jira 審核中的 Deliverable，頁籤「成效說明」收在最後；snapshot 3 是 null）；deliverables 與它每張多了
@@ -84,7 +86,7 @@ CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近�
 #    epic 多了 idle_days 與 stalled、totals 多了 stalled；人多了 trend、recent、shares 與進行中卡的 ages；
 # 6：完成卡片只數葉節點、拿掉交付、units 換成 labels、累計專案帶 label 與 kickoff、進度只算完成卡片那批；
 # 5：多了 staffing（每個專案幾個人產出、多少工時）；4：多了 token_source（data/tokens/ 有沒有任何檔）；3：多了 migrated（改組前）
-SCHEMA = 18
+SCHEMA = 19
 SNAPSHOT_SCHEMAS = (3, 4, 5)  # 3 起有 moved_in、progress_seen、status_since；4 多了 Deliverable，3 照算、成效說明頁籤寫沒抓；
 # 5 的附件帶 id 才下載得了圖，4 的附件只有檔名、照舊只列檔名
 

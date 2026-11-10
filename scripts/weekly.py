@@ -6,7 +6,8 @@
   metrics <week>                      只從既有 snapshot 重算 metrics（不打 Jira）
   kickoff-hours <week>                只把既有 snapshot 裡 Kick off 卡的工時換成 Jira 現值，再重算 metrics；
                                       卡的範圍、狀態、結案時間都留在那一期抓的樣子
-  images <week>                       只下載這一期成效說明要顯示、site/ 裡還沒有的 Deliverable 圖（重算舊期後補圖用）
+  images <week>                       只補這一期成效說明要顯示的 Deliverable 圖與影片：圖下載進 site/、影片上傳 R2，
+                                      已經有的不重做（重算舊期後補用）
   finalize <week>                     驗證 narrative.json，通過才產出 site/ 底下的 HTML
 
 任何一步失敗都以非 0 結束，不產出部分結果。
@@ -27,8 +28,9 @@ sys.path.insert(0, str(ROOT / "scripts"))
 from lib import capacity as capacity_lib  # noqa: E402
 from lib import deliverable as deliverable_lib  # noqa: E402
 from lib import kickoff as kickoff_lib  # noqa: E402
+from lib import r2 as r2_lib  # noqa: E402
 from lib.jira import JiraClient, load_credentials  # noqa: E402
-from lib.metrics import compute, drop_excluded_epics, kickoff_by_epic  # noqa: E402
+from lib.metrics import SCHEMA, compute, drop_excluded_epics, kickoff_by_epic  # noqa: E402
 from lib.narrative import validate  # noqa: E402
 from lib.period import TZ, period_ending, period_for, period_from_dict, wait_for_end  # noqa: E402
 from lib.render import render  # noqa: E402
@@ -201,12 +203,24 @@ def _without(tokens, keys: set):
     """None 代表沒有 Token 資料，照傳；有資料就拿掉 keys。"""
     return None if tokens is None else {k: v for k, v in tokens.items() if k not in keys}
 
-def publish_week(snapshot: dict, *, fresh_fetch: bool, client=None) -> dict:
+def fetch_media(client, metrics: dict, r2=None) -> tuple:
+    """成效說明要的影片上傳 R2、圖下載進 site/，回傳 (上傳的影片鍵, 新寫的圖)。影片先做：上傳回滾不了，
+    放在寫任何檔之前，失敗時 site/ 與 data/ 都沒動。這一期有要播的影片就讀 R2 憑證（要 HEAD 查在不在，
+    已經全部上傳過也一樣）；沒有要播的影片的週不需要它。"""
+    uploaded = []
+    if deliverable_lib.videos(metrics["deliverables"]):
+        if r2 is None:
+            r2 = r2_lib.R2Client(r2_lib.load_config(), r2_lib.load_credentials())
+        uploaded = deliverable_lib.upload_videos(client, r2, metrics["deliverables"])
+    return uploaded, deliverable_lib.download_images(client, metrics["deliverables"], SITE)
+
+
+def publish_week(snapshot: dict, *, fresh_fetch: bool, client=None, r2=None) -> dict:
     """全部算完才一次寫出 snapshot、metrics 與 Kick off 鎖定檔。只有 prepare 剛抓完 Jira 時傳 fresh_fetch=True。
-    給了 client（prepare）就先把成效說明要顯示的圖下載進 site/：下載失敗時這一期的資料一個檔都不寫。"""
+    給了 client（prepare）就先把成效說明要播的影片上傳 R2、要顯示的圖下載進 site/：失敗時這一期的資料一個檔都不寫。"""
     metrics, writes = compute_week(snapshot, fresh_fetch=fresh_fetch)
     if client is not None:
-        deliverable_lib.download_images(client, metrics["deliverables"], SITE)
+        fetch_media(client, metrics, r2)
     writes[week_dir(metrics["period"]["week"]) / "snapshot.json"] = snapshot
     for path in sorted(writes):
         write_json(path, writes[path])
@@ -285,8 +299,8 @@ def cmd_images(args) -> None:
     refuse_stale_metrics(args.week, metrics, cards, epics)
     client = JiraClient(load_credentials())
     client.verify()
-    written = deliverable_lib.download_images(client, metrics["deliverables"], SITE)
-    print(f"{args.week}：下載 {len(written)} 張成效說明的圖", file=sys.stderr)
+    uploaded, written = fetch_media(client, metrics)
+    print(f"{args.week}：上傳 {len(uploaded)} 支成效說明的影片、下載 {len(written)} 張圖", file=sys.stderr)
 
 
 def refuse_stale_metrics(week: str, metrics: dict, excluded_cards: dict, excluded_epics: dict) -> None:
@@ -303,11 +317,25 @@ def refuse_stale_metrics(week: str, metrics: dict, excluded_cards: dict, exclude
         raise ValueError(f"{week} 的 metrics.json 是用另一份 config/excluded.json 的 cards 算的（不同的是：{'、'.join(changed) or '沒有記錄'}），先跑 metrics {week} 重算")
 
 
+def refuse_old_schema(week: str, metrics: dict) -> None:
+    """render 也擋，但它最後才跑：舊 schema 的 attachments 沒有 video，缺圖缺影片的檢查會先丟 KeyError，看不到要重算。"""
+    if metrics.get("schema") != SCHEMA:
+        raise ValueError(f"{week} 的 metrics schema 是 {metrics.get('schema')}，頁面需要 {SCHEMA}：先用 weekly.py metrics {week} 重算")
+
+
 def refuse_missing_images(week: str, metrics: dict) -> None:
     """成效說明要顯示的圖不在 site/ 裡：畫出來是破圖，直接失敗。prepare 會下載；重算舊期之後要補就跑 images。"""
     missing = deliverable_lib.missing_images(metrics["deliverables"], SITE)
     if missing:
         raise ValueError(f"{week} 成效說明的圖不在 site/：{'、'.join(missing)}，先跑 weekly.py images {week}")
+
+
+def refuse_missing_videos(week: str, metrics: dict) -> None:
+    """成效說明要播的影片在公開網址上不在：畫出來是放不出來的播放器，直接失敗。prepare 會上傳；重算舊期之後要補就跑 images。"""
+    config = r2_lib.load_config()
+    missing = [key for key in deliverable_lib.videos(metrics["deliverables"]) if not r2_lib.public_exists(r2_lib.public_url(key, config))]
+    if missing:
+        raise ValueError(f"{week} 成效說明的影片不在 R2：{'、'.join(missing)}，先跑 weekly.py images {week}")
 
 
 def cmd_finalize(args) -> None:
@@ -320,7 +348,9 @@ def cmd_finalize(args) -> None:
     cards, epics, issues, _ = excluded_view(snapshot, fresh_fetch=False)
     refuse_stale_metrics(week, metrics, cards, epics)
     validate(narrative, metrics, {i["key"] for i in issues})
+    refuse_old_schema(week, metrics)
     refuse_missing_images(week, metrics)
+    refuse_missing_videos(week, metrics)
 
     reports = SITE / "reports"
     weeks = sorted({p.stem for p in reports.glob("*.html") if WEEK_ID.fullmatch(p.stem)} | {week}, reverse=True)
@@ -331,7 +361,9 @@ def cmd_finalize(args) -> None:
         index_metrics = read_json(week_dir(latest) / "metrics.json")
         index_narrative = read_json(week_dir(latest) / "narrative.json")
         refuse_stale_metrics(latest, index_metrics, cards, epics)
+        refuse_old_schema(latest, index_metrics)
         refuse_missing_images(latest, index_metrics)
+        refuse_missing_videos(latest, index_metrics)
     # 兩頁都畫完才寫：首頁畫失敗時不能留下已更新的週報頁
     report_html = render(metrics, narrative, weeks, in_reports_dir=True)
     index_html = render(index_metrics, index_narrative, weeks, in_reports_dir=False)

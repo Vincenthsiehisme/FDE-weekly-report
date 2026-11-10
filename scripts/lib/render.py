@@ -33,6 +33,7 @@ from datetime import datetime, timedelta
 from urllib.parse import quote
 
 from . import capacity as capacity_lib
+from . import r2 as r2_lib
 from .deliverable import internal_hosts, scrub
 from .metrics import ALLOCATION_TOP, ALLOCATION_WINDOW, CAPACITY_CHECK_WEEKS, OTHER_LABEL, SCHEMA, STALL_DAYS, UNASSIGNED_EPIC_LABEL, UNASSIGNED_OWNER, UNLABELED
 from .period import TZ
@@ -1094,15 +1095,21 @@ def _dv_outcome(card: dict) -> str:
             f'<span class="dv-base"><b>原本</b>{esc(card["base"])}</span></span>')
 
 
+def _video(a: dict) -> str:
+    """R2 上的影片，瀏覽器直接播；preload=metadata 只抓長度與第一格，不整支下載。"""
+    return f'<video src="{esc(r2_lib.public_url(a["video"]))}" controls preload="metadata" playsinline></video>'
+
+
 def _dv_shots(card: dict, page) -> str:
-    """完整說明的「畫面」：圖排成縮圖格，每張下面是檔名（連 Jira）；影片、太大的檔、snapshot 4 的附件只列檔名。"""
-    images = [a for a in card["attachments"] if a["image"]]
-    others = [a for a in card["attachments"] if not a["image"]]
+    """完整說明的「畫面」：影片與圖排成格，每格下面是檔名（連 Jira）；太大的檔、不播的格式、snapshot 4 的附件只列檔名。"""
+    shown = [a for a in card["attachments"] if a["image"] or a["video"]]
+    others = [a for a in card["attachments"] if not (a["image"] or a["video"])]
     out = ""
-    if images:
+    if shown:
         out += '<div class="dv-shots">' + "".join(
-            f'<figure><a href="{page.asset(a["image"])}"><img src="{page.asset(a["image"])}" alt="{esc(a["filename"])}" loading="lazy"></a>'
-            f'<figcaption>{page.attachment(a)}</figcaption></figure>' for a in images) + "</div>"
+            (f'<figure>{_video(a)}' if a["video"] else
+             f'<figure><a href="{page.asset(a["image"])}"><img src="{page.asset(a["image"])}" alt="{esc(a["filename"])}" loading="lazy"></a>')
+            + f'<figcaption>{page.attachment(a)}</figcaption></figure>' for a in shown) + "</div>"
     if others:
         where = ('點檔名到 Jira 看（要登入）' if all(a["id"] for a in others)
                  else f'檔案在 Jira 卡 {page.issue(card["key"])} 的附件')
@@ -1158,8 +1165,15 @@ def _dv_media(card: dict, page):
     """列左邊的畫面：有放上週報的圖就放第一張，點了開原圖；圖沒放上週報（驗收中、超過上限、snapshot 4）或只有影片，
     放一個框連到 Jira（要登入）；沒有圖也沒有影片回空字串，那列照舊全寬（2026-11-10 使用者要左圖（影）右文，
     推翻 11-03 甲的「截圖影片只在展開後」）。回 (html, 框裡沒交代到、要在名稱旁標的那句)。"""
+    played = [a for a in card["attachments"] if a["video"]]
     shown = [a for a in card["attachments"] if a["image"]]
     videos = [a for a in card["attachments"] if _kind(a) == "video"]
+    if played:  # 影片比圖優先放左邊：使用者要「左圖（影）」，影片比截圖講得多
+        # 列是 <summary>：裡面放帶 controls 的 <video>，點畫面會展開那一列、播不了（2026-11-10 Browser pane 實測）。
+        # 左邊放不帶 controls 的第一格包在連結裡，點了開 R2 的原檔直接播，跟圖點開原圖同一個做法；完整說明裡才是播放器
+        url = esc(r2_lib.public_url(played[0]["video"]))
+        return (f'<a class="dv-media dv-video" href="{url}"><video src="{url}" preload="metadata" muted playsinline></video>'
+                f'<span class="dv-play">▶ 播放</span></a>', "有畫面" if shown else "")
     if shown:
         more = f'<span class="dv-count">共 {len(shown)} 張</span>' if len(shown) > 1 else ""
         return (f'<a class="dv-media" href="{page.asset(shown[0]["image"])}">'
@@ -1593,6 +1607,9 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .dv-item.with-media>summary{grid-template-columns:200px minmax(0,1fr) auto;padding-left:14px}
 .with-media .dv-media{grid-column:1;grid-row:1/4;align-self:stretch;position:relative;display:block;min-height:132px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg)}
 .dv-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
+.dv-video{background:#000}.dv-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.dv-play{position:absolute;left:8px;bottom:8px;padding:2px 9px;border-radius:4px;background:rgba(0,0,0,.62);color:#fff;font-size:12px}
+.dv-shots video{display:block;width:100%;height:160px;border:1px solid var(--line);border-radius:6px;background:#000}
 .dv-count{position:absolute;right:6px;bottom:6px;padding:0 7px;border-radius:4px;background:rgba(0,0,0,.62);color:#fff;font-size:12px}
 .with-media .dv-media-out{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:10px 12px;font-size:12px;color:var(--muted);overflow-wrap:anywhere;border-style:dashed}
 .dv-media-out b{color:var(--accent);font-size:13px}.with-media .dv-media-out:hover{text-decoration:none;border-color:var(--accent)}

@@ -3,8 +3,8 @@
 這份是雲端 Claude Code routine 每週要照做的步驟，routine 的 prompt 只需要寫「照 ROUTINE.md 執行」。
 
 - 排程：每週二 15:59 UTC（台北 23:59），cron `59 15 * * 2`
-- 環境變數：`JIRA_SITE`、`JIRA_EMAIL`、`JIRA_API_TOKEN`，設在雲端環境 `fde-weekly-report` 的 Environment variables（claude.ai/code 輸入框上方的環境選單 → 編輯該環境），不在 routine 設定頁，也不寫進 repo。值不加引號、不加 `<>`；token 錯時第 3 步會報「Jira 不接受這組憑證」
-- 網路：同一個雲端環境的 Network access 是 Custom，Allowed domains 要有 `liontech-tw.atlassian.net`（Jira API）與 `api.media.atlassian.com`（Deliverable 截圖下載時 Jira 轉址過去）；少了後者，有附圖的 Deliverable 完成那週第 3 步會失敗（2026-11-03 W45 那班）。程式多連一個主機，同一個 PR 就要列在這裡
+- 環境變數：`JIRA_SITE`、`JIRA_EMAIL`、`JIRA_API_TOKEN`，設在雲端環境 `fde-weekly-report` 的 Environment variables（claude.ai/code 輸入框上方的環境選單 → 編輯該環境），不在 routine 設定頁，也不寫進 repo。值不加引號、不加 `<>`；token 錯時第 3 步會報「Jira 不接受這組憑證」。成效說明的影片上 Cloudflare R2，要 `R2_ACCESS_KEY_ID`、`R2_SECRET_ACCESS_KEY`（R2 API token，只能讀寫 `fde-weekly-report-videos`）：2026-11-10 起週報改由本機 Claude 排程跑（vault 的 jira-weekly-report · 本機排程），兩把 key 在本機 `~/.config/fde-weekly-report/r2.env`；在雲端跑就設在同一個 Environment variables。有影片要上傳的那週缺了，第 3 步會報「找不到 R2 憑證」
+- 網路：同一個雲端環境的 Network access 是 Custom，Allowed domains 要有 `liontech-tw.atlassian.net`（Jira API）與 `api.media.atlassian.com`（Deliverable 截圖下載時 Jira 轉址過去）；少了後者，有附圖的 Deliverable 完成那週第 3 步會失敗（2026-11-03 W45 那班）；在雲端跑時 `561d7bfcb1107adf9bbf619a78129d10.r2.cloudflarestorage.com`（影片上傳 R2）與 `pub-bbf15d266c104e9bb1a663e4f14c0008.r2.dev`（finalize 確認影片在公開網址上）也要有，少了前者第 3 步失敗、少了後者 finalize 失敗；本機跑沒有白名單。程式多連一個主機，同一個 PR 就要列在這裡
 - 寫入範圍：只有 `data/` 與 `site/`，只 push 到 `main`
 
 任何一步失敗就停下來回報錯誤訊息，不要跳過、不要用別的方式補救、不要 commit 部分結果。

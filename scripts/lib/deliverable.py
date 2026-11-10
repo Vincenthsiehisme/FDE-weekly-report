@@ -8,8 +8,10 @@
 - 畫面取附件：圖片（IMAGE_TYPES、不超過 MAX_IMAGE_BYTES）由 prepare 下載進 site/assets/deliverables/ 公開顯示，
   其他附件只列檔名加 Jira 連結（2026-11-03 使用者裁，推翻 10-29 不放圖；vault 的 jira-weekly-report · 成效說明顯示截圖）。
   個資守門在 Deliverable 規則：上傳前遮客人資料、轉完成前檢查。版本取修正版本（fixVersions）。
+- 影片（VIDEO_TYPES、不超過 MAX_VIDEO_BYTES）由 prepare 上傳到 Cloudflare R2、頁面直接播（AC-5，2026-11-03 使用者裁
+  「放 R2，限 100 MB」）；連線在 r2.py。
 - 頁籤列已完成的 Deliverable，依支援單位分段；Jira 狀態類別 indeterminate（審核中）的另列「驗收中」，
-  只解析不列格式檢查、不下載圖（圖要轉完成、遮過個資才公開）。不鎖定，每週取當下內容。
+  只解析不列格式檢查、不下載圖也不上傳影片（要轉完成、遮過個資才公開）。不鎖定，每週取當下內容。
 - 頁面是公開網址：私有 IP 與 config/internal-hosts.json 列的主機，不管寫在哪一欄都換成 INTERNAL_MARK、列資料檢查；
   剩下的 https:// 網址才做成連結（vault 的 jira-weekly-report · 成效說明多讀者改版，2026-11-03 使用者裁「維持公開」）。
   scrub 也是整份公開頁的出口：render.esc 每個字都過它，工作卡、epic、Kick off 的資料檢查在 metrics 列
@@ -62,6 +64,13 @@ IMAGE_TYPES = {
 }
 # 單張上限（2026-11-03 裁定）：repo 只用標準函式庫、沒有縮圖；實查最大一張 1.1 MB。超過的只列檔名加連結
 MAX_IMAGE_BYTES = 2 * 1024 * 1024
+# 會上傳到 R2、頁面直接播的影片：mimeType → (副檔名, 檔頭檢查)。只收瀏覽器都能播的兩種；mov 等只列檔名連 Jira
+# （AC-5，2026-11-03 使用者裁「放 R2，限 100 MB」；2026-11-10 實作裁定）
+VIDEO_TYPES = {
+    "video/mp4": (".mp4", lambda data: data[4:8] == b"ftyp"),
+    "video/webm": (".webm", lambda data: data.startswith(b"\x1a\x45\xdf\xa3")),
+}
+MAX_VIDEO_BYTES = 100 * 1024 * 1024
 ASSET_DIR = "assets/deliverables"  # 相對 site/
 _LABELS = {label.lower(): key for key, label in SECTIONS}
 _LINE = re.compile(r"^[\s#>*•\-]*\**\s*(?P<label>Acceptance|Code|Env|入口|手冊)\s*\**\s*(?:[:：]\s*(?P<rest>.*))?$", re.IGNORECASE)
@@ -102,6 +111,10 @@ def _attachment(raw: dict) -> dict:
     for name in ("id", "filename", "mimeType", "size"):
         if raw.get(name) is None:
             raise ValueError(f"Deliverable 附件少了 {name}：{raw.get('filename') or raw.get('id')}")
+    # id 同時是公開的 site/assets/deliverables/<id>.<副檔名> 與 R2 物件鍵：Jira 的附件 id 一律是數字，
+    # 不是數字就失敗，不讓 . 或 / 進路徑（2026-11-10 fable 審 #45）
+    if not str(raw["id"]).isdigit():
+        raise ValueError(f"Deliverable 附件 id 不是數字：{raw['filename']}，不放上週報")
     return {"id": str(raw["id"]), "filename": raw["filename"], "mime": raw["mimeType"], "size": raw["size"]}
 
 
@@ -109,10 +122,36 @@ def _shown_attachment(a) -> dict:
     """頁面要的附件：image 是相對 site/ 的圖檔路徑，不顯示的是 None。
     snapshot 4 的附件只有檔名（字串）：沒有 id 就做不了連結也下載不了，照舊只列檔名。"""
     if isinstance(a, str):
-        return {"id": None, "filename": a, "mime": None, "size": None, "image": None}
+        return {"id": None, "filename": a, "mime": None, "size": None, "image": None, "video": None}
     kind = IMAGE_TYPES.get(a["mime"])
     image = f"{ASSET_DIR}/{a['id']}{kind[0]}" if kind and a["size"] <= MAX_IMAGE_BYTES else None
-    return dict(a, image=image)
+    clip = VIDEO_TYPES.get(a["mime"])
+    video = f"{a['id']}{clip[0]}" if clip and a["size"] <= MAX_VIDEO_BYTES else None  # R2 的物件鍵
+    return dict(a, image=image, video=video)
+
+
+def upload_videos(client, r2, cards: list) -> list:
+    """把 cards（metrics 的 deliverables）要播的影片從 Jira 下載、上傳到 R2，回傳這次上傳的鍵。R2 已經有同一個鍵就不重傳：
+    附件內容在 Jira 改不了，換影片就是新附件、新 id。位元數或檔頭對不上就失敗，不上傳。
+    上傳回滾不了，所以 prepare 把這步放在寫任何檔之前：失敗時 site/ 與 data/ 都沒動，R2 多出來的同鍵物件下一班照用。"""
+    uploaded = []
+    for card in cards or []:
+        for a in card["attachments"]:
+            if not a["video"] or r2.exists(a["video"]):
+                continue
+            data = client.attachment(a["id"], MAX_VIDEO_BYTES)
+            if len(data) != a["size"]:
+                raise ValueError(f"{card['key']} 的附件 {a['filename']} 下載到 {len(data)} bytes，Jira 寫的是 {a['size']}")
+            if not VIDEO_TYPES[a["mime"]][1](data):
+                raise ValueError(f"{card['key']} 的附件 {a['filename']} 內容不是 {a['mime']}（檔頭對不上），不放上週報")
+            r2.put(a["video"], data, a["mime"])
+            uploaded.append(a["video"])
+    return uploaded
+
+
+def videos(cards: list) -> list:
+    """頁面要播的影片鍵，照卡與附件順序。"""
+    return [a["video"] for card in cards or [] for a in card["attachments"] if a["video"]]
 
 
 def download_images(client, cards: list, site_dir: Path) -> list:
@@ -335,7 +374,7 @@ def views(issues: list, period, hosts: frozenset = None) -> tuple:
             checks.append(_check("deliverable_internal", item["key"], f"有 {scrubbed} 處內部網址或私有 IP，頁面換成「{INTERNAL_MARK}」；"
                                                                       "Deliverable 只放對外網址"))
         if not done:
-            attachments = [dict(a, image=None) for a in attachments]
+            attachments = [dict(a, image=None, video=None) for a in attachments]
         week = period_containing(parse_jira_time(item["resolved"])).week_id if done else None
         stale = done and bool(d["now_date"]) and (period.week_ending - date.fromisoformat(d["now_date"])) > timedelta(days=STALE_OUTCOME_DAYS)
         if done:
