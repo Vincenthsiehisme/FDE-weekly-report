@@ -12961,7 +12961,8 @@
           "id": "14660",
           "image": "assets/deliverables/14660.png",
           "mime": "image/png",
-          "size": 394116
+          "size": 394116,
+          "video": null
         }
       ],
       "base": "0 段（試用前沒有接 Chatwoot）",
@@ -13405,21 +13406,24 @@
           "id": "14652",
           "image": "assets/deliverables/14652.png",
           "mime": "image/png",
-          "size": 182908
+          "size": 182908,
+          "video": null
         },
         {
           "filename": "serp-q-digest · 法人單 2 填一位（假資料）.png",
           "id": "14653",
           "image": "assets/deliverables/14653.png",
           "mime": "image/png",
-          "size": 186051
+          "size": 186051,
+          "video": null
         },
         {
           "filename": "serp-q-digest · 法人單 3 批售單不能產生（假資料）.png",
           "id": "14651",
           "image": "assets/deliverables/14651.png",
           "mime": "image/png",
-          "size": 89914
+          "size": 89914,
+          "video": null
         }
       ],
       "base": "約 55 分鐘（每人 109.2 位 × 手動每條 30 秒）",
@@ -13479,7 +13483,8 @@
           "id": "14437",
           "image": null,
           "mime": "video/mp4",
-          "size": 17195767
+          "size": 17195767,
+          "video": "14437.mp4"
         }
       ],
       "base": "客人指 DM 或文宣，業務進 SERP 逐一手打團名，打錯字就找不到，也多花時間",
@@ -13621,14 +13626,16 @@
           "id": "14542",
           "image": null,
           "mime": "image/png",
-          "size": 576269
+          "size": 576269,
+          "video": null
         },
         {
           "filename": "report.md",
           "id": "14658",
           "image": null,
           "mime": "text/markdown",
-          "size": 9508
+          "size": 9508,
+          "video": null
         }
       ],
       "base": "278,366 人",
@@ -13713,7 +13720,8 @@
           "id": "14512",
           "image": null,
           "mime": "image/png",
-          "size": 74944
+          "size": 74944,
+          "video": null
         }
       ],
       "base": "p50 8.9 秒／p95 31.8 秒（搬站前全期 8/27～10/21，n=424）",
@@ -20229,7 +20237,7 @@
     "week": "2026-W45",
     "week_ending": "2026-11-03"
   },
-  "schema": 18,
+  "schema": 19,
   "site": "liontech-tw.atlassian.net",
   "staffing": [
     {
