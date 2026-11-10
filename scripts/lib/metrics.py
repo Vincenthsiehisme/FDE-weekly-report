@@ -59,7 +59,8 @@ ALLOCATION_WINDOW = 4   # 前幾名照最近幾週排，累計排的話近期主
 OTHER_LABEL = "其他"
 CAPACITY_CHECK_WEEKS = 6  # 工時超過可運用、不在名單，只查最近幾週（跟本週頁的圖同一段），不然資料檢查會一路變長
 # 19：deliverables 與 deliverables_reviewing 每張卡的 attachments 多了 video（R2 的物件鍵；不播的是 None；驗收中一律 None）
-#     （2026-11-10 成效說明多讀者改版 AC-5）；
+#     （2026-11-10 成效說明多讀者改版 AC-5）；同日起驗收中的 image 也有路徑（使用者裁驗收中的圖公開），schema 沒升：
+#     之前算的 19 驗收中 image 是 None，頁面照舊放連 Jira 的框，不會壞；
 # 18：工作卡、epic 標題與 Kick off 有私有 IP 或 config/internal-hosts.json 的主機，一張卡列一條 internal_address 資料檢查；
 #     頁面在 render.esc 換掉，metrics 照存原文（2026-11-04 公開頁內部位址與單位頁籤）；
 # 17：多了 deliverables_reviewing（Jira 審核中的 Deliverable，頁籤「成效說明」收在最後；snapshot 3 是 null）；deliverables 與它每張多了

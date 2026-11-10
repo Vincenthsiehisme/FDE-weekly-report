@@ -618,6 +618,20 @@ class DeliverableImagesTest(AtomicWriteTest):
                 with self.assertRaisesRegex(ValueError, "schema 是 18.*weekly.py metrics 2026-W39"):
                     weekly.main(["finalize", "2026-W39"])
 
+    def test_images_refuses_old_schema_before_touching_jira(self):
+        site = self.root / "site"
+        client = self._client()
+        with mock.patch.object(weekly, "SITE", site):
+            weekly.publish_week(self._snap(), fresh_fetch=False)
+            path = self.root / "data" / "2026-W39" / "metrics.json"
+            old = json.loads(path.read_text(encoding="utf-8"))
+            old["schema"] = 18
+            path.write_text(json.dumps(old), encoding="utf-8")
+            with mock.patch.object(weekly, "load_credentials"), mock.patch.object(weekly, "JiraClient", return_value=client):
+                with self.assertRaisesRegex(ValueError, "schema 是 18"):
+                    weekly.main(["images", "2026-W39"])
+        self.assertEqual(client.asked, [])
+
     def test_reviewing_card_images_are_downloaded_and_checked(self):
         # 驗收中的圖也公開（2026-11-10 使用者裁）：prepare 要下載，finalize 缺了要擋
         from test_deliverable import card

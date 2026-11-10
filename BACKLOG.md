@@ -14,3 +14,10 @@
 
 - 錨點：`scripts/lib/render.py`
 - 來源：jira-weekly-report · 成效說明多讀者改版
+
+## `成效說明舊圖清理`
+
+驗收中的卡換截圖是新附件 id，舊圖留在 `site/assets/deliverables/` 繼續公開；`download_images` 只新增不刪，要列出 site 裡有、所有期 metrics 都不再引用的圖交人判斷（fable 審 PR #46 建議 7）
+
+- 錨點：`site/assets/deliverables/`
+- 來源：jira-weekly-report · 成效說明多讀者改版

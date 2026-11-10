@@ -1163,15 +1163,16 @@ def _kind(a: dict) -> str:
 
 
 def _dv_media(card: dict, page):
-    """列左邊的畫面：有放上週報的圖就放第一張，點了開原圖；圖沒放上週報（驗收中、超過上限、snapshot 4）或只有影片，
-    放一個框連到 Jira（要登入）；沒有圖也沒有影片回空字串，那列照舊全寬（2026-11-10 使用者要左圖（影）右文，
-    推翻 11-03 甲的「截圖影片只在展開後」）。回 (html, 框裡沒交代到、要在名稱旁標的那句)。"""
+    """列左邊的畫面：有上 R2 的影片放第一支、否則有放上週報的圖放第一張，有 JS 時點了在頁內彈窗打開、沒有 JS 開原檔；
+    圖沒放上週報（超過上限、snapshot 4）或影片不播（驗收中、超過上限、不是 mp4／webm），放一個框連到 Jira（要登入）；
+    沒有圖也沒有影片回空字串，那列照舊全寬（2026-11-10 使用者要左圖（影）右文，推翻 11-03 甲的「截圖影片只在展開後」；
+    同日驗收中的圖也公開、點了改彈窗）。回 (html, 框裡沒交代到、要在名稱旁標的那句)。"""
     played = [a for a in card["attachments"] if a["video"]]
     shown = [a for a in card["attachments"] if a["image"]]
     videos = [a for a in card["attachments"] if _kind(a) == "video"]
     if played:  # 影片比圖優先放左邊：使用者要「左圖（影）」，影片比截圖講得多
         # 列是 <summary>：裡面放帶 controls 的 <video>，點畫面會展開那一列、播不了（2026-11-10 Browser pane 實測）。
-        # 左邊放不帶 controls 的第一格包在連結裡，點了開 R2 的原檔直接播，跟圖點開原圖同一個做法；完整說明裡才是播放器
+        # 左邊放不帶 controls 的第一格包在連結裡，點了在頁內彈窗播（沒有 JS 開 R2 原檔），跟圖同一個做法；完整說明裡才是播放器
         url = esc(r2_lib.public_url(played[0]["video"]))
         return (f'<a class="dv-media dv-video" href="{url}" data-view="video" data-caption="{esc(played[0]["filename"])}">'
                 f'<video src="{url}" preload="metadata" muted playsinline></video>'
@@ -1484,7 +1485,7 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
   // 帶修飾鍵或中鍵照舊走連結；瀏覽器沒有 dialog 也照舊走連結
   var viewer = document.getElementById("viewer");
   if (viewer && viewer.showModal) {{
-    var body = viewer.querySelector(".viewer-body"), caption = viewer.querySelector(".viewer-caption");
+    var body = viewer.querySelector(".viewer-body"), caption = viewer.querySelector(".viewer-caption"), openedAt = 0;
     document.addEventListener("click", function (event) {{
       var link = event.target.closest && event.target.closest("a[data-view]");
       if (!link || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
@@ -1496,11 +1497,15 @@ def render(metrics: dict, narrative: dict, weeks: list, in_reports_dir: bool) ->
       else media.alt = link.getAttribute("data-caption") || "";
       body.appendChild(media);
       caption.textContent = link.getAttribute("data-caption") || "";
+      openedAt = Date.now();
       viewer.showModal();
+      if (media.tagName === "VIDEO") media.play();  // 點擊當下呼叫，Safari 才認得是使用者要播；被擋就停在第一格，按播放鈕照樣能播
     }});
     viewer.querySelector(".viewer-close").addEventListener("click", function () {{ viewer.close(); }});
-    viewer.addEventListener("click", function (event) {{ if (event.target === viewer) viewer.close(); }});  // 點外面收起
-    viewer.addEventListener("close", function () {{ body.textContent = ""; }});  // 影片跟著停
+    // 點外面收起；剛打開的 0.4 秒內不算：連點兩下縮圖時，第二下會落在彈窗外面（fable 審 PR #46）
+    viewer.addEventListener("click", function (event) {{ if (event.target === viewer && Date.now() - openedAt > 400) viewer.close(); }});
+    // 影片跟著停。close 事件晚一拍才到：關掉馬上又打開時，清的會是新內容，所以只在真的關著時清（2026-11-10 實測）
+    viewer.addEventListener("close", function () {{ if (!viewer.open) body.textContent = ""; }});
   }}
 }})();
 </script>
@@ -1633,14 +1638,15 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .with-media .dv-media{grid-column:1;grid-row:1/4;align-self:stretch;position:relative;display:block;min-height:132px;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--bg)}
 .dv-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top}
 .dv-video{background:#000}.dv-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
-.viewer{max-width:94vw;max-height:94vh;padding:0;border:0;border-radius:10px;background:var(--surface);color:var(--text);overflow:hidden}
+.viewer{max-width:94vw;max-height:94vh;max-height:94dvh;padding:0;border:0;border-radius:10px;background:var(--surface);color:var(--text);overflow:hidden}
+.viewer:not([open]){display:none}.viewer[open]{display:flex;flex-direction:column}
 .viewer::backdrop{background:rgba(0,0,0,.72)}
 .viewer-close{position:absolute;top:8px;right:8px;z-index:1;padding:4px 10px;border:0;border-radius:6px;background:rgba(0,0,0,.62);color:#fff;font:inherit;font-size:13px;cursor:pointer}
 /* 圖照寬度放、太長就在彈窗裡捲（827 那張 1280×4200 壓進一屏字看不清，2026-11-10 實看）；影片整支放進一屏 */
-.viewer-body{max-height:calc(94vh - 40px);overflow:auto}
-.viewer-body img{display:block;max-width:94vw;height:auto;margin:0 auto}
-.viewer-body video{display:block;max-width:94vw;max-height:calc(94vh - 40px);margin:0 auto;background:#000}
-.viewer-caption{margin:0;padding:8px 14px;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.viewer-body{flex:1 1 auto;min-height:0;overflow:auto}
+.viewer-body img{display:block;max-width:100%;height:auto;margin:0 auto}
+.viewer-body video{display:block;max-width:100%;max-height:calc(94dvh - 64px);margin:0 auto;background:#000}
+.viewer-caption{flex:none;margin:0;padding:8px 14px;font-size:13px;color:var(--muted);overflow-wrap:anywhere}
 .dv-play{position:absolute;left:8px;bottom:8px;padding:2px 9px;border-radius:4px;background:rgba(0,0,0,.62);color:#fff;font-size:12px}
 .dv-shots video{display:block;width:100%;height:160px;border:1px solid var(--line);border-radius:6px;background:#000}
 .dv-count{position:absolute;right:6px;bottom:6px;padding:0 7px;border-radius:4px;background:rgba(0,0,0,.62);color:#fff;font-size:12px}
