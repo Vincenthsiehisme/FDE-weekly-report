@@ -538,6 +538,73 @@ class DeliverableImagesTest(AtomicWriteTest):
         self.assertFalse((self.root / "data").exists())
         self.assertFalse(site.exists())
 
+    def _video_snap(self):
+        from test_deliverable import MP4, att, card
+        snap = self._snap()
+        snap["issues"] = [i for i in snap["issues"] if i["key"] != "CS-50"] + [card("CS-50", attachment=[att("7", "v.mp4", "video/mp4", len(MP4))])]
+        return snap
+
+    def _video_client(self):
+        from test_deliverable import MP4, FakeDownloads
+        client = FakeDownloads({"7": MP4})
+        client.verify = mock.Mock()
+        return client
+
+    def test_publish_uploads_videos_before_writing(self):
+        from test_deliverable import FakeR2
+        site, store = self.root / "site", FakeR2()
+        with mock.patch.object(weekly, "SITE", site):
+            weekly.publish_week(self._video_snap(), fresh_fetch=False, client=self._video_client(), r2=store)
+        self.assertEqual(store.put_calls, [("7.mp4", "video/mp4")])
+        self.assertTrue((self.root / "data" / "2026-W39" / "metrics.json").is_file())
+
+    def test_upload_failure_writes_no_data_and_no_images(self):
+        from test_deliverable import FakeR2
+        store = FakeR2()
+        store.put = mock.Mock(side_effect=RuntimeError("R2 掛了"))
+        snap = self._video_snap()
+        from test_deliverable import att, card
+        snap["issues"][-1] = card("CS-50", attachment=[att("501", "list.png", "image/png", 32), att("7", "v.mp4", "video/mp4", 32)])
+        client = self._video_client()
+        from test_deliverable import PNG
+        client.contents["501"] = PNG
+        site = self.root / "site"
+        with mock.patch.object(weekly, "SITE", site):
+            with self.assertRaisesRegex(RuntimeError, "R2 掛了"):
+                weekly.publish_week(snap, fresh_fetch=False, client=client, r2=store)
+        self.assertFalse((self.root / "data").exists())
+        self.assertFalse(site.exists())  # 影片先傳：失敗時圖還沒寫
+
+    def test_week_without_videos_needs_no_r2_credentials(self):
+        site = self.root / "site"
+        with mock.patch.object(weekly, "SITE", site), mock.patch.object(weekly.r2_lib, "load_credentials", side_effect=AssertionError("不該讀")):
+            weekly.publish_week(self._snap(), fresh_fetch=False, client=self._client())
+        self.assertTrue((site / "assets" / "deliverables" / "501.png").is_file())
+
+    def test_prepare_builds_an_r2_client_when_there_are_videos(self):
+        # 接線：prepare 有影片時要自己讀 R2 設定與憑證、真的上傳
+        from test_deliverable import FakeR2
+        store = FakeR2()
+        with mock.patch.object(weekly, "SITE", self.root / "site"), mock.patch.object(weekly, "fetch_snapshot", return_value=self._video_snap()), \
+                mock.patch.object(weekly, "load_credentials"), mock.patch.object(weekly, "JiraClient", return_value=self._video_client()), \
+                mock.patch.object(weekly.r2_lib, "load_credentials", return_value={}), mock.patch.object(weekly.r2_lib, "R2Client", return_value=store):
+            weekly.main(["prepare", "--week-ending", "2026-09-22"])
+        self.assertEqual(store.put_calls, [("7.mp4", "video/mp4")])
+
+    def test_finalize_refuses_videos_missing_from_r2(self):
+        site = self.root / "site"
+        with mock.patch.object(weekly, "SITE", site):
+            weekly.publish_week(self._video_snap(), fresh_fetch=False)
+            (self.root / "data" / "2026-W39" / "narrative.json").write_text('{"highlights": [], "epic_results": {}}', encoding="utf-8")
+            with mock.patch.object(weekly.r2_lib, "public_exists", return_value=False) as head:
+                with self.assertRaisesRegex(ValueError, "影片不在 R2：7.mp4.*weekly.py images 2026-W39"):
+                    weekly.main(["finalize", "2026-W39"])
+            head.assert_called_with("https://pub-bbf15d266c104e9bb1a663e4f14c0008.r2.dev/7.mp4")
+            self.assertFalse((site / "index.html").exists())
+            with mock.patch.object(weekly.r2_lib, "public_exists", return_value=True):
+                weekly.main(["finalize", "2026-W39"])
+        self.assertIn("r2.dev/7.mp4", (site / "index.html").read_text(encoding="utf-8"))
+
     def test_finalize_refuses_missing_images_until_the_images_command_runs(self):
         site = self.root / "site"
         with mock.patch.object(weekly, "SITE", site):

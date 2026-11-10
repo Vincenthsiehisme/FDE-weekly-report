@@ -34,11 +34,11 @@ python3 -m unittest discover -s tests -t tests
 | `site/index.html`、`site/reports/<YYYY-Www>.html` | 產出的頁面 |
 | `site/assets/deliverables/<附件 id>.<副檔名>` | 成效說明顯示的 Deliverable 截圖，`prepare` 從 Jira 下載 |
 
-人維護、走 PR 的設定：`config/team.json`（成員名單與起訖日，算可運用人日）、`config/holidays.json`（國定假日與補班日，照人事行政總處辦公日曆表，每年補新一年）、`config/excluded.json`（`cards` 不算完成的卡、`epics` 整棵不列入週報的 epic，每張寫理由）、`data/tokens/<YYYY-Www>.json`（Token 用量，來源待定）。
+人維護、走 PR 的設定：`config/team.json`（成員名單與起訖日，算可運用人日）、`config/holidays.json`（國定假日與補班日，照人事行政總處辦公日曆表，每年補新一年）、`config/excluded.json`（`cards` 不算完成的卡、`epics` 整棵不列入週報的 epic，每張寫理由）、`config/r2.json`（成效說明影片的 R2 帳號 id、bucket、公開網址）、`data/tokens/<YYYY-Www>.json`（Token 用量，來源待定）。
 
 ## 不能做的事
 
 - 不寫 Jira。這個 repo 對 Jira 只讀。
-- 憑證只在環境變數或本機 `~/.config/jira-ops/env`，不進任何檔案、commit、PR 說明。
+- 憑證只在環境變數或本機 `~/.config/jira-ops/env`（Jira）、`~/.config/fde-weekly-report/r2.env`（R2），不進任何檔案、commit、PR 說明。`config/r2.json` 的帳號 id、bucket、公開網址不是秘密。
 - 不用 fallback 掩蓋錯誤：抓不到、驗不過就讓它失敗，不產出部分結果。
-- `site/` 是公開網址的內容。卡片標題、Kick off、Deliverable 的文字會公開，只有私有 IP 與 `config/internal-hosts.json` 列的主機會換掉（`render.esc`），姓名、單號這類個資與憑證不會被擋，不要寫進卡片；已完成 Deliverable 的圖片附件也會原樣公開，上傳前要遮客人資料。
+- `site/` 是公開網址的內容。卡片標題、Kick off、Deliverable 的文字會公開，只有私有 IP 與 `config/internal-hosts.json` 列的主機會換掉（`render.esc`），姓名、單號這類個資與憑證不會被擋，不要寫進卡片；已完成 Deliverable 的圖片附件與 mp4、webm 影片（影片在 R2 的公開網址）也會原樣公開，上傳前要遮客人資料。

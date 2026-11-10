@@ -15,6 +15,7 @@ from test_jira import FakeClient, raw
 
 PERIOD = period_ending(date(2026, 9, 22))
 PNG = b"\x89PNG\r\n\x1a\n" + b"\0" * 24  # 造的圖：只有檔頭
+MP4 = b"\0\0\0\x18ftypmp42" + b"\0" * 20  # 造的影片：只有 ftyp 檔頭
 
 
 def adf(*paragraphs):
@@ -39,7 +40,7 @@ def fields(**over):
                            "Env：https://github.com/Liontech-tw/fde-devcontainers/tree/main/projects/y",
                            "入口：https://tool.example.com/start", "手冊：https://manual.example.com/"),
         "attachment": [{"id": "501", "filename": "list.png", "mimeType": "image/png", "size": len(PNG)},
-                       {"id": "502", "filename": "demo.mp4", "mimeType": "video/mp4", "size": 16_000_000}],
+                       {"id": "502", "filename": "demo.mov", "mimeType": "video/quicktime", "size": 16_000_000}],
         "fixVersions": [{"name": "0.38.0", "releaseDate": "2026-09-20"}],
     }
     base.update(over)
@@ -72,7 +73,7 @@ class NormalizeTest(unittest.TestCase):
         self.assertEqual(d["features"], "勾選多張訂單一次產生\n連結帶入金額")
         self.assertEqual(d["base"], "6 分鐘")
         self.assertEqual(d["attachments"], [{"id": "501", "filename": "list.png", "mime": "image/png", "size": len(PNG)},
-                                            {"id": "502", "filename": "demo.mp4", "mime": "video/mp4", "size": 16_000_000}])
+                                            {"id": "502", "filename": "demo.mov", "mime": "video/quicktime", "size": 16_000_000}])
         self.assertEqual(d["versions"], [{"name": "0.38.0", "release_date": "2026-09-20"}])
 
     def test_blank_fields_are_none(self):
@@ -325,6 +326,65 @@ class FakeDownloads:
         return self.contents[attachment_id]
 
 
+class FakeR2:
+    """R2Client 的替身：記下有哪些物件、這次傳了哪些。"""
+
+    def __init__(self, existing=()):
+        self.objects, self.put_calls = {k: b"" for k in existing}, []
+
+    def exists(self, key):
+        return key in self.objects
+
+    def put(self, key, data, content_type):
+        self.put_calls.append((key, content_type))
+        self.objects[key] = data
+
+
+class VideosTest(unittest.TestCase):
+    """成效說明的影片上 R2（AC-5）：哪些附件播、怎麼上傳、驗收中不上。"""
+
+    def shown(self, attachments, status="done"):
+        cards, reviewing, _ = deliverable.views(epics() + [card("CS-50", status=status, attachment=attachments)], PERIOD, NO_HOSTS)
+        return (cards or reviewing)[0]["attachments"]
+
+    def test_only_mp4_and_webm_up_to_the_cap_are_played(self):
+        shown = self.shown([att("1", "a.mp4", "video/mp4", deliverable.MAX_VIDEO_BYTES), att("2", "b.webm", "video/webm", 10),
+                            att("3", "big.mp4", "video/mp4", deliverable.MAX_VIDEO_BYTES + 1), att("4", "c.mov", "video/quicktime", 10),
+                            att("5", "a.png", "image/png", 10)])
+        self.assertEqual([a["video"] for a in shown], ["1.mp4", "2.webm", None, None, None])
+
+    def test_reviewing_card_videos_are_not_played(self):
+        self.assertEqual([a["video"] for a in self.shown([att("1", "a.mp4", "video/mp4", 10)], status="review")], [None])
+
+    def cards(self, attachments):
+        cards, _ = views(epics() + [card("CS-50", attachment=attachments)])
+        return cards
+
+    def test_upload_each_video_once(self):
+        cards = self.cards([att("1", "a.mp4", "video/mp4", len(MP4)), att("2", "b.png", "image/png", len(PNG))])
+        client, store = FakeDownloads({"1": MP4}), FakeR2()
+        self.assertEqual(deliverable.upload_videos(client, store, cards), ["1.mp4"])
+        self.assertEqual(store.put_calls, [("1.mp4", "video/mp4")])
+        self.assertEqual(client.asked, [("1", deliverable.MAX_VIDEO_BYTES)])
+        self.assertEqual(deliverable.upload_videos(client, store, cards), [])  # R2 已經有：不再下載
+        self.assertEqual(len(client.asked), 1)
+
+    def test_size_or_header_mismatch_fails_before_upload(self):
+        store = FakeR2()
+        cards = self.cards([att("1", "a.mp4", "video/mp4", len(MP4) + 1)])
+        with self.assertRaisesRegex(ValueError, "下載到"):
+            deliverable.upload_videos(FakeDownloads({"1": MP4}), store, cards)
+        cards = self.cards([att("1", "a.mp4", "video/mp4", len(PNG))])
+        with self.assertRaisesRegex(ValueError, "檔頭對不上"):
+            deliverable.upload_videos(FakeDownloads({"1": PNG}), store, cards)
+        self.assertEqual(store.put_calls, [])
+
+    def test_videos_lists_what_the_page_plays(self):
+        cards = self.cards([att("1", "a.mp4", "video/mp4", 10), att("4", "c.mov", "video/quicktime", 10)])
+        self.assertEqual(deliverable.videos(cards), ["1.mp4"])
+        self.assertEqual(deliverable.videos(None), [])
+
+
 class ImagesTest(unittest.TestCase):
     """成效說明顯示截圖（2026-11-03 鎖定 AC-1）：哪些附件顯示、怎麼下載、缺圖擋下。"""
 
@@ -343,7 +403,7 @@ class ImagesTest(unittest.TestCase):
         item = card("CS-50")
         item["deliverable"]["attachments"] = ["old.png"]
         cards, _ = views(epics() + [item])
-        self.assertEqual(cards[0]["attachments"], [{"id": None, "filename": "old.png", "mime": None, "size": None, "image": None}])
+        self.assertEqual(cards[0]["attachments"], [{"id": None, "filename": "old.png", "mime": None, "size": None, "image": None, "video": None}])
 
     def test_attachment_without_id_fails_loud(self):
         with self.assertRaisesRegex(ValueError, "附件少了 id"):
@@ -500,7 +560,7 @@ class ImagesPageTest(unittest.TestCase):
         self.assertIn('<span class="dv-tag">有影片</span>', self.summary(panel))  # 框裡放的是圖，影片要在名稱旁標
         self.assertIn('<div class="dv-shots"><figure><a href="assets/deliverables/501.png"><img src="assets/deliverables/501.png"'
                       f' alt="list.png" loading="lazy"></a><figcaption>{jira}</figcaption></figure></div>', panel)
-        self.assertIn('<a href="https://example.atlassian.net/secure/attachment/502/demo.mp4">demo.mp4</a><br>'
+        self.assertIn('<a href="https://example.atlassian.net/secure/attachment/502/demo.mov">demo.mov</a><br>'
                       '<span class="muted">這些檔案沒有放上週報，點檔名到 Jira 看（要登入）</span>', panel)
 
     def test_report_pages_point_one_level_up(self):
@@ -521,12 +581,14 @@ class ImagesPageTest(unittest.TestCase):
         self.assertIn('alt="a &quot;b&quot;&lt;c&gt;.png"', self.summary(panel))
         self.assertNotIn("<c>", panel)
 
-    def test_video_only_row_gets_a_box_to_jira(self):
-        panel = self.panel(epics() + [card("CS-50", attachment=[att("4", "v.mp4", "video/mp4", 10)])])
+    def test_video_that_does_not_play_gets_a_box_to_jira(self):
+        # mov 瀏覽器不一定播得了，不上 R2：框連 Jira
+        panel = self.panel(epics() + [card("CS-50", attachment=[att("4", "v.mov", "video/quicktime", 10)])])
         self.assertNotIn("<img", panel)
+        self.assertNotIn("<video", panel)
         self.assertIn('<details class="dv-item with-media" id="dv-CS-50"><summary>'
-                      '<a class="dv-media dv-media-out" href="https://example.atlassian.net/secure/attachment/4/v.mp4">'
-                      '<b>▶ 影片在 Jira</b><span>v.mp4</span><span class="muted">要登入 Jira</span></a>', panel)
+                      '<a class="dv-media dv-media-out" href="https://example.atlassian.net/secure/attachment/4/v.mov">'
+                      '<b>▶ 影片在 Jira</b><span>v.mov</span><span class="muted">要登入 Jira</span></a>', panel)
         self.assertNotIn('<span class="dv-tag">有影片</span>', panel)  # 框已經講了
 
     def test_image_left_off_the_page_gets_a_box_to_jira(self):
@@ -536,6 +598,19 @@ class ImagesPageTest(unittest.TestCase):
         self.assertNotIn("<img", panel)
         self.assertIn('<a class="dv-media dv-media-out" href="https://example.atlassian.net/secure/attachment/3/big.png">'
                       '<b>畫面在 Jira</b><span>big.png</span>', panel)
+
+    def test_played_video_leads_the_row_and_sits_in_the_grid(self):
+        panel = self.panel(epics() + [card("CS-50", attachment=[att("501", "list.png", "image/png", len(PNG)), att("7", "v.mp4", "video/mp4", 10)])])
+        url = "https://pub-bbf15d266c104e9bb1a663e4f14c0008.r2.dev/7.mp4"
+        video = f'<video src="{url}" controls preload="metadata" playsinline></video>'
+        # 列上是連結包第一格、不帶 controls：summary 裡的播放器點了會展開那一列、播不了（2026-11-10 實測）
+        self.assertIn(f'<details class="dv-item with-media" id="dv-CS-50"><summary><a class="dv-media dv-video" href="{url}">'
+                      f'<video src="{url}" preload="metadata" muted playsinline></video><span class="dv-play">▶ 播放</span></a>', panel)
+        self.assertNotIn("controls", self.summary(panel))
+        self.assertIn('<span class="dv-tag">有畫面</span>', self.summary(panel))  # 左邊是影片，另有截圖
+        self.assertIn(f'<figure>{video}<figcaption><a href="https://example.atlassian.net/secure/attachment/7/v.mp4">v.mp4</a></figcaption></figure>', panel)
+        self.assertNotIn("這些檔案沒有放上週報", panel)
+        self.assertEqual(panel.count("<video"), 2)  # 列上第一格、完整說明的播放器
 
     def test_reviewing_card_shows_a_box_not_its_image(self):
         # 驗收中的卡還沒過轉完成前的遮個資檢查，圖不上公開頁：列上只有連 Jira 的框（2026-11-10 裁定）
