@@ -343,29 +343,33 @@ def _breakpoint(rows: list, page, with_week: bool) -> str:
 
 
 def _label_legend(total) -> str:
-    return (f'<p class="legend">累計工時 <i class="sw-before"></i>之前 <i class="sw-week"></i>本週；長條是占總工時 {esc(fmt_hours(total))} 的比例；'
-            '各列加總等於總工時，epic 數加總等於總覽的累計完成加進行中 epic。</p>')
+    return (f'<p class="legend">累計工時 <i class="sw-before"></i>之前 <i class="sw-week"></i>本週；第一列是總工時 {esc(fmt_hours(total))}，'
+            '其餘各列的長條是占它的比例、加總等於它；epic 數加總等於總覽的累計完成加進行中 epic。</p>')
 
 
 def _labels(metrics) -> str:
     """依 label 橫條：累計工時，本週段深色，右側數字；總覽與本週頁各一組、同一份 metrics（2026-10-07 使用者裁，取代表格）。
     長條之間比的是「這個單位的案子累計填了多少小時」，仍受每人填法影響，所以數字一定印在旁邊。
-    長條的滿格是總工時（各列加總），不是最多的那一列（2026-11-11 使用者要求：直條圖要算總工時）。"""
+    長條的滿格是總工時（各列加總），不是最多的那一列（2026-11-11 使用者要求：直條圖要算總工時）；
+    第一列是總工時本身，滿格、同樣寫本週與累計（同日使用者要求加上總工時）。"""
     rows = metrics["labels"]
     if not rows:
         return '<p class="muted">還沒有任何專案</p>'
     total = round(sum(r["cumulative"]["hours"] for r in rows), 2)
-    items = []
-    for r in rows:
-        cum, week = r["cumulative"]["hours"], r["week"]["hours"]
+
+    def row(cls: str, name_html: str, cum, week, unestimated: int) -> str:
         before = round((cum - week) / total * 100, 1) if total else 0
         wk = round(week / total * 100, 1) if total else 0
-        unfilled = f'<small>{r["cumulative"]["unestimated"]} 張{UNFILLED}</small>' if r["cumulative"]["unestimated"] else ""
-        items.append(
-            f'<div class="lrow"><span class="lname">{esc(r["label"])} <span class="muted">· {r["epics"]} 個 epic</span></span>'
-            f'<div class="bar" role="img" aria-label="累計工時 {esc(fmt_hours(cum))}，本週 {esc(fmt_hours(week))}">'
-            f'<span style="width:{before:g}%"></span>{f"<span class=wk style=width:{wk:g}%></span>" if week else ""}</div>'
-            f'<span class="num">本週 {esc(fmt_hours(week))} · 累計 {esc(fmt_hours(cum))}{unfilled}</span></div>')
+        unfilled = f'<small>{unestimated} 張{UNFILLED}</small>' if unestimated else ""
+        return (f'<div class="{cls}"><span class="lname">{name_html}</span>'
+                f'<div class="bar" role="img" aria-label="累計工時 {esc(fmt_hours(cum))}，本週 {esc(fmt_hours(week))}">'
+                f'<span style="width:{before:g}%"></span>{f"<span class=wk style=width:{wk:g}%></span>" if week else ""}</div>'
+                f'<span class="num">本週 {esc(fmt_hours(week))} · 累計 {esc(fmt_hours(cum))}{unfilled}</span></div>')
+
+    week_total = round(sum(r["week"]["hours"] for r in rows), 2)
+    items = [row("lrow ltotal", "總工時", total, week_total, sum(r["cumulative"]["unestimated"] for r in rows))]
+    items += [row("lrow", f'{esc(r["label"])} <span class="muted">· {r["epics"]} 個 epic</span>',
+                  r["cumulative"]["hours"], r["week"]["hours"], r["cumulative"]["unestimated"]) for r in rows]
     return _label_legend(total) + f'<div class="labels">{"".join(items)}</div>'
 
 
@@ -1619,6 +1623,7 @@ details.closed>summary{font-size:13px;color:var(--muted)}
 .labels{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:0 14px}
 .lrow{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}
 .lrow:last-child{border-bottom:0}
+.ltotal .lname,.ltotal .num{font-weight:600;color:var(--text)}
 .lrow .lname{width:180px;flex:none}
 .lrow .num{flex:none;width:200px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;font-size:12px}
 .lrow .num small{display:block;white-space:normal}
