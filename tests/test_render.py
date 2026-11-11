@@ -301,7 +301,7 @@ class BreakpointRenderTest(unittest.TestCase):
                 self.assertIn(f">{key}</a>", after)
                 self.assertNotIn(f">{key}</a>", tab[:tab.index('<div class="breakpoint">')])
         self.assertIn("2026-W38 · 結案 09/10 · 搬入 09/18", cum)
-        self.assertIn('<li class=big><span>累計工時</span><strong class="">1.5h</strong>', cum)  # 只有 CS-2 的 1.5h，搬來的 4h、2h 不算
+        self.assertIn('<li class=big><span>已完成工時／總工時</span><strong class="">0h / 1.5h</strong>', cum)  # 只有 CS-2 的 1.5h，搬來的 4h、2h 不算
         self.assertNotIn("CS-7", html[html.index('<section id="checks"'):] if '<section id="checks"' in html else "")
 
     def test_dates_are_shown_in_taipei_time(self):
@@ -327,7 +327,7 @@ class WordingTest(unittest.TestCase):
         self.assertNotIn("預估", html)
         self.assertNotIn("估點", html)
         self.assertIn("<dt>實際工時</dt>", html)
-        self.assertIn("1 張完成卡未填工時", panel(html, "cumulative"))
+        self.assertIn("<small>已完成只算 Jira 已結案 epic；1 張完成卡未填工時</small>", panel(html, "cumulative"))
         # 只寫「實際工時」，不單獨寫「實際」（2026-09-30 使用者裁）
         self.assertEqual(html.count("實際"), html.count("實際工時"))
 
@@ -508,18 +508,22 @@ class OverviewTest(unittest.TestCase):
     def test_label_bars_are_shared_and_replace_the_table(self):
         html = page(metrics=metrics_for(self.ISSUES), narrative={"highlights": ["完成"], "epic_results": {"CS-1": "完成", "_unassigned": "完成"}})
         week, o = panel(html, "week"), panel(html, "cumulative")
-        # 直售累計 3.5h 是最長的一條：之前段 3.0/3.5、本週段 0.5/3.5（2026-10-07 使用者裁：兩頁都改橫條）
+        # 滿格是總工時 5h，不是最長的直售 3.5h：之前段 3.0/5、本週段 0.5/5（2026-10-07 使用者裁：兩頁都改橫條；
+        # 2026-11-11 使用者要求直條圖算總工時）
         row = ('<div class="lrow"><span class="lname">直售 <span class="muted">· 1 個 epic</span></span>'
-               '<div class="bar" role="img" aria-label="累計工時 3.5h，本週 0.5h"><span style="width:85.7%"></span>'
-               '<span class=wk style=width:14.3%></span></div><span class="num">本週 0.5h · 累計 3.5h</span></div>')
+               '<div class="bar" role="img" aria-label="累計工時 3.5h，本週 0.5h"><span style="width:60%"></span>'
+               '<span class=wk style=width:10%></span></div><span class="num">本週 0.5h · 累計 3.5h</span></div>')
         self.assertIn(row, o)
+        self.assertIn("長條是占總工時 5h 的比例", o)
         self.assertIn('<div class="labels">', o)
         self.assertNotIn("<span>label</span>", o)
         self.assertNotIn('<div class="labels">', week)  # 本週頁的投入看「力氣花在哪」（2026-10-28）
         self.assertNotIn("支援單位", html)
         self.assertNotIn("<h3>團隊</h3>", week)
         self.assertNotIn("<h3>團隊</h3>", o)
-        self.assertIn('<li class=big><span>累計工時</span><strong class="">5h</strong></li>', o)
+        # 2026-11-11 使用者要求寫成已完成工時／總工時：已結案的 CS-4 3h／全部完成卡 5h（含進行中 CS-1 與未歸屬 epic）
+        self.assertIn('<li class=big><span>已完成工時／總工時</span><strong class="">3h / 5h</strong>'
+                      '<small>已完成只算 Jira 已結案 epic</small></li>', o)
         self.assertNotIn("累計完成卡片", o)  # 2026-11-11 起總覽換成 epic 兩格，完成張數看下面的完成清單
 
 

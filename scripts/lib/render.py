@@ -159,13 +159,17 @@ def _kpis(tiles: list) -> str:
     return f'<ul class="kpis" style="--kpis:{len(tiles)}">{"".join(items)}</ul>'
 
 
-def _resources(totals: dict, prefix: str, hours_label: str, page, epics: list) -> str:
+def _resources(totals: dict, prefix: str, page, epics: list) -> str:
     """總覽的資源 KPI：工時、Token、累計完成 epic、進行中 epic。Token 一個檔都沒有時不放 Token 格，也不留說明
     （2026-10-07 使用者裁，取代 2026-09-27「資源區留一行」：AI 用量整合已擱置，沒有可預期的接入日）。
     epics 是專案列表裡的 epic。完成卡片與 epic 數兩格換成「累計完成 epic」與「進行中 epic」，進行中含「卡都做完，epic 沒關」、
-    小字拆開寫（2026-11-11 使用者要求；11-02 總覽優化 AC-3「結案數不單獨出現」由並排的進行中那格接住）。"""
+    小字拆開寫（2026-11-11 使用者要求；11-02 總覽優化 AC-3「結案數不單獨出現」由並排的進行中那格接住）。
+    工時格寫成「已完成工時／總工時」（2026-11-11 使用者要求）：已完成是累計完成 epic 那幾個的工時，總工時是全部完成卡的工時，
+    含進行中 epic 已完成的卡與未歸屬 epic；只寫總工時會被讀成旁邊那幾個完成 epic 花的時間。"""
     unfilled = f'{totals["unestimated_completed"]} 張完成卡{UNFILLED}' if totals["unestimated_completed"] else None
-    tiles = [(hours_label, fmt_hours(totals["hours"]), unfilled, True)]
+    done_hours = round(sum(e["hours"] for e in epics if _overview_state(e) == "done"), 2)
+    note = "已完成只算 Jira 已結案 epic" + (f"；{unfilled}" if unfilled else "")
+    tiles = [("已完成工時／總工時", f'{fmt_hours(done_hours)} / {fmt_hours(totals["hours"])}', note, True)]
     if page.tokens:
         tiles.append((f"{prefix} Token".strip(), fmt_tokens(totals["tokens"]), NO_TOKEN_SOURCE if totals["tokens"] is None else None, True))
     n = {k: sum(1 for e in epics if _overview_state(e) == k) for k in ("open", "full", "done")}
@@ -338,29 +342,31 @@ def _breakpoint(rows: list, page, with_week: bool) -> str:
             f'<p class="note">{esc(BREAKPOINT_NOTE)}</p><ul class="list">{items}</ul></details>')
 
 
-LABEL_LEGEND = ('<p class="legend">累計工時 <i class="sw-before"></i>之前 <i class="sw-week"></i>本週；'
-                '各列加總等於工時 KPI，epic 數加總等於總覽的累計完成加進行中 epic。</p>')
+def _label_legend(total) -> str:
+    return (f'<p class="legend">累計工時 <i class="sw-before"></i>之前 <i class="sw-week"></i>本週；長條是占總工時 {esc(fmt_hours(total))} 的比例；'
+            '各列加總等於總工時，epic 數加總等於總覽的累計完成加進行中 epic。</p>')
 
 
 def _labels(metrics) -> str:
     """依 label 橫條：累計工時，本週段深色，右側數字；總覽與本週頁各一組、同一份 metrics（2026-10-07 使用者裁，取代表格）。
-    長條之間比的是「這個單位的案子累計填了多少小時」，仍受每人填法影響，所以數字一定印在旁邊。"""
+    長條之間比的是「這個單位的案子累計填了多少小時」，仍受每人填法影響，所以數字一定印在旁邊。
+    長條的滿格是總工時（各列加總），不是最多的那一列（2026-11-11 使用者要求：直條圖要算總工時）。"""
     rows = metrics["labels"]
     if not rows:
         return '<p class="muted">還沒有任何專案</p>'
-    top = max(r["cumulative"]["hours"] for r in rows)
+    total = round(sum(r["cumulative"]["hours"] for r in rows), 2)
     items = []
     for r in rows:
         cum, week = r["cumulative"]["hours"], r["week"]["hours"]
-        before = round((cum - week) / top * 100, 1) if top else 0
-        wk = round(week / top * 100, 1) if top else 0
+        before = round((cum - week) / total * 100, 1) if total else 0
+        wk = round(week / total * 100, 1) if total else 0
         unfilled = f'<small>{r["cumulative"]["unestimated"]} 張{UNFILLED}</small>' if r["cumulative"]["unestimated"] else ""
         items.append(
             f'<div class="lrow"><span class="lname">{esc(r["label"])} <span class="muted">· {r["epics"]} 個 epic</span></span>'
             f'<div class="bar" role="img" aria-label="累計工時 {esc(fmt_hours(cum))}，本週 {esc(fmt_hours(week))}">'
             f'<span style="width:{before:g}%"></span>{f"<span class=wk style=width:{wk:g}%></span>" if week else ""}</div>'
             f'<span class="num">本週 {esc(fmt_hours(week))} · 累計 {esc(fmt_hours(cum))}{unfilled}</span></div>')
-    return LABEL_LEGEND + f'<div class="labels">{"".join(items)}</div>'
+    return _label_legend(total) + f'<div class="labels">{"".join(items)}</div>'
 
 
 TREND_WEEKS = 6          # 圖畫最近幾週
@@ -993,7 +999,7 @@ def _cumulative_panel(metrics, page) -> str:
     return f"""
   {_since_note(metrics)}
   <h3>資源</h3>
-  {_resources(c["totals"], "累計", "累計工時", page, epics=[e for e in c["epics"] if e["key"]])}
+  {_resources(c["totals"], "累計", page, epics=[e for e in c["epics"] if e["key"]])}
   <h3>依 label</h3>
   {era}{_labels(metrics)}
   <h3>專案列表</h3>
@@ -1297,6 +1303,8 @@ def _glossary(metrics) -> str:
         ("實際工時", "Jira 的 Story point estimate 欄位，由執行人完工後回填花費的時數。"
                      "只加沒有子卡的卡；有子卡的父卡自己的數字不算，避免重複。"),
         ("累計工時", "到本週結束為止的實際工時加總，口徑同實際工時。"),
+        ("已完成工時／總工時", "總覽資源的工時格。已完成工時是累計完成 epic（Jira 已結案）底下完成卡的工時；"
+                            "總工時是全部完成卡的工時，含進行中 epic 已完成的卡與未歸屬 epic。進行中的卡完工才回填工時，兩個數都不含它們。"),
         (UNFILLED, "卡片完成了，Story point estimate 卻是空的；實際工時以 0 計。本週的逐張列在資料檢查，累計只計張數。"),
         ("人", "總覽專案列表的「人」欄：這個專案累計由幾個人產出，名字列在數字旁。人數是完成了沒有子卡的卡的執行人，同一人只算一次；"
                "沒有執行人的卡不算人，標「另有未指派」。本週一覽表的負責人是本週有產出的人，本週沒人產出就寫 epic 的負責人。"
