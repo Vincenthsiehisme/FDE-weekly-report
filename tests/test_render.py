@@ -514,7 +514,13 @@ class OverviewTest(unittest.TestCase):
                '<div class="bar" role="img" aria-label="累計工時 3.5h，本週 0.5h"><span style="width:60%"></span>'
                '<span class=wk style=width:10%></span></div><span class="num">本週 0.5h · 累計 3.5h</span></div>')
         self.assertIn(row, o)
-        self.assertIn("長條是占總工時 5h 的比例", o)
+        self.assertIn("第一列是總工時 5h", o)
+        # 第一列是總工時本身：滿格，之前 3/5、本週 2/5（直售 0.5h＋門市 1.5h），在各 label 之前（2026-11-11 使用者要求加上總工時）
+        total = ('<div class="lrow ltotal"><span class="lname">總工時</span>'
+                 '<div class="bar" role="img" aria-label="累計工時 5h，本週 2h"><span style="width:60%"></span>'
+                 '<span class=wk style=width:40%></span></div><span class="num">本週 2h · 累計 5h</span></div>')
+        self.assertIn(total, o)
+        self.assertLess(o.index(total), o.index(row))
         self.assertIn('<div class="labels">', o)
         self.assertNotIn("<span>label</span>", o)
         self.assertNotIn('<div class="labels">', week)  # 本週頁的投入看「力氣花在哪」（2026-10-28）
